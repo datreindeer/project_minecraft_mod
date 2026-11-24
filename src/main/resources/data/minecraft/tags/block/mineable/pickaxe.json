@@ -565,6 +565,8 @@
     "mechanical:mortar_and_pestle",
     "mechanical:pouring_spout",
     "mechanical:iron_ingot_mold",
+    "mechanical:refractory_trough",
+    "mechanical:trough_gate",
     "mechanical:silica_bricks",
     "mechanical:banded_furnace_casing",
     "mechanical:firebox",

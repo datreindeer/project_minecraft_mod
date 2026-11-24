@@ -78,6 +78,16 @@ public final class HighFurnace {
     public static final Supplier<BlockEntityType<IngotMoldBlock.Entity>> INGOT_MOLD_ENTITY = Mechanical.BLOCK_ENTITIES.register("iron_ingot_mold",
             () -> new BlockEntityType<>(IngotMoldBlock.Entity::new, IRON_INGOT_MOLD.get()));
 
+    /** Phase 4: Refractory Troughs and the Trough Gate (TroughFlow). */
+    public static final DeferredBlock<RefractoryTroughBlock> REFRACTORY_TROUGH = BLOCKS.registerBlock("refractory_trough", RefractoryTroughBlock::new,
+            p -> p.mapColor(MapColor.METAL).strength(2.5F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion());
+    public static final DeferredItem<BlockItem> REFRACTORY_TROUGH_ITEM = ITEMS.registerSimpleBlockItem("refractory_trough", REFRACTORY_TROUGH);
+    public static final DeferredBlock<RefractoryTroughBlock.Gate> TROUGH_GATE = BLOCKS.registerBlock("trough_gate", RefractoryTroughBlock.Gate::new,
+            p -> p.mapColor(MapColor.METAL).strength(2.5F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion());
+    public static final DeferredItem<BlockItem> TROUGH_GATE_ITEM = ITEMS.registerSimpleBlockItem("trough_gate", TROUGH_GATE);
+    public static final Supplier<BlockEntityType<TroughBlockEntity>> TROUGH_ENTITY = Mechanical.BLOCK_ENTITIES.register("refractory_trough",
+            () -> new BlockEntityType<>(TroughBlockEntity::new, REFRACTORY_TROUGH.get(), TROUGH_GATE.get()));
+
     public static final DeferredBlock<PouringSpoutBlock> POURING_SPOUT = BLOCKS.registerBlock("pouring_spout", PouringSpoutBlock::new,
             p -> p.mapColor(MapColor.METAL).strength(3.0F, 6.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()
                     .lightLevel(s -> s.getValue(PouringSpoutBlock.POURING) ? 15 : 0));

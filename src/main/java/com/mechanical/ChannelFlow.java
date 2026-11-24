@@ -44,7 +44,11 @@ public final class ChannelFlow {
 
     public static List<BlockPos> ports(BlockPos p, BlockState s) {
         List<BlockPos> out = new ArrayList<>(4);
-        if (s.getBlock() instanceof ClayChannelBlock) {
+        if (s.getBlock() instanceof RefractoryTroughBlock.Gate) { // a gate: its two ends while open, nothing while shut
+            if (s.getValue(RefractoryTroughBlock.Gate.OPEN))
+                for (Direction.AxisDirection a : Direction.AxisDirection.values())
+                    out.add(port(p, Direction.fromAxisAndDirection(s.getValue(RefractoryTroughBlock.Gate.AXIS), a), p.getY()));
+        } else if (s.getBlock() instanceof ClayChannelBlock) {
             Direction up = s.getValue(ClayChannelBlock.SLOPE).up;
             if (up != null) {
                 out.add(port(p, up.getOpposite(), p.getY()));
@@ -54,6 +58,10 @@ public final class ChannelFlow {
             }
         } else if (s.getBlock() instanceof ClayMoldBlock) {
             for (Direction d : Direction.Plane.HORIZONTAL) out.add(port(p, d, p.getY()));
+        } else if (s.getBlock() instanceof IngotMoldBlock) { // the High Furnace's casts sit beside troughs like molds
+            for (Direction d : Direction.Plane.HORIZONTAL) out.add(port(p, d, p.getY()));
+        } else if (s.getBlock() instanceof PouringSpoutBlock) { // a spout at a trough's end: its back
+            out.add(port(p, s.getValue(PouringSpoutBlock.FACING).getOpposite(), p.getY()));
         } else if (s.getBlock() instanceof FurnaceTapBlock) {
             out.add(port(p, s.getValue(FurnaceTapBlock.FACING), p.getY()));
         }
@@ -62,7 +70,7 @@ public final class ChannelFlow {
 
     /** Height for the flow, in half blocks: a mold sits below the channels beside it (it fills first), a slope between its two levels. */
     static int elevation(BlockPos p, BlockState s) {
-        if (s.getBlock() instanceof ClayMoldBlock) return 2 * p.getY() - 1;
+        if (s.getBlock() instanceof ClayMoldBlock || s.getBlock() instanceof IngotMoldBlock) return 2 * p.getY() - 1;
         if (s.getBlock() instanceof ClayChannelBlock && s.getValue(ClayChannelBlock.SLOPE).up != null) return 2 * p.getY() + 1;
         return 2 * p.getY();
     }

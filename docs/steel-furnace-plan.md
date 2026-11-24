@@ -671,3 +671,7 @@ vanillas Anvil (järnålderns dokument säger ångåldern; gjuts inte från stå
   avvikelse: craftas av 5 Iron Plate tills formflaskan finns), järnmalm → Pig Iron + Slag med flux och reduktionskol,
   Pig Iron Ingot, stål 1:2 i pölen. Test `high_furnace_pour`, `high_furnace_iron`. Kvar: rännorna (`ChannelFlow` med
   ränntyper), resten av gjutnivån, Finery Hearth, Slag Stone, fas 6 och 7.
+- **Fas 4, resten (v0.200.0):** `RefractoryTroughBlock` (+ `Gate`), `TroughBlockEntity`, `TroughFlow` (lokal flytt per ränna
+  i mB i stället för `ChannelFlow`s nätsökning; samma portar och lutningar via `ChannelFlow.ports/across`), räckvidd,
+  lerrännor som spricker, pip i rännände, `client/TroughRenderer` (via `MoltenRenderer.Channel.channel`). Test `trough_flow`,
+  `trough_pour`.

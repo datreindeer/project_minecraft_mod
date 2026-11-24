@@ -256,3 +256,20 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
   pip i rännände; Pig Bed, Molding Flask, Wooden Patterns, Pattern Bench, Foundry Table/Basin, Iron Plate/Nugget Mold;
   Finery Hearth, Slag Stone; hela fas 6 (glas, Sight Glass, basalt, block, Loam Mold, Salamander, brännskador) och fas 7
   (Coke Oven, Hot Blast Stove, Obsidian, Steel Ladle).
+
+### 6d. Byggt: rännor (resten av fas 4)
+
+- **Refractory Trough** (`B B` / `PBP`: 3 Silica Brick + 2 Iron Plate → 4): samma form, portar och lutningar som en Clay
+  Channel, men 200 mB av vilken smälta som helst. Var 5:e tick: först en hel gjutning in i en form bredvid (Clay Mold,
+  Iron Ingot Mold ...), sedan nedför delat lika mellan alla lägre rännor, sedan till plana rännor med mindre i (rättvis
+  delning: en T fyller båda grenarna). Varje flytt tar exakt det den ger.
+- **Räckvidd:** smältan når 8 + 1 per 25° över smältpunkten rännor från tappen (stål tappat vid 1550°: 10); rännan efter
+  det fryser direkt.
+- **Trough Gate** (Trough + Iron Plate + Iron Tool Rod): rak, högerklick lyfter/sänker luckan; stängd har den inga portar.
+- **Lerrännor och hett järn:** en Clay Channel som fogas till en ränna med smälta över 1100° spricker och går sönder,
+  metallen förloras.
+- **Pouring Spout** häller i en ränna under sig (strålen landar på metallytan), och en pip i en rännas ände häller
+  rännans metall nedåt (kortare fläns, ingen tapphålsnisch bakom).
+- Stelnad metall slås ut med hacka: tackor och nuggets (22 mB), resten förloras. Ösa med Steel Ladle kommer i fas 7.
+- Test `trough_flow`, `trough_pour`. Inte gjort: Sand Runner (Pig Bed, fas 4b), sprickor i två synliga steg (lerrännan
+  går sönder direkt), cachat nät (varje ränna flyttar lokalt, ingen nätsökning behövs).

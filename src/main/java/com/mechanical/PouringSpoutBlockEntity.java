@@ -41,6 +41,11 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         /** The cast is whole: {@code mb} of {@code m} went in. */
         void fill(ServerLevel level, BlockPos at, Molten m, int mb);
 
+        /** The same, knowing how hot it was tapped (a trough carries that on, for how far it runs). */
+        default void fill(ServerLevel level, BlockPos at, Molten m, int mb, int heat) {
+            fill(level, at, m, mb);
+        }
+
         /**
          * Where the stream lands now, in the sink block's own coordinates (0..1): the surface of the metal in the cavity
          * being filled, {@code poured} of {@code need} mB in. The stream is drawn down to it.
@@ -62,7 +67,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
     }
 
     /** The sinks the spout knows, asked in turn (the casting tier adds its tables, basins, flasks and molds). */
-    public static final java.util.List<Sink> SINKS = new java.util.ArrayList<>(java.util.List.of(new ClayMoldSink()));
+    public static final java.util.List<Sink> SINKS = new java.util.ArrayList<>(java.util.List.of(new ClayMoldSink(), new TroughFlow.Sink()));
 
     /** A Clay Mold: an empty one takes a whole cast of copper or bronze (its shape's units x 100 mB), never hotter than clay stands. */
     static final class ClayMoldSink implements Sink {
@@ -134,13 +139,80 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         return f != null && f.formed() && f.shape().tapholes().stream().anyMatch(w -> w.pos().equals(tap)) ? f : null;
     }
 
+    /** Where the spout draws from: a furnace on its taphole, or the trough it sits at the end of. */
+    private interface Source {
+        @Nullable Molten molten();
+
+        int available();
+
+        int drain(Molten m, int mb);
+
+        void giveBack(Molten m, int mb);
+
+        int heat();
+    }
+
+    private @Nullable Source source(ServerLevel level) {
+        if (!getBlockState().getValue(PouringSpoutBlock.OPEN)) return null;
+        HighFurnaceBlockEntity f = furnace(level);
+        if (f != null) return new Source() {
+            public @Nullable Molten molten() {
+                Molten m = f.pouring();
+                return m != null && f.temperature() >= m.melt ? m : null;
+            }
+
+            public int available() {
+                Molten m = molten();
+                return m == null ? 0 : f.pool().get(m);
+            }
+
+            public int drain(Molten m, int mb) {
+                f.setChanged();
+                return f.pool().drain(m, mb);
+            }
+
+            public void giveBack(Molten m, int mb) {
+                f.pool().add(m, mb);
+            }
+
+            public int heat() {
+                return Math.round(f.temperature());
+            }
+        };
+        if (level.getBlockEntity(worldPosition.relative(facing().getOpposite())) instanceof TroughBlockEntity t) return new Source() {
+            public @Nullable Molten molten() {
+                return t.solid(level.getGameTime()) ? null : t.molten();
+            }
+
+            public int available() {
+                return molten() == null ? 0 : t.amount();
+            }
+
+            public int drain(Molten m, int mb) {
+                return t.take(mb, level.getGameTime());
+            }
+
+            public void giveBack(Molten m, int mb) {
+                t.add(m, mb, t.dist(), t.heat(), level.getGameTime());
+            }
+
+            public int heat() {
+                return t.heat();
+            }
+        };
+        return null;
+    }
+
+    private @Nullable Source source;
+
     void serverTick(ServerLevel level) {
         Molten running = null;
-        HighFurnaceBlockEntity f = getBlockState().getValue(PouringSpoutBlock.OPEN) ? furnace(level) : null;
-        Molten m = f == null ? null : f.pouring();
+        Source src = source(level);
+        Molten m = src == null ? null : src.molten();
         BlockPos at = worldPosition.below();
-        if (bufferMolten != null && (m != bufferMolten || f == null)) giveBack(f);
-        if (m != null && f.temperature() >= m.melt && f.pool().get(m) > 0) {
+        if (bufferMolten != null && (m != bufferMolten || src == null)) giveBack();
+        source = src;
+        if (m != null && src.available() > 0) {
             Sink sink = null;
             int need = 0;
             for (Sink s : SINKS) {
@@ -150,9 +222,9 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                     break;
                 }
             }
-            if (sink != null && bufferMolten == null && f.pool().get(m) < need) sink = null; // a cast starts only when the pool holds all of it
+            if (sink != null && bufferMolten == null && src.available() < need && !(sink instanceof TroughFlow.Sink)) sink = null; // a cast starts only when it is all there
             if (sink == null) {
-                giveBack(f);
+                giveBack();
                 if (--warnIn <= 0) {
                     warnIn = 40;
                     for (Sink s : SINKS) {
@@ -161,7 +233,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                     }
                 }
             } else {
-                int take = f.pool().drain(m, Math.min(RATE, need - buffer));
+                int take = src.drain(m, Math.min(RATE, need - buffer));
                 buffer += take;
                 bufferMolten = m;
                 lastSink = sink;
@@ -176,15 +248,14 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                     level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
                 }
                 if (buffer >= need) {
-                    sink.fill(level, at, m, buffer);
+                    sink.fill(level, at, m, buffer, src.heat());
                     buffer = 0;
                     bufferMolten = null;
                     level.playSound(null, at, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 1.3F);
                     Smelting.award(level, worldPosition, HighFurnace.POUR_ADVANCEMENT, 16);
                 }
-                f.setChanged();
             }
-        } else giveBack(f);
+        } else giveBack();
         if (running != stream) {
             stream = running;
             if (getBlockState().getValue(PouringSpoutBlock.POURING) != (running != null))
@@ -201,9 +272,9 @@ public class PouringSpoutBlockEntity extends BlockEntity {
     }
 
     /** What the stream poured into a cast that is not whole runs back into the pool (or is lost with the furnace). */
-    private void giveBack(@Nullable HighFurnaceBlockEntity f) {
+    private void giveBack() {
         if (buffer > 0 && lastSink != null && level instanceof ServerLevel server) lastSink.abort(server, worldPosition.below());
-        if (buffer > 0 && bufferMolten != null && f != null) f.pool().add(bufferMolten, buffer);
+        if (buffer > 0 && bufferMolten != null && source != null) source.giveBack(bufferMolten, buffer);
         buffer = 0;
         bufferMolten = null;
     }

@@ -39,7 +39,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class HighFurnaceTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt", "high_furnace_pour", "high_furnace_iron"};
+    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt", "high_furnace_pour", "high_furnace_iron", "trough_flow", "trough_pour"};
 
     static {
         TEST_FUNCTIONS.register("high_furnace_shape", () -> HighFurnaceTest::shape);
@@ -47,6 +47,8 @@ public final class HighFurnaceTest {
         TEST_FUNCTIONS.register("high_furnace_melt", () -> HighFurnaceTest::melt);
         TEST_FUNCTIONS.register("high_furnace_pour", () -> HighFurnaceTest::pour);
         TEST_FUNCTIONS.register("high_furnace_iron", () -> HighFurnaceTest::iron);
+        TEST_FUNCTIONS.register("trough_flow", () -> HighFurnaceTest::troughFlow);
+        TEST_FUNCTIONS.register("trough_pour", () -> HighFurnaceTest::troughPour);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -345,6 +347,91 @@ public final class HighFurnaceTest {
                     });
                 });
             });
+        });
+    }
+
+    private static TroughBlockEntity trough(GameTestHelper h, int x, int y, int z) {
+        h.setBlock(new BlockPos(x, y, z), HighFurnace.REFRACTORY_TROUGH.get());
+        return (TroughBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(x, y, z)));
+    }
+
+    /**
+     * Phase 4, troughs on their own: a level run shares evenly both ways from where the metal stands (a T fills its
+     * branches together); a shut Trough Gate stops it and opened lets it on; steel tapped at 1550° freezes past its
+     * reach (10 troughs); a Clay Channel joined to a trough of steel cracks and is gone, beside bronze it stays; and
+     * not a mB is made or lost in all of it.
+     */
+    private static void troughFlow(GameTestHelper h) {
+        long now = h.getLevel().getGameTime();
+        // 1. a T: the middle of a west-east run with a branch north; the metal shares out evenly
+        TroughBlockEntity w = trough(h, 2, 1, 2), mid = trough(h, 3, 1, 2), e = trough(h, 4, 1, 2), n = trough(h, 3, 1, 1);
+        mid.add(Molten.BRONZE, 200, 0, 1200, now);
+        // 2. a gate between two troughs, shut
+        TroughBlockEntity a = trough(h, 2, 1, 5), b = trough(h, 4, 1, 5);
+        h.setBlock(new BlockPos(3, 1, 5), HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.X));
+        a.add(Molten.COPPER, 200, 0, 1200, now);
+        // 3. a long level run of steel tapped at 1550°: reach 8 + 50 / 25 = 10
+        TroughBlockEntity[] run = new TroughBlockEntity[14];
+        for (int i = 0; i < run.length; i++) run[i] = trough(h, 1 + i, 1, 9);
+        run[0].add(Molten.STEEL, 200, 0, 1550, now);
+        h.assertTrue(TroughFlow.reach(1550, Molten.STEEL) == 10, "steel tapped at 1550 reaches 10 troughs");
+        // 4. clay channels beside steel and beside bronze
+        TroughBlockEntity hot = trough(h, 2, 1, 12), warm = trough(h, 6, 1, 12);
+        h.setBlock(new BlockPos(3, 1, 12), Smelting.CLAY_CHANNEL.get());
+        h.setBlock(new BlockPos(7, 1, 12), Smelting.CLAY_CHANNEL.get());
+        hot.add(Molten.STEEL, 200, 0, 1600, now);
+        warm.add(Molten.BRONZE, 200, 0, 1200, now);
+        h.runAfterDelay(TroughFlow.STEP_TICKS * 2 + 1, () -> {
+            int total = w.amount() + mid.amount() + e.amount() + n.amount();
+            h.assertTrue(total == 200, "the T makes and loses nothing: " + total);
+            int lo = Math.min(w.amount(), Math.min(e.amount(), n.amount())), hi = Math.max(w.amount(), Math.max(e.amount(), n.amount()));
+            h.assertTrue(lo > 0 && hi - lo <= 34, "the T shares evenly: " + w.amount() + " " + e.amount() + " " + n.amount() + " (middle " + mid.amount() + ")");
+            h.assertTrue(b.amount() == 0 && a.amount() == 200, "a shut gate stops the metal: " + a.amount() + " / " + b.amount());
+            h.assertTrue(h.getBlockState(new BlockPos(3, 1, 12)).isAir(), "a clay channel by steel cracked and broke");
+            h.assertTrue(h.getBlockState(new BlockPos(7, 1, 12)).is(Smelting.CLAY_CHANNEL.get()), "a clay channel by bronze stands");
+            h.setBlock(new BlockPos(3, 1, 5), HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.X)
+                    .setValue(RefractoryTroughBlock.Gate.OPEN, true));
+            h.runAfterDelay(TroughFlow.STEP_TICKS * 6, () -> {
+                TroughBlockEntity gate = (TroughBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(3, 1, 5)));
+                h.assertTrue(b.amount() > 0 && a.amount() + gate.amount() + b.amount() == 200, "opened, the metal runs on: " + a.amount() + " " + gate.amount() + " " + b.amount());
+                h.runAfterDelay(TroughFlow.STEP_TICKS * 40, () -> {
+                    int sum = 0;
+                    for (TroughBlockEntity t : run) sum += t.amount();
+                    h.assertTrue(sum == 200, "the steel run makes and loses nothing: " + sum);
+                    h.assertTrue(run[11].amount() == 0 || run[11].solid(h.getLevel().getGameTime()), "past its reach the steel froze");
+                    h.assertTrue(run[12].amount() == 0 && run[13].amount() == 0, "nothing ran on past the frozen trough: " + run[12].amount());
+                    h.succeed();
+                });
+            });
+        });
+    }
+
+    /**
+     * Phase 4, pouring through troughs: a spout on the taphole pours into a trough under its lip, the metal runs down a
+     * level run and fills an Iron Ingot Mold standing beside its end; the whole way, the pool, the troughs, their
+     * buffers and the cast add up to what was tapped. A second spout at the trough line's other end pours it down.
+     */
+    private static void troughPour(GameTestHelper h) {
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        BlockPos tap = new BlockPos(4, 2, 6), spout = tap.south();
+        h.setBlock(tap, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
+        h.setBlock(spout, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.SOUTH).setValue(PouringSpoutBlock.OPEN, true));
+        TroughBlockEntity[] line = {trough(h, 4, 1, 7), trough(h, 4, 1, 8), trough(h, 4, 1, 9)};
+        h.setBlock(new BlockPos(4, 1, 10), HighFurnace.IRON_INGOT_MOLD.get());
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        for (int t = 1; t < 390; t++) h.runAtTickTime(t, () -> f.setTemperatureForTest(1300));
+        f.pool().add(Molten.GOLD, 1000);
+        PouringSpoutBlockEntity s = (PouringSpoutBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(spout));
+        h.runAfterDelay(320, () -> {
+            IngotMoldBlock.Entity mold = (IngotMoldBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(4, 1, 10)));
+            int inTroughs = 0;
+            for (TroughBlockEntity t : line) inTroughs += t.amount() + t.buffer;
+            int cast = mold.molten() == Molten.GOLD ? IngotMoldBlock.CAST : mold.filled;
+            int total = f.pool().get(Molten.GOLD) + inTroughs + cast + s.bufferForTest();
+            h.assertTrue(mold.molten() == Molten.GOLD, "the mold at the line's end was filled through the troughs: " + mold.molten() + " filled " + mold.filled);
+            h.assertTrue(total == 1000, "pool + troughs + cast = what was tapped: " + total);
+            h.succeed();
         });
     }
 

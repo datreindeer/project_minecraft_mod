@@ -1625,6 +1625,10 @@ TABS["steel_age"][1].extend([
     ("pour", "layer_cake", "pouring_spout", G, "Pour",
      "Set a Pouring Spout on a Taphole, open it and let the furnace fill a mold standing under its lip: a Clay Mold for "
      "copper and bronze, an Iron Ingot Mold (4 ingots of any metal) for the rest. Click a layer in the furnace's screen to choose what pours", by_code()),
+    ("trough", "pour", "refractory_trough", T, "Down the Line",
+     "Lay Refractory Troughs from under a Pouring Spout to the molds: the metal runs downhill, shares evenly at a fork and "
+     "stops at a shut Trough Gate. Hot iron cracks clay channels, and it freezes if the line is longer than its heat carries it",
+     has("refractory_trough")),
     ("pig_iron", "white_heat", "pig_iron_ingot", G, "Pig Iron",
      "Throw iron ore into a High Furnace at 1450°: it comes out as molten Pig Iron, twice what a Bloomery gives, with Slag "
      "floating on top. Flux thrown in with it gives more iron and less slag", by_code()),

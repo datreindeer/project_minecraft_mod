@@ -1,63 +1,123 @@
 {
   "variants": {
-    "facing=north,open=false,pouring=false": {
+    "facing=north,open=false,pouring=false,short=false": {
       "model": "mechanical:block/pouring_spout"
     },
-    "facing=north,open=false,pouring=true": {
+    "facing=north,open=false,pouring=false,short=true": {
+      "model": "mechanical:block/pouring_spout_short"
+    },
+    "facing=north,open=false,pouring=true,short=false": {
       "model": "mechanical:block/pouring_spout"
     },
-    "facing=north,open=true,pouring=false": {
+    "facing=north,open=false,pouring=true,short=true": {
+      "model": "mechanical:block/pouring_spout_short"
+    },
+    "facing=north,open=true,pouring=false,short=false": {
       "model": "mechanical:block/pouring_spout_open"
     },
-    "facing=north,open=true,pouring=true": {
+    "facing=north,open=true,pouring=false,short=true": {
+      "model": "mechanical:block/pouring_spout_open_short"
+    },
+    "facing=north,open=true,pouring=true,short=false": {
       "model": "mechanical:block/pouring_spout_pouring"
     },
-    "facing=east,open=false,pouring=false": {
+    "facing=north,open=true,pouring=true,short=true": {
+      "model": "mechanical:block/pouring_spout_pouring_short"
+    },
+    "facing=east,open=false,pouring=false,short=false": {
       "model": "mechanical:block/pouring_spout",
       "y": 90
     },
-    "facing=east,open=false,pouring=true": {
+    "facing=east,open=false,pouring=false,short=true": {
+      "model": "mechanical:block/pouring_spout_short",
+      "y": 90
+    },
+    "facing=east,open=false,pouring=true,short=false": {
       "model": "mechanical:block/pouring_spout",
       "y": 90
     },
-    "facing=east,open=true,pouring=false": {
+    "facing=east,open=false,pouring=true,short=true": {
+      "model": "mechanical:block/pouring_spout_short",
+      "y": 90
+    },
+    "facing=east,open=true,pouring=false,short=false": {
       "model": "mechanical:block/pouring_spout_open",
       "y": 90
     },
-    "facing=east,open=true,pouring=true": {
+    "facing=east,open=true,pouring=false,short=true": {
+      "model": "mechanical:block/pouring_spout_open_short",
+      "y": 90
+    },
+    "facing=east,open=true,pouring=true,short=false": {
       "model": "mechanical:block/pouring_spout_pouring",
       "y": 90
     },
-    "facing=south,open=false,pouring=false": {
+    "facing=east,open=true,pouring=true,short=true": {
+      "model": "mechanical:block/pouring_spout_pouring_short",
+      "y": 90
+    },
+    "facing=south,open=false,pouring=false,short=false": {
       "model": "mechanical:block/pouring_spout",
       "y": 180
     },
-    "facing=south,open=false,pouring=true": {
+    "facing=south,open=false,pouring=false,short=true": {
+      "model": "mechanical:block/pouring_spout_short",
+      "y": 180
+    },
+    "facing=south,open=false,pouring=true,short=false": {
       "model": "mechanical:block/pouring_spout",
       "y": 180
     },
-    "facing=south,open=true,pouring=false": {
+    "facing=south,open=false,pouring=true,short=true": {
+      "model": "mechanical:block/pouring_spout_short",
+      "y": 180
+    },
+    "facing=south,open=true,pouring=false,short=false": {
       "model": "mechanical:block/pouring_spout_open",
       "y": 180
     },
-    "facing=south,open=true,pouring=true": {
+    "facing=south,open=true,pouring=false,short=true": {
+      "model": "mechanical:block/pouring_spout_open_short",
+      "y": 180
+    },
+    "facing=south,open=true,pouring=true,short=false": {
       "model": "mechanical:block/pouring_spout_pouring",
       "y": 180
     },
-    "facing=west,open=false,pouring=false": {
+    "facing=south,open=true,pouring=true,short=true": {
+      "model": "mechanical:block/pouring_spout_pouring_short",
+      "y": 180
+    },
+    "facing=west,open=false,pouring=false,short=false": {
       "model": "mechanical:block/pouring_spout",
       "y": 270
     },
-    "facing=west,open=false,pouring=true": {
+    "facing=west,open=false,pouring=false,short=true": {
+      "model": "mechanical:block/pouring_spout_short",
+      "y": 270
+    },
+    "facing=west,open=false,pouring=true,short=false": {
       "model": "mechanical:block/pouring_spout",
       "y": 270
     },
-    "facing=west,open=true,pouring=false": {
+    "facing=west,open=false,pouring=true,short=true": {
+      "model": "mechanical:block/pouring_spout_short",
+      "y": 270
+    },
+    "facing=west,open=true,pouring=false,short=false": {
       "model": "mechanical:block/pouring_spout_open",
       "y": 270
     },
-    "facing=west,open=true,pouring=true": {
+    "facing=west,open=true,pouring=false,short=true": {
+      "model": "mechanical:block/pouring_spout_open_short",
+      "y": 270
+    },
+    "facing=west,open=true,pouring=true,short=false": {
       "model": "mechanical:block/pouring_spout_pouring",
+      "y": 270
+    },
+    "facing=west,open=true,pouring=true,short=true": {
+      "model": "mechanical:block/pouring_spout_pouring_short",
       "y": 270
     }
   }

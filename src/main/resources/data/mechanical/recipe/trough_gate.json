@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:refractory_trough",
+    "mechanical:iron_plate",
+    "mechanical:iron_tool_rod"
+  ],
+  "result": {
+    "id": "mechanical:trough_gate"
+  }
+}

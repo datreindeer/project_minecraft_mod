@@ -66,6 +66,14 @@ def glow_planes(faces, tex, light, inset=0.01):
              "faces": {f: {"uv": [0, 0, 16, 16], "texture": tex, "cullface": f}}} for f in faces]
 
 
+def turn180(el):
+    """The same element turned half round the block's vertical axis (for the item models)."""
+    (x0, y0, z0), (x1, y1, z1) = el["from"], el["to"]
+    swap = {"north": "south", "south": "north", "east": "west", "west": "east", "up": "up", "down": "down"}
+    frm, to = [16 - x1, y0, 16 - z1], [16 - x0, y1, 16 - z0]
+    return {**el, "from": frm, "to": to, "faces": {swap[f]: {**v, "uv": face_uv(swap[f], frm, to)} for f, v in el["faces"].items()}}
+
+
 def model(name, elements, textures, parent="minecraft:block/block"):
     w(A / f"models/block/{name}.json", {"parent": parent, "textures": textures, "elements": elements})
 
@@ -373,13 +381,28 @@ LEVER_OPEN = [{"from": [12.2, 6.5, 11.6], "to": [12.9, 13, 12.4], "rotation": {"
                "faces": {f: {"uv": [7, 2, 8, 9], "texture": "#lever"} for f in FACES}}]
 GLOW = [{"from": [5, 6.05, 6.5], "to": [11, 6.05, 19], "light_emission": 15, "shade": False,
          "faces": {"up": {"uv": [5, 4, 11, 12], "texture": "#glow"}}}]
-model("pouring_spout", SPOUT + LEVER_SHUT, ST)
-model("pouring_spout_open", SPOUT + LEVER_OPEN, ST)
-model("pouring_spout_pouring", SPOUT + LEVER_OPEN + GLOW, ST)
+def shorten(els):
+    """The spout for a trough's end: nothing reaches past the block's back face."""
+    out = []
+    for e in els:
+        e = {**e, "from": list(e["from"]), "to": list(e["to"])}
+        if e["from"][2] >= 16:
+            e["from"][2], e["to"][2] = 15, 16
+        e["to"][2] = min(e["to"][2], 16)
+        out.append(e)
+    return out
+
+
+for short in (False, True):
+    suf = "_short" if short else ""
+    fix = shorten if short else (lambda e: e)
+    model("pouring_spout" + suf, fix(SPOUT + LEVER_SHUT), ST)
+    model("pouring_spout_open" + suf, fix(SPOUT + LEVER_OPEN), ST)
+    model("pouring_spout_pouring" + suf, fix(SPOUT + LEVER_OPEN + GLOW), ST)
 w(A / "blockstates/pouring_spout.json", {"variants": {
-    f"facing={f},open={o},pouring={po}": {"model": B + "pouring_spout" + ("_pouring" if po == "true" and o == "true" else "_open" if o == "true" else ""),
-                                         **({"y": y} if y else {})}
-    for f, y in ROT.items() for o in ("false", "true") for po in ("false", "true")}})
+    f"facing={f},open={o},pouring={po},short={sh}": {"model": B + "pouring_spout" + ("_pouring" if po == "true" and o == "true" else "_open" if o == "true" else "")
+                                                     + ("_short" if sh == "true" else ""), **({"y": y} if y else {})}
+    for f, y in ROT.items() for o in ("false", "true") for po in ("false", "true") for sh in ("false", "true")}})
 item_def("pouring_spout", B + "pouring_spout")
 loot("pouring_spout")
 recipe("pouring_spout", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["P P", " P "],
@@ -411,6 +434,68 @@ recipe("iron_ingot_mold", {"type": "minecraft:crafting_shaped", "category": "mis
 tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "iron_ingot_mold")
 merge(A / "lang/en_us.json", {"block.mechanical.iron_ingot_mold": "Iron Ingot Mold", "item.mechanical.pig_iron_ingot": "Pig Iron Ingot",
     "message.mechanical.ingot_mold.molten": "Still molten: wait until it has set"})
+
+# ---------------- Refractory Trough and Trough Gate (phase 4): the Clay Channel's shape (floor 0..2, walls to 5, the
+# channel 6 wide) in an iron trough lined with silica brick: the same multipart (middle, arm, end wall, slope) so it joins
+# and slopes the same way. The gate: a straight trough with an iron frame over its middle and a sluice plate that is
+# down (shut) or lifted (open).
+TT = {"particle": B + "refractory_trough_outside", "out": B + "refractory_trough_outside", "lin": B + "refractory_trough_lining",
+      "gate": B + "trough_gate", "lever": B + "pouring_spout_lever"}
+OUTF = {f: "#out" for f in FACES}
+T_MIDDLE = [box([3, 0, 3], [13, 2, 13], {**OUTF, "up": "#lin"}),
+            box([3, 2, 3], [5, 5, 5], OUTF), box([11, 2, 3], [13, 5, 5], OUTF),
+            box([3, 2, 11], [5, 5, 13], OUTF), box([11, 2, 11], [13, 5, 13], OUTF)]
+T_ARM = [box([3, 0, 0], [13, 2, 3], {**OUTF, "up": "#lin"}),
+         box([3, 2, 0], [5, 5, 3], {**OUTF, "east": "#lin"}),
+         box([11, 2, 0], [13, 5, 3], {**OUTF, "west": "#lin"}),
+         box([2.6, 0.5, 0.6], [13.4, 1.5, 1.4], "#out")]                          # a rivet band at the joint
+T_END = [box([5, 2, 3], [11, 5, 5], {**OUTF, "south": "#lin"})]
+T_TILT = {"origin": [8, 8, 8], "axis": "x", "angle": 45, "rescale": True}
+T_SLOPE = [box([3, 6, 0], [13, 8, 16], {**OUTF, "up": "#lin"}, rotation=T_TILT),
+           box([3, 8, 0], [5, 11, 16], {**OUTF, "east": "#lin"}, rotation=T_TILT),
+           box([11, 8, 0], [13, 11, 16], {**OUTF, "west": "#lin"}, rotation=T_TILT)]
+for name, els in (("refractory_trough_middle", T_MIDDLE), ("refractory_trough_arm", T_ARM), ("refractory_trough_end", T_END),
+                  ("refractory_trough_slope", T_SLOPE)):
+    model(name, els, TT)
+tparts = [{"when": {"slope": "none"}, "apply": {"model": B + "refractory_trough_middle"}}]
+for side, y in ROT.items():
+    rot = {"y": y, "uvlock": True} if y else {}
+    tparts += [{"when": {"slope": "none", side: "true"}, "apply": {"model": B + "refractory_trough_arm", **rot}},
+               {"when": {"slope": "none", side: "false"}, "apply": {"model": B + "refractory_trough_end", **rot}},
+               {"when": {"slope": side}, "apply": {"model": B + "refractory_trough_slope", **({"y": y} if y else {})}}]
+w(A / "blockstates/refractory_trough.json", {"multipart": tparts})
+model("refractory_trough_inventory", T_MIDDLE + T_ARM + [turn180(e) for e in T_ARM], TT)
+item_def("refractory_trough", B + "refractory_trough_inventory")
+loot("refractory_trough")
+# the gate (axis z in the models; x turns them): frame posts at the middle's sides, a cross beam, the plate in its slots
+GATE_FRAME = [box([3, 2, 7], [5, 10, 9], "#out"), box([11, 2, 7], [13, 10, 9], "#out"), box([3, 10, 6.5], [13, 11.5, 9.5], "#out"),
+              box([7.5, 11.5, 7.6], [8.5, 13, 8.4], "#lever")]
+GATE_SHUT = [box([5, 2, 7.4], [11, 6.5, 8.6], {**{f: "#gate" for f in FACES}})]
+GATE_OPEN = [box([5, 6, 7.4], [11, 10.4, 8.6], {**{f: "#gate" for f in FACES}})]
+model("trough_gate_frame", GATE_FRAME, TT)
+model("trough_gate_shut", GATE_SHUT, TT)
+model("trough_gate_open", GATE_OPEN, TT)
+gparts = [{"when": {"slope": "none"}, "apply": {"model": B + "refractory_trough_middle"}}]
+for side, y in ROT.items():
+    rot = {"y": y, "uvlock": True} if y else {}
+    gparts += [{"when": {side: "true"}, "apply": {"model": B + "refractory_trough_arm", **rot}},
+               {"when": {side: "false"}, "apply": {"model": B + "refractory_trough_end", **rot}}]
+for axis, y in (("z", 0), ("x", 90)):
+    rot = {"y": y} if y else {}
+    gparts += [{"when": {"axis": axis}, "apply": {"model": B + "trough_gate_frame", **rot}},
+               {"when": {"axis": axis, "open": "false"}, "apply": {"model": B + "trough_gate_shut", **rot}},
+               {"when": {"axis": axis, "open": "true"}, "apply": {"model": B + "trough_gate_open", **rot}}]
+w(A / "blockstates/trough_gate.json", {"multipart": gparts})
+model("trough_gate_inventory", T_MIDDLE + T_ARM + [turn180(e) for e in T_ARM] + GATE_FRAME + GATE_SHUT, TT)
+item_def("trough_gate", B + "trough_gate_inventory")
+loot("trough_gate")
+recipe("refractory_trough", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["B B", "PBP"],
+                             "key": {"B": M + "silica_brick", "P": M + "iron_plate"}, "result": {"id": M + "refractory_trough", "count": 4}})
+recipe("trough_gate", {"type": "minecraft:crafting_shapeless", "category": "misc",
+                       "ingredients": [M + "refractory_trough", M + "iron_plate", M + "iron_tool_rod"], "result": {"id": M + "trough_gate"}})
+tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "refractory_trough", M + "trough_gate")
+merge(A / "lang/en_us.json", {"block.mechanical.refractory_trough": "Refractory Trough", "block.mechanical.trough_gate": "Trough Gate",
+    "message.mechanical.trough.empty": "The trough is empty", "message.mechanical.trough.molten": "Still molten: let it set before you knock it out"})
 
 # ---------------- flat items
 for name in ("crushed_quartzite", "unfired_silica_brick", "silica_brick", "steel_hoop", "bronze_tuyere_nozzle", "unfired_clay_tuyere_mold", "pig_iron_ingot"):

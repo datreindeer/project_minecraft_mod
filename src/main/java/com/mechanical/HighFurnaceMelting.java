@@ -62,6 +62,16 @@ public final class HighFurnaceMelting {
         return null;
     }
 
+    /** The nugget of a melt, or null (knocked out of set metal: 22 mB each). */
+    public static @Nullable ItemStack nugget(Molten m) {
+        return switch (m) {
+            case GOLD -> new ItemStack(Items.GOLD_NUGGET);
+            case SILVER -> new ItemStack(IronOres.SILVER_NUGGET.get());
+            case PIG_IRON, WROUGHT_IRON, STEEL -> new ItemStack(Items.IRON_NUGGET);
+            default -> null;
+        };
+    }
+
     /** Flux goes on the furnace's flux count, not in a place. */
     public static boolean isFlux(ItemStack s) {
         return s.is(IronOres.FLUX.get());
