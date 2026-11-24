@@ -139,7 +139,7 @@ public class HighFurnaceRenderer implements BlockEntityRenderer<HighFurnaceBlock
             state.floating.get(i).submit(pose, collector, net.minecraft.util.LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
             pose.popPose();
         }
-        float glowTop = bedY + state.poolTop + 0.6F + heat * 2.6F;
+        float glowTop = Math.min(b[4] + 1 - state.blockPos.getY() - 0.05F, bedY + state.poolTop + 0.6F + heat * 2.6F); // never above the throat
         int low = colour(state.temp, Math.round(110 + 110 * heat)), high = colour(state.temp, 0);
         collector.submitCustomGeometry(pose, GLOW, (p, buf) -> {
             float in = 0.01F;
