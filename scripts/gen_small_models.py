@@ -1696,24 +1696,28 @@ WATCHER_FINGERS = ((0.5, 6.5, -0.26), (2.0, 8.5, -0.13), (3.5, 9.25, -0.02), (5.
 WATCHER_LAYERS = (("wing", "lcovert", 0.5, 0, 9.5, 0, 4.5), ("wing", "gcovert", 0.25, 0, 10.25, 0, 8.0),
                   ("wing", "secondaries", 0.0, 0, 10.5, 0, 13.5),
                   ("wing_tip", "pcovert", 0.0, 1.5, 9.0, -0.75, 5.25), ("wing_tip", "primaries", -0.25, 0, 14.0, -0.75, 10.25))
-WATCHER_TILT = 0.7  # it sits upright, like a raptor
+WATCHER_TILT = 0.9  # it sits upright, like a raptor
 
 
 def mountain_watcher():
-    """The Mountain Watcher: an eagle's build drawn out into something older. A deep chest tapering to the tail, a ruffed
-    neck holding the head high, very long wings built of overlapping feather layers with ragged feather-tip edges, six
+    """The Mountain Watcher: an eagle's build drawn out into something older. A deep rounded chest tapering to the tail, a
+    short neck running smoothly into it, a raptor's head (long, flat-crowned, a brow ridge over each eye, a small strongly
+    hooked bill on a yellow cere), very long wings built of overlapping feather layers with ragged feather-tip edges, six
     tapering finger feathers at each wingtip, a swept crest and two long racket-tipped tail streamers. The extra parts
     hang under the ForestBirdModel part tree, so it flies like the eagle; MountainWatcherModel moves them."""
     m = flier("Mountain Watcher", 4, (128, 128), body=(8, 7, 14), wing=(9, 12), tip=(14, 9), tail=(6, 9),
               legs=(4.75, 2.0, 0.5, 1.75, 3.0), tilt=WATCHER_TILT, lead=0, tip_z=0.05, feet="raptor", tail_rot=-0.12)
     # flier's own body and wing slabs make way for the shaped ones
     m.boxes = [b for b in m.boxes if not (b[0] == "body" and b[1] in ("body", "rump")) and b[1] not in ("wing", "primaries")]
-    m.blob("body", "body", 0, 0.4, -3.0, 8.5, 7.5, 8.0, 1.75)      # the deep chest
-    m.blob("body", "body", 0, -0.2, 2.0, 7.5, 6.5, 6.0, 1.5)
+    # one deep rounded body, chest to belly (stacked chest blobs read as steps on the upright bird), tapering to the tail
+    # four overlapping slabs with small bevels step round the corners in half-pixel steps (one big bevel leaves a plus-shaped
+    # section that reads as stacked blocks on the upright bird)
+    for w, hh, d in ((8.5, 5.5, 10.5), (7.0, 7.5, 10.5), (7.0, 5.5, 12.0), (8.0, 6.75, 11.25)):
+        m.blob("body", "body", 0, 0.25, -0.5, w, hh, d, 0.5)
     m.blob("body", "body", 0, -0.9, 5.75, 5.5, 4.75, 4.0, 1.25)    # tapering to the tail
     m.blob("body", "rump", 0, -1.4, 8.0, 3.75, 3.0, 2.0, 0.75)
     for s in (1, -1):
-        m.blob("body", "scapular", s * 3.4, -2.9, -1.25, 2.5, 2.0, 7.0, 0.75)  # feathered shoulders over the wing roots
+        m.blob("body", "scapular", s * 3.25, -2.9, -1.0, 2.25, 1.75, 6.5, 0.75)  # feathered shoulders over the wing roots
     for s, n in ((1, "left"), (-1, "right")):
         def x_of(a, w):
             return a if s > 0 else -a - w
@@ -1725,19 +1729,30 @@ def mountain_watcher():
             m.box(f"{n}_finger{i}", "finger", x_of(-0.5, 0.25), 0, -0.875, 0.25, base, 1.75)
             m.part(f"{n}_finger{i}_tip", f"{n}_finger{i}", (0, base, 0), (0.07, 0, 0))   # curving back a little
             m.box(f"{n}_finger{i}_tip", "finger_tip", x_of(-0.5, 0.25), 0, -0.625, 0.25, tip, 1.25)
-    neck(m, 4.5, 5.0, 4.5, at_z=2.5)
-    m.blob("neck", "ruff", 0, -0.6, 0.25, 6.5, 3.0, 6.0, 1.0)            # the ruff round the base of the neck
-    m.box("neck", "hackles", -2.5, -4.75, -1.25, 5.0, 3.5, 4.0)          # hackles down the nape
-    m.part("head", "neck", (0, -4.75, 0))
-    m.blob("head", "head", 0, -2.4, -0.75, 5, 5, 6, 1.0)
-    m.box("head", "brow", -2.75, -4.5, -4.0, 5.5, 1, 2.5)
-    m.box("head", "cere", -1.25, -3.5, -5.0, 2.5, 1.75, 1.0)
-    m.box("head", "bill", -0.875, -3.25, -6.75, 1.75, 2.0, 1.75)
-    m.box("head", "bill_tip", -0.625, -1.25, -6.75, 1.25, 1.0, 0.75)
-    m.box("head", "bill_lower", -0.625, -1.25, -6.0, 1.25, 0.5, 1.25)
+    # a short thick neck that runs out of the chest (a raptor shows hardly any), the hackles a cape down the nape
+    neck(m, 4.0, 3.5, 4.0, at_z=2.5)
+    m.boxes = [b for b in m.boxes if b[0] != "neck"]
+    # one column, no steps (any ledge catches the light from above and reads as a ring round the neck)
+    m.blob("neck", "neck", 0, -1.6, 0.25, 5.0, 3.75, 5.0, 0.5)
+    m.blob("neck", "hackles", 0, -2.25, 1.75, 4.5, 4.0, 2.5, 0.75)       # long nape feathers lying down the back of the neck
+    m.part("head", "neck", (0, -3.25, 0))
+    # a raptor's head: long and flat-crowned, the face narrowing to the bill, a brow ridge jutting over each eye
+    m.blob("head", "head", 0, -1.75, 0.25, 4.25, 3.5, 6.0, 0.75)         # the skull, crown flat
+    m.blob("head", "head", 0, -1.625, -3.25, 3.25, 3.0, 2.0, 0.75)       # the face, narrower, running into the cere
+    for s, n in ((1, "left"), (-1, "right")):
+        m.part(n + "_brow", "head", (s * 1.625, -3.5, -0.75), (0.15, s * 0.1, 0))  # a ledge dipping towards the bill: the frown
+        m.box(n + "_brow", "brow", -0.25 if s > 0 else -0.75, 0, -2.0, 1.0, 0.5, 2.25)
+    m.box("head", "cere", -0.875, -2.75, -4.75, 1.75, 1.0, 0.75)
+    m.box("head", "cere", -1.75, -1.75, -4.25, 3.5, 0.25, 0.75)          # the gape, yellow, running back under the eye
+    m.box("head", "bill", -0.625, -2.75, -5.5, 1.25, 1.0, 1.0)           # the upper mandible, short and deep
+    m.box("head", "bill_lower", -0.5, -1.75, -5.25, 1.0, 0.5, 0.75)
+    m.part("bill_hook", "head", (0, -2.75, -5.5), (1.2, 0, 0))           # curving down off its front ...
+    m.box("bill_hook", "bill", -0.375, 0, -0.75, 0.75, 0.75, 0.75)
+    m.part("bill_hook_tip", "bill_hook", (0, 0.0, -0.75), (0.9, 0, 0))  # ... to a sharp point hooked back under
+    m.box("bill_hook_tip", "bill_tip", -0.25, 0, -0.5, 0.5, 0.5, 0.5)
     # the crest: broad plumes lying back off the crown, each tapering to a point
     for i, (dx, yr, ln, wd, xr) in enumerate(WATCHER_CREST):
-        m.part(f"crest{i}", "head", (dx, -4.6, -0.5), (xr, yr, 0))
+        m.part(f"crest{i}", "head", (dx, -3.4, 0.25), (xr, yr, 0))
         m.box(f"crest{i}", "plume", -wd / 2, -0.125, 0, wd, 0.25, ln)
     for n in ("left_leg", "right_leg"):
         m.box(n, "trousers", -1.75, -1.0, -1.75, 3.5, 3.5, 3.5)
@@ -1756,13 +1771,13 @@ WATCHER = dict(back=hexc("#8f9bad"), edge=hexc("#dfe6ee"), dark=hexc("#2c3446"),
                head=hexc("#f3f2ec"), mask=hexc("#242a3a"), wing=hexc("#6c788c"), wing_dark=hexc("#283042"), wing_edge=hexc("#d2dbe6"),
                covert=hexc("#a9b5c3"), underwing=hexc("#e2e6ec"), prim=hexc("#2e3850"), prim_dark=hexc("#1a2032"), prim_light=hexc("#5a6a84"),
                tail=hexc("#3a4558"), bill=hexc("#e6c76e"), bill_tip=hexc("#383844"), leg=hexc("#d8bc68"), thigh=hexc("#e6e9ee"),
-               claw=hexc("#15171e"), cere=hexc("#c4d0da"), teal=hexc("#3cc6c0"), violet=hexc("#8670e6"), rune=hexc("#c4f2ff"))
+               claw=hexc("#15171e"), cere=hexc("#e8c45a"), teal=hexc("#3cc6c0"), violet=hexc("#8670e6"), rune=hexc("#c4f2ff"))
 
 # five-by-five rune glyphs painted in rows along the upper wing (rows run front to back across the chord)
 GLYPHS = [g.split() for g in (
     "#.#.# .###. ..#.. ..#.. ..#..", "..#.. .#.#. #...# .#.#. #...#", "###.. #..#. ###.. #.#.. #..#.",
     "#...# ##.## #.#.# ##.## #...#", "..#.. .#.#. #.#.# ..#.. ..#..", "..#.. .#.#. #...# .#.#. ..#..", "#.... #.#.. ##.#. #.#.. #....")]
-WATCHER_EYE = dict(r=0.55, ew=0.42, ev=0.44)
+WATCHER_EYE = dict(r=0.55, ew=0.38, ev=0.37)
 
 
 def watcher_rune(t, along, across, a0, a1, b0, step=2.25, salt=0):
@@ -1833,6 +1848,11 @@ def plate_edges(t, keep=("front", "top")):
 def watcher_parts(P):
     """The painted colours per material: fn(t) -> colour, None (cut away) or False (fall through to bird_colour)."""
     def body(t):
+        if t.face == "bottom" and t.box[3] > 5:
+            # the body's underside is the breast's front on the upright, sitting bird: lit here (not the baked shadow under a
+            # level body, the game shades it again in flight), a little over full light against the game's own shade on it
+            c = watcher_feathers(t, P["breast"], (255, 255, 255), P["covert"], cw=1.0, ch=0.8, k=0.25)
+            return (*(min(255, int(v * 1.1)) for v in c[:3]), 0)
         cut = 0.5 + 0.12 * h(t.gx // 2, t.gy // 2, t.salt + 4)  # a ragged line where the grey mantle meets the white
         if t.face == "bottom" or (t.vert and t.gv > cut):
             c = watcher_feathers(t, P["breast"], (255, 255, 255), P["covert"], cw=1.0, ch=0.8, k=0.25)
@@ -1862,6 +1882,8 @@ def watcher_parts(P):
 
     def neck(t):
         c = lerp(P["head"], P["covert"], 0.2 + 0.35 * t.gv)
+        if t.face in ("top", "bottom"):
+            return (*(int(v * 0.97) for v in c[:3]), 0)  # the steps' ledges as lit as the sides: no bright rings round the neck
         if t.vert and h(t.gx // 2, t.gy // 5, t.salt) < 0.3:
             c = lerp(c, P["back"], 0.35)                        # fine grey streaks down the neck
         return c
@@ -2021,7 +2043,8 @@ def watcher_parts(P):
         return lerp(c, watcher_irid(t, P, 0.6), 0.8 * max(0.0, (t.w - 0.5) / 0.5))
 
     return {"body": body, "back": body, "rump": body, "scapular": scapular, "head": head, "neck": neck, "hackles": mane,
-            "ruff": ruff, "brow": lambda t: lerp(P["head"], P["covert"], 0.4), "lcovert": lcovert, "gcovert": gcovert,
+            "ruff": ruff, "brow": lambda t: lerp(P["head"], P["covert"], {"top": 0.0, "bottom": 0.8}.get(t.face, 0.3)),
+            "throat": lambda t: watcher_feathers(t, P["head"], (255, 255, 255), P["covert"], cw=0.75, ch=0.6, k=0.2), "lcovert": lcovert, "gcovert": gcovert,
             "secondaries": secondaries, "pcovert": pcovert, "primaries": primaries,
             "finger": lambda t: finger(t, True), "finger_tip": lambda t: finger(t, False),
             "tail": tail, "streamer": streamer, "racket": racket, "plume": plume, "cere": lambda t: P["cere"],

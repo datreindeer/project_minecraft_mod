@@ -28,7 +28,7 @@ public class MountainWatcherModel extends ForestBirdModel {
     private final ModelPart[] streamers, streamerEnds;
 
     public MountainWatcherModel(ModelPart root) {
-        super(root, 0.4F, 0.5F, 0.7F);
+        super(root, 0.4F, 0.5F, 0.9F);
         Function<String, ModelPart> part = root.createPartLookup();
         body = part.apply("body");
         tail = part.apply("tail");
@@ -75,7 +75,7 @@ public class MountainWatcherModel extends ForestBirdModel {
         // perched, upright: the arms hang straight down the flanks (their broad feather rows lying back along the body),
         // the hands fold back over them a little proud and run on past the tail, crossing behind it
         leftWing.xRot = rightWing.xRot = 0.75F;
-        tail.xRot += 0.45F; // held out behind, clear of the ground (the upright body would plant it)
+        tail.xRot += 0.6F; // held out behind, clear of the ground (the upright body would plant it)
         leftTip.xRot = rightTip.xRot = 1.15F;
         leftTip.x = 1.05F;
         rightTip.x = -1.05F;
