@@ -1116,49 +1116,26 @@
      "cementation_pot",
      "packed_cementation_pot",
      "blister_steel",
-     "steel_ingot",
-     "steel_pickaxe",
-     "minecraft:flint_and_steel"
+     "steel_ingot"
     ],
     "text": {
-     "sv": "Forma en [[unfired_cementation_pot]] av 5 Fire Clay och bränn den vid 1100°. Packa [[cementation_pot]] med **3 Wrought Iron, 2 Charcoal och 1 Soot** och håll den vid **1000°** i en Bloomery i 6 minuter. Knacka upp [[cemented_pot]]: **3 [[blister_steel]]**.\n\nVärm Blister Steel och slå den **6 gånger** på städet med [[iron_smithing_hammer]] (brons biter inte på stål): en [[steel_ingot]]. Heta Steel Ingots smids till stålets delar, och huvud + [[iron_tool_rod]] (kil och beslag) + Tool Rod blir stålverktyg: 2200 i hållbarhet, snabbare och hårdare, och de bryter obsidian. Flint + Steel Plate blir [[minecraft:flint_and_steel]].",
-     "en": "Shape an [[unfired_cementation_pot]] from 5 Fire Clay and fire it at 1100°. Pack the [[cementation_pot]] with **3 Wrought Iron, 2 Charcoal and 1 Soot** and hold it at **1000°** in a Bloomery for 6 minutes. Break open the [[cemented_pot]]: **3 [[blister_steel]]**.\n\nHeat Blister Steel and strike it **6 times** on the anvil with an [[iron_smithing_hammer]] (bronze won't bite steel): a [[steel_ingot]]. Hot Steel Ingots are forged into steel parts, and head + [[iron_tool_rod]] (wedge and ferrule) + Tool Rod make steel tools: 2200 durability, faster and harder-hitting, and they mine obsidian. Flint + Steel Plate make a [[minecraft:flint_and_steel]]."
+     "sv": "Forma en [[unfired_cementation_pot]] av 5 Fire Clay och bränn den vid 1100°. Packa [[cementation_pot]] med **3 Wrought Iron, 2 Charcoal och 1 Soot** och håll den vid **1000°** i en Bloomery i 6 minuter. Knacka upp [[cemented_pot]]: **3 [[blister_steel]]**.\n\nVärm Blister Steel och slå den **6 gånger** på städet med [[iron_smithing_hammer]] (brons biter inte på stål): en [[steel_ingot]]. Det är järnålderns sista steg: med stålet börjar **stålåldern**.",
+     "en": "Shape an [[unfired_cementation_pot]] from 5 Fire Clay and fire it at 1100°. Pack the [[cementation_pot]] with **3 Wrought Iron, 2 Charcoal and 1 Soot** and hold it at **1000°** in a Bloomery for 6 minutes. Break open the [[cemented_pot]]: **3 [[blister_steel]]**.\n\nHeat Blister Steel and strike it **6 times** on the anvil with an [[iron_smithing_hammer]] (bronze won't bite steel): a [[steel_ingot]]. That is the Iron Age's last step: with steel the **Steel Age** begins."
     }
    },
    {
     "title": {
-     "sv": "Stor Fire Pit, väskor och guld",
-     "en": "The big Fire Pit, bags and gold"
-    },
-    "items": [
-     "steel_hearth_ring",
-     "tool_loops",
-     "steel_frame_pack",
-     "steel_casting_table",
-     "jewelers_bench",
-     "gold_ring"
-    ],
-    "text": {
-     "sv": "Med stål kommer tre saker. En [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, en Firewood) på en Fire Pit gör den **3×3**: den växer åt det håll som är ledigt och säger vad som står i vägen. Den brinner längre, ryker en hög pelare, rymmer 32 Firewood och kan steka ett helt **flått djur** (bär dit kroppen och högerklicka): dubbelt så mycket kött som det mest djuret ger, stekt. En stams stora Fire Pit håller 5×5 chunks laddade och tar emot två band åt gången.\n\nPå Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) som släpps på en Leather Satchel ger **3 platser för verktyg**, och [[steel_frame_pack]] (10 Leather, 3 Steel Plate) är en **5×5**-väska med verktygsöglor.\n\nGuld smälts i Clay Kiln som förut. Ställ en [[steel_casting_table]] intill en Clay Kiln på **1100°** och lägg Gold Ingots på bordet: varje tacka blir 2 [[gold_ring_blank]] eller en [[gold_chain]] (tom hand byter form). På en [[jewelers_bench]] fattas en slipad gemsten i ämnet med en mejsel: [[gold_ring]] (ringplatserna) eller [[gold_necklace]] (halsplatsen). Varje gemsort ger en liten bonus, en **Flawless** ungefär fyra gånger så mycket.",
-     "en": "Steel brings three things. A [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, a Firewood) on a Fire Pit makes it **3×3**: it grows toward the free side and names what is in the way. It burns longer, smokes a tall column, holds 32 Firewood and can roast a whole **skinned animal** (haul the body there and right-click): twice the most meat the animal gives, cooked. A tribe's big Fire Pit keeps 5×5 chunks loaded and takes two visiting bands at a time.\n\nAt the Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) dropped on a Leather Satchel give it **3 slots for tools**, and the [[steel_frame_pack]] (10 Leather, 3 Steel Plate) is a **5×5** bag with tool loops.\n\nGold still melts in the Clay Kiln. Set a [[steel_casting_table]] beside a Clay Kiln at **1100°** and lay Gold Ingots on it: each becomes 2 [[gold_ring_blank]]s or a [[gold_chain]] (empty hand switches the mould). On a [[jewelers_bench]] a cut gem is set in the blank with a chisel: [[gold_ring]] (ring slots) or [[gold_necklace]] (neck slot). Each kind of gem gives a small bonus, a **Flawless** one about four times as much."
-    }
-   },
-   {
-    "title": {
-     "sv": "Vattenkraft och sågverk",
-     "en": "Water power and the sawmill"
+     "sv": "Vattenkraft",
+     "en": "Water power"
     },
     "items": [
      "water_wheel",
      "wooden_shaft",
-     "gearbox",
-     "log_flume",
-     "saw_bench",
-     "sawdust"
+     "gearbox"
     ],
     "text": {
-     "sv": "Med [[iron_plate]] kommer vattenkraften. Ett [[water_wheel]] är 5 block brett och snurrar när vatten rinner under det eller faller längs ena sidan (stillastående vatten gör inget): högerklicka navet för kraften, högst 16. Rörelsen går vidare genom [[wooden_shaft]] och runt hörn med en [[gearbox]], även uppåt genom stående axlar till ett loft. Flera hjul på samma axel lägger ihop sin kraft.\n\nMed stål kan man bygga **sågverket**: en [[saw_bench]] mellan 3 [[log_flume]] på varje sida, vatten in i rännans uppströms ände så att det rinner mot sågen, en axel från hjulet till bänkens sida (minst 8 kraft) och ett [[steel_saw_blade]]. Lägg stockar i rännan. En stock med bark blir 2 Rough Logs, 2 Firewood, 2 Bark och 2 [[sawdust]]; en barkad stock 6 plankor, 2 Sticks och 1 Sawdust, mycket mer än yxa och såg.",
-     "en": "With [[iron_plate]] comes water power. A [[water_wheel]] is 5 blocks across and turns when water runs under it or falls down one side (still water does nothing): right-click the hub for its power, at most 16. The turn goes on through [[wooden_shaft]] and round corners with a [[gearbox]], up through standing shafts to a loft too. Several wheels on one axle add their power.\n\nWith steel you can build the **sawmill**: a [[saw_bench]] between 3 [[log_flume]] on each side, water let into the flume's upstream end so it runs toward the saw, a shaft from the wheel to the bench's side (at least 8 power) and a [[steel_saw_blade]]. Lay logs in the flume. A log with bark becomes 2 Rough Logs, 2 Firewood, 2 Bark and 2 [[sawdust]]; a stripped log 6 planks, 2 Sticks and 1 Sawdust, far more than axe and saw."
+     "sv": "Med [[iron_plate]] kommer vattenkraften. Ett [[water_wheel]] är 5 block brett och snurrar när vatten rinner under det eller faller längs ena sidan (stillastående vatten gör inget): högerklicka navet för kraften, högst 16. Rörelsen går vidare genom [[wooden_shaft]] och runt hörn med en [[gearbox]], även uppåt genom stående axlar till ett loft. Flera hjul på samma axel lägger ihop sin kraft. Med stål driver hjulet ett **sågverk** (stålåldern).",
+     "en": "With [[iron_plate]] comes water power. A [[water_wheel]] is 5 blocks across and turns when water runs under it or falls down one side (still water does nothing): right-click the hub for its power, at most 16. The turn goes on through [[wooden_shaft]] and round corners with a [[gearbox]], up through standing shafts to a loft too. Several wheels on one axle add their power. With steel the wheel drives a **sawmill** (the Steel Age)."
     }
    },
    {
@@ -1178,24 +1155,6 @@
     "text": {
      "sv": "[[iron_cauldron]] hänger i en [[tripod]] över en Fire Pit och kokar för hela stammen ([[cabbage_soup]]). [[iron_skillet]] steker [[sausage]], [[fermenting_barrel]] gör [[sauerkraut]], [[cheese_press]] gör [[cheese]] och pressar [[olive_oil]] av oliver och [[rapeseed_oil]] av raps (tämjd ur vild rova) att steka [[fried_fish]] i, och en [[salt_pan]] vid havet ger salt. Öl och cider gör en **Tipsy**. Byns bonde säljer [[apple_scion]] att ympa på en vildapelplanta (kniv i andra handen): ett äppelträd med riktiga äpplen.",
      "en": "The [[iron_cauldron]] hangs in a [[tripod]] over a Fire Pit and cooks for the whole tribe ([[cabbage_soup]]). The [[iron_skillet]] fries [[sausage]], the [[fermenting_barrel]] makes [[sauerkraut]], the [[cheese_press]] makes [[cheese]] and presses [[olive_oil]] from olives and [[rapeseed_oil]] from rapeseed (tamed from the wild turnip) to fry [[fried_fish]] in, and a [[salt_pan]] by the sea gives salt. Ale and cider make you **Tipsy**. The village farmer sells [[apple_scion]]s to graft onto a wild apple sapling (a knife in the other hand): an apple tree with real apples."
-    }
-   },
-   {
-    "title": {
-     "sv": "Stålets kök",
-     "en": "The Steel Age kitchen"
-    },
-    "items": [
-     "steel_pan",
-     "mortar_and_pestle",
-     "sieve",
-     "steel_knife_set",
-     "kitchen_pepper",
-     "saffron_rice"
-    ],
-    "text": {
-     "sv": "Den östra karavanens kryddor mals i en [[mortar_and_pestle]] (klicka med tom hand) till blandningar: [[kitchen_pepper]], [[sweet_spice]], [[golden_spice]], [[pickling_spice]], eller [[herb_salt]] av salt och örter. En [[steel_pan]] över elden gör [[saffron_rice]] och [[peppered_steak]], grytan [[spiced_pilaf]], och ett [[sieve]] siktar mjöl till [[fine_flour]] för [[gingerbread]]. [[steel_knife_set]] ger mer av varje kadaver. Ris växer bara med vatten bredvid (en risodling). I tunnan jäser också [[cider]] och [[ale]], och fruktträdens frukt blir pajer i ugnen ([[apple_pie]]).",
-     "en": "The Eastern Caravan's spices are ground in a [[mortar_and_pestle]] (click with an empty hand) into blends: [[kitchen_pepper]], [[sweet_spice]], [[golden_spice]], [[pickling_spice]], or [[herb_salt]] from salt and herbs. A [[steel_pan]] over the fire makes [[saffron_rice]] and [[peppered_steak]], the cauldron [[spiced_pilaf]], and a [[sieve]] sifts flour into [[fine_flour]] for [[gingerbread]]. The [[steel_knife_set]] gets more from every carcass. Rice grows only with water beside it (a paddy). The barrel also ferments [[cider]] and [[ale]], and the fruit trees' fruit becomes pies in the kiln ([[apple_pie]])."
     }
    }
   ]
@@ -1301,6 +1260,87 @@
     "text": {
      "sv": "Rosta [[alum_shale]] (svarta lager djupt under kalla biomer och i Galena Seams) i kilnen vid **800°** till [[roasted_alum_shale]] och laka den med en hink vatten: **2 [[alum]]**.\n\nAlun är ett betningsmedel: **2 pigment + Alum → 4 dye**, dubbelt så mycket som pigmentet ger ensamt. Och ett garvsalt: **2 [[scraped_hide]] + Alum → 2 Leather**.",
      "en": "Roast [[alum_shale]] (black layers deep under cold biomes and in the Galena Seams) in the kiln at **800°** into [[roasted_alum_shale]] and leach it with a bucket of water: **2 [[alum]]**.\n\nAlum is a mordant: **2 pigment + Alum → 4 dye**, twice what the pigment gives alone. And a tawing salt: **2 [[scraped_hide]] + Alum → 2 Leather**."
+    }
+   }
+  ]
+ },
+ {
+  "title": {
+   "sv": "Stålåldern",
+   "en": "Steel Age"
+  },
+  "intro": {
+   "sv": "Med den första [[steel_ingot]] börjar stålåldern. Stålet ger de bästa verktygen och rustningarna före ångåldern, den stora Fire Pit, väskor och smycken, sågverket på vattenkraft och ett finare kök. Nästa stora mål är **High Furnace**, en stor smältugn av stålålderns block som byggs fas för fas.",
+   "en": "With the first [[steel_ingot]] the Steel Age begins. Steel gives the best tools and armour before the Steam Age, the big Fire Pit, bags and jewellery, the water-powered sawmill and a finer kitchen. The next big goal is the **High Furnace**, a great smelting furnace of Steel Age blocks, built phase by phase."
+  },
+  "steps": [
+   {
+    "title": {
+     "sv": "Stålverktyg och stålrustning",
+     "en": "Steel tools and armour"
+    },
+    "items": [
+     "steel_pickaxe",
+     "steel_chestplate",
+     "steel_quarry_hammer",
+     "steel_sickle",
+     "minecraft:flint_and_steel"
+    ],
+    "text": {
+     "sv": "Heta Steel Ingots smids på städet efter samma mönster som järnet: Steel Plate, huvuden och blad. Huvud + [[iron_tool_rod]] (kil och beslag) + Tool Rod blir stålverktyg som [[steel_pickaxe]]: 2200 i hållbarhet, snabbare och hårdare, och de bryter obsidian. Flint (eller Jasper) + Steel Plate blir [[minecraft:flint_and_steel]].\n\nI Armor Station: Steel Plates på läder blir **stålrustning** ([[steel_chestplate]]), mellan järn och diamant. En [[steel_quarry_hammer]] (Steel Hammer Head, Steel Plate, Iron Tool Rod) smular varje malm en stålhacka bryter i sin 3×3-yta, en [[steel_sickle]] skär 5×5, och Steel Saw, Steel Chisel och Steel Smithing Hammer håller längre och arbetar fortare än järnets.",
+     "en": "Hot Steel Ingots are forged on the anvil to the same patterns as iron: Steel Plate, heads and blades. Head + [[iron_tool_rod]] (wedge and ferrule) + Tool Rod make steel tools like the [[steel_pickaxe]]: 2200 durability, faster and harder-hitting, and they mine obsidian. Flint (or Jasper) + Steel Plate make a [[minecraft:flint_and_steel]].\n\nAt the Armor Station, Steel Plates on leather make **steel armour** ([[steel_chestplate]]), between iron and diamond. A [[steel_quarry_hammer]] (Steel Hammer Head, Steel Plate, Iron Tool Rod) crumbles every ore a steel pickaxe mines in its 3x3 face, a [[steel_sickle]] reaps 5x5, and the Steel Saw, Steel Chisel and Steel Smithing Hammer last longer and work faster than iron's."
+    }
+   },
+   {
+    "title": {
+     "sv": "Stor Fire Pit, väskor och guld",
+     "en": "The big Fire Pit, bags and gold"
+    },
+    "items": [
+     "steel_hearth_ring",
+     "tool_loops",
+     "steel_frame_pack",
+     "steel_casting_table",
+     "jewelers_bench",
+     "gold_ring"
+    ],
+    "text": {
+     "sv": "Med stål kommer tre saker. En [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, en Firewood) på en Fire Pit gör den **3×3**: den växer åt det håll som är ledigt och säger vad som står i vägen. Den brinner längre, ryker en hög pelare, rymmer 32 Firewood och kan steka ett helt **flått djur** (bär dit kroppen och högerklicka): dubbelt så mycket kött som det mest djuret ger, stekt. En stams stora Fire Pit håller 5×5 chunks laddade och tar emot två band åt gången.\n\nPå Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) som släpps på en Leather Satchel ger **3 platser för verktyg**, och [[steel_frame_pack]] (10 Leather, 3 Steel Plate) är en **5×5**-väska med verktygsöglor.\n\nGuld smälts i Clay Kiln som förut. Ställ en [[steel_casting_table]] intill en Clay Kiln på **1100°** och lägg Gold Ingots på bordet: varje tacka blir 2 [[gold_ring_blank]] eller en [[gold_chain]] (tom hand byter form). På en [[jewelers_bench]] fattas en slipad gemsten i ämnet med en mejsel: [[gold_ring]] (ringplatserna) eller [[gold_necklace]] (halsplatsen). Varje gemsort ger en liten bonus, en **Flawless** ungefär fyra gånger så mycket.",
+     "en": "Steel brings three things. A [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, a Firewood) on a Fire Pit makes it **3×3**: it grows toward the free side and names what is in the way. It burns longer, smokes a tall column, holds 32 Firewood and can roast a whole **skinned animal** (haul the body there and right-click): twice the most meat the animal gives, cooked. A tribe's big Fire Pit keeps 5×5 chunks loaded and takes two visiting bands at a time.\n\nAt the Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) dropped on a Leather Satchel give it **3 slots for tools**, and the [[steel_frame_pack]] (10 Leather, 3 Steel Plate) is a **5×5** bag with tool loops.\n\nGold still melts in the Clay Kiln. Set a [[steel_casting_table]] beside a Clay Kiln at **1100°** and lay Gold Ingots on it: each becomes 2 [[gold_ring_blank]]s or a [[gold_chain]] (empty hand switches the mould). On a [[jewelers_bench]] a cut gem is set in the blank with a chisel: [[gold_ring]] (ring slots) or [[gold_necklace]] (neck slot). Each kind of gem gives a small bonus, a **Flawless** one about four times as much."
+    }
+   },
+   {
+    "title": {
+     "sv": "Sågverket",
+     "en": "The sawmill"
+    },
+    "items": [
+     "saw_bench",
+     "log_flume",
+     "steel_saw_blade",
+     "sawdust"
+    ],
+    "text": {
+     "sv": "Ett vattenhjul (järnåldern) driver **sågverket**: en [[saw_bench]] mellan 3 [[log_flume]] på varje sida, vatten in i rännans uppströms ände så att det rinner mot sågen, en axel från hjulet till bänkens sida (minst 8 kraft) och ett [[steel_saw_blade]]. Lägg stockar i rännan. En stock med bark blir 2 Rough Logs, 2 Firewood, 2 Bark och 2 [[sawdust]]; en barkad stock 6 plankor, 2 Sticks och 1 Sawdust, mycket mer än yxa och såg.",
+     "en": "A water wheel (Iron Age) drives the **sawmill**: a [[saw_bench]] between 3 [[log_flume]] on each side, water let into the flume's upstream end so it runs toward the saw, a shaft from the wheel to the bench's side (at least 8 power) and a [[steel_saw_blade]]. Lay logs in the flume. A log with bark becomes 2 Rough Logs, 2 Firewood, 2 Bark and 2 [[sawdust]]; a stripped log 6 planks, 2 Sticks and 1 Sawdust, far more than axe and saw."
+    }
+   },
+   {
+    "title": {
+     "sv": "Stålets kök",
+     "en": "The Steel Age kitchen"
+    },
+    "items": [
+     "steel_pan",
+     "mortar_and_pestle",
+     "sieve",
+     "steel_knife_set",
+     "kitchen_pepper",
+     "saffron_rice"
+    ],
+    "text": {
+     "sv": "Den östra karavanens kryddor mals i en [[mortar_and_pestle]] (klicka med tom hand) till blandningar: [[kitchen_pepper]], [[sweet_spice]], [[golden_spice]], [[pickling_spice]], eller [[herb_salt]] av salt och örter. En [[steel_pan]] över elden gör [[saffron_rice]] och [[peppered_steak]], grytan [[spiced_pilaf]], och ett [[sieve]] siktar mjöl till [[fine_flour]] för [[gingerbread]]. [[steel_knife_set]] ger mer av varje kadaver. Ris växer bara med vatten bredvid (en risodling). I tunnan jäser också [[cider]] och [[ale]], och fruktträdens frukt blir pajer i ugnen ([[apple_pie]]).",
+     "en": "The Eastern Caravan's spices are ground in a [[mortar_and_pestle]] (click with an empty hand) into blends: [[kitchen_pepper]], [[sweet_spice]], [[golden_spice]], [[pickling_spice]], or [[herb_salt]] from salt and herbs. A [[steel_pan]] over the fire makes [[saffron_rice]] and [[peppered_steak]], the cauldron [[spiced_pilaf]], and a [[sieve]] sifts flour into [[fine_flour]] for [[gingerbread]]. The [[steel_knife_set]] gets more from every carcass. Rice grows only with water beside it (a paddy). The barrel also ferments [[cider]] and [[ale]], and the fruit trees' fruit becomes pies in the kiln ([[apple_pie]])."
     }
    }
   ]

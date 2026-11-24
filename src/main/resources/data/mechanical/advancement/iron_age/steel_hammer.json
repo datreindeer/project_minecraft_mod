@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:iron_age/steel",
+  "parent": "mechanical:steel_age/root",
   "criteria": {
     "has_0": {
       "trigger": "minecraft:inventory_changed",

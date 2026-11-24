@@ -1595,6 +1595,16 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
      "Set a Flawless gem: its bonus is about four times a plain stone's", by_code()),
 ])
 
+# ---------------------------------------------------------------- Steel Age tab (docs/ages/04-steel-age.md): starts where
+# the Iron Age's Steel leaves off. The steel rows written above as TABS["iron_age"] rows move here at the end of the file
+# (STEEL_AGE_MOVED); new Steel Age rows go straight into this tab.
+TABS["steel_age"] = ("minecraft:block/blast_furnace_top", [
+    ("root", None, "steel_ingot", T, "Steel Age",
+     "Fold hot Blister Steel from the Cementation Pot with 6 blows of an Iron Smithing Hammer into a Steel Ingot: the Steel Age begins",
+     has("steel_ingot")),
+])
+# High Furnace rows (HighFurnace.java, gen_high_furnace.py) go here: TABS["steel_age"][1].extend([...])
+
 # stone families (StoneFamilies.java; gen_stone_families.py): one per Stone Age stone
 TABS["stone_age"][1].extend([
     ("slate", "flint_pickaxe", "slate_tiles", T, "Slate Roof",
@@ -2369,10 +2379,35 @@ TABS["folklore"][1].extend([
 ])
 
 
+# ---------------------------------------------------------------- the Steel Age's rows that were Iron Age rows before it got
+# its own tab. They keep their ids, files and lang keys (data/mechanical/advancement/iron_age/<id>.json, the "iron_age/..."
+# constants in the Java code), so players keep what they earned: a tab is decided by the root an advancement hangs from.
+STEEL_AGE_MOVED = {
+    "steel_tools", "flint_and_steel", "jasper_striker", "steel_quarry_hammer", "steel_armor", "steel_sickle", "steel_hammer",
+    "big_fire_pit", "whole_roast", "tool_loops", "steel_frame_pack", "gold_casting", "jeweler", "flawless_jewel",
+    "mortar", "sieve", "steel_pan", "pilaf", "gingerbread", "pickles", "knife_set", "sawmill",
+}
+
+
+def move_to_steel_age():
+    """Moves the STEEL_AGE_MOVED rows (in order) from the Iron Age tab to just after the Steel Age root; a parent left
+    in the Iron Age (steel, water_wheel) becomes the Steel Age root."""
+    iron = TABS["iron_age"][1]
+    moved = [r for r in iron if r[0] in STEEL_AGE_MOVED]
+    assert {r[0] for r in moved} == STEEL_AGE_MOVED, STEEL_AGE_MOVED - {r[0] for r in moved}
+    iron[:] = [r for r in iron if r[0] not in STEEL_AGE_MOVED]
+    TABS["steel_age"][1][1:1] = [(r[0], r[1] if r[1] in STEEL_AGE_MOVED else "root", *r[2:]) for r in moved]
+
+
+move_to_steel_age()
+
+
 def build():
     out_root = D / "mechanical/advancement"
     lang = {}
     count = {}
+    # moved Steel Age rows are written into iron_age/, so that folder must be cleared before steel_age writes them
+    assert list(TABS).index("iron_age") < list(TABS).index("steel_age")
     for tab, (background, rows) in TABS.items():
         out = out_root / tab
         if out.exists():
@@ -2385,17 +2420,19 @@ def build():
             assert parent is None or parent in ids, f"{tab}/{aid}: parent {parent} must come earlier in the tab"
             assert frame in (T, G, C) and crit
             ids.add(aid)
-            key = f"advancements.mechanical.{tab}.{aid}"
+            folder = "iron_age" if tab == "steel_age" and aid in STEEL_AGE_MOVED else tab
+            key = f"advancements.mechanical.{folder}.{aid}"
             lang[key + ".title"], lang[key + ".description"] = title, desc
             display = {"icon": {"id": check_item(icon)}, "title": {"translate": key + ".title"},
                        "description": {"translate": key + ".description"}, "frame": frame,
                        "show_toast": parent is not None, "announce_to_chat": False, "hidden": False}
             if parent is None:
                 display["background"] = background
-            adv = {"parent": f"mechanical:{tab}/{parent}"} if parent else {}
+            parent_folder = "iron_age" if tab == "steel_age" and parent in STEEL_AGE_MOVED else tab
+            adv = {"parent": f"mechanical:{parent_folder}/{parent}"} if parent else {}
             adv |= {"criteria": dict(crit), "requirements": [[c] for c in crit] if isinstance(crit, AllOf) else [list(crit)],
                     "display": display}
-            (out / f"{aid}.json").write_text(json.dumps(adv, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            (out_root / folder / f"{aid}.json").write_text(json.dumps(adv, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         count[tab] = len(rows)
 
     # hide the vanilla tabs (keep recipes/**)

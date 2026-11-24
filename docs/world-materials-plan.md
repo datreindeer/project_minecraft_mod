@@ -638,7 +638,7 @@ grottfärg att mata, och svart finns redan av kol och sot). Slate Tablet går in
 Stenhantverket: Java i **`StoneCrafts.java`** (block, Pumice Chunk, gametest `stone_crafts`), data och texturer i
 **`scripts/gen_stone_crafts.py`** (körs efter `gen_stone_families.py`, `gen_copper.py`, `gen_bronze*.py`, `gen_fauna_coast.py`
 och `gen_moldbench.py`, eftersom den kopierar deras modeller). Spelartext: `docs/ages/01-stone-age.md` "Pumice och krossad sten",
-`02-bronze-age.md` "Stenhantverk", `03-iron-age.md` "Jaspis som tändsten".
+`02-bronze-age.md` "Stenhantverk", `04-steel-age.md` "Jaspis som tändsten".
 
 | Sten | Användning | Hur |
 |---|---|---|

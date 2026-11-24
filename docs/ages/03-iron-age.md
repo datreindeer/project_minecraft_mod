@@ -1,6 +1,6 @@
 # Järnåldern
 
-> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**, **kolmila**, **stål**,
+> Status: **byggs** (2026-11-21). Byggt: **Bog Iron** (v0.80.0), **rostning och flux**, **smide, järnverktyg och järnrustning**, **kolmila**, **stål** (åldersslutet; det som görs av stål står i [04-steel-age.md](04-steel-age.md)),
 > **de nya malmerna** Galena, guld, Limestone och Rock Salt, **vagnen** (Wagon), **hästplogen** (Mouldboard Plough). Resten är förslag.
 
 Tredje åldern. Bronsåldern lämnar över: **Bloomery** (Fire Brick, 1×1×3-schakt, 1350° med Bellows), **Bronze Anvil**,
@@ -10,7 +10,8 @@ Se *Bloomery* i [02-bronze-age.md](02-bronze-age.md).
 Fortfarande spärrat i början av järnåldern: järnverktyg och järnrustning, vanillas Iron Ingot, och Gold, Redstone,
 Diamond och Emerald Ore (taggen `#minecraft:needs_iron_tool`).
 
-Åldern slutar med **Steel**: de bästa verktygen före ångåldern, och det material som ångålderns maskiner byggs av.
+Åldern slutar med **Steel**: cementeringen i Bloomery och en vikt Steel Ingot. Stålet öppnar **stålåldern**
+([04-steel-age.md](04-steel-age.md)): stålverktyg, stålrustning, sågverket, stålets kök och High Furnace.
 
 ## Starkt rekommenderat
 
@@ -184,8 +185,8 @@ Verktygen känns igen via taggar och klasser i stället för bronsitemet: `mecha
 `mechanical:sickles`, `mechanical:needles`, alla `ChiselItem` på Whetstone och quarry hammers på sin egen nivå
 (`isCorrectToolForDrops`). Fiskespöet är ett eget mod-item som bronsspöet (vanillas Fishing Rod förblir avstängt).
 Kod: `Smithing` (items, mönster), `BronzeTools.sweepRadius` (skärans svep), `Farming.sickleBonus`.
-Advancements **Iron Harvest**, **Firm Grip**, **Fine Ironwork**, **Iron Breaker** (efter *Forged*), **Reaper** (mål) och
-**Steel Hammer** (efter *Steel*).
+Advancements **Iron Harvest**, **Firm Grip**, **Fine Ironwork**, **Iron Breaker** (efter *Forged*). Stålverktygens **Reaper** och
+**Steel Hammer** ligger i Steel Age-fliken (se [04-steel-age.md](04-steel-age.md)).
 
 ### 3. Kolmila (charcoal clamp) (byggd)
 
@@ -220,95 +221,10 @@ Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
 
 - Heta Steel Ingots smids efter städets mönster till **Steel Plate** och stålets huvuden och blad (se *Smide*; ingen
   Tool Rod eller Hammer Head av stål).
-- **Stålverktyg** (Tool Station): smitt huvud med skafthål på ett träskaft, låst med en **Iron Tool Rod** som kil och
-  beslag, ingen surrning: huvud + Iron Tool Rod + Tool Rod → Steel Pickaxe / Axe / Shovel / Hoe; Steel Spear (Spear Head
-  + Iron Tool Rod + Tool Rod); Steel Sword (Sword Blade + Iron Tool Rod som parerstång och tånge + Leather som grepp);
-  Steel Knife (Knife Blade + Leather + Stick). Materialet: **2200** i hållbarhet, fart 7,5, +2,5 skada (järn 6 / +2),
-  bryter som diamant (obsidian). Texturerna är vanillas järnverktyg med blått stål.
-- **Flint and Steel:** Flint + Steel Plate (vanillas recept ville ha Iron Ingot). Tänder varje gång.
 - **Stål kräver Iron Smithing Hammer:** Bronze Smithing Hammer biter inte på stål (Blister Steel eller Steel Ingot).
-- **Steel Quarry Hammer** (Tool Station): Steel Hammer Head + Steel Plate + Iron Tool Rod. Bryter 3×3 som Bronze Quarry
-  Hammer, men varje malm en stålhacka bryter smulas (guld, diamant m.m.); 1800 i hållbarhet.
-- **Stålrustning** (Armor Station): 3 / 6 / 5 / 2 Steel Plate + 2 / 4 / 3 / 2 Leather + hammare → Steel Helmet /
-  Chestplate / Leggings / Boots. Skydd 3 / 7 / 6 / 2 och 1 i seghet (järn 2 / 6 / 5 / 2, diamant 3 / 8 / 6 / 3),
-  hållbarhet ×25 (järn 15, diamant 33).
-- Advancements: **Cementation**, **Steel**, **Steelsmith**, **Strike a Light**, **Steel Clad**.
-
-### 4b. Efter stålet: stor Fire Pit, väskor och smycken (byggd, living-world-plan F12, F9, F10)
-
-Allt tre låses upp med Steel (recepten med Steel Plate). Kod: `FirePit`, `FirePitBlock#upgrade`, `FirePitBlockEntity`
-(steken), `Satchels`, `LeatherSatchelItem`, `equipment.PackMenu`, `Jewelry`, `JewelryTableBlock(Entity)`.
-Data: `scripts/gen_firepit.py`, `scripts/gen_kettle.py`, `scripts/gen_equipment.py`, `scripts/gen_p8smith.py`; texturer
-`scripts/gen_p8_textures.py`, `scripts/gen_equipment_textures.py`. Test: `P8SmithTest` (p8_big_fire_pit, p8_roast,
-p8_satchel, p8_jewelry).
-
-**Stor Fire Pit (3×3)**
-
-| Vad | Hur |
-|---|---|
-| **Steel Hearth Ring** | 4 Steel Plate i hörnen, 4 rock chunks, en Firewood i mitten (`PRP`/`RFR`/`PRP`) |
-| **Uppgradering** | Högerklicka med ringen på en Fire Pit. Av de fyra 3×3 som rymmer gropen väljs den första vars fem nya block är lediga (ersättbara, inget vatten, fast mark under), helst bort från spelaren. Är alla blockerade säger den vad som står i vägen och var (block, eller luften under). Maten, veden, elden och en stek flyttar med; stammens centrum följer med (`Clans.pitMoved`); en Tripod som inte längre står rätt faller |
-| **Elden** | Brinner som med galler (takt 1) **med eller utan galler**, varje vedträ räcker 1,5× så länge, rymmer **32** Firewood, glöden räcker 6 min. Ljus, värme och avstånd för monster 2× en Campfires (liten grop 1,5×). Rökpelaren är ungefär dubbelt så tät och bred och stiger fortare. Vedhög intill matar den upp till 3 block bort |
-| **Modeller** | Hela gropen, gallret, Tripod och Bronze Kettle har större modeller (1,5×). Tripoden ställs bara över mittblocket |
-| **Hel stek** | Bär (haul) en **flådd** kropp till en stor grop och högerklicka på den. Den hänger över elden och steks på **2 min** brinnande eld till **2 × djurets mesta kött**, stekt (ett ruttet kadaver blir Rotten Flesh). Tom hand tar steken. Rivs gropen under tiden släpps köttet rått |
-| **Stamfördelar** | En stams stora Fire Pit forceladdar **5×5** chunks (`Clan.loadRadius`), **två band** kan besöka lägret samtidigt (`TribeVisits.visitCap`, aldrig samma stam två gånger), och `Clan.isBigPit()` finns för senare stamfunktioner |
-| **Rivs** | Fire Pit + Steel Hearth Ring (+ galler) tillbaka |
-
-**Väskor**
-
-| Vad | Hur |
-|---|---|
-| **Tool Loops** | Leatherworking Bench: 2 Leather + 1 Steel Plate + nål. Släpp den på en Leather Satchel i inventariet: **3 platser som bara tar verktyg** (taggen `mechanical:satchel_tools`: knivar, sågar, tänger, nålar, mejslar, skäror, smides- och stenhammare, Fire Drill, Shears, Flint and Steel). Shift-klick lägger verktyg där först |
-| **Steel-Frame Pack** | Leatherworking Bench: 10 Leather + 3 Steel Plate + nål. **5×5** med 3 verktygsöglor inbyggda, bärs i Back-platsen (B). Skärmen blir två rader högre |
-| **Häst** | Bara en vanlig Leather Satchel utan öglor kan hängas som sadelväska (de nio sadelplatserna skulle tappa resten) |
-
-**Guld och smycken**
-
-| Vad | Hur |
-|---|---|
-| **Smälta** | Som förut: Raw Gold eller 9 Gold Nugget i Clay Kiln vid 1100° → Gold Ingot |
-| **Steel Casting Table** | 3 Steel Plate över Fire Brick och en Cementation Pot (`PPP`/`BCB`/`B B`). Gjut-multiblocket: bordet **intill en Clay Kiln** (någon halva) på **minst 1100°**. Lägg Gold Ingots på bordet (högst 8). En i taget smälter av ugnens hetta och stelnar på 10 s: **2 Gold Ring Blank** eller **1 Gold Chain**. Tom hand tar det gjutna, annars byter den form; smyg + tom hand tar tillbaka tackorna. Utan het ugn: inget händer (meddelande när man lägger på guld) |
-| **Jeweler's Bench** | Steel Plate + nål över plankor (`SC `/`WWW`/`W W`). Lägg ett ämne och en **slipad eller Flawless** gemsten på bänken (inte Rough eller Flawed), högerklicka med en mejsel (Bronze/Iron/Steel Chisel, slits 1) |
-| **Gold Ring** | Ring Blank + sten. Bärs i de två ringplatserna |
-| **Gold Necklace** | Gold Chain + sten. Bärs i halsplatsen |
-
-Bonusar per sten (Claude bestämde 2026-11-22, nattkörningen; kan ändras i `Jewelry.BONUSES`). Vanlig sten = liten,
-Flawless = ungefär fyra gånger så mycket, glänser och har aqua namn. Två ringar och ett halsband staplas. "Värme" är
-kylskydd som en rustningsdel (Temperature#insulation, läder 15 %).
-
-| Sten | Bonus | Vanlig | Flawless |
-|---|---|---|---|
-| Diamond | Armor Toughness | +0,5 | +2 |
-| Emerald | Luck | +0,5 | +2 |
-| Amethyst | Bryter block fortare | +5 % | +20 % |
-| Garnet | Värme | 5 % | 15 % |
-| Ruby | Max Health | +1 (½ hjärta) | +4 (2 hjärtan) |
-| Sapphire | Armor | +0,5 | +2 |
-| Topaz | Mining Efficiency | +1 | +4 |
-| Jade | Knockback Resistance | +2 % | +10 % |
-| Opal | Räckvidd mot entiteter | +0,25 | +1 block |
-| Turquoise | Säker fallhöjd | +0,5 | +2 block |
-| Peridot | Andas under vatten (Oxygen Bonus) | +0,5 | +2 |
-| Amber | Värme | 5 % | 15 % |
-| Clear Quartz | Räckvidd mot block | +0,25 | +1 block |
-| Rose Quartz | Smygfart | +0,05 | +0,2 |
-| Citrine | Värme | 5 % | 15 % |
-| Smoky Quartz | Brinner kortare | −10 % | −40 % |
-| Aquamarine | Fart i vatten | +0,1 | +0,4 |
-| Fluorite | Bryter fortare under vatten | +0,2 | +0,8 |
-| Celestine | Hopp | +0,02 | +0,08 |
-| Moonstone | Stegar upp | +0,1 | +0,5 block |
-| Tourmaline | Attack Speed | +0,1 | +0,4 |
-| Agate | Tål tryckvåg från explosioner | +5 % | +25 % |
-| Jasper | Attack Damage | +0,25 | +1 |
-| Carnelian | Gångfart | +2 % | +10 % |
-| Chalcedony | Går bättre i lera och snö (Movement Efficiency) | +0,05 | +0,25 |
-| Bloodstone | Max Health | +0,5 | +2 |
-
-- Advancements (Iron Age-fliken, under *Steel*): **Hearth of the Tribe** → **Whole Roast**; **A Place for Every Tool** →
-  **Pack Mule**; **Goldsmith** → **Jeweler** → **Without Flaw**.
-- Inte gjort än: fler guldföremål att gjuta (bara ringämne och kedja), egen modell för packen på kroppen (den visas som satcheln),
-  egen modell för den hängande steken (tre stora köttbitar som vänds på ett spett).
+- Advancements: **Cementation** och **Steel** (Iron Age-fliken). Steel är järnålderns sista steg och öppnar
+  **stålåldern**: stålverktyg, stålrustning och allt annat som görs av Steel Ingot och Steel Plate står i
+  [04-steel-age.md](04-steel-age.md).
 
 ## Nya malmer (byggda, 2026-11-21)
 
@@ -429,7 +345,9 @@ garvsalt. Kod: `Chemistry` (gametest `chemistry`), kilnreceptet i `KilnBlockEnti
 ## Vänta med
 
 - **Zinc** (mässing), **Nickel**, **Redstone**, **Sulfur**: ång- och elåldern.
-- **Coal → Coked Coal**: ångåldern (texturer `coked_coal`, `coal_dust` finns).
+- **Coal → Coked Coal**: ångåldern (texturer `coked_coal`, `coal_dust` finns). Undantag: Coke Oven som sista fas av High Furnace
+  i stålåldern (användarens beslut 2026-11-24).
+- **Allt som görs av Steel Ingot och Steel Plate**: stålåldern, [04-steel-age.md](04-steel-age.md).
 
 ## Mynt: Silver Coin och Gold Coin
 
@@ -496,11 +414,6 @@ Järnålderns material är för tunna för en egen byggstil, så NPC-byar i jär
 (`people/AgeRebuild.java`, `TribeVillageStructure` med ålder 2): långhuset en kurs till (två skift sten i foten),
 palissaden en stock högre, och en smedja med Bronze Anvil och Furnace Bricks bredvid Clay Kiln och Quern. Lägren vid
 spelarläger är desamma som i bronsåldern. Advancement **Iron Age Neighbours** (i bronsålderns flik, där Wrought Iron ligger).
-
-## Jaspis som tändsten (byggt, fas 9A av världsmaterialplanen)
-
-Jaspis slår gnistor mot stål som flinta: **Rough Jasper eller Polished Jasper + Steel Plate** (formlöst) ger en
-Flint and Steel, precis som Flint + Steel Plate. Advancement *Red Spark* under *Strike a Light*.
 
 ## Omfogning med kalkbruk (byggt, fas 10 av världsmaterialplanen)
 
@@ -716,28 +629,16 @@ sawmill_no_power, sawmill_wrong_flow). Bildharness: `WaterShots` (`watershots.fl
 | **Gearbox** | 4 plankor, 4 Wooden Shaft, 1 Iron Plate. För rörelsen rakt fram och runt hörnet åt alla håll, även upp och ner; hjulet på andra ledden går åt andra hållet. Ett tredje kugghjul syns när en axel står på eller hänger under lådan |
 | **Högerklick** | Navet: kraften ("12 / 16"), med axelns kraft när fler hjul delar den, eller vad som står i vägen och var. Axel/Gearbox: kraften den bär. Att titta på nav, axel eller Gearbox visar kraften ovanför snabbknapparna |
 
-**Sågverket (stål)**
-
-| Vad | Hur |
-|---|---|
-| **Bygge** | En **Saw Bench** (2 Steel Plate, 2 plankor, Wooden Shaft, 3 stockar) mellan **3 Log Flumes** (5 plankor → 4) i linje på varje sida. Bänkens insida är den som vette mot spelaren när den sattes |
-| **Vatten** | Rännorna har inget riktigt vatten. Vatten rinner från den ände som har ett vattenblock intill (eller en ränna i linje som rinner in) mot den andra, och står stilla om båda ändar har vatten. Det måste rinna **mot sågen** (in vid insidans ände) |
-| **Kraft** | En axel från ett vattenhjul till bänkens vänstra eller högra sida, minst **8 kraft**. Svänghjulet (ett ljust ekerhjul med järnring) sitter på den sidan och snurrar 9× hjulets fart, vevstaken driver sågramen upp och ner |
-| **Blad** | Ett **Steel Saw Blade** (smids på städet som förut) räcker 512 stockar. Ett nytt blad byter ut det gamla, som kommer tillbaka med sina återstående stockar på sig |
-| **Stockar** | Högerklicka rännan på insidan (eller bänken) med en stock: högst 3, ett block isär. Den flyter fram (1 block/s) och matas genom bladet på 4 s; man ser stocken gå in och brädorna komma ut (fyra tunna brädor på högkant som glider isär). Stockar och Rough Logs av moddens 19 träslag |
-| **Utbyte** | Med bark: **2 Rough Logs + 2 Firewood + 2 Bark + 2 Sawdust**. Barkad stock eller Rough Log: **6 plankor + 2 Sticks + 1 Sawdust**. Det sågade flyter bort i rännan på utsidan och faller av vid änden |
-| **Fel** | Vatten åt fel håll: stocken står still. Ingen kraft eller inget blad: stocken väntar vid bladet. Tom hand på bänken säger vad som saknas (rännor, vatten, riktning, blad, kraft) |
-| **Sawdust** | Kort ugnsbränsle (50 ticks), komposterbart. 4 Sawdust + Clay Ball → 2 **Sawdust Briquette**, som en Clay Kiln bränner till Charcoal |
+**Sågverket** behöver ett Steel Saw Blade och hör till stålåldern: se *Sågverket* i [04-steel-age.md](04-steel-age.md).
 
 - Advancements (Iron Age-fliken, under *Forged*): **Water at Work** (ett hjul snurrar) → **Mill Race** (16 kraft,
-  utmaning) och **Up and Down** (första stocken sågad).
-- Inte gjort än: kvarn, bälgar och hammare på vattenkraft; sågspån i Root Cellar, strö i stallar, papper och spånplattor;
-  stycken av en Felled Log i rännan; hjulet har ingen kollision (man går igenom skovlarna).
+  utmaning), **Two Wheels, One Axle** och **Up the Shaft**. Sågverkets **Up and Down** ligger i Steel Age-fliken.
+- Inte gjort än: kvarn, bälgar och hammare på vattenkraft; hjulet har ingen kollision (man går igenom skovlarna).
 
 ## Elkwight: bossen i Scorched Barrens (byggd, 2026-11-23)
 
 Plan och beslut: [elkwight-plan.md](../elkwight-plan.md). En jätte med älghuvud och en 4 block bred skovelhornskrona väntar
-sovande i en nedbrunnen ruin, minst 2500 block från 0,0. Han är tänkt för slutet av järnåldern och framåt: huden kräver en
+sovande i en nedbrunnen ruin, minst 2500 block från 0,0. Han är tänkt för stålåldern och framåt: huden kräver en
 kniv över stål.
 
 - **Striden**: vaknar när en spelare kommer inom 20 block i synhåll, kliver in i ruinen eller slår honom. Boss-mätare. 400 liv, +60 % liv
@@ -802,24 +703,3 @@ hunger, håller 30 dagar). Advancements: *Brewer*, *Fruit Pie*, *Sunday Roast*.
 - **Tipsy** (Ale och Cider): varje drick inom 2 minuter höjer effekten ett steg (högst IV) och tiden börjar om. Varm i magen (+0,1
   isolering mot kyla). Från tredje i rad lutar världen sakta lite åt sidorna (en grad eller två), mycket mjukare än Nausea; inget
   annat. Cider går också av ympade äpplen. *One More Round*.
-
-## Stålets kök (flora och mat, fas 6, byggt v0.193.0)
-
-Stålet ger köket finare redskap, och den **östra karavanens kryddor** (Black Pepper, Cinnamon Bark, Ginger Root, Saffron) mals till
-blandningar som stålrätterna vill ha.
-
-| Redskap | Recept | Används |
-|---|---|---|
-| **Steel Pan** | `[I][P][I]` / `[I][ ][I]` (P Steel Plate, I Steel Ingot) | Bred grund stålpanna med ringhandtag på en trefot, över en Campfire: **Saffron Rice** (2 Rice + Golden Spice + lök → 2 à 10), **Peppered Steak** (2 rått kött + Kitchen Pepper → 2 à 10), och allt stekpannan och hällen kan |
-| **Mortar and Pestle** | `[ ][ ][S]` / `[M][ ][M]` / `[ ][M][ ]` (M Marble, S Steel Ingot) | Marmormortel med stålstöt. Lägg i, klicka med tom hand: varje klick vrider stöten ett kvarts varv, 8 klick → blandningen |
-| **Sieve** | `[S][P][S]` / `[W][ ][W]` / `[W][W][W]` (S pinne, P Steel Plate, W plankor) | Böjd askring med vävt ståltrådsnät på ett ämbar. Tom hand skakar, 6 skak: Flour → **Fine Flour**; 3 Sea Buckthorn Berries + honung → 2 **Sea Buckthorn Juice** (Regeneration I 5 s) |
-| **Steel Knife Set** | Steel Knife + 2 Steel Knife Blade + Leather + Stick | Knivrulle: styckar 2× (stålkniven 1,6×) och snabbare, klipper örter som en kniv |
-
-**Kryddblandningar (morteln):** **Kitchen Pepper** (pepper + ingefära + kanel → 3), **Sweet Spice** (2 kanel + ingefära → 3),
-**Golden Spice** (saffran + peppar + senapsfrön → 3), **Pickling Spice** (senapsfrön + dill + peppar → 3), **Herb Salt** (salt + 2
-köksörter → 2, den enda utan karavanen). Alla räknas som kryddor i stuvning.
-
-**Rätter:** **Spiced Pilaf** i Iron Cauldron (2 Rice + Kitchen Pepper + rått kött + lök → 5 skålar à 11), **Pickled Vegetables** i
-Fermenting Barrel (3 grönsaker + Pickling Spice + Salt → 5, håller 30 dagar), **Gingerbread** (2 Fine Flour + honung + Sweet Spice +
-ägg → 4 Raw Gingerbread, bakas i Clay Kiln). Advancements (Iron Age, efter *Steel*): *Ground Fine*, *Sifted*, *Spice Road*, *Pilaf*,
-*Gingerbread*, *In Brine*, *A Cut Above*.

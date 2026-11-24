@@ -1,5 +1,5 @@
 {
-  "parent": "mechanical:iron_age/water_wheel",
+  "parent": "mechanical:steel_age/root",
   "criteria": {
     "done": {
       "trigger": "minecraft:impossible"

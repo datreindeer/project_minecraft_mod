@@ -410,7 +410,7 @@ Byggt v0.191.0. Spelarens beskrivning: `docs/ages/01-stone-age.md` ("Vilda grön
 
 ## Fas 5a och 5b: resultat
 
-Byggt v0.191.0. Spelarens beskrivning står i `docs/ages/03-iron-age.md` ("Vattenkraft och sågverk").
+Byggt v0.191.0. Spelarens beskrivning står i `docs/ages/03-iron-age.md` ("Vattenkraft och sågverk") och sågverket i `docs/ages/04-steel-age.md` ("Sågverket").
 
 - **Vattenhjulet:** 5×5, bara navet är ett block. Kraften räknas per skovelruta (20 rutor): rinnande vatten runt hjulet 1,
   fallande 2, med riktning (vatten åt samma håll överst och nederst tar ut varandra), högst 16. **Beslut (Claude, kan
@@ -436,7 +436,7 @@ Byggt v0.191.0. Spelarens beskrivning står i `docs/ages/03-iron-age.md` ("Vatte
 
 ## Fas 6: resultat
 
-Byggt v0.193.0. Spelarens beskrivning: `docs/ages/03-iron-age.md` ("Stålets kök" och "Mer i järnålderns kök"), risodlingen i
+Byggt v0.193.0. Spelarens beskrivning: `docs/ages/04-steel-age.md` ("Stålets kök") och `docs/ages/03-iron-age.md` ("Mer i järnålderns kök"), risodlingen i
 `docs/farming.md`.
 
 - **Redskap:** **Steel Pan** (`CookwareBlock.Kind.STEEL_PAN`: pannan nivå 3 över en Campfire), **Mortar and Pestle** och **Sieve**
