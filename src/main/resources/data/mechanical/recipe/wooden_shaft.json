@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "L",
+    "T",
+    "L"
+  ],
+  "key": {
+    "L": "#mechanical:rough_logs",
+    "T": "mechanical:iron_tool_rod"
+  },
+  "result": {
+    "id": "mechanical:wooden_shaft",
+    "count": 4
+  }
+}

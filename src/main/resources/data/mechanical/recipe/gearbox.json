@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PRP",
+    "RIR",
+    "PRP"
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "R": "mechanical:wooden_shaft",
+    "I": "mechanical:iron_plate"
+  },
+  "result": {
+    "id": "mechanical:gearbox"
+  }
+}

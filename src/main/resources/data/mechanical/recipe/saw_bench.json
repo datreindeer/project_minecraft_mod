@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S S",
+    "PRP",
+    "LLL"
+  ],
+  "key": {
+    "S": "mechanical:steel_plate",
+    "P": "#minecraft:planks",
+    "R": "mechanical:wooden_shaft",
+    "L": "#minecraft:logs"
+  },
+  "result": {
+    "id": "mechanical:saw_bench"
+  }
+}

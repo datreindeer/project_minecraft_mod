@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "mechanical:block/water_wheel"
+    },
+    "axis=z": {
+      "model": "mechanical:block/water_wheel"
+    }
+  }
+}

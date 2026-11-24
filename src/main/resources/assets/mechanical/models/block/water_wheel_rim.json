@@ -1,0 +1,151 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "wood_v": "mechanical:block/water_wheel_wood_v",
+    "wood_h": "mechanical:block/water_wheel_wood_h",
+    "end": "mechanical:block/water_wheel_hub_end",
+    "iron": "mechanical:block/water_wheel_iron",
+    "particle": "mechanical:block/water_wheel_wood_v",
+    "shaft_v": "mechanical:block/wooden_shaft_v",
+    "shaft_h": "mechanical:block/wooden_shaft_h",
+    "shaft_end": "mechanical:block/wooden_shaft_end"
+  },
+  "elements": [
+    {
+      "from": [
+        0.5,
+        6,
+        2
+      ],
+      "to": [
+        15.5,
+        12,
+        4
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0.5,
+            2,
+            15.5,
+            4
+          ],
+          "texture": "#wood_h"
+        },
+        "down": {
+          "uv": [
+            0.5,
+            2,
+            15.5,
+            4
+          ],
+          "texture": "#wood_h"
+        },
+        "north": {
+          "uv": [
+            0.5,
+            4,
+            15.5,
+            10
+          ],
+          "texture": "#wood_h"
+        },
+        "south": {
+          "uv": [
+            0.5,
+            4,
+            15.5,
+            10
+          ],
+          "texture": "#wood_h"
+        },
+        "east": {
+          "uv": [
+            2,
+            4,
+            4,
+            10
+          ],
+          "texture": "#end"
+        },
+        "west": {
+          "uv": [
+            2,
+            4,
+            4,
+            10
+          ],
+          "texture": "#end"
+        }
+      }
+    },
+    {
+      "from": [
+        0.5,
+        6,
+        12
+      ],
+      "to": [
+        15.5,
+        12,
+        14
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0.5,
+            12,
+            15.5,
+            14
+          ],
+          "texture": "#wood_h"
+        },
+        "down": {
+          "uv": [
+            0.5,
+            12,
+            15.5,
+            14
+          ],
+          "texture": "#wood_h"
+        },
+        "north": {
+          "uv": [
+            0.5,
+            4,
+            15.5,
+            10
+          ],
+          "texture": "#wood_h"
+        },
+        "south": {
+          "uv": [
+            0.5,
+            4,
+            15.5,
+            10
+          ],
+          "texture": "#wood_h"
+        },
+        "east": {
+          "uv": [
+            12,
+            4,
+            14,
+            10
+          ],
+          "texture": "#end"
+        },
+        "west": {
+          "uv": [
+            12,
+            4,
+            14,
+            10
+          ],
+          "texture": "#end"
+        }
+      }
+    }
+  ]
+}

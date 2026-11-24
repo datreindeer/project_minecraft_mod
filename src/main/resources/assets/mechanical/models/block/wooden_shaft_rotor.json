@@ -1,0 +1,322 @@
+{
+  "textures": {
+    "shaft_v": "mechanical:block/wooden_shaft_v",
+    "shaft_h": "mechanical:block/wooden_shaft_h",
+    "shaft_end": "mechanical:block/wooden_shaft_end",
+    "iron": "mechanical:block/water_wheel_iron",
+    "particle": "mechanical:block/wooden_shaft_v"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        5,
+        0
+      ],
+      "to": [
+        11,
+        11,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            5,
+            0,
+            11,
+            16
+          ],
+          "texture": "#shaft_v"
+        },
+        "down": {
+          "uv": [
+            5,
+            0,
+            11,
+            16
+          ],
+          "texture": "#shaft_v"
+        },
+        "north": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "texture": "#shaft_end"
+        },
+        "south": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "texture": "#shaft_end"
+        },
+        "east": {
+          "uv": [
+            0,
+            5,
+            16,
+            11
+          ],
+          "texture": "#shaft_h"
+        },
+        "west": {
+          "uv": [
+            0,
+            5,
+            16,
+            11
+          ],
+          "texture": "#shaft_h"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        5,
+        0
+      ],
+      "to": [
+        11,
+        11,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            5,
+            0,
+            11,
+            16
+          ],
+          "texture": "#shaft_v"
+        },
+        "down": {
+          "uv": [
+            5,
+            0,
+            11,
+            16
+          ],
+          "texture": "#shaft_v"
+        },
+        "north": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "texture": "#shaft_end"
+        },
+        "south": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "texture": "#shaft_end"
+        },
+        "east": {
+          "uv": [
+            0,
+            5,
+            16,
+            11
+          ],
+          "texture": "#shaft_h"
+        },
+        "west": {
+          "uv": [
+            0,
+            5,
+            16,
+            11
+          ],
+          "texture": "#shaft_h"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "z",
+        "angle": 45
+      }
+    },
+    {
+      "from": [
+        4.5,
+        4.5,
+        7
+      ],
+      "to": [
+        11.5,
+        11.5,
+        9
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            4.5,
+            7,
+            11.5,
+            9
+          ],
+          "texture": "#iron"
+        },
+        "down": {
+          "uv": [
+            4.5,
+            7,
+            11.5,
+            9
+          ],
+          "texture": "#iron"
+        },
+        "north": {
+          "uv": [
+            4.5,
+            4.5,
+            11.5,
+            11.5
+          ],
+          "texture": "#iron"
+        },
+        "south": {
+          "uv": [
+            4.5,
+            4.5,
+            11.5,
+            11.5
+          ],
+          "texture": "#iron"
+        },
+        "east": {
+          "uv": [
+            7,
+            4.5,
+            9,
+            11.5
+          ],
+          "texture": "#iron"
+        },
+        "west": {
+          "uv": [
+            7,
+            4.5,
+            9,
+            11.5
+          ],
+          "texture": "#iron"
+        }
+      }
+    },
+    {
+      "from": [
+        4.5,
+        4.5,
+        7
+      ],
+      "to": [
+        11.5,
+        11.5,
+        9
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            4.5,
+            7,
+            11.5,
+            9
+          ],
+          "texture": "#iron"
+        },
+        "down": {
+          "uv": [
+            4.5,
+            7,
+            11.5,
+            9
+          ],
+          "texture": "#iron"
+        },
+        "north": {
+          "uv": [
+            4.5,
+            4.5,
+            11.5,
+            11.5
+          ],
+          "texture": "#iron"
+        },
+        "south": {
+          "uv": [
+            4.5,
+            4.5,
+            11.5,
+            11.5
+          ],
+          "texture": "#iron"
+        },
+        "east": {
+          "uv": [
+            7,
+            4.5,
+            9,
+            11.5
+          ],
+          "texture": "#iron"
+        },
+        "west": {
+          "uv": [
+            7,
+            4.5,
+            9,
+            11.5
+          ],
+          "texture": "#iron"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "z",
+        "angle": 45
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        45,
+        0
+      ],
+      "scale": [
+        0.625,
+        0.625,
+        0.625
+      ]
+    },
+    "fixed": {
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  }
+}

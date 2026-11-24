@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,water=dry": {
+      "model": "mechanical:block/saw_bench_dry"
+    },
+    "facing=north,water=still": {
+      "model": "mechanical:block/saw_bench_still"
+    },
+    "facing=north,water=positive": {
+      "model": "mechanical:block/saw_bench_flow"
+    },
+    "facing=north,water=negative": {
+      "model": "mechanical:block/saw_bench_flow",
+      "y": 180
+    },
+    "facing=east,water=dry": {
+      "model": "mechanical:block/saw_bench_dry",
+      "y": 90
+    },
+    "facing=east,water=still": {
+      "model": "mechanical:block/saw_bench_still",
+      "y": 90
+    },
+    "facing=east,water=positive": {
+      "model": "mechanical:block/saw_bench_flow",
+      "y": 270
+    },
+    "facing=east,water=negative": {
+      "model": "mechanical:block/saw_bench_flow",
+      "y": 90
+    },
+    "facing=south,water=dry": {
+      "model": "mechanical:block/saw_bench_dry",
+      "y": 180
+    },
+    "facing=south,water=still": {
+      "model": "mechanical:block/saw_bench_still",
+      "y": 180
+    },
+    "facing=south,water=positive": {
+      "model": "mechanical:block/saw_bench_flow"
+    },
+    "facing=south,water=negative": {
+      "model": "mechanical:block/saw_bench_flow",
+      "y": 180
+    },
+    "facing=west,water=dry": {
+      "model": "mechanical:block/saw_bench_dry",
+      "y": 270
+    },
+    "facing=west,water=still": {
+      "model": "mechanical:block/saw_bench_still",
+      "y": 270
+    },
+    "facing=west,water=positive": {
+      "model": "mechanical:block/saw_bench_flow",
+      "y": 270
+    },
+    "facing=west,water=negative": {
+      "model": "mechanical:block/saw_bench_flow",
+      "y": 90
+    }
+  }
+}

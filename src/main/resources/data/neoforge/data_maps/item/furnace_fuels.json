@@ -11,6 +11,9 @@
     },
     "mechanical:deadwood_twig": {
       "burn_time": 50
+    },
+    "mechanical:sawdust": {
+      "burn_time": 50
     }
   }
 }
