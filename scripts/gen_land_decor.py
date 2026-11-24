@@ -57,7 +57,7 @@ def count(n):
 
 # placed feature: (feature type, biomes, tries per chunk). OFF: switched off until they look right in close-up shots
 # (code kept, feature type registered, no configured or placed feature or biome modifier): see docs/biomes.md for why.
-OFF = ["rock_overhang", "talus", "fallen_rock", "farm_walls", "juniper_in_plains", "bird_cliff", "frost_split"]  # review 2026-11-24 (decor5)
+OFF = ["rock_overhang", "talus", "fallen_rock", "farm_walls", "juniper_in_plains", "bird_cliff", "frost_split", "anthill", "anthill_open"]  # review 2026-11-24 (decor5)
 PLACED = {
     # mountains
     "talus": ("talus", MOUNTAINS + VALLEYS, count(3)),

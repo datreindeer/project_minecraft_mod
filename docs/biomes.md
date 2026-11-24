@@ -271,7 +271,7 @@ På sedan v0.195.0 (tredje omgången, granskad i naturligt genererade provvärld
   aldrig där snön ligger året runt (`Thaw.coldAllYear`) eller marken redan är snö. Fläcken av Snow Block nedsänkt i en
   svacka med Coarse Dirt och grus i kanten (inte längre Mud, som blev svarta hål). Bäst på de grå bergssidorna i Stony
   Peaks. Bilder `fas4c_snow_patch*.png`.
-- **Anthill:** inte längre en stor kupolmodell. Stacken byggs av `Shaper` som en låg, lite sned, trubbig kon 3–5 bred och
+- **Anthill (avstängd igen efter granskning, ser ut som en trappstegspyramid):** inte längre en stor kupolmodell. Stacken byggs av `Shaper` som en låg, lite sned, trubbig kon 3–5 bred och
   upp till ett och ett halvt block hög av Podzol och Coarse Dirt i halvblock (slabs, trappor), och bara på krönet sitter
   blocket Anthill, nu en liten rundad topp av barr (modellen `anthill_small`, samma textur genom alla skikt så att inga
   ränder syns). Kjol av Leaf Litter och kvistar runt. Bilder `fas4c_anthill*.png`.
