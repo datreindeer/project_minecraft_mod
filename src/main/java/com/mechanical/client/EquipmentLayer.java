@@ -37,6 +37,7 @@ public class EquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
     private final HumanoidModel<AvatarRenderState> cape;
     private final ElytraModel wings;
     private final WornSatchelModel satchel;
+    private final WornPackModel pack;
     private final WornQuiverModel quiver;
     private final WornPouchModel pouch;
     private final MinerSackModel minerSack;
@@ -49,6 +50,7 @@ public class EquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
         this.cape = new PlayerCapeModel(models.bakeLayer(ModelLayers.PLAYER_CAPE));
         this.wings = new ElytraModel(models.bakeLayer(ModelLayers.ELYTRA));
         this.satchel = new WornSatchelModel(models.bakeLayer(WornSatchelModel.LAYER));
+        this.pack = new WornPackModel(models.bakeLayer(WornPackModel.LAYER));
         this.quiver = new WornQuiverModel(models.bakeLayer(WornQuiverModel.LAYER));
         this.pouch = new WornPouchModel(models.bakeLayer(WornPouchModel.LAYER));
         this.minerSack = new MinerSackModel(models.bakeLayer(MinerSackModel.LAYER));
@@ -78,6 +80,9 @@ public class EquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
         }
         if (EquipmentClient.satchel(state)) {
             collector.submitModel(satchel, state, poseStack, RenderTypes.entityCutout(WornSatchelModel.TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor);
+        }
+        if (EquipmentClient.pack(state)) {
+            collector.submitModel(pack, state, poseStack, RenderTypes.entityCutout(WornPackModel.TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor);
         }
         if (EquipmentClient.pouch(state)) {
             collector.submitModel(pouch, state, poseStack, RenderTypes.entityCutout(WornPouchModel.TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor);

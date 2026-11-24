@@ -58,6 +58,7 @@ public final class EquipmentClient {
 
     private static final ContextKey<ItemStack> CLOAK = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_cloak"));
     private static final ContextKey<Boolean> SATCHEL = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_satchel"));
+    private static final ContextKey<Boolean> PACK = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_pack"));
     private static final ContextKey<Boolean> POUCH = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_pouch"));
     private static final ContextKey<Integer> QUIVER =new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_quiver"));
     private static final ContextKey<Boolean> MINER_SACK = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "miner_sack"));
@@ -77,6 +78,7 @@ public final class EquipmentClient {
         static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
             event.registerLayerDefinition(CLOAK_BODY, () -> LayerDefinition.create(HumanoidModel.createMesh(new CubeDeformation(1.15F), 0.0F), 64, 32));
             event.registerLayerDefinition(WornSatchelModel.LAYER, WornSatchelModel::createLayer);
+            event.registerLayerDefinition(WornPackModel.LAYER, WornPackModel::createLayer);
             event.registerLayerDefinition(WornQuiverModel.LAYER, WornQuiverModel::createLayer);
             event.registerLayerDefinition(WornPouchModel.LAYER, WornPouchModel::createLayer);
             event.registerLayerDefinition(MinerSackModel.LAYER, MinerSackModel::createLayer);
@@ -134,7 +136,7 @@ public final class EquipmentClient {
                 state.elytraRotZ = -1.45F;
             }
         }
-        if (worn.get(Accessory.BACK).getItem() instanceof LeatherSatchelItem) state.setRenderData(SATCHEL, true);
+        if (worn.get(Accessory.BACK).getItem() instanceof LeatherSatchelItem bag) state.setRenderData(bag.builtInLoops ? PACK : SATCHEL, true);
         ItemStack quiver = worn.get(Accessory.HIP);
         if (quiver.getItem() instanceof QuiverItem) state.setRenderData(QUIVER, Quiver.filledSlots(quiver));
         if (quiver.getItem() instanceof com.mechanical.LeatherPouchItem) state.setRenderData(POUCH, true);
@@ -153,6 +155,10 @@ public final class EquipmentClient {
 
     static boolean satchel(AvatarRenderState state) {
         return state.getRenderData(SATCHEL) != null;
+    }
+
+    static boolean pack(AvatarRenderState state) {
+        return state.getRenderData(PACK) != null;
     }
 
     static boolean pouch(AvatarRenderState state) {

@@ -309,6 +309,29 @@ for rect in box_faces(0, 16, 2, 1, 4).values():
     fill(img, rect, ["S", "T"], LEATHER, rng, [3, 1])
 save(img, "entity/worn/satchel.png")
 
+# ---------------------------------------------------------------- 4a2. worn steel-frame pack (64x32)
+STEEL = {"a": "8d939a", "b": "6b7078", "c": "a9aeb4", "d": "4e535a"}
+img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+rng = random.Random(5)
+fill(img, (28, 8, 28, 16), ["a", "b", "c", "d"], STEEL, rng, [4, 3, 2, 1])
+for name, (u, v, w, h, d) in {"bag": (0, 0, 9, 11, 5), "flap": (0, 17, 9, 2, 5), "roll": (28, 0, 10, 3, 4)}.items():
+    for f, rect in box_faces(u, v, w, h, d).items():
+        fill(img, rect, ["M", "D", "L", "S"], LEATHER, rng, [4, 3, 2, 1])
+for rect in [box_faces(0, 17, 9, 2, 5)[f] for f in ("front", "back")]:  # flap edge lighter, with stitching
+    fill(img, (rect[0], rect[1], rect[2], 1), ["H", "L"], LEATHER, rng, [1, 1])
+x, y, w, h = box_faces(0, 0, 9, 11, 5)["back"]  # outward face: a big pocket with a stitched rim and a buckle
+for px in range(x + 1, x + w - 1):
+    for py in range(y + 3, y + h - 1):
+        img.putpixel((px, py), rgba(LEATHER["s" if px in (x + 1, x + w - 2) or py in (y + 3, y + h - 2) else "L"]))
+img.putpixel((x + w // 2, y + 3), rgba(STEEL["c"]))
+for rect in box_faces(28, 0, 10, 3, 4).values():  # bedroll: a darker tie strap round the middle
+    for px in range(rect[0], rect[0] + rect[2]):
+        img.putpixel((px, rect[1] + rect[3] // 2), rgba(LEATHER["T"]))
+for u, v, w, h, d in [(0, 24, 2, 6, 1), (8, 24, 2, 1, 4), (0, 32, 8, 1, 4)]:
+    for rect in box_faces(u, v, w, h, d).values():
+        fill(img, rect, ["S", "T"], LEATHER, rng, [3, 1])
+save(img, "entity/worn/steel_frame_pack.png")
+
 # ---------------------------------------------------------------- 4b. worn quiver (32x32)
 img = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
 tube = box_faces(0, 0, 3, 9, 3)
