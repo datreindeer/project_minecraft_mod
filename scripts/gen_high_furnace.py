@@ -321,8 +321,9 @@ model("great_bellows_pleat", [box([1.0, 8, -3.6], [15.0, 9.2, 23.4], "#leather")
 model("great_bellows_pleat_in", [box([2.0, 8, -3.8], [14.0, 9.2, 23.0], "#leather")], BT)   # a fold tucked in
 ROD = {"north": "#end", "south": "#end", "east": "#frame", "west": "#frame", "up": "#frame", "down": "#frame"}
 model("great_bellows_shaft", [box([6.7, 6.7, 0], [9.3, 9.3, 16], ROD)], BT)                 # the axle (along z here)
-model("great_bellows_crank", [box([4.5, 4.5, 7.4], [11.5, 11.5, 8.6], "#cam"),             # crank disc, its pin 3 px out (+y)
-                              box([7.2, 10.2, 6.4], [8.8, 11.8, 9.6], "#cam")], BT)
+model("great_bellows_crank", [box([5.6, 5.6, 7.4], [10.4, 10.4, 8.6], "#cam"),             # crank web, its pin 3 px out (+y)
+                              box([7.2, 8, 7.4], [8.8, 11.6, 8.6], "#cam")], BT)
+model("great_bellows_pin", [box([7, 7, 6.6], [9, 9, 9.4], "#cam"), box([7.4, 7.4, 6.2], [8.6, 8.6, 9.8], "#bronze")], BT)  # a pin through an eye
 model("great_bellows_pitman", [box([7.4, 8, 7.4], [8.6, 24, 8.6], ROD),                     # a rod 16 long up from its foot (scaled)
                                box([7, 7.3, 7], [9, 8.7, 9], "#cam"), box([7, 23.3, 7], [9, 24.7, 9], "#cam")], BT)
 model("great_bellows_beam", [box([7.2, 7, -4], [8.8, 9, 22], ROD),                         # the rocker beam, pivot at its centre
@@ -330,7 +331,7 @@ model("great_bellows_beam", [box([7.2, 7, -4], [8.8, 9, 22], ROD),              
 for side, x0, x1 in (("r", 15, 17.4), ("l", -1.4, 1)):                                     # the tall rocker post at the side
     model(f"great_bellows_post_{side}", [box([x0, 0, 14.6], [x1, 24, 17.4], POST),
                                          box([x0 - 0.3, 22, 14.2], [x1 + 0.3, 24.5, 17.8], "#cam")], BT)
-for p in ("great_bellows_lid", "great_bellows_pleat", "great_bellows_pleat_in", "great_bellows_shaft", "great_bellows_crank",
+for p in ("great_bellows_lid", "great_bellows_pleat", "great_bellows_pleat_in", "great_bellows_shaft", "great_bellows_crank", "great_bellows_pin",
           "great_bellows_pitman", "great_bellows_beam", "great_bellows_post_r", "great_bellows_post_l"):
     item_def(p, B + p)
 item_def("great_bellows", B + "great_bellows")

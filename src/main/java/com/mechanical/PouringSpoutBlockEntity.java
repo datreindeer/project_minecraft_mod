@@ -217,11 +217,17 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         if (stream == null) return;
         RandomSource r = level.getRandom();
         Direction d = facing();
-        double x = worldPosition.getX() + tx, z = worldPosition.getZ() + tz, y = worldPosition.getY() + ty + 0.02; // where it lands: spatter and glow
-        if (r.nextInt(2) == 0) level.addParticle(ParticleTypes.FLAME, x + (r.nextDouble() - 0.5) * 0.12, y, z + (r.nextDouble() - 0.5) * 0.12, 0, 0.02, 0);
-        if (r.nextInt(3) == 0) level.addParticle(ParticleTypes.LAVA, x, y, z, 0, 0, 0);
-        if (r.nextInt(2) == 0) level.addParticle(ParticleTypes.ELECTRIC_SPARK, x, y, z, (r.nextDouble() - 0.5) * 0.3, 0.15 + r.nextDouble() * 0.2, (r.nextDouble() - 0.5) * 0.3);
-        if (r.nextInt(4) == 0) level.addParticle(ParticleTypes.SMOKE, x, y + 0.1, z, 0, 0.04, 0);
+        double x = worldPosition.getX() + tx, z = worldPosition.getZ() + tz, y = worldPosition.getY() + ty + 0.02; // where it lands
+        if (r.nextInt(4) == 0) { // a drop falling beside the stream
+            double f = r.nextDouble();
+            net.minecraft.world.phys.Vec3 lip = lip();
+            level.addParticle(ParticleTypes.FALLING_LAVA, worldPosition.getX() + lip.x + (x - worldPosition.getX() - lip.x) * f + (r.nextDouble() - 0.5) * 0.08,
+                    worldPosition.getY() + lip.y + (y - worldPosition.getY() - lip.y) * f, worldPosition.getZ() + lip.z + (z - worldPosition.getZ() - lip.z) * f + (r.nextDouble() - 0.5) * 0.08, 0, 0, 0);
+        }
+        if (r.nextInt(3) == 0) // tiny sparks off the surface
+            level.addParticle(ParticleTypes.ELECTRIC_SPARK, x, y + 0.02, z, (r.nextDouble() - 0.5) * 0.12, 0.05 + r.nextDouble() * 0.08, (r.nextDouble() - 0.5) * 0.12);
+        if (r.nextInt(6) == 0) level.addParticle(ParticleTypes.SMOKE, x, y + 0.05, z, 0, 0.015, 0);
+
     }
 
     @Override

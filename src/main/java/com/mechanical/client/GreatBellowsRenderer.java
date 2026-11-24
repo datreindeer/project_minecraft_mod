@@ -32,11 +32,11 @@ import org.jspecify.annotations.Nullable;
  * reaches back into the block behind. Part models: scripts/gen_high_furnace.py.
  */
 public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlockEntity, GreatBellowsRenderer.State> {
-    private static final float CRANK = 4, PIVOT_Y = 24, PIVOT_Z = 16, FRONT_ARM = 12, BACK_ARM = 14, HANG = 5;
+    private static final float CRANK = 3, PIVOT_Y = 24, PIVOT_Z = 16, FRONT_ARM = 12, BACK_ARM = 14, HANG = 4;
     private static final float HINGE_Y = 11.5F, HINGE_Z = 2, BACK_Z = 28, PLEATS = 6;
 
     public static class State extends BlockEntityRenderState {
-        ItemStackRenderState lid, pleat, pleatIn, shaft, crank, pitman, beam, post;
+        ItemStackRenderState lid, pleat, pleatIn, shaft, crank, pitman, beam, post, pin;
         float yaw, axle;
         int side = 1;
     }
@@ -76,6 +76,7 @@ public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlo
             state.crank = WaterPowerRenderers.part(items, "great_bellows_crank", level, seed);
             state.pitman = WaterPowerRenderers.part(items, "great_bellows_pitman", level, seed);
             state.beam = WaterPowerRenderers.part(items, "great_bellows_beam", level, seed);
+            state.pin = WaterPowerRenderers.part(items, "great_bellows_pin", level, seed);
         }
         state.post = WaterPowerRenderers.part(items, state.side > 0 ? "great_bellows_post_r" : "great_bellows_post_l", level, seed);
         state.yaw = -front.toYRot() + 180; // the model's nozzle points north
@@ -108,7 +109,7 @@ public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlo
         float backY = PIVOT_Y - BACK_ARM * Mth.sin(tilt), backZ = PIVOT_Z + BACK_ARM * Mth.cos(tilt);
         float boardY = backY - HANG;
         float open = (float) Math.toDegrees(Math.atan2(Math.max(0.3F, boardY - HINGE_Y - 1.5F), BACK_Z - HINGE_Z));
-        float sx = 8 + state.side * 9.2F; // the crank side, outside the bearing post
+        float sx = 8 + state.side * 9.6F; // the crank side, just outside the bearing post (its sweep stays clear of the wall and the floor)
         pose.pushPose();
         pose.translate(0.5F, 0.5F, 0.5F);
         pose.rotateDegrees(Axis.YP, state.yaw);
@@ -131,8 +132,16 @@ public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlo
         pose.rotateDegrees(Axis.XP, (float) -Math.toDegrees(tilt));
         state.beam.submit(pose, collector, light, overlay, 0);
         pose.popPose();
-        rod(pose, state.pitman, collector, light, sx + state.side * 1.2F, pinY, pinZ, frontY, frontZ);   // crank pin up to the beam
-        rod(pose, state.pitman, collector, light, sx, boardY, BACK_Z, backY, backZ);                  // the hanger down to the board
+        float rx = sx + state.side * 1.2F;
+        rod(pose, state.pitman, collector, light, rx, pinY, pinZ, frontY, frontZ);   // crank pin up to the beam
+        rod(pose, state.pitman, collector, light, rx, boardY, BACK_Z, backY, backZ); // the hanger down to the board
+        for (float[] j : new float[][] {{pinY, pinZ}, {frontY, frontZ}, {backY, backZ}, {boardY, BACK_Z}}) { // pins and eyes at the joints
+            pose.pushPose();
+            at(pose, rx, j[0], j[1]);
+            pose.rotateDegrees(Axis.YP, 90);
+            state.pin.submit(pose, collector, light, overlay, 0);
+            pose.popPose();
+        }
         // the leather folds, then the top board, all on the hinge at the mouth
         for (int k = 1; k <= PLEATS; k++) {
             pose.pushPose();
