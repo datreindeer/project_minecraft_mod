@@ -33,6 +33,8 @@ public class ClayChannelBlockEntity extends BlockEntity {
     private @Nullable Metal metal;
     private int amount;
     private long movedAt;
+    /** When hot iron beside it started cracking it (-1: never; see TroughFlow#crack). Not saved: a reload starts it over. */
+    long crackedAt = -1;
 
     public ClayChannelBlockEntity(BlockPos pos, BlockState state) {
         super(Smelting.CLAY_CHANNEL_ENTITY.get(), pos, state);

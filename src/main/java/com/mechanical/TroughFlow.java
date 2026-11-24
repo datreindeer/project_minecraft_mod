@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
  * </ol>
  * Every move takes exactly what it gives. Melt cools as it runs: it reaches {@link #reach} troughs from the tap
  * (8 + one per 25° the tap was over its melting point); the trough past that freezes at once. A Clay Channel joined
- * to a trough carrying melt hotter than {@link PouringSpoutBlockEntity#CLAY_MAX}° cracks and breaks, and the metal that
+ * to a trough carrying melt hotter than {@link PouringSpoutBlockEntity#CLAY_MAX}° cracks for {@link #CRACK_TICKS} and breaks, and the metal that
  * ran into it is lost. A closed Trough Gate has no ports, so nothing passes it.
  */
 public final class TroughFlow {
@@ -96,8 +96,24 @@ public final class TroughFlow {
         return null;
     }
 
-    /** Hot iron in clay: the channel glows, cracks and breaks; what ran into it is lost. */
+    /** How long hot iron takes to break a Clay Channel: cracks spread over it, smoking, before it gives. */
+    static final int CRACK_TICKS = 25;
+
+    /** Hot iron in clay: the channel cracks (the cracks spreading, a little smoke) and then breaks; what ran into it is lost. */
     private static void crack(ServerLevel level, BlockPos q, TroughBlockEntity t, long now) {
+        if (level.getBlockEntity(q) instanceof ClayChannelBlockEntity c) {
+            if (c.crackedAt < 0) {
+                c.crackedAt = now;
+                level.playSound(null, q, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 1.6F);
+            }
+            long age = now - c.crackedAt;
+            if (age < CRACK_TICKS) {
+                level.destroyBlockProgress(q.hashCode(), q, (int) (age * 10 / CRACK_TICKS));
+                level.sendParticles(ParticleTypes.SMOKE, q.getX() + 0.5, q.getY() + 0.3, q.getZ() + 0.5, 2, 0.2, 0.05, 0.2, 0.01);
+                return;
+            }
+        }
+        level.destroyBlockProgress(q.hashCode(), q, -1);
         t.take(Math.min(RATE / 2, t.mb), now);
         level.sendParticles(ParticleTypes.LAVA, q.getX() + 0.5, q.getY() + 0.2, q.getZ() + 0.5, 6, 0.25, 0.05, 0.25, 0.0);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, q.getX() + 0.5, q.getY() + 0.3, q.getZ() + 0.5, 4, 0.2, 0.1, 0.2, 0.02);

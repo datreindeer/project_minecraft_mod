@@ -397,7 +397,7 @@ en smälta per ränna, formar som sitter lägre än rännan och fylls först, st
 - **Pouring Spout i änden av en ränna** häller rännans metall nedåt (avsnittet ovan). Så kan en ränna löpa över en rad
   bord och hälla i dem genom sina pipar.
 - **Lerrännor och järnets hetta:** smälta över 1100° **rinner in i en Clay Channel men spräcker den**. Leran glöder vitt,
-  spricker synligt i två steg (1 s var) och **går sönder**, och metallen i den rinner ut och förloras (fräs, eld, rök), som när
+  spricker synligt (sprickorna breder ut sig och det ryker lite i drygt 1 s, *gjort*) och **går sönder**, och metallen i den rinner ut och förloras (fräs, eld, rök), som när
   en ränna med metall i bryts i dag. Ett lernät klarar alltså ingen järntappning. Det ska synas att det är fel material.
   Clay Molds tar inte emot smälta över 1100° alls (pipen säger "Too hot for clay").
 

@@ -365,7 +365,7 @@ public final class HighFurnaceTest {
     /**
      * Phase 4, troughs on their own: a level run shares evenly both ways from where the metal stands (a T fills its
      * branches together); a shut Trough Gate stops it and opened lets it on; steel tapped at 1550° freezes past its
-     * reach (10 troughs); a Clay Channel joined to a trough of steel cracks and is gone, beside bronze it stays; and
+     * reach (10 troughs); a Clay Channel joined to a trough of steel cracks a moment and is gone, beside bronze it stays; and
      * not a mB is made or lost in all of it.
      */
     private static void troughFlow(GameTestHelper h) {
@@ -395,13 +395,14 @@ public final class HighFurnaceTest {
             h.assertTrue(lo > 0 && hi - lo <= 34, "the T shares evenly: " + w.amount() + " " + e.amount() + " " + n.amount() + " (middle " + mid.amount() + ")");
             TroughBlockEntity shut = (TroughBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(3, 1, 5)));
             h.assertTrue(b.amount() == 0 && a.amount() + shut.amount() == 200, "a shut gate stops the metal (it pools against the plate): " + a.amount() + " + " + shut.amount() + " / " + b.amount());
-            h.assertTrue(h.getBlockState(new BlockPos(3, 1, 12)).isAir(), "a clay channel by steel cracked and broke");
+            h.assertTrue(h.getBlockState(new BlockPos(3, 1, 12)).is(Smelting.CLAY_CHANNEL.get()), "a clay channel by steel cracks a moment before it breaks");
             h.assertTrue(h.getBlockState(new BlockPos(7, 1, 12)).is(Smelting.CLAY_CHANNEL.get()), "a clay channel by bronze stands");
             h.setBlock(new BlockPos(3, 1, 5), HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.X)
                     .setValue(RefractoryTroughBlock.Gate.OPEN, true));
             h.runAfterDelay(TroughFlow.STEP_TICKS * 6, () -> {
                 TroughBlockEntity gate = (TroughBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(3, 1, 5)));
                 h.assertTrue(b.amount() > 0 && a.amount() + gate.amount() + b.amount() == 200, "opened, the metal runs on: " + a.amount() + " " + gate.amount() + " " + b.amount());
+                h.assertTrue(h.getBlockState(new BlockPos(3, 1, 12)).isAir(), "a clay channel by steel cracked and broke");
                 h.runAfterDelay(TroughFlow.STEP_TICKS * 40, () -> {
                     int sum = 0;
                     for (TroughBlockEntity t : run) sum += t.amount();

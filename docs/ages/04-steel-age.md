@@ -280,8 +280,8 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
 - **Räckvidd:** smältan når 8 + 1 per 25° över smältpunkten rännor från tappen (stål tappat vid 1550°: 10); rännan efter
   det fryser direkt.
 - **Trough Gate** (Trough + Iron Plate + Iron Tool Rod): rak, högerklick lyfter/sänker luckan; stängd har den inga portar.
-- **Lerrännor och hett järn:** en Clay Channel som fogas till en ränna med smälta över 1100° spricker och går sönder,
-  metallen förloras.
+- **Lerrännor och hett järn:** en Clay Channel som fogas till en ränna med smälta över 1100° spricker först (sprickor
+  breder ut sig över den och det ryker lite, drygt 1 s) och går sedan sönder, metallen förloras.
 - **Pouring Spout** häller i en ränna under sig (strålen landar på metallytan), och en pip i en rännas ände häller
   rännans metall nedåt (kortare fläns, ingen tapphålsnisch bakom).
 - Stelnad metall slås ut med hacka: tackor och nuggets (22 mB), resten förloras. Ösa med Steel Ladle kommer i fas 7.
