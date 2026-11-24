@@ -82,6 +82,11 @@ def recipe(name, obj):
     w(D / f"mechanical/recipe/{name}.json", obj)
 
 
+def shapeless(name, ingredients, count=1):
+    recipe(name, {"type": "minecraft:crafting_shapeless", "category": "building", "ingredients": ingredients,
+                  "result": {"id": M + name, "count": count}})
+
+
 def item_def(name, mdl):
     w(A / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": mdl}})
 
@@ -414,8 +419,7 @@ merge(A / "lang/en_us.json", {"block.mechanical.pouring_spout": "Pouring Spout",
     "message.mechanical.pouring_spout.too_hot": "Too hot for clay: a Clay Mold takes nothing hotter than 1100°"})
 
 # ---------------- Iron Ingot Mold (phase 4b/5): a cast-iron plate with four ingot pockets that never cracks; its melt
-# is drawn by client/IngotMoldRenderer. For now crafted from 5 Iron Plates (the plan casts it in a Molding Flask, which
-# comes with the rest of the casting tier).
+# is drawn by client/IngotMoldRenderer. Cast from pig iron in a Molding Flask with the Ingot Mold pattern.
 IM = {"particle": B + "iron_mold_side", "top": B + "iron_ingot_mold_top", "side": B + "iron_mold_side"}
 # real pockets (x/z 2.5..7.5 and 8.5..13.5, floor 1.6, rim 4) so the metal can be seen rising in them (IngotMoldBlock.POCKETS)
 SIDES4 = {"north": "#side", "south": "#side", "east": "#side", "west": "#side"}
@@ -429,8 +433,7 @@ model("iron_ingot_mold", MOLD, IM)
 w(A / "blockstates/iron_ingot_mold.json", {"variants": {"": {"model": B + "iron_ingot_mold"}}})
 item_def("iron_ingot_mold", B + "iron_ingot_mold")
 loot("iron_ingot_mold")
-recipe("iron_ingot_mold", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["P P", "PPP"],
-                           "key": {"P": M + "iron_plate"}, "result": {"id": M + "iron_ingot_mold"}})
+(D / "mechanical/recipe/iron_ingot_mold.json").unlink(missing_ok=True)  # cast in a Molding Flask now (phase 4b)
 tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "iron_ingot_mold")
 merge(A / "lang/en_us.json", {"block.mechanical.iron_ingot_mold": "Iron Ingot Mold", "item.mechanical.pig_iron_ingot": "Pig Iron Ingot",
     "message.mechanical.ingot_mold.molten": "Still molten: wait until it has set"})
@@ -498,17 +501,161 @@ tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "refractory_trough
 merge(A / "lang/en_us.json", {"block.mechanical.refractory_trough": "Refractory Trough", "block.mechanical.trough_gate": "Trough Gate",
     "message.mechanical.trough.empty": "The trough is empty", "message.mechanical.trough.molten": "Still molten: let it set before you knock it out"})
 
+# ---------------- the casting tier (phase 4b)
+def pocket_mold(name, xs, zs, top):
+    """A cast-iron mold plate with real pockets: the plate (floor at 1.6) and bars (to 4) between the pocket intervals."""
+    tex = {"particle": B + "iron_mold_side", "top": B + top, "side": B + "iron_mold_side"}
+    side4 = {"north": "#side", "south": "#side", "east": "#side", "west": "#side"}
+    els = [box([1, 0, 1], [15, 1.6, 15], {"up": "#top", "down": "#side", **side4})]
+    def gaps(iv):
+        edges = [1] + [v for a, b in iv for v in (a, b)] + [15]
+        return [(edges[i], edges[i + 1]) for i in range(0, len(edges), 2)]
+    for x0, x1 in gaps(xs):
+        els.append(box([x0, 1.6, 1], [x1, 4, 15], {"up": "#top", **side4}))
+    for z0, z1 in gaps(zs):
+        for xa, xb in xs:
+            els.append(box([xa, 1.6, z0], [xb, 4, z1], {"up": "#top", **side4}))
+    model(name, els, tex)
+    w(A / f"blockstates/{name}.json", {"variants": {"": {"model": B + name}}})
+    item_def(name, B + name)
+    loot(name)
+
+
+pocket_mold("iron_plate_mold", [(2.5, 13.5)], [(2.5, 13.5)], "iron_plate_mold_top")
+pocket_mold("iron_nugget_mold", [(2.5, 5.5), (6.5, 9.5), (10.5, 13.5)], [(2.5, 5.5), (6.5, 9.5), (10.5, 13.5)], "iron_nugget_mold_top")
+
+for name in ("casting_sand", "burnt_casting_sand", "bronze_block", "steel_block", "lead_block", "slag_stone", "cast_basalt"):
+    w(A / f"models/block/{name}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": B + name}})
+    w(A / f"blockstates/{name}.json", {"variants": {"": {"model": B + name}}})
+    item_def(name, B + name)
+    loot(name)
+
+# Sand Runner: Casting Sand with a groove dug in its top (floor 13, the groove 6 wide like a trough's channel); arms
+# open the groove out to the joined sides
+SR = {"particle": B + "casting_sand", "sand": B + "casting_sand", "burnt": B + "burnt_casting_sand"}
+SANDF = {f: "#sand" for f in FACES}
+SR_MIDDLE = [box([0, 0, 0], [16, 13, 16], {**SANDF, "up": "#burnt"})] + [box([x0, 13, z0], [x0 + 5, 16, z0 + 5], SANDF) for x0 in (0, 11) for z0 in (0, 11)]
+SR_END = [box([5, 13, 0], [11, 16, 5], SANDF)]                  # the north side closed
+model("sand_runner_middle", SR_MIDDLE, SR)
+model("sand_runner_end", SR_END, SR)
+sparts = [{"apply": {"model": B + "sand_runner_middle"}}]
+for side, y in ROT.items():
+    sparts.append({"when": {side: "false"}, "apply": {"model": B + "sand_runner_end", **({"y": y} if y else {})}})
+w(A / "blockstates/sand_runner.json", {"multipart": sparts})
+w(D / "mechanical/loot_table/blocks/sand_runner.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": M + "burnt_casting_sand"}]}],
+   "random_sequence": "mechanical:blocks/sand_runner"})
+# Pig Mold: a trench pressed in the top of Casting Sand (x 3..13, z 5.5..10.5, floor 13)
+PIG = [box([0, 0, 0], [16, 13, 16], {**SANDF, "up": "#burnt"}), box([0, 13, 0], [16, 16, 5.5], SANDF), box([0, 13, 10.5], [16, 16, 16], SANDF),
+       box([0, 13, 5.5], [3, 16, 10.5], SANDF), box([13, 13, 5.5], [16, 16, 10.5], SANDF)]
+model("pig_mold", PIG, SR)
+w(A / "blockstates/pig_mold.json", {"variants": {"": {"model": B + "pig_mold"}}})
+w(D / "mechanical/loot_table/blocks/pig_mold.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": M + "burnt_casting_sand"}]}],
+   "random_sequence": "mechanical:blocks/pig_mold"})
+
+# Foundry Table: steel legs and apron, a silica-lined top with a water channel round it
+FT = {"particle": B + "foundry_table_side", "top": B + "foundry_table_top", "side": B + "foundry_table_side", "steel": B + "pouring_spout_steel"}
+TABLE = [box([0, 12, 0], [16, 16, 16], {"up": "#top", "down": "#steel", "north": "#side", "south": "#side", "east": "#side", "west": "#side"})]
+TABLE += [box([x0, 0, z0], [x0 + 3, 12, z0 + 3], "#steel") for x0 in (1, 12) for z0 in (1, 12)]
+TABLE += [box([1, 5, 2], [15, 6.5, 3], "#steel"), box([1, 5, 13], [15, 6.5, 14], "#steel")]       # stretchers
+model("foundry_table", TABLE, FT)
+w(A / "blockstates/foundry_table.json", {"variants": {"": {"model": B + "foundry_table"}}})
+item_def("foundry_table", B + "foundry_table")
+loot("foundry_table")
+# Foundry Basin: a deep riveted steel tub, silica lining inside (floor 3, rim 14)
+FB = {"particle": B + "foundry_basin_side", "side": B + "foundry_basin_side", "in": B + "foundry_basin_inside"}
+BASIN = [box([0, 0, 0], [16, 3, 16], {"up": "#in", "down": "#side", "north": "#side", "south": "#side", "east": "#side", "west": "#side"}),
+         box([0, 3, 0], [16, 14, 2], {"north": "#side", "south": "#in", "east": "#side", "west": "#side", "up": "#in"}),
+         box([0, 3, 14], [16, 14, 16], {"south": "#side", "north": "#in", "east": "#side", "west": "#side", "up": "#in"}),
+         box([0, 3, 2], [2, 14, 14], {"west": "#side", "east": "#in", "up": "#in"}),
+         box([14, 3, 2], [16, 14, 14], {"east": "#side", "west": "#in", "up": "#in"})]
+model("foundry_basin", BASIN, FB)
+w(A / "blockstates/foundry_basin.json", {"variants": {"": {"model": B + "foundry_basin"}}})
+item_def("foundry_basin", B + "foundry_basin")
+loot("foundry_basin")
+# Molding Flask: an iron frame of two halves round rammed sand; the top shows the stage (empty frame, sand, the pouring
+# hole once a pattern is in, glowing while molten)
+MF = {"particle": B + "molding_flask_side", "side": B + "molding_flask_side", "empty": B + "molding_flask_top_empty",
+      "sand": B + "molding_flask_top_sand", "glow": B + "taphole_glow", "inside": B + "casting_sand"}
+def flask(top, glow=False):
+    side4 = {"north": "#side", "south": "#side", "east": "#side", "west": "#side"}
+    els = [box([1, 0, 1], [15, 12, 15], {"up": top, "down": "#side", **side4}),
+           box([0.5, 5.5, 0.5], [15.5, 6.5, 15.5], side4 | {"up": "#side", "down": "#side"})]   # where the halves meet
+    els += [box([x0, 4, z0], [x0 + 1.5, 8, z0 + 1.5], "#side") for x0 in (0, 14.5) for z0 in (0, 14.5)]  # the pins at the corners
+    if glow:
+        els.append({"from": [6.5, 12.02, 6.5], "to": [9.5, 12.02, 9.5], "light_emission": 12, "shade": False,
+                    "faces": {"up": {"uv": [6, 6, 10, 10], "texture": "#glow"}}})
+    return els
+model("molding_flask_empty", flask("#empty"), MF)
+model("molding_flask_sand", flask("#inside"), MF)
+model("molding_flask_ready", flask("#sand"), MF)
+model("molding_flask_molten", flask("#sand", True), MF)
+model("molding_flask_set", flask("#sand"), MF)
+w(A / "blockstates/molding_flask.json", {"variants": {f"stage={st}": {"model": B + f"molding_flask_{st}"} for st in ("empty", "sand", "ready", "molten", "set")}})
+item_def("molding_flask", B + "molding_flask_empty")
+loot("molding_flask")
+# Pattern Bench: a joiner's bench (legs, top, a vice at the front)
+PB = {"particle": B + "pattern_bench_side", "top": B + "pattern_bench_top", "side": B + "pattern_bench_side", "front": B + "pattern_bench_front"}
+BENCH = [box([0, 10, 0], [16, 13, 16], {"up": "#top", "down": "#side", "north": "#front", "south": "#side", "east": "#side", "west": "#side"})]
+BENCH += [box([x0, 0, z0], [x0 + 2.5, 10, z0 + 2.5], "#side") for x0 in (0.5, 13) for z0 in (0.5, 13)]
+BENCH += [box([1, 2, 1], [15, 3.5, 15], "#side"), box([2, 8, -1], [6, 12, 0], "#front")]
+model("pattern_bench", BENCH, PB)
+w(A / "blockstates/pattern_bench.json", {"variants": {f"facing={f}": {"model": B + "pattern_bench", **({"y": y} if y else {})} for f, y in ROT.items()}})
+item_def("pattern_bench", B + "pattern_bench")
+loot("pattern_bench")
+
+# items
+FLASK_SHAPES = ["pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade", "saw_blade", "spear_head", "sword_blade", "hammer_head",
+                "plate", "ingot_mold", "plate_mold", "nugget_mold", "gear", "pot"]
+OWN = {"ingot_mold", "plate_mold", "nugget_mold", "gear", "pot"}
+for shape in FLASK_SHAPES:
+    tex = f"wooden_pattern_{shape}" if shape in OWN else ("wooden_pattern_plate_mold" if shape == "plate" else "wooden_pattern")
+    w(A / f"models/item/wooden_pattern_{shape}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + f"item/{tex}"}})
+    item_def(f"wooden_pattern_{shape}", M + f"item/wooden_pattern_{shape}")
+for name in ("coal_dust", "cast_iron_gear", "cast_iron_pot", "pig_pattern"):
+    w(A / f"models/item/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + f"item/{name}"}})
+    item_def(name, M + f"item/{name}")
+
+shapeless("casting_sand", ["minecraft:sand"] * 4 + ["minecraft:clay_ball", M + "coal_dust"], 4)
+recipe("casting_sand_from_burnt", {"type": "minecraft:crafting_shapeless", "category": "building",
+       "ingredients": [M + "burnt_casting_sand"] * 4 + ["minecraft:clay_ball", M + "coal_dust"], "result": {"id": M + "casting_sand", "count": 4}})
+recipe("molding_flask", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["P P", "R R", "P P"],
+       "key": {"P": M + "iron_plate", "R": M + "iron_tool_rod"}, "result": {"id": M + "molding_flask"}})
+recipe("foundry_table", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["PPP", "BUB"],
+       "key": {"P": M + "steel_plate", "B": M + "silica_bricks", "U": M + "bronze_bucket"}, "result": {"id": M + "foundry_table"}})
+recipe("foundry_basin", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["P P", "PBP", "BPB"],
+       "key": {"P": M + "steel_plate", "B": M + "silica_bricks"}, "result": {"id": M + "foundry_basin"}})
+recipe("pattern_bench", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["PCP", "L L"],
+       "key": {"P": "#minecraft:planks", "L": "#minecraft:logs", "C": M + "bronze_chisel"}, "result": {"id": M + "pattern_bench"}})
+tag_add(D / "minecraft/tags/block/mineable/shovel.json", M + "casting_sand", M + "burnt_casting_sand", M + "sand_runner", M + "pig_mold")
+tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "iron_plate_mold", M + "iron_nugget_mold", M + "foundry_table", M + "foundry_basin",
+        M + "molding_flask", M + "bronze_block", M + "steel_block", M + "lead_block", M + "slag_stone", M + "cast_basalt")
+tag_add(D / "minecraft/tags/block/mineable/axe.json", M + "pattern_bench")
+LANG4B = {"item.mechanical.coal_dust": "Coal Dust", "block.mechanical.casting_sand": "Casting Sand", "block.mechanical.burnt_casting_sand": "Burnt Casting Sand",
+          "block.mechanical.sand_runner": "Sand Runner", "block.mechanical.pig_mold": "Pig Mold", "item.mechanical.pig_pattern": "Pig Pattern",
+          "block.mechanical.molding_flask": "Molding Flask", "block.mechanical.foundry_table": "Foundry Table", "block.mechanical.foundry_basin": "Foundry Basin",
+          "block.mechanical.pattern_bench": "Pattern Bench", "container.mechanical.pattern_bench": "Pattern Bench",
+          "block.mechanical.iron_plate_mold": "Iron Plate Mold", "block.mechanical.iron_nugget_mold": "Iron Nugget Mold",
+          "item.mechanical.cast_iron_gear": "Cast Iron Gear", "item.mechanical.cast_iron_pot": "Cast Iron Pot",
+          "block.mechanical.bronze_block": "Block of Bronze", "block.mechanical.steel_block": "Block of Steel", "block.mechanical.lead_block": "Block of Lead",
+          "block.mechanical.slag_stone": "Slag Stone", "block.mechanical.cast_basalt": "Cast Basalt",
+          "message.mechanical.molding_flask.sand": "Ram it with 4 Casting Sand",
+          "message.mechanical.molding_flask.empty": "Empty frame: ram it with 4 Casting Sand",
+          "message.mechanical.molding_flask.sand": "Rammed: press a Wooden Pattern in",
+          "message.mechanical.molding_flask.ready": "Ready for metal: %s",
+          "message.mechanical.molding_flask.molten": "Setting: %s",
+          "message.mechanical.molding_flask.set": "Set: knock it out with a pickaxe or hammer (%s)"}
+for shape in FLASK_SHAPES:
+    nice = shape.replace("_", " ").title()
+    LANG4B[f"item.mechanical.wooden_pattern_{shape}"] = f"Wooden Pattern ({nice})"
+    LANG4B[f"pattern.mechanical.flask.{shape}"] = nice
+merge(A / "lang/en_us.json", LANG4B)
+
 # ---------------- flat items
 for name in ("crushed_quartzite", "unfired_silica_brick", "silica_brick", "steel_hoop", "bronze_tuyere_nozzle", "unfired_clay_tuyere_mold", "pig_iron_ingot"):
     w(A / f"models/item/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + f"item/{name}"}})
     item_def(name, M + f"item/{name}")
 
 # ---------------- recipes
-
-
-def shapeless(name, ingredients, count=1):
-    recipe(name, {"type": "minecraft:crafting_shapeless", "category": "building", "ingredients": ingredients,
-                  "result": {"id": M + name, "count": count}})
 
 
 shapeless("unfired_silica_brick", [M + "crushed_quartzite", M + "crushed_quartzite", M + "fire_clay", M + "quicklime"], 4)

@@ -79,6 +79,45 @@ public class RefractoryTroughBlock extends ClayChannelBlock {
     }
 
     /**
+     * A Sand Runner (the "sow" of a Pig Bed): a trough dug with a shovel in Casting Sand on the floor. It joins like any
+     * trough at its own level (no slopes) and fills the Pig Molds beside it, but sand draws the heat: the metal sets in half
+     * the time and runs half as far. Once the metal has set a shovel digs it out as ingots and nuggets, and the sand is
+     * burnt: dig a fresh runner in new Casting Sand.
+     */
+    public static class SandRunner extends RefractoryTroughBlock {
+        public SandRunner(Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        public BlockState stateAt(LevelReader level, BlockPos pos) {
+            BlockState s = defaultBlockState();
+            for (var e : SIDES.entrySet()) s = s.setValue(e.getValue(), ChannelFlow.across(level, pos, ChannelFlow.port(pos, e.getKey(), pos.getY())) != null);
+            return s;
+        }
+
+        @Override
+        protected net.minecraft.world.phys.shapes.VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos,
+                net.minecraft.world.phys.shapes.CollisionContext context) {
+            return net.minecraft.world.phys.shapes.Shapes.block();
+        }
+
+        @Override
+        protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+            if (!stack.is(ItemTags.SHOVELS)) return InteractionResult.TRY_WITH_EMPTY_HAND;
+            if (!(level instanceof ServerLevel server) || !(level.getBlockEntity(pos) instanceof TroughBlockEntity t)) return InteractionResult.SUCCESS;
+            if (t.molten() != null && !t.solid(server.getGameTime())) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical.trough.molten"));
+                return InteractionResult.SUCCESS;
+            }
+            if (t.molten() != null) knockOut(server, pos, t);
+            server.setBlock(pos, HighFurnace.BURNT_CASTING_SAND.get().defaultBlockState(), Block.UPDATE_ALL);
+            server.playSound(null, pos, SoundEvents.SAND_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F);
+            return InteractionResult.SUCCESS;
+        }
+    }
+
+    /**
      * A Trough Gate: a straight trough along {@link #AXIS} with an iron sluice gate. Right-click raises and lowers it;
      * shut, it has no ports at all ({@link ChannelFlow#ports}), so the metal stands and waits behind it.
      */

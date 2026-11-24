@@ -37,8 +37,72 @@ public class IngotMoldBlock extends Block implements EntityBlock {
     public static final int CAST = 800, INGOTS = 4, SET_TICKS = 100;
     private static final VoxelShape SHAPE = box(1, 0, 1, 15, 4, 15);
 
-    public IngotMoldBlock(Properties properties) {
+    /** The permanent cast-iron molds: what one cast takes, what it gives, and its pockets (pixels x0 x1 z0 z1, filled in turn). */
+    public enum Kind {
+        INGOT(CAST, new float[][] {{2.5F, 7.5F, 2.5F, 7.5F}, {8.5F, 13.5F, 2.5F, 7.5F}, {8.5F, 13.5F, 8.5F, 13.5F}, {2.5F, 7.5F, 8.5F, 13.5F}}),
+        PLATE(400, new float[][] {{2.5F, 13.5F, 2.5F, 13.5F}}),
+        NUGGET(400, grid()),
+        /** A Pig Mold: a trench at the top of a sand block. */
+        PIG(400, new float[][] {{3, 13, 5.5F, 10.5F}}, 13, 15.5F);
+
+        public final int cast;
+        public final float[][] pockets;
+        /** The metal's floor and top in a pocket (pixels). */
+        public final float floor, top;
+
+        Kind(int cast, float[][] pockets) {
+            this(cast, pockets, FLOOR, TOP);
+        }
+
+        Kind(int cast, float[][] pockets, float floor, float top) {
+            this.cast = cast;
+            this.pockets = pockets;
+            this.floor = floor;
+            this.top = top;
+        }
+
+        private static float[][] grid() {
+            float[][] g = new float[9][];
+            for (int i = 0; i < 9; i++) {
+                float x = 2.5F + (i % 3) * 4, z = 2.5F + (i / 3) * 4;
+                g[i] = new float[] {x, x + 3, z, z + 3};
+            }
+            return g;
+        }
+
+        /** What a set cast of {@code m} gives, or null if this mold takes no {@code m}. */
+        public @Nullable ItemStack result(Molten m) {
+            return switch (this) {
+                case INGOT -> {
+                    ItemStack i = ingot(m);
+                    if (i != null) i.setCount(INGOTS);
+                    yield i;
+                }
+                case PLATE -> switch (m) {
+                    case BRONZE -> new ItemStack(Bronze.BRONZE_PLATE.get());
+                    case WROUGHT_IRON -> new ItemStack(Smithing.IRON_PLATE.get());
+                    case STEEL -> new ItemStack(Smithing.STEEL_PLATE.get());
+                    default -> null;
+                };
+                case PIG -> {
+                    ItemStack i = ingot(m);
+                    if (i != null) i.setCount(2);
+                    yield i;
+                }
+                case NUGGET -> {
+                    ItemStack n = m == Molten.COPPER ? new ItemStack(net.minecraft.world.item.Items.COPPER_NUGGET) : HighFurnaceMelting.nugget(m);
+                    if (n != null) n.setCount(18);
+                    yield n;
+                }
+            };
+        }
+    }
+
+    public final Kind kind;
+
+    public IngotMoldBlock(Properties properties, Kind kind) {
         super(properties);
+        this.kind = kind;
     }
 
     /** The ingot a melt sets into, or null (glass, slag ... have none). */
@@ -74,9 +138,8 @@ public class IngotMoldBlock extends Block implements EntityBlock {
             player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.ingot_mold.molten"));
             return InteractionResult.SUCCESS;
         }
-        ItemStack out = ingot(mold.molten);
+        ItemStack out = kind.result(mold.molten);
         if (out != null) {
-            out.setCount(INGOTS);
             if (!player.getInventory().add(out)) net.minecraft.world.Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, out);
         }
         if (mold.molten == Molten.STEEL) Smelting.award(server, pos, HighFurnace.CAST_STEEL_ADVANCEMENT, 8);
@@ -90,8 +153,7 @@ public class IngotMoldBlock extends Block implements EntityBlock {
         return new Entity(pos, state);
     }
 
-    /** The four pockets (pixels, x0 x1 z0 z1), filled in this order; and the metal's floor and top in a pocket. */
-    public static final float[][] POCKETS = {{2.5F, 7.5F, 2.5F, 7.5F}, {8.5F, 13.5F, 2.5F, 7.5F}, {8.5F, 13.5F, 8.5F, 13.5F}, {2.5F, 7.5F, 8.5F, 13.5F}};
+    /** The metal's floor and top in a pocket. */
     public static final float FLOOR = 1.6F, TOP = 3.6F;
 
     /** What lies in the pockets: the melt, how much is in while it is being poured, and the game time it has set by. */
@@ -106,9 +168,14 @@ public class IngotMoldBlock extends Block implements EntityBlock {
             return filling;
         }
 
-        /** mB in pocket {@code i}: all of it once poured, else what the stream has put in so far. */
+        public Kind kind() {
+            return getBlockState().getBlock() instanceof IngotMoldBlock b ? b.kind : Kind.INGOT;
+        }
+
+        /** How full pocket {@code i} is (0..1): all of it once poured, else what the stream has put in so far. */
         public float pocket(int i) {
-            int per = CAST / INGOTS, in = molten != null ? CAST : filling != null ? filled : 0;
+            Kind k = kind();
+            int per = k.cast / k.pockets.length, in = molten != null ? k.cast : filling != null ? filled : 0;
             return Math.clamp((in - i * per) / (float) per, 0, 1);
         }
 
@@ -133,7 +200,7 @@ public class IngotMoldBlock extends Block implements EntityBlock {
             molten = m;
             filling = null;
             filled = 0;
-            setAt = now + SET_TICKS;
+            setAt = now + FoundryTableBlock.setTicks(level, worldPosition, SET_TICKS);
             sync();
         }
 
@@ -180,7 +247,7 @@ public class IngotMoldBlock extends Block implements EntityBlock {
     static final class Sink implements PouringSpoutBlockEntity.Sink {
         @Override
         public int need(ServerLevel level, BlockPos at, Molten m) {
-            return level.getBlockEntity(at) instanceof Entity e && e.molten == null && ingot(m) != null ? CAST : 0;
+            return level.getBlockEntity(at) instanceof Entity e && e.molten == null && e.kind().result(m) != null ? e.kind().cast : 0;
         }
 
         @Override
@@ -191,10 +258,11 @@ public class IngotMoldBlock extends Block implements EntityBlock {
         /** The stream lands on the metal rising in the pocket now being filled. */
         @Override
         public net.minecraft.world.phys.Vec3 target(ServerLevel level, BlockPos at, int poured, int need) {
-            int per = CAST / INGOTS, i = Math.min(INGOTS - 1, poured / per);
+            Kind k = level.getBlockEntity(at) instanceof Entity e ? e.kind() : Kind.INGOT;
+            int per = k.cast / k.pockets.length, i = Math.min(k.pockets.length - 1, poured / per);
             float f = Math.clamp((poured - i * per) / (float) per, 0, 1);
-            float[] p = POCKETS[i];
-            return new net.minecraft.world.phys.Vec3((p[0] + p[1]) / 32, (FLOOR + (TOP - FLOOR) * f) / 16, (p[2] + p[3]) / 32);
+            float[] p = k.pockets[i];
+            return new net.minecraft.world.phys.Vec3((p[0] + p[1]) / 32, (k.floor + (k.top - k.floor) * f) / 16, (p[2] + p[3]) / 32);
         }
 
         @Override

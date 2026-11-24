@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:burnt_casting_sand"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/sand_runner"
+}

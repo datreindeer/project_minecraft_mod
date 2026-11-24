@@ -1629,6 +1629,16 @@ TABS["steel_age"][1].extend([
      "Lay Refractory Troughs from under a Pouring Spout to the molds: the metal runs downhill, shares evenly at a fork and "
      "stops at a shut Trough Gate. Hot iron cracks clay channels, and it freezes if the line is longer than its heat carries it",
      has("refractory_trough")),
+    ("sow_and_pigs", "trough", "pig_pattern", T, "Sow and Pigs",
+     "Lay Casting Sand in front of a taphole, dig a Sand Runner with a shovel and press Pig Molds beside it with a Pig Pattern: "
+     "a whole tapping runs into the pig bed", has("pig_pattern")),
+    ("molding_flask", "pour", "molding_flask", T, "Sand Casting",
+     "Ram a Molding Flask with 4 Casting Sand, press a Wooden Pattern from the Pattern Bench into it and pour: the casting comes out finished",
+     has("molding_flask")),
+    ("never_cracks", "molding_flask", "iron_ingot_mold", G, "Never Cracks",
+     "Cast an Iron Ingot Mold from pig iron in a Molding Flask: 4 ingots of any metal per pour, and it never cracks", has("iron_ingot_mold")),
+    ("foundry_basin", "pour", "foundry_basin", T, "Cast in Bulk",
+     "Pour a whole block into a Foundry Basin: 1800 mB of metal, or 250 mB of slag", has("bronze_block", "steel_block", "lead_block", "slag_stone")),
     ("pig_iron", "white_heat", "pig_iron_ingot", G, "Pig Iron",
      "Throw iron ore into a High Furnace at 1450°: it comes out as molten Pig Iron, twice what a Bloomery gives, with Slag "
      "floating on top. Flux thrown in with it gives more iron and less slag", by_code()),

@@ -58,7 +58,12 @@ public class TroughBlockEntity extends BlockEntity {
     }
 
     public boolean solid(long now) {
-        return mb > 0 && (frozen || now - movedAt >= SET_TICKS);
+        return mb > 0 && (frozen || now - movedAt >= setTicks());
+    }
+
+    /** Sand draws the heat: a Sand Runner's metal sets in half the time. */
+    int setTicks() {
+        return getBlockState().getBlock() instanceof RefractoryTroughBlock.SandRunner ? SET_TICKS / 2 : SET_TICKS;
     }
 
     public boolean running(long now) {
@@ -67,7 +72,7 @@ public class TroughBlockEntity extends BlockEntity {
 
     /** How cool it has got, 0 molten .. 1 set (for the cooling colours). */
     public float cooled(long now) {
-        return mb == 0 ? 0 : frozen ? 1 : Math.clamp((now - movedAt) / (float) SET_TICKS, 0, 1);
+        return mb == 0 ? 0 : frozen ? 1 : Math.clamp((now - movedAt) / (float) setTicks(), 0, 1);
     }
 
     /** Does it take {@code m} now (empty, or the same melt still runny)? */

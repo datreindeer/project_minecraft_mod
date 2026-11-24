@@ -367,6 +367,7 @@
     "mechanical:fermenting_barrel",
     "mechanical:cheese_press",
     "mechanical:sieve",
+    "mechanical:pattern_bench",
     "mechanical:great_bellows"
   ]
 }

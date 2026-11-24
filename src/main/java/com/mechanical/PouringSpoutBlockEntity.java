@@ -152,6 +152,11 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         void giveBack(Molten m, int mb);
 
         int heat();
+
+        /** A furnace starts a cast only when it holds all of it; a trough feeds a cast as it refills. */
+        default boolean whole() {
+            return true;
+        }
     }
 
     private @Nullable Source source(ServerLevel level) {
@@ -201,6 +206,10 @@ public class PouringSpoutBlockEntity extends BlockEntity {
             public int heat() {
                 return t.heat();
             }
+
+            public boolean whole() {
+                return false;
+            }
         };
         return null;
     }
@@ -224,7 +233,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
                     break;
                 }
             }
-            if (sink != null && bufferMolten == null && src.available() < need && !(sink instanceof TroughFlow.Sink)) sink = null; // a cast starts only when it is all there
+            if (sink != null && bufferMolten == null && src.available() < need && src.whole() && !(sink instanceof TroughFlow.Sink)) sink = null; // a cast starts only when it is all there
             if (sink == null) {
                 giveBack();
                 if (--warnIn <= 0) {

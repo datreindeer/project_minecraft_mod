@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:steel_age/trough",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pig_pattern"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:pig_pattern"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.sow_and_pigs.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.sow_and_pigs.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

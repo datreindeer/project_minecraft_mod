@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:steel_age/molding_flask",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:iron_ingot_mold"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:iron_ingot_mold"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.never_cracks.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.never_cracks.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

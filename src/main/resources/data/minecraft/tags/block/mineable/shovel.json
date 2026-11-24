@@ -42,6 +42,10 @@
     "mechanical:packed_red_sand_slab",
     "mechanical:packed_snow_slab",
     "mechanical:burnt_soil_slab",
-    "mechanical:burnt_soil"
+    "mechanical:burnt_soil",
+    "mechanical:casting_sand",
+    "mechanical:burnt_casting_sand",
+    "mechanical:sand_runner",
+    "mechanical:pig_mold"
   ]
 }

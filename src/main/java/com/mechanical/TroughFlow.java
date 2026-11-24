@@ -81,7 +81,9 @@ public final class TroughFlow {
         if (n <= 0) return;
         int got = from.take(n, now);
         to.add(m, got, from.dist + 1, from.heat, now);
-        if (to.dist > reach(to.heat, m)) to.freeze();
+        int reach = reach(to.heat, m);
+        if (to.getBlockState().getBlock() instanceof RefractoryTroughBlock.SandRunner) reach /= 2; // sand draws the heat
+        if (to.dist > reach) to.freeze();
     }
 
     /** Hot iron in clay: the channel glows, cracks and breaks; what ran into it is lost. */
@@ -105,7 +107,7 @@ public final class TroughFlow {
                 returnBuffer(t, now);
                 return;
             }
-            int n = t.take(Math.min(RATE / 5, need - t.buffer), now);
+            int n = t.take(Math.min(RATE, need - t.buffer), now); // as fast as a spout pours (40 mB a tick)
             t.buffer += n;
             sink.progress(level, q, m, t.buffer, need);
             if (t.buffer >= need) {
@@ -167,7 +169,8 @@ public final class TroughFlow {
         @Override
         public net.minecraft.world.phys.Vec3 target(ServerLevel level, BlockPos at, int poured, int need) {
             int in = level.getBlockEntity(at) instanceof TroughBlockEntity t ? t.mb : 0;
-            return new net.minecraft.world.phys.Vec3(0.5, (2 + 3F * in / TroughBlockEntity.CAPACITY) / 16, 0.5);
+            float lift = level.getBlockState(at).getBlock() instanceof RefractoryTroughBlock.SandRunner ? 11 : 0; // a runner's groove is at the top
+            return new net.minecraft.world.phys.Vec3(0.5, (lift + 2 + 3F * in / TroughBlockEntity.CAPACITY) / 16, 0.5);
         }
     }
 

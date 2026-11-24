@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "L L"
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "L": "#minecraft:logs",
+    "C": "mechanical:bronze_chisel"
+  },
+  "result": {
+    "id": "mechanical:pattern_bench"
+  }
+}

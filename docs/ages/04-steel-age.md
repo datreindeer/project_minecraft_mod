@@ -273,3 +273,20 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
 - Stelnad metall slås ut med hacka: tackor och nuggets (22 mB), resten förloras. Ösa med Steel Ladle kommer i fas 7.
 - Test `trough_flow`, `trough_pour`. Inte gjort: Sand Runner (Pig Bed, fas 4b), sprickor i två synliga steg (lerrännan
   går sönder direkt), cachat nät (varje ränna flyttar lokalt, ingen nätsökning behövs).
+
+### 6e. Byggt: gjutningens nya nivå (fas 4b)
+
+- **Coal Dust** (Coal på Stone Anvil → 2), **Casting Sand** (4 Sand + Clay Ball + Coal Dust → 4), **Burnt Casting Sand**
+  (4 + Clay Ball + Coal Dust → 4 Casting Sand).
+- **Tackbädd:** Casting Sand i golvet; spade → **Sand Runner** (en ränna i sanden: stelnar på halva tiden, halv räckvidd,
+  spaden gräver ut stelnad metall och sanden blir bränd); **Pig Pattern** → **Pig Mold** (400 mB → 2 tackor, sedan bränd).
+- **Molding Flask** (4 Iron Plate + 2 Iron Tool Rod): 4 Casting Sand, ett trämönster, metall, slå ur med hacka/hammare →
+  färdig gjutning + 3 Burnt Casting Sand. Verktygshuvuden ⅔ av lerformens metall (hackhuvud 400 mB). Av tackjärn: Iron
+  Ingot Mold (1000), Iron Plate Mold (1000), Iron Nugget Mold (600), Cast Iron Gear (200), Cast Iron Pot (800).
+- **Pattern Bench** (`PCP` / `L L`): plankor → trämönster (slits 128 tryck).
+- **Iron Plate Mold** (400 mB → Bronze/Iron/Steel Plate) och **Iron Nugget Mold** (400 mB → 18 nuggets), spricker aldrig.
+  **Iron Ingot Mold** gjuts nu i flaska (plåtreceptet borttaget).
+- **Foundry Table**: det som står på bordet stelnar på halva tiden (förenkling: formen står på bordet, bordet håller den inte).
+- **Foundry Basin**: block av 1800 mB metall (Copper/Gold/Lead/Bronze/Steel Block) eller 250 mB slagg/basalt/glas/obsidian;
+  fyllnaden stiger, stelnar på 10 s per 1000 mB.
+- Test `foundry_casting`. Inte gjort: Anvil i flaska (väntar på användaren), Steel Block kräver inte 1650°.

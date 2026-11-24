@@ -70,6 +70,7 @@ public final class BronzeOres {
         if (ore.is(CASSITERITE.get())) return new ItemStack(CRUSHED_TIN_ORE.get());
         if (ore.is(Items.BRICK)) return new ItemStack(Ironworking.GROG.get(), 2); // grog for Fire Clay
         if (ore.is(StoneFamilies.block("quartzite").asItem())) return new ItemStack(HighFurnace.CRUSHED_QUARTZITE.get(), 2); // for Silica Bricks
+        if (ore.is(Items.COAL)) return new ItemStack(HighFurnace.COAL_DUST.get(), 2); // for Casting Sand
         ItemStack flux = IronOres.crushed(ore); // Limestone -> Flux
         if (!flux.isEmpty()) return flux;
         ItemStack rubble = StoneCrafts.crushed(ore); // Conglomerate, Shale, Pumice

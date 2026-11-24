@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "BUB"
+  ],
+  "key": {
+    "P": "mechanical:steel_plate",
+    "B": "mechanical:silica_bricks",
+    "U": "mechanical:bronze_bucket"
+  },
+  "result": {
+    "id": "mechanical:foundry_table"
+  }
+}

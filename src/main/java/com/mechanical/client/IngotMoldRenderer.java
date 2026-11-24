@@ -36,7 +36,8 @@ public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Ent
     public static class State extends BlockEntityRenderState {
         @Nullable Molten molten;
         float cooled;
-        final float[] level = new float[IngotMoldBlock.INGOTS];
+        float[] level = new float[0];
+        IngotMoldBlock.Kind kind = IngotMoldBlock.Kind.INGOT;
     }
 
     public IngotMoldRenderer(BlockEntityRendererProvider.Context context) {}
@@ -52,6 +53,8 @@ public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Ent
         BlockEntityRenderer.super.extractRenderState(mold, state, partialTicks, camera, breakProgress);
         state.molten = mold.molten() != null ? mold.molten() : mold.filling();
         state.cooled = mold.molten() == null || mold.getLevel() == null ? 0 : mold.cooled(mold.getLevel().getGameTime());
+        state.kind = mold.kind();
+        if (state.level.length != state.kind.pockets.length) state.level = new float[state.kind.pockets.length];
         for (int i = 0; i < state.level.length; i++) state.level[i] = mold.pocket(i);
     }
 
@@ -63,10 +66,10 @@ public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Ent
         int c = state.cooled < 0.6F ? ARGB.srgbLerp(state.cooled / 0.6F, hot, 0xFFB02A08) | 0xFF000000 : ARGB.srgbLerp((state.cooled - 0.6F) / 0.4F, 0xFFB02A08, skin) | 0xFF000000;
         boolean glow = state.cooled < 1;
         collector.submitCustomGeometry(pose, MoltenRenderer.CRUST, (p, buf) -> {
-            for (int i = 0; i < IngotMoldBlock.POCKETS.length; i++) {
+            for (int i = 0; i < state.kind.pockets.length; i++) {
                 if (state.level[i] <= 0) continue;
-                float[] q = IngotMoldBlock.POCKETS[i];
-                float y = (IngotMoldBlock.FLOOR + (IngotMoldBlock.TOP - IngotMoldBlock.FLOOR) * state.level[i]) / 16;
+                float[] q = state.kind.pockets[i];
+                float y = (state.kind.floor + (state.kind.top - state.kind.floor) * state.level[i]) / 16;
                 quad(p, buf, c, q[0] / 16, q[2] / 16, q[1] / 16, q[3] / 16, y, glow ? LightCoordsUtil.FULL_BRIGHT : state.lightCoords);
             }
         });

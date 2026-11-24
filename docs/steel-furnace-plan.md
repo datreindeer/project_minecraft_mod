@@ -675,3 +675,6 @@ vanillas Anvil (järnålderns dokument säger ångåldern; gjuts inte från stå
   i mB i stället för `ChannelFlow`s nätsökning; samma portar och lutningar via `ChannelFlow.ports/across`), räckvidd,
   lerrännor som spricker, pip i rännände, `client/TroughRenderer` (via `MoltenRenderer.Channel.channel`). Test `trough_flow`,
   `trough_pour`.
+- **Fas 4b (v0.200.0):** `CastingSandBlock`, `RefractoryTroughBlock.SandRunner`, `PigMoldBlock`, `MoldingFlaskBlock` (`FlaskShape`),
+  `PatternBenchBlock`, `FoundryTableBlock` (står under formen), `FoundryBasinBlock`, `IngotMoldBlock.Kind` (ingot, plate, nugget, pig).
+  Test `foundry_casting`.

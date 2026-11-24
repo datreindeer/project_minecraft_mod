@@ -33,6 +33,7 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
         float fill, time, cooled, hot;
         int sides;
         @Nullable Direction up;
+        boolean sand;
     }
 
     public TroughRenderer(BlockEntityRendererProvider.Context context) {}
@@ -53,6 +54,7 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
         state.hot = state.molten == null ? 0 : Math.clamp(1 - t.dist() / (float) Math.max(1, com.mechanical.TroughFlow.reach(t.heat(), state.molten) + 1), 0, 1);
         state.time = ((now % 1000) + partialTicks) * (t.running(now) ? 0.04F : 0.004F);
         BlockState block = t.getBlockState();
+        state.sand = block.getBlock() instanceof com.mechanical.RefractoryTroughBlock.SandRunner;
         state.up = null;
         state.sides = 0;
         if (block.getBlock() instanceof ClayChannelBlock) {
@@ -80,6 +82,7 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
     public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
         if (state.molten == null) return;
         int c = state.cooled < 0.05F ? glow(state.molten, state.hot) : cooling(state.molten, state.cooled);
+        if (state.sand) pose.translate(0, 11 / 16F, 0); // a runner's groove is at the top of its sand block
         MoltenRenderer.Channel.channel(collector, pose, MoltenRenderer.CRUST, c, state.cooled >= 1 ? 0 : state.time, state.up, state.sides, Math.min(1, state.fill));
     }
 
