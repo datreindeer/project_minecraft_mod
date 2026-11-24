@@ -356,11 +356,19 @@ klimatet", "Fruktträd", "Fler blommor", magiska blommor).
   `gen_trees.py`). De fyra lövfällande sorterna har kala grenar och knoppar på vintern/våren (`SeasonalFoliage`) men
   **ingen höstfärg**: höstmodellen skulle dölja frukten. Dadelpalmen har en egen kronform (`TreeShapes.PalmFoliagePlacer`:
   åtta blad som hänger ut från toppen) och en planta som tar rot i sand. `StumpBlock.LOG` går nu till 25 (en per trä).
+  Kronformer: rönnen en upprätt luftig oval (vanillas fancy-stam med grenar), häggen flera lutande stammar med lösa
+  hängande kronor (pilens placerare), vildapeln låg och bred med krokiga grenar (körsbärsträdets stam och krona),
+  plommonet en liten rund krona, olivträdet en kort kluven stam med små öppna silvriga kronor, dadelpalmen en svagt
+  böjd stam (`TreeShapes.CurvedTrunkPlacer`) med en stjärna av tunna hängande blad (bladen är egna modeller: ett plan
+  ovanifrån och korsade plan med hängande bladspetsar, var fjärde med blomsträngar eller en dadelklase). Frukt och blom
+  sitter i små klasar i 3 texturvarianter per stadium som vrids slumpvis, så kronan inte blir ett rutmönster.
   **Inte byggt:** Mulberry, ympning till Apple, oliver i saltlake och olja (pressen), frukt som faller till marken.
 - **Magiska fas 3:** Will-o'-Wisp Lily (Peat Bog, blommar och lyser bara på natten) och Moonwort (Limestone Karst, bara
   fullmånenätter: `WildFlowerBlock.Bloom.fullMoon`). **Beslut (Claude, kan ändras):** "lyser bara i dimma" blev "bara på
   natten", eftersom det inte finns någon dimma i Peat Bog. Användningarna (Fern Flower i Charm, Frost Lily-te, Moonwort
   öppnar lås) är inte byggda.
+- **Snårbuskarnas skott:** planen som sticker ut ur buskarna har egna texturer (`<sort>_sprig`, `_sprig_bare`: några
+  tydliga bladskott) i stället för utsträckt lövmassa. De låga mattorna och vinbären är målade som mjuka klumpar.
 - **Fas 1-putsning:** Jujube-löven målade som mjuka klumpar med ljus och skuggsida; Blackthorns vårblom är nu små
   femkronbladiga blommor i klasar på mörka kvistar.
 - **Test:** `FloraTest` utökad (låga och vintergröna buskar, mognadssäsong, fullmåne, fruktplockning, stubbens trästorlek,

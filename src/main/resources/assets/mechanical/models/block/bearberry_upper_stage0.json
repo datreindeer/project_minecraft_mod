@@ -5,7 +5,8 @@
     "particle": "mechanical:block/bearberry_stage0",
     "leaves": "mechanical:block/bearberry_stage0",
     "inner": "mechanical:block/bearberry_inner",
-    "stems": "mechanical:block/bearberry_stems"
+    "stems": "mechanical:block/bearberry_stems",
+    "sprig": "mechanical:block/bearberry_sprig"
   },
   "elements": [
     {
@@ -284,7 +285,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "south": {
@@ -294,7 +295,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }
@@ -319,7 +320,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "west": {
@@ -329,7 +330,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }

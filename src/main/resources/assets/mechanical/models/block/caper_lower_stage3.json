@@ -5,7 +5,8 @@
     "particle": "mechanical:block/caper_stage3",
     "leaves": "mechanical:block/caper_stage3",
     "inner": "mechanical:block/caper_inner",
-    "stems": "mechanical:block/caper_stems"
+    "stems": "mechanical:block/caper_stems",
+    "sprig": "mechanical:block/caper_sprig"
   },
   "elements": [
     {
@@ -284,7 +285,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "south": {
@@ -294,7 +295,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }
@@ -319,7 +320,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "west": {
@@ -329,7 +330,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }

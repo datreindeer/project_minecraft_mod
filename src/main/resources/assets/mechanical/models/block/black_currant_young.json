@@ -5,7 +5,8 @@
     "particle": "mechanical:block/black_currant_stage0",
     "leaves": "mechanical:block/black_currant_stage0",
     "inner": "mechanical:block/black_currant_inner",
-    "stems": "mechanical:block/black_currant_stems"
+    "stems": "mechanical:block/black_currant_stems",
+    "sprig": "mechanical:block/black_currant_sprig"
   },
   "elements": [
     {

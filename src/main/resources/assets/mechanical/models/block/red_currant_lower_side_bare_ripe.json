@@ -4,7 +4,8 @@
     "particle": "mechanical:block/red_currant_bare_ripe",
     "leaves": "mechanical:block/red_currant_bare_ripe",
     "inner": "mechanical:block/red_currant_bare",
-    "stems": "mechanical:block/red_currant_stems_bare"
+    "stems": "mechanical:block/red_currant_stems_bare",
+    "sprig": "mechanical:block/red_currant_sprig_bare"
   },
   "elements": [
     {

@@ -4,7 +4,8 @@
     "particle": "mechanical:block/rosehip_stage3",
     "leaves": "mechanical:block/rosehip_stage3",
     "inner": "mechanical:block/rosehip_inner",
-    "stems": "mechanical:block/rosehip_stems"
+    "stems": "mechanical:block/rosehip_stems",
+    "sprig": "mechanical:block/rosehip_sprig"
   },
   "elements": [
     {

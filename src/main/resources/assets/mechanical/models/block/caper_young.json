@@ -5,7 +5,8 @@
     "particle": "mechanical:block/caper_stage0",
     "leaves": "mechanical:block/caper_stage0",
     "inner": "mechanical:block/caper_inner",
-    "stems": "mechanical:block/caper_stems"
+    "stems": "mechanical:block/caper_stems",
+    "sprig": "mechanical:block/caper_sprig"
   },
   "elements": [
     {

@@ -5,7 +5,8 @@
     "particle": "mechanical:block/rosehip_stage0",
     "leaves": "mechanical:block/rosehip_stage0",
     "inner": "mechanical:block/rosehip_inner",
-    "stems": "mechanical:block/rosehip_stems"
+    "stems": "mechanical:block/rosehip_stems",
+    "sprig": "mechanical:block/rosehip_sprig"
   },
   "elements": [
     {
@@ -348,7 +349,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "south": {
@@ -358,7 +359,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }
@@ -383,7 +384,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "west": {
@@ -393,7 +394,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }

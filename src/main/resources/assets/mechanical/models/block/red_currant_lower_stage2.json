@@ -5,7 +5,8 @@
     "particle": "mechanical:block/red_currant_stage2",
     "leaves": "mechanical:block/red_currant_stage2",
     "inner": "mechanical:block/red_currant_inner",
-    "stems": "mechanical:block/red_currant_stems"
+    "stems": "mechanical:block/red_currant_stems",
+    "sprig": "mechanical:block/red_currant_sprig"
   },
   "elements": [
     {
@@ -348,7 +349,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "south": {
@@ -358,7 +359,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }
@@ -383,7 +384,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "west": {
@@ -393,7 +394,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }

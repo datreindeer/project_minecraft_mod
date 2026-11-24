@@ -4,7 +4,8 @@
     "particle": "mechanical:block/bearberry_bare_ripe",
     "leaves": "mechanical:block/bearberry_bare_ripe",
     "inner": "mechanical:block/bearberry_bare",
-    "stems": "mechanical:block/bearberry_stems_bare"
+    "stems": "mechanical:block/bearberry_stems_bare",
+    "sprig": "mechanical:block/bearberry_sprig_bare"
   },
   "elements": [
     {

@@ -877,34 +877,35 @@ THICKETS.update({
         flower=["fcd2e0", "ec8cb0", "f4d23c"], unripe=["7a7a1e", "c08a2a", "e8c060"], ripe=["8a1008", "d8301c", "ffb090"],
         clump=(1.3, 2.0), stretch=(1.0, 1.0), coverage=0.72, fruit="hip", bunches=5, seed=51, thorny=True, canes=2),
     "crowberry": dict(  # heath mat: tiny dark needle leaves crowded along reddish stems, shiny black berries
-        leaf=["7a9a52", "5a7c3e", "44642e", "304a22", "1e3016"], bark=["4a2018", "7e3826", "a04a32"],
+        leaf=["7c9c50", "56783a", "3e5e2c", "2c4622", "1e3018"], bark=["4a2018", "7e3826", "a04a32"],
         flower=["a82848", "6e1a30", "e070a0"], unripe=["4a6a2a", "7a9a40", "b8d080"], ripe=["140a1c", "3a2248", "6a7290"],
         winter=["6e7a4a", "52603a", "3e4a2c", "2c3420", "1c2216"],
-        clump=(1.2, 2.0), stretch=(1.0, 1.0), coverage=0.74, style="needle", stamps=52, trail=6,
-        low=True, evergreen=True, fruit="heath", bunches=9, seed=63),
+        clump=(1.6, 2.6), stretch=(1.0, 1.0), coverage=0.86, style="needle", stamps=22, soft=True,
+        low=True, evergreen=True, fruit="heath", bunches=6, nmax=2, seed=63),
     "bearberry": dict(  # trailing mat: small glossy leathery leaves on red-brown runners, bright red berries
         leaf=["a8da84", "62a246", "448034", "2e6026", "1c3e18"], bark=["4e2418", "7e3a24", "a65a38"],
         flower=["fbf4f2", "f0b0c0", "c86a84"], unripe=["6a9a3a", "9cc65a", "d8eca0"], ripe=["900e10", "e0261e", "ffc0b0"],
         winter=["a8945a", "84683a", "68502e", "4a3622", "2e2216"],
-        clump=(1.0, 1.6), stretch=(1.0, 1.0), coverage=0.7, style="oval", trail=4,
-        low=True, evergreen=True, fruit="bear", bunches=8, seed=71),
+        clump=(1.1, 1.7), stretch=(1.0, 1.0), coverage=0.8, style="oval", trail=2, soft=True,
+        low=True, evergreen=True, fruit="bear", bunches=6, nmax=2, seed=71),
     "barberry": dict(  # thorny: tufts of small blue-green oval leaves, hanging yellow flowers, then strings of red berries
         leaf=["b0d0ac", "80a886", "5e8870", "426652", "2a4438"], bark=["4a3424", "6e5034", "9a7a50"],
         flower=["f8e050", "d8b020", "fff4a0"], unripe=["5a8a3a", "8ab64e", "c4e08a"], ripe=["900c14", "dc1e24", "ff9a90"],
         clump=(1.0, 1.7), stretch=(1.0, 1.0), coverage=0.7, style="tuft", fruit="barb", bunches=6, seed=83, thorny=True, soft=True),
     "caper": dict(  # low sprawling mound: round fleshy blue-green leaves, white flowers with long violet stamens, olive buds
-        leaf=["c0dcc0", "8cb898", "689882", "4a7462", "304e44"], bark=["4e4a30", "6a6640", "8a8656"],
-        flower=["fcfcf6", "dcd8d4", "a868b4"], unripe=["5e7a24", "9ab83e", "d0e07a"], ripe=["34400e", "5e7420", "9cac50"],
-        clump=(1.5, 2.3), stretch=(1.0, 1.0), coverage=0.62, style="round", trail=3,
-        low=True, fruit="caper", bunches=7, seed=91),
+        leaf=["b8ccb0", "90ac8e", "6e8e76", "52705e", "3a5246"], bark=["4e4a30", "6a6640", "8a8656"],
+        flower=["fcf6f4", "e8c8d4", "8a3aa0"], unripe=["5e7a24", "9ab83e", "d0e07a"], ripe=["34400e", "5e7420", "9cac50"],
+        clump=(2.0, 3.0), stretch=(1.0, 1.0), coverage=0.8, style="round", soft=True,
+        low=True, fruit="caper", bunches=5, nmax=2, seed=91),
     "red_currant": dict(  # lobed bright green leaves, hanging strings of glossy see-through red currants
         leaf=["aee27e", "78bc4c", "56983a", "3c742c", "264e1e"], bark=["4a3828", "6a523a", "8c7250"],
         flower=["d8dc7a", "a8b050", "f0f0b0"], unripe=["5a8a2e", "8ac04a", "d4f0a0"], ripe=["8a0a12", "dc2a2a", "ff9088"],
-        clump=(1.8, 2.8), stretch=(1.0, 1.0), coverage=0.74, style="maple", fruit="currant", bunches=5, seed=101),
+        clump=(2.4, 3.4), stretch=(1.0, 1.0), coverage=0.76, style="maple", soft=True, fruit="currant", bunches=5, seed=101),
     "black_currant": dict(  # the same lobed leaves, darker; dull pink flower strings, glossy black currants
         leaf=["8ec468", "5c9a40", "427c32", "2e5c26", "1e3c18"], bark=["40302a", "5e4636", "7e624a"],
-        flower=["d8a8b0", "a87884", "e8e0a0"], unripe=["4a7a2a", "78aa44", "c0e090"], ripe=["06060a", "1c1a26", "b4bcd8"],
-        clump=(1.8, 2.8), stretch=(1.0, 1.0), coverage=0.74, style="maple", fruit="currant", bunches=5, seed=113),
+        flower=["d8a8b0", "a87884", "e8e0a0"], unripe=["4a7a2a", "78aa44", "c0e090"], ripe=["08080c", "1e1c28", "4c5470"],
+        clump=(2.4, 3.4), stretch=(1.0, 1.0), coverage=0.76, style="maple", soft=True, fruit="currant", bunches=5, seed=113,
+        dim_glint=True),
 })
 
 def despeckle(px):
@@ -932,29 +933,21 @@ def leaf_mass(p, seed, coverage=None, darken=0, leaf=None):
     style = p.get("style")
     rng = random.Random(seed + 2)
     L = p["leaf"]
-    if style == "needle":  # short upright sprigs, needles alternating left (lit) and right (shade) up a dark stem
+    if style == "needle":  # short upright needle tufts, lit at the tips
         for _ in range(p["stamps"]):
-            x, y, lean = rng.randrange(16), rng.randrange(16), rng.choice((-1, 0, 0, 1))
-            n = rng.randint(3, 5)
-            for i in range(n):
-                cx, cy = x + (i * lean) // 2, y - i
-                put(px, cx, cy, p["bark"][1] if i % 2 and i < n - 1 else L[min(4, 3 + darken)] if i < n - 1 else L[min(4, 1 + darken)])
-                if i % 2 == 0:
-                    put(px, cx - 1, cy, L[min(4, 1 + darken)])
-                else:
-                    put(px, cx + 1, cy, L[min(4, 2 + darken)])
-            put(px, x + (n * lean) // 2, y - n, L[min(4, darken)])
+            x, y = rng.randrange(16), rng.randrange(16)
+            put(px, x, y, L[min(4, 2 + darken)])
+            put(px, x, y - 1, L[min(4, 1 + darken)])
+            put(px, x + rng.choice((-1, 1)), y - 2, L[min(4, darken)])
     if style in ("oval", "round"):  # glossy: light catches every leaf edge facing the top left
         for (x, y), c in list(px.items()):
             if ((x - 1) % 16, y) not in px and (x, (y - 1) % 16) not in px:
                 px[(x, y)] = L[min(4, darken)]
-    if style == "maple":  # V notches cut into the upper rims, so the clumps break into lobed leaves
+    if style == "maple":  # a few small notches in the upper rims of the broad clumps, so they read as lobed leaves
         for (x, y) in list(px):
-            if (x, (y - 1) % 16) not in px and rng.random() < 0.35:
+            if ((x, (y - 1) % 16) not in px and ((x - 1) % 16, y) in px and ((x + 1) % 16, y) in px
+                    and rng.random() < 0.18):
                 px.pop((x, y), None)
-                px.pop((x, (y + 1) % 16), None)
-                px[((x - 1) % 16, (y + 1) % 16)] = L[min(4, 2 + darken)]
-                px[((x + 1) % 16, (y + 1) % 16)] = L[min(4, 3 + darken)]
     for _ in range(p.get("trail", 0)):  # runners, seen only in the gaps
         x, y, dx = rng.randrange(16), rng.randrange(16), rng.choice((-1, 1))
         for i in range(16):
@@ -984,6 +977,7 @@ def draw_fruit(px, p, spots, stage):
     rng = random.Random(p["seed"] + 77)
     f = p["fruit"]
     for si, (x, y, dx, n, k) in enumerate(spots):
+        n = min(n, p.get("nmax", n))
         if p.get("low"):
             tx, ty = x, y - 2
         elif f in ("barb", "currant"):  # a short twig reaching out sideways, the string hangs from its end
@@ -1008,7 +1002,6 @@ def draw_fruit(px, p, spots, stage):
             for bx, by in pts:
                 if stage == 1 and f == "heath":  # tiny purple-red flowers, one pixel each
                     put(px, bx, by, col[0])
-                    put(px, bx + 1, by + 1, col[1])
                 elif stage == 1:  # little white urns, pink at the mouth, hanging
                     put(px, bx, by, col[0])
                     put(px, bx, by + 1, col[1])
@@ -1032,13 +1025,13 @@ def draw_fruit(px, p, spots, stage):
                     put(px, tx + ox, ty + oy, col[2] if ox <= 0 else col[1])
                     put(px, tx + ox, ty + oy + 1, col[1] if ox <= 0 else col[0])
         elif f == "caper":
-            flower = stage == 2 or (stage == 3 and si == 0)
+            flower = (stage == 2 and si < 2) or (stage == 3 and si == 0)  # only a few flowers open at once
             if flower:  # a round white flower, the long violet stamens bursting out past the petals
-                for j, row in enumerate((".WW..", "WWWw.", "WWVww", ".wwwV", "....V")):
+                for j, row in enumerate((".WW..", "WWWw.", "WWVww", ".www.", "...V.")):
                     for i, ch in enumerate(row):
                         if ch != ".":
                             put(px, tx + i - 2, ty + j - 2, p["flower"][{"W": 0, "w": 1}.get(ch, 2)])
-            elif stage == 1:  # small green buds
+            elif stage in (1, 2):  # small green buds
                 for ox, oy in ((0, 0), (2, 1), (-1, 2))[:n]:
                     put(px, tx + ox, ty + oy, p["unripe"][2])
                     put(px, tx + ox, ty + oy + 1, p["unripe"][0])
@@ -1055,6 +1048,8 @@ def draw_fruit(px, p, spots, stage):
                     put(px, tx + ox + 1, ty + oy + 1, col[1])
                 else:
                     berry2(px, tx + ox, ty + oy, col)
+                    if p.get("dim_glint") and stage == 3 and (si + i) % 3:  # most black currants without a glint
+                        put(px, tx + ox, ty + oy, col[1])
 
 
 def thorny_twigs(p, seed, count=6):
@@ -1098,6 +1093,78 @@ def blossom_twigs(p, bare, seed):
         if all(abs(x - a) + abs(y - b) >= 3 for a, b in centres):
             put(px, x, y, shade)
     return px
+
+
+SPRIG_LEAF = {"blackthorn": "small", "sea_buckthorn": "narrow", "jujube": "large", "rosehip": "medium", "crowberry": "needle",
+              "bearberry": "small", "barberry": "small", "caper": "medium", "red_currant": "large", "black_currant": "large"}
+
+
+def sprig_images(name, p):
+    """The two upright planes sticking out of the bush: 3-5 tidy leafy shoots, a thin stem growing up and out to the left
+    and right edges with paired leaves along it and a leafy tip, clear between them. _sprig_bare: the same shoots as bare
+    twigs (evergreen mats: the shoots in their winter leaves). Visible rows: bush lower part 3-14, upper 7-16, mats 11-16."""
+    rng = random.Random(p["seed"] + 21)
+    kind = SPRIG_LEAF[name]
+    low = p.get("low")
+    shoots = []  # (start x, start y, end x, end y)
+    if low:
+        for ex, ey in ((0, 11), (15, 11), (2, 12), (13, 12)):
+            shoots.append((rng.randint(6, 9), 15, ex, ey, 1.0))
+    else:
+        # separate shoots fanning out: the tall ones rise straight and bend late, the low ones lean out early
+        for ex, ey, sx, bend in ((0, 3, 6, 2.2), (15, 4, 9, 2.2), (0, 9, 5, 1.0), (15, 8, 10, 1.0)):
+            shoots.append((sx + rng.choice((0, 1)) * (1 if sx > 8 else -1), 15, ex, ey, bend))
+
+    def paint(leafy, leaf):
+        px = {}
+        for sx, sy, ex, ey, bend in shoots:
+            pts = []
+            for i in range(41):  # rises first, then bends out toward the edge
+                t = i / 40
+                q = (round(sx + (ex - sx) * t ** bend), round(sy + (ey - sy) * (t ** 0.6 if low else t)))
+                if not pts or pts[-1] != q:
+                    pts.append(q)
+            for j, (x, y) in enumerate(pts):
+                px[(x % 16, y)] = p["bark"][0 if j < len(pts) * 0.3 else 1]
+            for j in range(int(len(pts) * 0.4), len(pts) - 1, 3 if kind != "needle" else 1):  # bare stem low down
+                (x, y), (x2, y2) = pts[j], pts[min(len(pts) - 1, j + 1)]
+                dx, dy = x2 - x, y2 - y
+                nx, ny = -dy, dx  # the two sides of the stem
+                if not leafy:
+                    if p.get("thorny") and j % 2:
+                        put(px, x + nx, y + ny, p["bark"][2])
+                    elif j % 3 == 2:
+                        put(px, x + nx, y + ny, p["bark"][2])  # a bud
+                    continue
+                for side in (1, -1):
+                    sxn, syn = nx * side, ny * side
+                    lit = sxn + syn <= 0  # the side facing the top left
+                    c0, c1 = (leaf[0], leaf[1]) if lit else (leaf[2], leaf[3])
+                    if kind == "needle":
+                        if (j + side) % 2:
+                            put(px, x + sxn, y + syn, c1)
+                        continue
+                    put(px, x + sxn, y + syn, c1)
+                    if kind in ("medium", "large", "narrow"):
+                        put(px, x + 2 * sxn + dx, y + 2 * syn + dy, c0)
+                    if kind == "large":
+                        put(px, x + sxn + dx, y + syn + dy, c0)
+                        put(px, x + 2 * sxn, y + 2 * syn, c1)
+                    if kind == "small":
+                        put(px, x + sxn + dx, y + syn + dy, c0)
+                    if kind == "medium":
+                        put(px, x + sxn + dx, y + syn + dy, c1)
+                if p.get("thorny") and j % 2:
+                    put(px, x - nx, y - ny, p["bark"][2])
+            if leafy:  # the leafy tip
+                x, y = pts[-1]
+                put(px, x, y, leaf[1])
+                put(px, x, y - 1, leaf[0])
+        return {k: v for k, v in px.items() if 0 <= k[1] < 16}
+
+    leaf = p["leaf"]
+    return {f"block/{name}_sprig.png": to_img(paint(True, leaf)),
+            f"block/{name}_sprig_bare.png": to_img(paint(True, p["winter"]) if p.get("evergreen") else paint(False, leaf))}
 
 
 def thicket_images(name, p):
@@ -1162,6 +1229,7 @@ def thicket_images(name, p):
             if 0 <= tx + ox < 16 and 0 <= ty + oy < 16:
                 st[(tx + ox, ty + oy)] = p["leaf"][c]
     out[f"block/{name}_stems.png"] = to_img(st)
+    out.update(sprig_images(name, p))
     return out
 
 

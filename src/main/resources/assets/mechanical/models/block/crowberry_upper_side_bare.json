@@ -4,7 +4,8 @@
     "particle": "mechanical:block/crowberry_bare",
     "leaves": "mechanical:block/crowberry_bare",
     "inner": "mechanical:block/crowberry_bare",
-    "stems": "mechanical:block/crowberry_stems_bare"
+    "stems": "mechanical:block/crowberry_stems_bare",
+    "sprig": "mechanical:block/crowberry_sprig_bare"
   },
   "elements": [
     {

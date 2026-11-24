@@ -5,7 +5,8 @@
     "particle": "mechanical:block/jujube_stage3",
     "leaves": "mechanical:block/jujube_stage3",
     "inner": "mechanical:block/jujube_inner",
-    "stems": "mechanical:block/jujube_stems"
+    "stems": "mechanical:block/jujube_stems",
+    "sprig": "mechanical:block/jujube_sprig"
   },
   "elements": [
     {
@@ -348,7 +349,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "south": {
@@ -358,7 +359,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }
@@ -383,7 +384,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "west": {
@@ -393,7 +394,7 @@
             16,
             14
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }

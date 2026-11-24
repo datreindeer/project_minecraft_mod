@@ -284,13 +284,13 @@ def stems(x0, x1, top):
 
 
 def sprigs(y0, y1, reach=1.5):
-    """Two upright planes of the leaf texture through the middle, wider than the bush: their ends stick out of the sides
-    as leafy sprigs, so the outline is ragged, not a box."""
+    """Two upright planes of leafy shoots (#sprig: a few shoots on clear ground) through the middle, wider than the bush:
+    their ends stick out of the sides as shoots, so the outline is ragged, not a box."""
     v = [16 - y1, 16 - y0]
     return [{"from": [-reach, y0, 8], "to": [16 + reach, y1, 8], "shade": False,
-             "faces": {d: {"uv": [0, v[0], 16, v[1]], "texture": "#leaves", "tintindex": 0} for d in ("north", "south")}},
+             "faces": {d: {"uv": [0, v[0], 16, v[1]], "texture": "#sprig", "tintindex": 0} for d in ("north", "south")}},
             {"from": [8, y0, -reach], "to": [8, y1, 16 + reach], "shade": False,
-             "faces": {d: {"uv": [0, v[0], 16, v[1]], "texture": "#leaves", "tintindex": 0} for d in ("east", "west")}}]
+             "faces": {d: {"uv": [0, v[0], 16, v[1]], "texture": "#sprig", "tintindex": 0} for d in ("east", "west")}}]
 
 
 SHAPES = {  # part: core elements (a darker heart, a narrow foot, a bulging middle, a rounded top, sprigs and twigs poking out), north side lobe
@@ -318,7 +318,8 @@ for name, (en, berries, berries_en, (tmin, tmax, dmin, dmax), rarity) in THICKET
     def tex(look):
         bare = look.startswith("bare")  # winter: the heart and the branch tips are bare twigs too
         return {"particle": S + f"block/{name}_{look}", "leaves": S + f"block/{name}_{look}",
-                "inner": S + f"block/{name}_{'bare' if bare else 'inner'}", "stems": S + f"block/{name}_stems{'_bare' if bare else ''}"}
+                "inner": S + f"block/{name}_{'bare' if bare else 'inner'}", "stems": S + f"block/{name}_stems{'_bare' if bare else ''}",
+                "sprig": S + f"block/{name}_sprig{'_bare' if bare else ''}"}
     for part, (core, lobe) in shapes.items():
         for look in (["stage0", "bare"] if part == "young" else LOOKS):
             suffix = "" if look == "stage0" and part == "young" else f"_{look}"

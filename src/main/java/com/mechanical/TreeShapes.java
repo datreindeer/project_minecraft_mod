@@ -34,6 +34,8 @@ public final class TreeShapes {
     public static final DeferredRegister<FoliagePlacerType<?>> FOLIAGE_PLACERS = DeferredRegister.create(Registries.FOLIAGE_PLACER_TYPE, Mechanical.MODID);
     public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<MultiStemTrunkPlacer>> MULTI_STEM = TRUNK_PLACERS.register(
             "multi_stem_trunk_placer", () -> new TrunkPlacerType<>(MultiStemTrunkPlacer.CODEC));
+    public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<CurvedTrunkPlacer>> CURVED = TRUNK_PLACERS.register(
+            "curved_trunk_placer", () -> new TrunkPlacerType<>(CurvedTrunkPlacer.CODEC));
     public static final DeferredHolder<FoliagePlacerType<?>, FoliagePlacerType<WeepingFoliagePlacer>> WEEPING = FOLIAGE_PLACERS.register(
             "weeping_foliage_placer", () -> new FoliagePlacerType<>(WeepingFoliagePlacer.CODEC));
     public static final DeferredHolder<FoliagePlacerType<?>, FoliagePlacerType<PalmFoliagePlacer>> PALM = FOLIAGE_PLACERS.register(
@@ -79,6 +81,38 @@ public final class TreeShapes {
                 crowns.add(new FoliagePlacer.FoliageAttachment(pos.above(), 0, false));
             }
             return crowns;
+        }
+    }
+
+    /** Date palm: one trunk that rises straight, then leans a step or two to one side in its upper part; one crown on top. */
+    public static class CurvedTrunkPlacer extends TrunkPlacer {
+        public static final MapCodec<CurvedTrunkPlacer> CODEC = RecordCodecBuilder.mapCodec(i -> trunkPlacerParts(i).apply(i, CurvedTrunkPlacer::new));
+
+        public CurvedTrunkPlacer(int baseHeight, int heightRandA, int heightRandB) {
+            super(baseHeight, heightRandA, heightRandB);
+        }
+
+        @Override
+        protected TrunkPlacerType<?> type() {
+            return CURVED.get();
+        }
+
+        @Override
+        public List<FoliagePlacer.FoliageAttachment> placeTrunk(WorldGenLevel level, BiConsumer<BlockPos, BlockState> trunkSetter, RandomSource random,
+                                                                int treeHeight, BlockPos origin, TreeFeature tree) {
+            placeBelowTrunkBlock(level, trunkSetter, random, origin.below(), tree);
+            Direction lean = Direction.Plane.HORIZONTAL.getRandomDirection(random);
+            int first = treeHeight / 2 + random.nextInt(2), second = random.nextInt(3) == 0 ? treeHeight : treeHeight - 2;
+            BlockPos pos = origin;
+            for (int y = 0; y < treeHeight; y++) {
+                placeLog(level, trunkSetter, random, pos, tree);
+                if (y == first || y == second) { // the bend: a log beside this one, and the trunk goes on up from there
+                    pos = pos.relative(lean);
+                    placeLog(level, trunkSetter, random, pos, tree);
+                }
+                pos = pos.above();
+            }
+            return List.of(new FoliagePlacer.FoliageAttachment(pos, 0, false));
         }
     }
 

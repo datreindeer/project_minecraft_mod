@@ -3,10 +3,11 @@
   "below_trunk_provider": "minecraft:soil_beneath_tree",
   "decorators": [],
   "foliage_placer": {
-    "type": "minecraft:blob_foliage_placer",
+    "type": "mechanical:weeping_foliage_placer",
     "radius": 2,
-    "offset": 0,
-    "height": 2
+    "offset": 1,
+    "height": 1,
+    "hang_length": 2
   },
   "ignore_vines": true,
   "foliage_provider": {

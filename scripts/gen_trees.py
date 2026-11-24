@@ -62,20 +62,40 @@ tree_feature("yew", trunk("minecraft:dark_oak_trunk_placer", 4, 2, 1),
 
 # ---- fruit trees (Trees.FRUIT_KINDS, leaves FruitLeavesBlock; docs/flora-and-food-plan.md section 4) ----
 uniform = lambda lo, hi: {"type": "minecraft:uniform", "min_inclusive": lo, "max_inclusive": hi}
-# rowan: slim straight trunk 5-8, small round airy crown
-tree_feature("rowan", trunk("minecraft:straight_trunk_placer", 5, 2, 1), {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 3})
-# bird cherry: a few stems from one stool (like hazel), crowns hanging over water
-tree_feature("bird_cherry", trunk("mechanical:multi_stem_trunk_placer", 4, 2, 1), {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 2})
-# wild apple: short trunk 3-5, broad low rounded crown
-tree_feature("wild_apple", trunk("minecraft:straight_trunk_placer", 3, 2), {"type": "minecraft:blob_foliage_placer", "radius": uniform(2, 3), "offset": 0, "height": 3})
-# plum: small tree 3-5, compact crown
-tree_feature("plum", trunk("minecraft:straight_trunk_placer", 3, 2), {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 2})
-# olive: short twisting trunk, open irregular silvery crown
-tree_feature("olive", {"type": "minecraft:bending_trunk_placer", "base_height": 3, "height_rand_a": 2, "height_rand_b": 0, "min_height_for_leaves": 2,
-                       "bend_length": uniform(1, 2)},
-             {"type": "minecraft:random_spread_foliage_placer", "radius": 2, "offset": 0, "foliage_height": 2, "leaf_placement_attempts": 28})
-# date palm: tall bare trunk 7-11 and a star of drooping fronds (TreeShapes.PalmFoliagePlacer)
-tree_feature("date_palm", trunk("minecraft:straight_trunk_placer", 7, 3, 1), {"type": "mechanical:palm_foliage_placer", "radius": 4, "offset": 0})
+wl = lambda *vals: {"type": "minecraft:weighted_list", "distribution": [{"data": v, "weight": 1} for v in vals]}
+
+
+def cherry_trunk(base, rand, branches, length, start, end=(-1, 0)):
+    """vanilla's cherry trunk: a short bole forking into crooked side limbs that each carry a crown"""
+    return {"type": "minecraft:cherry_trunk_placer", "base_height": base, "height_rand_a": rand, "height_rand_b": 0,
+            "branch_count": wl(*branches), "branch_horizontal_length": uniform(*length),
+            "branch_start_offset_from_top": {"min_inclusive": start[0], "max_inclusive": start[1]},
+            "branch_end_offset_from_top": uniform(*end)}
+
+
+def cherry_crown(radius, height, holes, hanging=0.1):
+    """ragged crowns: corners and the wide bottom layer broken up, a few hanging leaves"""
+    return {"type": "minecraft:cherry_foliage_placer", "radius": radius, "offset": 0, "height": height, "corner_hole_chance": holes,
+            "wide_bottom_layer_hole_chance": holes, "hanging_leaves_chance": hanging, "hanging_leaves_extension_chance": 0.3}
+
+
+# rowan: slim trunk with a few short limbs (fancy oak's branching), an upright airy oval crown
+tree_feature("rowan", trunk("minecraft:fancy_trunk_placer", 6, 4), {"type": "minecraft:fancy_foliage_placer", "radius": 2, "offset": 3, "height": 4},
+             {"type": "minecraft:two_layers_feature_size", "limit": 0, "min_clipped_height": 5, "upper_size": 0})
+# bird cherry: a few leaning stems from one stool, each a loose umbrella shedding short drooping curtains (the willow's placer)
+tree_feature("bird_cherry", trunk("mechanical:multi_stem_trunk_placer", 4, 2, 1),
+             {"type": "mechanical:weeping_foliage_placer", "radius": 2, "offset": 1, "height": 1, "hang_length": 2})
+# wild apple: a low crooked bole forking into 2-3 wide limbs, a low broad ragged crown
+tree_feature("wild_apple", cherry_trunk(3, 1, (2, 3), (2, 3), (-2, -1)), cherry_crown(3, 4, 0.45, 0.12),
+             {"type": "minecraft:two_layers_feature_size", "upper_size": 2})
+# plum: small tree, short limbs, small rounded crown
+tree_feature("plum", trunk("minecraft:fancy_trunk_placer", 4, 2), {"type": "minecraft:fancy_foliage_placer", "radius": 2, "offset": 3, "height": 3},
+             {"type": "minecraft:two_layers_feature_size", "limit": 0, "min_clipped_height": 3, "upper_size": 0})
+# olive: a short gnarled bole splitting into leaning stems, each with a small open crown full of holes
+tree_feature("olive", trunk("mechanical:multi_stem_trunk_placer", 3, 1, 1),
+             {"type": "minecraft:random_spread_foliage_placer", "radius": 2, "offset": 0, "foliage_height": 2, "leaf_placement_attempts": 22})
+# date palm: a tall, slightly curving trunk (TreeShapes.CurvedTrunkPlacer) and a star of long drooping fronds (PalmFoliagePlacer)
+tree_feature("date_palm", trunk("mechanical:curved_trunk_placer", 7, 3, 1), {"type": "mechanical:palm_foliage_placer", "radius": 4, "offset": 0})
 
 # ---- placed features ----
 survives = lambda x: {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:would_survive", "state": f"mechanical:{x}_sapling"}}
@@ -140,10 +160,37 @@ for tree, nut, chance in (("beech", "mechanical:beechnuts", 0.06), ("hazel", "me
 FRUIT = {"rowan": "rowan_berries", "bird_cherry": "bird_cherries", "wild_apple": "crab_apple", "plum": "wild_plums", "olive": "olives",
          "date_palm": "dates"}  # Trees.FRUIT_KINDS
 LOOKS = ["", "_blossom", "_unripe", "_ripe"]
+TEX = ROOT / "assets/mechanical/textures/block"
+
+
+def frond(name, tex):
+    """A date palm frond block: the frond seen from above (#top, a flat plane high in the block) and its leaflet tips,
+    flower strands or date bunches hanging under it (#hang, two crossed planes), so a crown of these reads as thin
+    drooping fronds rather than leaf cubes."""
+    cross = [{"from": [0.8, 0, 8], "to": [15.2, 11, 8], "shade": False, "rotation": {"origin": [8, 8, 8], "axis": "y", "angle": ang, "rescale": True},
+              "faces": {d: {"uv": [0, 5, 16, 16], "texture": "#hang"} for d in ("north", "south")}} for ang in (45, -45)]
+    top = [{"from": [-2, 11, -2], "to": [18, 11, 18], "shade": False, "faces": {d: {"uv": [0, 0, 16, 16], "texture": "#top"} for d in ("up", "down")}}]
+    w(A / f"models/block/{name}.json", {"ambientocclusion": False, "textures": {"particle": "mechanical:block/date_palm_leaves_top",
+        "top": "mechanical:block/date_palm_leaves_top", "hang": f"mechanical:block/{tex}"}, "elements": top + cross})
+
+
 for tree, fruit in FRUIT.items():
-    for look in LOOKS[1:]:
-        w(A / f"models/block/{tree}_leaves{look}.json", {"parent": "minecraft:block/leaves", "textures": {"all": f"mechanical:block/{tree}_leaves{look}"}})
-    w(A / f"blockstates/{tree}_leaves.json", {"variants": {f"age={i}": {"model": f"mechanical:block/{tree}_leaves{LOOKS[i]}"} for i in range(4)}})
+    variants = {}
+    for i, look in enumerate(LOOKS):
+        # 2-3 painted variants of each stage (where they exist), each turned four ways, so a crown shows no repeating pattern
+        texs = [f"{tree}_leaves{look}"] + [f"{tree}_leaves{look}_{k}" for k in (2, 3) if (TEX / f"{tree}_leaves{look}_{k}.png").exists()]
+        models = []
+        for t in texs:
+            if tree == "date_palm":
+                frond(t, t if look else "date_palm_leaves_hang")
+            elif t != f"{tree}_leaves":
+                w(A / f"models/block/{t}.json", {"parent": "minecraft:block/leaves", "textures": {"all": f"mechanical:block/{t}"}})
+            models += [{"model": f"mechanical:block/{t}", **({"y": r} if r else {})} for r in (0, 90, 180, 270)]
+        if tree == "date_palm" and look:  # only every fourth frond carries a flower strand or date bunch; the rest plain leaflets
+            models = [dict(m, weight=1) for m in models] + [{"model": "mechanical:block/date_palm_leaves", **({"y": r} if r else {}), "weight": 3}
+                                                            for r in (0, 90, 180, 270)]
+        variants[f"age={i}"] = models
+    w(A / f"blockstates/{tree}_leaves.json", {"variants": variants})
     path = D / f"mechanical/loot_table/blocks/{tree}_leaves.json"
     loot = json.loads(path.read_text(encoding="utf-8"))
     loot["pools"] = [p for p in loot["pools"] if p.get("entries", [{}])[0].get("name") != f"mechanical:{fruit}"]  # rerunnable

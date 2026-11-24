@@ -5,7 +5,8 @@
     "particle": "mechanical:block/black_currant_bare",
     "leaves": "mechanical:block/black_currant_bare",
     "inner": "mechanical:block/black_currant_bare",
-    "stems": "mechanical:block/black_currant_stems_bare"
+    "stems": "mechanical:block/black_currant_stems_bare",
+    "sprig": "mechanical:block/black_currant_sprig_bare"
   },
   "elements": [
     {
@@ -284,7 +285,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "south": {
@@ -294,7 +295,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }
@@ -319,7 +320,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "west": {
@@ -329,7 +330,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }

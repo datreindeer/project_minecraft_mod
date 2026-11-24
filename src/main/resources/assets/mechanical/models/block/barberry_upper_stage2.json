@@ -5,7 +5,8 @@
     "particle": "mechanical:block/barberry_stage2",
     "leaves": "mechanical:block/barberry_stage2",
     "inner": "mechanical:block/barberry_inner",
-    "stems": "mechanical:block/barberry_stems"
+    "stems": "mechanical:block/barberry_stems",
+    "sprig": "mechanical:block/barberry_sprig"
   },
   "elements": [
     {
@@ -284,7 +285,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "south": {
@@ -294,7 +295,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }
@@ -319,7 +320,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "west": {
@@ -329,7 +330,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }

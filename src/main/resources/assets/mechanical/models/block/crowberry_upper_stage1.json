@@ -5,7 +5,8 @@
     "particle": "mechanical:block/crowberry_stage1",
     "leaves": "mechanical:block/crowberry_stage1",
     "inner": "mechanical:block/crowberry_inner",
-    "stems": "mechanical:block/crowberry_stems"
+    "stems": "mechanical:block/crowberry_stems",
+    "sprig": "mechanical:block/crowberry_sprig"
   },
   "elements": [
     {
@@ -284,7 +285,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "south": {
@@ -294,7 +295,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }
@@ -319,7 +320,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         },
         "west": {
@@ -329,7 +330,7 @@
             16,
             16
           ],
-          "texture": "#leaves",
+          "texture": "#sprig",
           "tintindex": 0
         }
       }

@@ -460,7 +460,7 @@ SPECIES.update({
     "olive": dict(        # cream wood with a dark wavy figure, pale grey gnarled bark, silvery grey-green lance leaves
         wood=[(176, 150, 100), (189, 163, 111), (201, 175, 122), (211, 186, 133), (220, 196, 144), (228, 206, 156), (236, 216, 168)],
         stripped_base="stripped_birch_log", stripped_range=(1.4, 6.4),
-        leaf=dict(D=(42, 56, 44), S=(64, 80, 62), M=(90, 106, 84), L=(126, 140, 116), H=(174, 184, 162)),
+        leaf=dict(D=(62, 76, 62), S=(94, 110, 90), M=(136, 150, 128), L=(172, 184, 164), H=(212, 218, 204)),
         bark=[(60, 58, 52), (84, 82, 74), (108, 106, 96), (132, 129, 118), (154, 151, 139), (176, 173, 160)],
         metal=((44, 44, 46), (120, 120, 124))),
     "date_palm": dict(    # light tan fibrous wood, brown trunk of old leaf bases, grey-green fronds
@@ -524,17 +524,17 @@ def bark_olive(p):
                    [[(0, 0, 1), (1, 0, 1), (-1, 0, 2), (2, 0, 2), (0, -1, 3), (1, -1, 3), (0, 1, 2), (1, 1, 2)]], 8)
 
 def bark_date_palm(p):
-    """old leaf bases: rows of downward-pointing scales, offset half a scale per row, lit on top, fibre in the gaps"""
+    """old leaf bases: stacked crescents, each lit along its top edge and shading down to a dark curved lower rim;
+    every row shifted half a base so the rims interlock into a diamond net"""
     b = p["bark"]; img = new()
     for y in range(16):
-        row = y // 4; fy = (y % 4) / 3.0
         for x in range(16):
-            fx = ((x + (4 if row % 2 else 0)) % 8) / 7.0          # 0..1 across one scale
-            edge = abs(fx - 0.5) * 2                               # 0 middle .. 1 sides
-            if edge > 1 - fy * 0.85:                              # V-shaped cut: fibre between the scale tips
-                c = b[1] if (x + y) % 3 else b[0]
-            else:
-                c = ramp_at(b, 4.6 - fy * 2.4 - edge * 1.0)
+            row = y // 4; u = (x + (4 if row % 2 else 0)) % 8; v = y % 4
+            rim = (1, 2, 3, 3, 3, 3, 2, 1)[u]                      # the lower rim curves up at the sides
+            if v > rim: c = b[1] if (x + y) % 2 else b[0]          # fibre showing between neighbouring bases
+            elif v == rim: c = b[0]
+            elif v == 0: c = b[5] if 1 <= u <= 6 else b[3]
+            else: c = b[4 - v] if 1 <= u <= 6 else b[2 - min(v, 1)]
             put(img, x, y, c)
     return img
 
@@ -576,91 +576,70 @@ def fibres(img, seed, vertical):
 LEAF_BASE.update({"rowan": "acacia_leaves", "bird_cherry": "oak_leaves", "wild_apple": "azalea_leaves",
                   "plum": "oak_leaves", "olive": "pale_oak_leaves"})
 
-# per tree: cluster spots, the sprite (same letters in every stage) and the stage palettes (1 blossom, 2 unripe, 3 ripe).
-# Trees whose flowers look nothing like the fruit (apple, plum) bloom with their own sprite on the fruit spots plus a few
-# extra spots (bloom). s = stalk, always twig brown. Every stamped cluster gets a dark leaf shadow under its right/bottom
-# edge so it stands off the foliage.
+# per tree: one small fruit sprite (same letters in every stage) and the stage palettes (1 blossom, 2 unripe, 3 ripe).
+# Each stage comes in three variants (<w>_leaves_ripe, _ripe_2, _ripe_3; the blockstate picks one per block and turns
+# it) with only one or two small clusters, so a crown shows scattered fruit among plenty of leaf instead of a grid.
+# A variant keeps its spots in every stage, so the fruit grows where the flowers were. Apple and plum bloom with their
+# own blossom sprite (bloom). s = stalk, always twig brown. Every stamped sprite gets a dark leaf shadow under its
+# right/bottom edge so it stands off the foliage.
 FRUIT = {
-    # a flat-topped hanging corymb: single-pixel berries (H lit, A plain) packed in a dome, darker gaps d, thin stalks
-    "rowan": dict(spots=[(0, 1), (8, 5), (2, 10)], sprite=[
-        "..s.s..",
-        ".s.s.s.",
-        ".HdAdH.",
-        "AdHdAdH",
-        ".HdHdA."],
+    # a small flat-topped corymb: single-pixel berries (H lit, A plain) in a dome, darker gaps d, thin stalks
+    "rowan": dict(sprite=[
+        "..s..",
+        ".s.s.",
+        "HdAdH",
+        ".AdH."],
         stages={1: dict(H=(248, 242, 216), A=(232, 226, 194), d=(196, 190, 150)),
                 2: dict(H=(214, 204, 92), A=(206, 150, 56), d=(124, 120, 40)),
                 3: dict(H=(255, 150, 70), A=(230, 72, 28), d=(140, 34, 20))}),
-    "bird_cherry": dict(spots=[(2, 0), (10, 6), (5, 9)], sprite=[
-        ".s...",
-        "hB.s.",
-        "aA.hB",
-        "Ba.aA",
-        "aA.Ba",
-        ".B.aA",
-        "...a."],
+    # one drooping raceme of small flowers / cherries, a glossy highlight h near the top
+    "bird_cherry": dict(sprite=[
+        "s.",
+        "hB",
+        "aA",
+        "Ba",
+        ".A"],
         stages={1: dict(h=(255, 255, 248), A=(240, 242, 230), B=(222, 226, 208), a=(180, 188, 168)),
                 2: dict(h=(208, 98, 64), A=(172, 198, 80), B=(146, 176, 62), a=(100, 128, 42)),
                 3: dict(h=(180, 160, 190), A=(70, 46, 68), B=(48, 30, 46), a=(22, 12, 20))}),
-    "wild_apple": dict(spots=[(1, 1), (9, 6), (3, 10)], sprite=[
-        "s.....",
-        "hAY...",
-        "AAYs..",
-        "YYahAY",
-        "...AAY",
-        "...YYa"],
-        bloom=([".W.W.", "WyPyP", ".PWP.", ".WyP.", "..P.."], [(13, 2), (7, 12)]),
+    # one small apple on its stalk: highlight h, blush A, yellow-green Y, shade a
+    "wild_apple": dict(sprite=[
+        "s.",
+        "hA",
+        "Ya"],
+        bloom=[".W.", "WyP", ".P."],
         stages={1: dict(W=(252, 244, 246), P=(238, 186, 204), y=(216, 196, 88)),
                 2: dict(h=(210, 234, 132), A=(160, 202, 74), Y=(142, 188, 64), a=(96, 136, 44)),
                 3: dict(h=(252, 242, 150), A=(208, 66, 44), Y=(206, 200, 76), a=(150, 74, 36))}),
-    "plum": dict(spots=[(2, 1), (10, 6), (4, 10)], sprite=[
-        ".s...",
-        "bP.s.",
-        "PpbP.",
-        "pd.Pp",
-        "...pd"],
-        bloom=([".W.W.", "WyPyP", ".PWP.", "WyPW.", ".P.P."], [(13, 1), (7, 12)]),
+    # one plum: waxy bloom b, body P/p, shade d
+    "plum": dict(sprite=[
+        "s.",
+        "bP",
+        "pd"],
+        bloom=[".W.", "WyP", ".P."],
         stages={1: dict(W=(252, 252, 246), P=(220, 226, 212), y=(206, 204, 100)),
                 2: dict(b=(234, 242, 172), P=(204, 224, 98), p=(166, 198, 72), d=(78, 110, 36)),
                 3: dict(b=(170, 162, 210), P=(100, 74, 150), p=(68, 46, 110), d=(40, 26, 66))}),
-    "olive": dict(spots=[(1, 2), (9, 6), (4, 11)], sprite=[
-        ".s.s..",
-        "hOshO.",
-        "Oo.Oo.",
-        "..hO..",
-        "..Oo.."],
-        stages={1: dict(h=(248, 240, 200), O=(228, 218, 166), o=(196, 186, 132)),
-                2: dict(h=(206, 216, 124), O=(150, 166, 64), o=(102, 118, 42)),
-                3: dict(h=(156, 124, 168), O=(66, 40, 70), o=(34, 20, 38))}),
-    # long hanging strands of single dates under a stalk
-    "date_palm": dict(spots=[(4, 4), (12, 11)], sprite=[
-        "..y..",
-        ".yyy.",
-        "y.y.y",
-        "D.D.D",
-        "d.D.d",
-        "D.d.D",
-        "d.D.d",
-        "..d.."],
-        stages={1: dict(y=(222, 206, 132), D=(242, 230, 170), d=(206, 190, 120)),
-                2: dict(y=(206, 150, 50), D=(242, 186, 54), d=(204, 132, 32)),
-                3: dict(y=(196, 138, 50), D=(156, 64, 36), d=(102, 38, 24))}),
+    # two small oval olives on stalks
+    "olive": dict(sprite=[
+        "s.s",
+        "h.s",
+        "O.h",
+        "..O"],
+        stages={1: dict(h=(250, 244, 206), O=(226, 216, 164)),
+                2: dict(h=(196, 210, 116), O=(126, 146, 52)),
+                3: dict(h=(150, 118, 162), O=(52, 30, 58))}),
 }
 TWIG = (86, 62, 44)
+# per variant: clusters (x, y, sprites in the cluster); a cluster's second sprite sits beside and a bit below the first
+FRUIT_VARIANTS = [[(2, 2, 2), (10, 9, 1)], [(9, 3, 1), (3, 11, 2)], [(6, 7, 1)]]
 
-def palm_frond(p):
-    """three arching fronds across the tile: a midrib with long drooping leaflets, alternately left and right"""
-    c = p["leaf"]; img = new()
-    for k, (y0, ph) in enumerate(((1, 0.0), (6, 2.1), (11, 4.2))):
-        for x in range(16):
-            y = y0 + round(1.5 * math.sin(2 * math.pi * x / 16 + ph))
-            lit = (x // 2 + k) % 2
-            if x % 2 == 0:
-                for i in range(1, 5): put(img, x - i // 2, y + i, [c["H"] if lit else c["L"], c["L"], c["M"], c["S"]][i - 1])
-            else:
-                for i in range(1, 4): put(img, x + i // 2, y + i, [c["L"] if lit else c["M"], c["M"], c["S"]][i - 1])
-        for x in range(16): put(img, x, y0 + round(1.5 * math.sin(2 * math.pi * x / 16 + ph)), c["r"])
-    return img
+def stamp_shadowed(img, sprite, x0, y0, cols, shadow):
+    stamp(img, sprite, x0, y0, cols)
+    mask = {((x0 + i) % 16, (y0 + j) % 16) for j, row in enumerate(sprite) for i, ch in enumerate(row) if ch not in ". "}
+    for x, y in mask:
+        for q in (((x + 1) % 16, y), (x, (y + 1) % 16)):
+            if q not in mask and img.getpixel(q)[3]: put(img, q[0], q[1], shadow)
 
 def rowan_leaves(p):
     """pinnate leaves: a rachis with paired leaflets (lit above, shaded below) laid over a dark under-crown"""
@@ -684,26 +663,90 @@ def rowan_leaves(p):
         put(img, x0 + dx * n, y0 + dy * n, c["L"])          # terminal leaflet
     return img
 
-def stamp_shadowed(img, sprite, x0, y0, cols, shadow):
-    stamp(img, sprite, x0, y0, cols)
-    mask = {((x0 + i) % 16, (y0 + j) % 16) for j, row in enumerate(sprite) for i, ch in enumerate(row) if ch not in ". "}
-    for x, y in mask:
-        for q in (((x + 1) % 16, y), (x, (y + 1) % 16)):
-            if q not in mask and img.getpixel(q)[3]: put(img, q[0], q[1], shadow)
+def olive_leaves(p):
+    """open silvery crown: the pale oak structure in sage/silver with its darkest fifth cut away as holes"""
+    img = leaves("olive", p)
+    px = sorted((lum(img.getpixel((x, y))), x, y) for y in range(16) for x in range(16) if img.getpixel((x, y))[3])
+    for _, x, y in px[:len(px) // 5]: img.putpixel((x, y), (0, 0, 0, 0))
+    return img
 
 def fruit_leaves(name, p):
-    """plain leaves plus the three fruit stages"""
-    base = {"date_palm": palm_frond, "rowan": rowan_leaves}.get(name, lambda p: leaves(name, p))(p)
-    f = FRUIT[name]; out = {"": base}; dark = p["leaf"]["D"]
+    """plain leaves plus three variants of each fruit stage"""
+    base = {"rowan": rowan_leaves, "olive": olive_leaves}.get(name, lambda p: leaves(name, p))(p)
+    f = FRUIT[name]; out = {"": base}; dark = p["leaf"]["S" if name == "olive" else "D"]  # olive: soft shadow on the silver
     for st, key in ((1, "_blossom"), (2, "_unripe"), (3, "_ripe")):
-        img = base.copy(); cols = dict(f["stages"][st], s=TWIG)
-        if st == 1 and "bloom" in f:
-            sprite, extra = f["bloom"]
-            for x, y in f["spots"] + extra: stamp_shadowed(img, sprite, x, y, cols, dark)
-        else:
-            for x, y in f["spots"]: stamp_shadowed(img, f["sprite"], x, y, cols, dark)
-        out[key] = img
+        cols = dict(f["stages"][st], s=(112, 116, 96) if name == "olive" else TWIG)
+        sprite = f["bloom"] if st == 1 and "bloom" in f else f["sprite"]
+        w = len(sprite[0])
+        for v, clusters in enumerate(FRUIT_VARIANTS):
+            img = base.copy()
+            for x, y, n in clusters:
+                for k in range(n): stamp_shadowed(img, sprite, x + k * w, y + k * 2, cols, dark)
+            out[key + ("" if v == 0 else f"_{v + 1}")] = img
     return out
+
+# ------------------------------------------------------------------ date palm crown (frond model, not leaf cubes)
+# _top: a frond seen from above on the flat plane at the top of the block; _hang: drooping leaflet tips on the crossed
+# planes under it (only rows 4-15 show); _blossom/_unripe/_ripe: the same with flower strands / a date bunch.
+def palm_frond_top(p):
+    """one frond corner to corner: a pale midrib, long thin leaflets every other pixel on both sides, swept toward the
+    base (top left), lit on the upper side"""
+    c = p["leaf"]; img = new()
+    for i in range(1, 16, 2):
+        for sx, sy, f in ((1, -1, 1.0), (-1, 1, 0.82)):
+            ex, ey = i + sx * 5 - 2, i + sy * 5 - 2           # leaflet tip
+            for k in range(1, 8):
+                x, y = round(i + (ex - i) * k / 7), round(i + (ey - i) * k / 7)
+                if 0 <= x < 16 and 0 <= y < 16: put(img, x, y, shade([c["H"], c["L"], c["L"], c["M"], c["M"], c["S"], c["S"]][k - 1], f))
+    for i in range(16): put(img, i, i, c["r"])
+    return img
+
+def palm_hang(p, seed="hang"):
+    c = p["leaf"]; img = new(); r = random.Random(seed)
+    tones = [c["L"], c["M"], c["M"], c["S"], c["S"], c["D"], c["D"], c["D"]]
+    for x in range(0, 16, 2):
+        x0 = x + r.choice((0, 1)); n = r.randint(3, 8); lean = r.choice((-1, 1))
+        for i in range(n): put(img, x0 + (lean if i > n * 0.6 else 0), 4 + i, tones[i])
+    return img
+
+BUNCH = [3, 5, 7, 8, 8, 7, 6, 4, 2]   # widths of the date bunch, row by row from y=6
+def palm_bunch(img, st):
+    stalk = {1: (206, 190, 120), 2: (200, 150, 54), 3: (170, 110, 46)}[st]
+    for y in range(4, 7): put(img, 8, y, stalk)
+    if st == 1:  # cream flower strands hanging from a short cross stalk
+        for x in range(5, 12): put(img, x, 5, stalk)
+        for x0, n in ((5, 6), (7, 9), (9, 8), (11, 5)):
+            for i in range(n): put(img, x0, 6 + i, (244, 234, 178) if (i + x0) % 2 else (214, 200, 132))
+        return img
+    lit, mid, dark, hi = {2: ((246, 196, 70), (226, 158, 40), (160, 98, 24), (255, 236, 150)),
+                          3: ((164, 70, 40), (126, 46, 28), (64, 20, 14), (224, 150, 116))}[st]
+    for j, w in enumerate(BUNCH):
+        y = 6 + j; x0 = 8 - w // 2
+        for x in range(x0, x0 + w):
+            edge = x in (x0, x0 + w - 1)
+            put(img, x, y, dark if (x + y) % 2 else (mid if edge or j > 5 else lit))
+    for x, y in ((6, 8), (9, 7), (7, 10), (10, 10), (8, 12)): put(img, x, y, hi)   # glossy highlights on single dates
+    return img
+
+def palm_crown(p):
+    hang = palm_hang(p)
+    out = {"_top": palm_frond_top(p), "_hang": hang}
+    for st, key in ((1, "_blossom"), (2, "_unripe"), (3, "_ripe")): out[key] = palm_bunch(hang.copy(), st)
+    return out
+
+def palm_frond(p):
+    """three arching fronds across the tile: a midrib with long drooping leaflets, alternately left and right"""
+    c = p["leaf"]; img = new()
+    for k, (y0, ph) in enumerate(((1, 0.0), (6, 2.1), (11, 4.2))):
+        for x in range(16):
+            y = y0 + round(1.5 * math.sin(2 * math.pi * x / 16 + ph))
+            lit = (x // 2 + k) % 2
+            if x % 2 == 0:
+                for i in range(1, 5): put(img, x - i // 2, y + i, [c["H"] if lit else c["L"], c["L"], c["M"], c["S"]][i - 1])
+            else:
+                for i in range(1, 4): put(img, x + i // 2, y + i, [c["L"] if lit else c["M"], c["M"], c["S"]][i - 1])
+        for x in range(16): put(img, x, y0 + round(1.5 * math.sin(2 * math.pi * x / 16 + ph)), c["r"])
+    return img
 
 LEAF_SPRITES.update({
     "rowan": [["L.L.L", "MHMHM", ".S.S."], ["L.L", "HMH", "S.S"]],                     # rows of paired leaflets
@@ -840,6 +883,9 @@ for name, p in SPECIES.items():
     save(planks, f"block/{name}_planks.png")
     if name in FRUIT:
         for key, img in fruit_leaves(name, p).items(): save(img, f"block/{name}_leaves{key}.png")
+    elif name == "date_palm":
+        save(palm_frond(p), f"block/{name}_leaves.png")
+        for key, img in palm_crown(p).items(): save(img, f"block/{name}_leaves{key}.png")
     else: save(leaves(name, p), f"block/{name}_leaves.png")
     save(SAPLING_FN.get(name, sapling)(name, p), f"block/{name}_sapling.png")
     top_rows, bottom_rows = DOORS[name]

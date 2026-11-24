@@ -5,7 +5,8 @@
     "particle": "mechanical:block/barberry_bare",
     "leaves": "mechanical:block/barberry_bare",
     "inner": "mechanical:block/barberry_bare",
-    "stems": "mechanical:block/barberry_stems_bare"
+    "stems": "mechanical:block/barberry_stems_bare",
+    "sprig": "mechanical:block/barberry_sprig_bare"
   },
   "elements": [
     {
