@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:iron_age/water_wheel",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:gearbox"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.full_power.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.full_power.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

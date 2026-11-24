@@ -1110,6 +1110,24 @@
      "sv": "Med stål kommer tre saker. En [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, en Firewood) på en Fire Pit gör den **3×3**: den växer åt det håll som är ledigt och säger vad som står i vägen. Den brinner längre, ryker en hög pelare, rymmer 32 Firewood och kan steka ett helt **flått djur** (bär dit kroppen och högerklicka): dubbelt så mycket kött som det mest djuret ger, stekt. En stams stora Fire Pit håller 5×5 chunks laddade och tar emot två band åt gången.\n\nPå Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) som släpps på en Leather Satchel ger **3 platser för verktyg**, och [[steel_frame_pack]] (10 Leather, 3 Steel Plate) är en **5×5**-väska med verktygsöglor.\n\nGuld smälts i Clay Kiln som förut. Ställ en [[steel_casting_table]] intill en Clay Kiln på **1100°** och lägg Gold Ingots på bordet: varje tacka blir 2 [[gold_ring_blank]] eller en [[gold_chain]] (tom hand byter form). På en [[jewelers_bench]] fattas en slipad gemsten i ämnet med en mejsel: [[gold_ring]] (ringplatserna) eller [[gold_necklace]] (halsplatsen). Varje gemsort ger en liten bonus, en **Flawless** ungefär fyra gånger så mycket.",
      "en": "Steel brings three things. A [[steel_hearth_ring]] (4 Steel Plate, 4 rock chunks, a Firewood) on a Fire Pit makes it **3×3**: it grows toward the free side and names what is in the way. It burns longer, smokes a tall column, holds 32 Firewood and can roast a whole **skinned animal** (haul the body there and right-click): twice the most meat the animal gives, cooked. A tribe's big Fire Pit keeps 5×5 chunks loaded and takes two visiting bands at a time.\n\nAt the Leatherworking Bench: [[tool_loops]] (2 Leather, Steel Plate) dropped on a Leather Satchel give it **3 slots for tools**, and the [[steel_frame_pack]] (10 Leather, 3 Steel Plate) is a **5×5** bag with tool loops.\n\nGold still melts in the Clay Kiln. Set a [[steel_casting_table]] beside a Clay Kiln at **1100°** and lay Gold Ingots on it: each becomes 2 [[gold_ring_blank]]s or a [[gold_chain]] (empty hand switches the mould). On a [[jewelers_bench]] a cut gem is set in the blank with a chisel: [[gold_ring]] (ring slots) or [[gold_necklace]] (neck slot). Each kind of gem gives a small bonus, a **Flawless** one about four times as much."
     }
+   },
+   {
+    "title": {
+     "sv": "Vattenkraft och sågverk",
+     "en": "Water power and the sawmill"
+    },
+    "items": [
+     "water_wheel",
+     "wooden_shaft",
+     "gearbox",
+     "log_flume",
+     "saw_bench",
+     "sawdust"
+    ],
+    "text": {
+     "sv": "Med [[iron_plate]] kommer vattenkraften. Ett [[water_wheel]] är 5 block brett och snurrar när vatten rinner under det eller faller längs ena sidan (stillastående vatten gör inget): högerklicka navet för kraften, högst 16. Rörelsen går vidare genom [[wooden_shaft]] och runt hörn med en [[gearbox]].\n\nMed stål kan man bygga **sågverket**: en [[saw_bench]] mellan 3 [[log_flume]] på varje sida, vatten in i rännans uppströms ände så att det rinner mot sågen, en axel från hjulet till bänkens sida (minst 8 kraft) och ett [[steel_saw_blade]]. Lägg stockar i rännan. En stock med bark blir 2 Rough Logs, 2 Firewood, 2 Bark och 2 [[sawdust]]; en barkad stock 6 plankor, 2 Sticks och 1 Sawdust, mycket mer än yxa och såg.",
+     "en": "With [[iron_plate]] comes water power. A [[water_wheel]] is 5 blocks across and turns when water runs under it or falls down one side (still water does nothing): right-click the hub for its power, at most 16. The turn goes on through [[wooden_shaft]] and round corners with a [[gearbox]].\n\nWith steel you can build the **sawmill**: a [[saw_bench]] between 3 [[log_flume]] on each side, water let into the flume's upstream end so it runs toward the saw, a shaft from the wheel to the bench's side (at least 8 power) and a [[steel_saw_blade]]. Lay logs in the flume. A log with bark becomes 2 Rough Logs, 2 Firewood, 2 Bark and 2 [[sawdust]]; a stripped log 6 planks, 2 Sticks and 1 Sawdust, far more than axe and saw."
+    }
    }
   ]
  },

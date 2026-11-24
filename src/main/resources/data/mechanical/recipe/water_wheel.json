@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "IRI",
+    "PPP"
+  ],
+  "key": {
+    "P": "#minecraft:planks",
+    "I": "mechanical:iron_plate",
+    "R": "mechanical:wooden_shaft"
+  },
+  "result": {
+    "id": "mechanical:water_wheel"
+  }
+}

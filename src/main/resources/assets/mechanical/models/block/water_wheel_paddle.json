@@ -1,0 +1,287 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "wood_v": "mechanical:block/water_wheel_wood_v",
+    "wood_h": "mechanical:block/water_wheel_wood_h",
+    "end": "mechanical:block/water_wheel_hub_end",
+    "iron": "mechanical:block/water_wheel_iron",
+    "particle": "mechanical:block/water_wheel_wood_v",
+    "shaft_v": "mechanical:block/wooden_shaft_v",
+    "shaft_h": "mechanical:block/wooden_shaft_h",
+    "shaft_end": "mechanical:block/wooden_shaft_end"
+  },
+  "elements": [
+    {
+      "from": [
+        7,
+        3,
+        4
+      ],
+      "to": [
+        9,
+        14,
+        12
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            7,
+            4,
+            9,
+            12
+          ],
+          "texture": "#end"
+        },
+        "down": {
+          "uv": [
+            7,
+            4,
+            9,
+            12
+          ],
+          "texture": "#end"
+        },
+        "north": {
+          "uv": [
+            7,
+            2,
+            9,
+            13
+          ],
+          "texture": "#wood_v"
+        },
+        "south": {
+          "uv": [
+            7,
+            2,
+            9,
+            13
+          ],
+          "texture": "#wood_v"
+        },
+        "east": {
+          "uv": [
+            4,
+            2,
+            12,
+            13
+          ],
+          "texture": "#wood_v"
+        },
+        "west": {
+          "uv": [
+            4,
+            2,
+            12,
+            13
+          ],
+          "texture": "#wood_v"
+        }
+      }
+    },
+    {
+      "from": [
+        9,
+        3,
+        4
+      ],
+      "to": [
+        12,
+        4.5,
+        12
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            9,
+            4,
+            12,
+            12
+          ],
+          "texture": "#wood_h"
+        },
+        "down": {
+          "uv": [
+            9,
+            4,
+            12,
+            12
+          ],
+          "texture": "#wood_h"
+        },
+        "north": {
+          "uv": [
+            9,
+            11.5,
+            12,
+            13.0
+          ],
+          "texture": "#wood_h"
+        },
+        "south": {
+          "uv": [
+            9,
+            11.5,
+            12,
+            13.0
+          ],
+          "texture": "#wood_h"
+        },
+        "east": {
+          "uv": [
+            4,
+            11.5,
+            12,
+            13.0
+          ],
+          "texture": "#end"
+        },
+        "west": {
+          "uv": [
+            4,
+            11.5,
+            12,
+            13.0
+          ],
+          "texture": "#end"
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        8.5,
+        1.4
+      ],
+      "to": [
+        9.5,
+        10.5,
+        2
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            6.5,
+            1.4,
+            9.5,
+            2.0
+          ],
+          "texture": "#iron"
+        },
+        "down": {
+          "uv": [
+            6.5,
+            1.4,
+            9.5,
+            2.0
+          ],
+          "texture": "#iron"
+        },
+        "north": {
+          "uv": [
+            6.5,
+            5.5,
+            9.5,
+            7.5
+          ],
+          "texture": "#iron"
+        },
+        "south": {
+          "uv": [
+            6.5,
+            5.5,
+            9.5,
+            7.5
+          ],
+          "texture": "#iron"
+        },
+        "east": {
+          "uv": [
+            1.4,
+            5.5,
+            2.0,
+            7.5
+          ],
+          "texture": "#iron"
+        },
+        "west": {
+          "uv": [
+            1.4,
+            5.5,
+            2.0,
+            7.5
+          ],
+          "texture": "#iron"
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        8.5,
+        14
+      ],
+      "to": [
+        9.5,
+        10.5,
+        14.6
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            6.5,
+            14,
+            9.5,
+            14.6
+          ],
+          "texture": "#iron"
+        },
+        "down": {
+          "uv": [
+            6.5,
+            14,
+            9.5,
+            14.6
+          ],
+          "texture": "#iron"
+        },
+        "north": {
+          "uv": [
+            6.5,
+            5.5,
+            9.5,
+            7.5
+          ],
+          "texture": "#iron"
+        },
+        "south": {
+          "uv": [
+            6.5,
+            5.5,
+            9.5,
+            7.5
+          ],
+          "texture": "#iron"
+        },
+        "east": {
+          "uv": [
+            14,
+            5.5,
+            14.6,
+            7.5
+          ],
+          "texture": "#iron"
+        },
+        "west": {
+          "uv": [
+            14,
+            5.5,
+            14.6,
+            7.5
+          ],
+          "texture": "#iron"
+        }
+      }
+    }
+  ]
+}

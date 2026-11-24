@@ -88,6 +88,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(ItemTags.LOGS_THAT_BURN), 1, () -> Items.CHARCOAL, 600, 400),
             new Recipe(s -> s.is(Mechanical.FIREWOOD_TAG), 2, () -> Items.CHARCOAL, 600, 400),
             new Recipe(s -> s.is(ROUGH_LOGS), 1, () -> Items.CHARCOAL, 600, 400),
+            new Recipe(s -> s.is(Sawmill.SAWDUST_BRIQUETTE.get()), 1, () -> Items.CHARCOAL, 600, 400),
             new Recipe(s -> s.is(Mechanical.UNFIRED_CRUCIBLE.get()), 1, () -> Mechanical.CRUCIBLE.get(), 800, 800),
             new Recipe(s -> s.is(Mechanical.UNFIRED_CLAY_BUCKET.get()), 1, () -> Mechanical.CLAY_BUCKET.get(), 600, 600),
             new Recipe(s -> s.is(Farming.DOUGH.get()), 1, () -> Items.BREAD, 400, 200),

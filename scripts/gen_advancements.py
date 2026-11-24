@@ -1891,6 +1891,19 @@ TABS["iron_age"][1].extend([
      by_code()),
 ])
 
+# water power and the Sawmill (WaterPower.java, Sawmill.java, gen_waterpower.py)
+TABS["iron_age"][1].extend([
+    ("water_wheel", "forged", "water_wheel", T, "Water at Work",
+     "Build a Water Wheel where water runs under it or falls down one side of it, and watch it turn. Right-click the hub for its power",
+     by_code()),
+    ("full_power", "water_wheel", "gearbox", C, "Mill Race",
+     "Get a Water Wheel to its full 16 power: water falling down a whole side of the wheel, or running under it and falling on it at once",
+     by_code()),
+    ("sawmill", "water_wheel", "saw_bench", G, "Up and Down",
+     "Build a Sawmill: a Saw Bench with a Steel Saw Blade between 3 Log Flumes on each side, water running toward the saw, "
+     "8 power from a Water Wheel's shaft. Lay a log in the flume and let the saw take it", by_code()),
+])
+
 # the Mouldboard Plough (PloughEntity.java, gen_plough.py)
 TABS["iron_age"][1].extend([
     ("mouldboard_plough", "forged", "mouldboard_plough", T, "Iron in the Soil",

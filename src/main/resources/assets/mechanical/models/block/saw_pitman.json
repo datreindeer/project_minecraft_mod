@@ -1,0 +1,222 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "side": "mechanical:block/log_flume_side",
+    "inside": "mechanical:block/log_flume_inside",
+    "top": "mechanical:block/log_flume_top",
+    "iron": "mechanical:block/water_wheel_iron",
+    "particle": "mechanical:block/log_flume_side",
+    "still": "minecraft:block/water_still",
+    "flow": "minecraft:block/water_flow",
+    "frame_v": "mechanical:block/gearbox_frame_v",
+    "frame_h": "mechanical:block/gearbox_frame_h",
+    "frame_end": "mechanical:block/gear_wood",
+    "blade": "mechanical:block/saw_blade"
+  },
+  "elements": [
+    {
+      "from": [
+        7.25,
+        8,
+        7.25
+      ],
+      "to": [
+        8.75,
+        25.75,
+        8.75
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            7.25,
+            7.25,
+            8.75,
+            8.75
+          ],
+          "texture": "#frame_end"
+        },
+        "down": {
+          "uv": [
+            7.25,
+            7.25,
+            8.75,
+            8.75
+          ],
+          "texture": "#frame_end"
+        },
+        "north": {
+          "uv": [
+            7.25,
+            0,
+            8.75,
+            16
+          ],
+          "texture": "#frame_v"
+        },
+        "south": {
+          "uv": [
+            7.25,
+            0,
+            8.75,
+            16
+          ],
+          "texture": "#frame_v"
+        },
+        "east": {
+          "uv": [
+            7.25,
+            0,
+            8.75,
+            16
+          ],
+          "texture": "#frame_v"
+        },
+        "west": {
+          "uv": [
+            7.25,
+            0,
+            8.75,
+            16
+          ],
+          "texture": "#frame_v"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        7.2,
+        7
+      ],
+      "to": [
+        9,
+        9.2,
+        9
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#iron"
+        },
+        "down": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#iron"
+        },
+        "north": {
+          "uv": [
+            7,
+            6.800000000000001,
+            9,
+            8.8
+          ],
+          "texture": "#iron"
+        },
+        "south": {
+          "uv": [
+            7,
+            6.800000000000001,
+            9,
+            8.8
+          ],
+          "texture": "#iron"
+        },
+        "east": {
+          "uv": [
+            7,
+            6.800000000000001,
+            9,
+            8.8
+          ],
+          "texture": "#iron"
+        },
+        "west": {
+          "uv": [
+            7,
+            6.800000000000001,
+            9,
+            8.8
+          ],
+          "texture": "#iron"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        24.6,
+        7
+      ],
+      "to": [
+        9,
+        26.6,
+        9
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#iron"
+        },
+        "down": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#iron"
+        },
+        "north": {
+          "uv": [
+            7,
+            5.399999999999999,
+            9,
+            7.399999999999999
+          ],
+          "texture": "#iron"
+        },
+        "south": {
+          "uv": [
+            7,
+            5.399999999999999,
+            9,
+            7.399999999999999
+          ],
+          "texture": "#iron"
+        },
+        "east": {
+          "uv": [
+            7,
+            5.399999999999999,
+            9,
+            7.399999999999999
+          ],
+          "texture": "#iron"
+        },
+        "west": {
+          "uv": [
+            7,
+            5.399999999999999,
+            9,
+            7.399999999999999
+          ],
+          "texture": "#iron"
+        }
+      }
+    }
+  ]
+}

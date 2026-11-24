@@ -239,6 +239,11 @@
     "mechanical:charred_log",
     "mechanical:charred_branch",
     "mechanical:charred_twig",
-    "mechanical:jewelers_bench"
+    "mechanical:jewelers_bench",
+    "mechanical:water_wheel",
+    "mechanical:wooden_shaft",
+    "mechanical:gearbox",
+    "mechanical:log_flume",
+    "mechanical:saw_bench"
   ]
 }

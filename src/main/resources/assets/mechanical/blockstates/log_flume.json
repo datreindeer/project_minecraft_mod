@@ -1,0 +1,33 @@
+{
+  "variants": {
+    "axis=x,water=dry": {
+      "model": "mechanical:block/log_flume_dry",
+      "y": 90
+    },
+    "axis=x,water=still": {
+      "model": "mechanical:block/log_flume_still",
+      "y": 90
+    },
+    "axis=x,water=positive": {
+      "model": "mechanical:block/log_flume_flow",
+      "y": 270
+    },
+    "axis=x,water=negative": {
+      "model": "mechanical:block/log_flume_flow",
+      "y": 90
+    },
+    "axis=z,water=dry": {
+      "model": "mechanical:block/log_flume_dry"
+    },
+    "axis=z,water=still": {
+      "model": "mechanical:block/log_flume_still"
+    },
+    "axis=z,water=positive": {
+      "model": "mechanical:block/log_flume_flow"
+    },
+    "axis=z,water=negative": {
+      "model": "mechanical:block/log_flume_flow",
+      "y": 180
+    }
+  }
+}
