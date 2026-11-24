@@ -44,9 +44,8 @@ public final class ChannelFlow {
 
     public static List<BlockPos> ports(BlockPos p, BlockState s) {
         List<BlockPos> out = new ArrayList<>(4);
-        if (s.getBlock() instanceof RefractoryTroughBlock.Gate) { // a gate: its two ends while open, nothing while shut
-            if (s.getValue(RefractoryTroughBlock.Gate.OPEN))
-                for (Direction.AxisDirection a : Direction.AxisDirection.values())
+        if (s.getBlock() instanceof RefractoryTroughBlock.Gate) { // a gate: its two ends (shut, TroughFlow passes nothing on through it)
+            for (Direction.AxisDirection a : Direction.AxisDirection.values())
                     out.add(port(p, Direction.fromAxisAndDirection(s.getValue(RefractoryTroughBlock.Gate.AXIS), a), p.getY()));
         } else if (s.getBlock() instanceof ClayChannelBlock) {
             Direction up = s.getValue(ClayChannelBlock.SLOPE).up;

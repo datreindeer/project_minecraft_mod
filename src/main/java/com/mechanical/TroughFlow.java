@@ -35,7 +35,8 @@ public final class TroughFlow {
 
     static void tick(ServerLevel level, BlockPos pos, TroughBlockEntity t) {
         long now = level.getGameTime();
-        if (now % STEP_TICKS != 0 || t.mb == 0 || t.solid(now)) {
+        boolean shutGate = level.getBlockState(pos).getBlock() instanceof RefractoryTroughBlock.Gate && !level.getBlockState(pos).getValue(RefractoryTroughBlock.Gate.OPEN);
+        if (now % STEP_TICKS != 0 || t.mb == 0 || t.solid(now) || shutGate) {
             if (t.buffer > 0 && t.solid(now)) returnBuffer(t, now);
             return;
         }
@@ -79,11 +80,20 @@ public final class TroughFlow {
     /** Moves {@code n} mB from one trough to the next one out; past the melt's reach it freezes there. */
     private static void move(ServerLevel level, TroughBlockEntity from, TroughBlockEntity to, Molten m, int n, long now) {
         if (n <= 0) return;
+        Direction d = side(from.getBlockPos(), to.getBlockPos());
+        if (d != null) from.markOut(d, now);
         int got = from.take(n, now);
-        to.add(m, got, from.dist + 1, from.heat, now);
+        to.add(m, got, from.dist + 1, from.heat, now, d == null ? null : d.getOpposite());
         int reach = reach(to.heat, m);
         if (to.getBlockState().getBlock() instanceof RefractoryTroughBlock.SandRunner) reach /= 2; // sand draws the heat
         if (to.dist > reach) to.freeze();
+    }
+
+    /** The horizontal side of {@code a} that {@code b} lies on (a slope may put it a block up or down), or null. */
+    static Direction side(BlockPos a, BlockPos b) {
+        int dx = Integer.signum(b.getX() - a.getX()), dz = Integer.signum(b.getZ() - a.getZ());
+        for (Direction d : Direction.Plane.HORIZONTAL) if (d.getStepX() == dx && d.getStepZ() == dz && (dx == 0) != (dz == 0)) return d;
+        return null;
     }
 
     /** Hot iron in clay: the channel glows, cracks and breaks; what ran into it is lost. */
@@ -108,6 +118,7 @@ public final class TroughFlow {
                 return;
             }
             int n = t.take(Math.min(RATE, need - t.buffer), now); // as fast as a spout pours (40 mB a tick)
+            t.markOut(t.bufferSide, now);
             t.buffer += n;
             sink.progress(level, q, m, t.buffer, need);
             if (t.buffer >= need) {

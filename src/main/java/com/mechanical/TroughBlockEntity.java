@@ -32,6 +32,32 @@ public class TroughBlockEntity extends BlockEntity {
     int mb, dist, heat;
     long movedAt;
     boolean frozen;
+    /** When metal last left / came in through each side (2D data value), when it arrived in an empty trough and from where
+     * (null: poured in from above): the client draws the drift toward the outlets and the front creeping in. */
+    final long[] outAt = new long[4], inAt = new long[4];
+    long arrivedAt = Long.MIN_VALUE / 2;
+    @Nullable Direction arrivedFrom;
+
+    public long outAt(Direction d) {
+        return outAt[d.get2DDataValue()];
+    }
+
+    public long inAt(Direction d) {
+        return inAt[d.get2DDataValue()];
+    }
+
+    public long arrivedAt() {
+        return arrivedAt;
+    }
+
+    public @Nullable Direction arrivedFrom() {
+        return arrivedFrom;
+    }
+
+    void markOut(Direction d, long now) {
+        outAt[d.get2DDataValue()] = now;
+    }
+
     /** Metal on its way into the mold beside it (on side {@link #bufferSide}); it goes back into the trough if the mold goes. */
     int buffer;
     @Nullable Direction bufferSide;
@@ -80,14 +106,22 @@ public class TroughBlockEntity extends BlockEntity {
         return mb == 0 || molten == m && !solid(now);
     }
 
-    int room() {
+    public int room() {
         return CAPACITY - mb;
     }
 
     /** Adds metal arriving from {@code fromDist} troughs out, tapped at {@code fromHeat}°. */
     void add(Molten m, int amount, int fromDist, int fromHeat, long now) {
+        add(m, amount, fromDist, fromHeat, now, null);
+    }
+
+    /** The same, the metal coming in from side {@code from} (null: from above). */
+    public void add(Molten m, int amount, int fromDist, int fromHeat, long now, @Nullable Direction from) {
         if (amount <= 0) return;
+        if (from != null) inAt[from.get2DDataValue()] = now;
         if (mb == 0) {
+            arrivedAt = now;
+            arrivedFrom = from;
             dist = fromDist;
             heat = fromHeat;
             frozen = false;
@@ -102,7 +136,7 @@ public class TroughBlockEntity extends BlockEntity {
     }
 
     /** Takes out up to {@code amount}; returns how much. */
-    int take(int amount, long now) {
+    public int take(int amount, long now) {
         int out = Math.min(amount, mb);
         if (out <= 0) return 0;
         mb -= out;
@@ -147,6 +181,12 @@ public class TroughBlockEntity extends BlockEntity {
             output.putInt("heat", heat);
             output.putLong("moved_at", movedAt);
             output.putBoolean("frozen", frozen);
+            for (int k = 0; k < 4; k++) {
+                output.putLong("out_at_" + k, outAt[k]);
+                output.putLong("in_at_" + k, inAt[k]);
+            }
+            output.putLong("arrived_at", arrivedAt);
+            if (arrivedFrom != null) output.putString("arrived_from", arrivedFrom.getSerializedName());
         }
         if (buffer > 0 && bufferSide != null && bufferMolten != null) {
             output.putInt("buffer", buffer);
@@ -164,6 +204,12 @@ public class TroughBlockEntity extends BlockEntity {
         heat = input.getIntOr("heat", 0);
         movedAt = input.getLongOr("moved_at", 0);
         frozen = input.getBooleanOr("frozen", false);
+        for (int k = 0; k < 4; k++) {
+            outAt[k] = input.getLongOr("out_at_" + k, 0);
+            inAt[k] = input.getLongOr("in_at_" + k, 0);
+        }
+        arrivedAt = input.getLongOr("arrived_at", Long.MIN_VALUE / 2);
+        arrivedFrom = Direction.byName(input.getStringOr("arrived_from", ""));
         buffer = input.getIntOr("buffer", 0);
         bufferSide = Direction.byName(input.getStringOr("buffer_side", ""));
         bufferMolten = Molten.byId(input.getStringOr("buffer_molten", ""));

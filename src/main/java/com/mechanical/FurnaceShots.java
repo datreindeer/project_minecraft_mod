@@ -48,6 +48,9 @@ public final class FurnaceShots {
     private static final List<Object[]> STEPS = new ArrayList<>();
     private static ArmorStand camera;
     private static boolean feeding;
+    /** The flow demonstration: a run of troughs fed steel from above at (20, 0, -4) while this is on. */
+    private static boolean demoFeed;
+    private static BlockPos demoAt = new BlockPos(20, 0, -4);
     private static final BlockPos SMALL_FRONT = new BlockPos(0, 0, -1), BIG_FRONT = new BlockPos(10, 0, -1);
 
     @SubscribeEvent
@@ -89,6 +92,10 @@ public final class FurnaceShots {
             }
             if (mc.player == null || mc.getSingleplayerServer() == null) return;
             ticks++;
+            if (demoFeed) server(() -> {
+                if (level().getBlockEntity(rel(demoAt.getX(), demoAt.getY(), demoAt.getZ())) instanceof TroughBlockEntity t && t.room() > 0)
+                    t.add(Molten.STEEL, Math.min(40, t.room()), 0, 1560, level().getGameTime(), null);
+            });
             if (feeding) server(() -> {
                 for (BlockPos q : new BlockPos[] {new BlockPos(14, 0, 1), new BlockPos(8, 0, 1), new BlockPos(12, 0, 4)})
                     if (level().getBlockEntity(rel(q.getX(), q.getY(), q.getZ())) instanceof GreatBellowsBlockEntity b) b.feed(16 * WaterPower.DEG_PER_POWER, 0, 0, 16);
@@ -239,6 +246,16 @@ public final class FurnaceShots {
             fe.shape = MoldingFlaskBlock.FlaskShape.PICKAXE_HEAD;
             fe.setChanged();
         }
+        // the flow demonstration east of the furnaces: a level run with a T branching north to a closed end, then a step
+        // down a slope to a lower run (dug into the yard) that is longer than steel's reach
+        for (int x = 19; x <= 40; x++) for (int z = -8; z <= -2; z++) set(x, -1, z, x >= 28 && z == -4 ? Blocks.AIR.defaultBlockState() : Blocks.SMOOTH_STONE.defaultBlockState());
+        for (int x = 20; x <= 27; x++) set(x, 0, -4, HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
+        for (int z = -6; z <= -5; z++) set(24, 0, z, HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
+        for (int x = 28; x <= 39; x++) set(x, -1, -4, HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
+        for (int x = 19; x <= 40; x++) for (int y = -1; y <= 0; y++) for (int z = -7; z <= -3; z++) {
+            BlockPos q = rel(x, y, z);
+            if (level().getBlockState(q).getBlock() instanceof ClayChannelBlock c) level().setBlockAndUpdate(q, c.stateAt(level(), q));
+        }
         // the patternmaker's corner: a Pattern Bench, Casting Sand, a rammed flask, the three iron molds
         set(5, 0, -7, HighFurnace.PATTERN_BENCH.get().defaultBlockState().setValue(PatternBenchBlock.FACING, Direction.SOUTH));
         set(4, 0, -7, HighFurnace.CASTING_SAND.get().defaultBlockState());
@@ -343,6 +360,15 @@ public final class FurnaceShots {
                 case "!light" -> then(2, () -> server(FurnaceShots::light));
                 case "!heat" -> then(2, () -> server(() -> heat(Float.parseFloat(p[1]))));
                 case "!fill" -> then(2, () -> server(FurnaceShots::fill));
+                case "!demo" -> then(1, () -> {
+                    demoAt = p.length > 3 ? new BlockPos(Integer.parseInt(p[1]), Integer.parseInt(p[2]), Integer.parseInt(p[3])) : new BlockPos(20, 0, -4);
+                    demoFeed = true;
+                });
+                case "!clear" -> then(1, () -> server(() -> {
+                    for (int x = 19; x <= 40; x++) for (int y = -1; y <= 0; y++) for (int z = -7; z <= -3; z++)
+                        if (level().getBlockEntity(rel(x, y, z)) instanceof TroughBlockEntity t) t.take(t.amount(), level().getGameTime());
+                }));
+                case "!demostop" -> then(1, () -> demoFeed = false);
                 case "!gate" -> then(2, () -> server(() -> {
                     BlockPos g = rel(12, -1, -6);
                     level().setBlockAndUpdate(g, level().getBlockState(g).setValue(RefractoryTroughBlock.Gate.OPEN, true));

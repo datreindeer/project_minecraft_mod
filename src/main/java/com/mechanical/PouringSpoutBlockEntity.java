@@ -196,6 +196,7 @@ public class PouringSpoutBlockEntity extends BlockEntity {
             }
 
             public int drain(Molten m, int mb) {
+                t.markOut(facing(), level.getGameTime());
                 return t.take(mb, level.getGameTime());
             }
 

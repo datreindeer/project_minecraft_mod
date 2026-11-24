@@ -389,7 +389,8 @@ public final class HighFurnaceTest {
             h.assertTrue(total == 200, "the T makes and loses nothing: " + total);
             int lo = Math.min(w.amount(), Math.min(e.amount(), n.amount())), hi = Math.max(w.amount(), Math.max(e.amount(), n.amount()));
             h.assertTrue(lo > 0 && hi - lo <= 34, "the T shares evenly: " + w.amount() + " " + e.amount() + " " + n.amount() + " (middle " + mid.amount() + ")");
-            h.assertTrue(b.amount() == 0 && a.amount() == 200, "a shut gate stops the metal: " + a.amount() + " / " + b.amount());
+            TroughBlockEntity shut = (TroughBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(3, 1, 5)));
+            h.assertTrue(b.amount() == 0 && a.amount() + shut.amount() == 200, "a shut gate stops the metal (it pools against the plate): " + a.amount() + " + " + shut.amount() + " / " + b.amount());
             h.assertTrue(h.getBlockState(new BlockPos(3, 1, 12)).isAir(), "a clay channel by steel cracked and broke");
             h.assertTrue(h.getBlockState(new BlockPos(7, 1, 12)).is(Smelting.CLAY_CHANNEL.get()), "a clay channel by bronze stands");
             h.setBlock(new BlockPos(3, 1, 5), HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.X)
