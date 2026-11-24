@@ -85,17 +85,15 @@ final class ForestCreep {
         if (!level.getBlockState(g).is(Blocks.GRASS_BLOCK) || !(up.isAir() || up.is(Blocks.SHORT_GRASS)) || !d.can(g.above())
                 || level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) != g.getY() + 1) return; // under a crown is forest already
         BlockState trunk = null;
-        for (int dx = -CREEP_FAR; dx <= CREEP_FAR && trunk == null; dx++)
+        // the whole square: a trunk found early must not stop the search for one (or a sapling) too close
+        for (int dx = -CREEP_FAR; dx <= CREEP_FAR; dx++)
             for (int dz = -CREEP_FAR; dz <= CREEP_FAR; dz++) {
                 int dist = Math.max(Math.abs(dx), Math.abs(dz));
                 BlockPos t = d.top(x + dx, z + dz);
                 BlockState s = level.getBlockState(t);
                 if (!(s.is(BlockTags.LOGS) || s.is(BlockTags.SAPLINGS) || level.getBlockState(t.above()).is(BlockTags.SAPLINGS))) continue;
                 if (dist < CREEP_NEAR) return; // something grows close already
-                if (StormFelling.upright(s) && t.getY() - g.getY() >= 3) {
-                    trunk = s;
-                    break;
-                }
+                if (trunk == null && StormFelling.upright(s) && t.getY() - g.getY() >= 3) trunk = s;
             }
         if (trunk == null || grazed(level, g)) return;
         Block sapling = NatureRot.sapling(trunk);
