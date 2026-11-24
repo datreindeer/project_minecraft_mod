@@ -996,8 +996,7 @@ SAGE = [  # woolly grey-green oblong leaves held up and out, silver upper edges,
     ".LMDLMDK.SLMMDK.",
     "..KD.KD..LMDK...",
 ]
-SAGE_CUT = [
-    "................",
+SAGE_CUT = [   # woody stubs with pale cut ends, new woolly leaves sprouting round their feet
     "................",
     "................",
     "................",
@@ -1008,11 +1007,12 @@ SAGE_CUT = [
     "................",
     "................",
     "...c.......c....",
-    "...s...c...s....",
-    "..Ss...s.SLs....",
-    ".SwsM.SsLMDs.SL.",
-    "SLMsDKSLsMDs.LMD",
-    ".MDsK.LMsDK.sMD.",
+    ".S.s...c...s.S..",
+    "SwLs.S.s.S.sSLD.",
+    "SLMsDSwsSLDsLMD.",
+    ".LMDKLMsLMDsMDK.",
+    "SLMDsLMDsMDKsLMD",
+    ".KDKsKDKsKD.sKD.",
 ]
 
 
