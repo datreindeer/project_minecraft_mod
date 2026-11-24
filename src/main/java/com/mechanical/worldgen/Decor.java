@@ -126,6 +126,17 @@ public final class Decor {
         }
     }
 
+    private static final java.util.Map<String, java.util.concurrent.atomic.AtomicInteger> REJECTS = new java.util.concurrent.ConcurrentHashMap<>();
+    private static final java.util.concurrent.atomic.AtomicInteger REJECTED = new java.util.concurrent.atomic.AtomicInteger();
+
+    /** Dev only (decorlog.flag): counts why a decoration gave up ("talus:no_cliff"); the whole tally is logged every 2000. Returns null. */
+    static BlockPos reject(String why) {
+        if (!LOG_PLACED) return null;
+        REJECTS.computeIfAbsent(why, k -> new java.util.concurrent.atomic.AtomicInteger()).incrementAndGet();
+        if (REJECTED.incrementAndGet() % 2000 == 0) Mechanical.LOGGER.info("decor rejects {}", new java.util.TreeMap<>(REJECTS));
+        return null;
+    }
+
     /** For logPlaced names: the DecorShots angle (degrees, 0 = camera to the south) that puts a camera on the side of d. */
     static int viewAngle(net.minecraft.core.Direction d) {
         return Math.floorMod((int) Math.round(Math.toDegrees(Math.atan2(-d.getStepX(), d.getStepZ()))), 360);

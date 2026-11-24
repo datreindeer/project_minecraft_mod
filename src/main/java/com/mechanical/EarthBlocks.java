@@ -104,6 +104,9 @@ public final class EarthBlocks {
     private static final Supplier<Properties> PACKED_SNOW_LIKE = () -> Properties.of().mapColor(MapColor.SNOW).strength(0.4F).sound(SoundType.SNOW).randomTicks();
     public static final DeferredBlock<PackedSnowBlock> PACKED_SNOW = block("packed_snow", PackedSnowBlock::new, PACKED_SNOW_LIKE);
     public static final DeferredBlock<PackedSnowBlock.Slab> PACKED_SNOW_SLAB = block("packed_snow_slab", PackedSnowBlock.Slab::new, PACKED_SNOW_LIKE);
+    // Packed Ice Slab and Stairs: the tilted chunks of old ice lying on the snowy plains (worldgen.DryColdDecor), slippery like the block
+    public static final DeferredBlock<SlabBlock> PACKED_ICE_SLAB = slab("packed_ice_slab", () -> Blocks.PACKED_ICE);
+    public static final DeferredBlock<StairBlock> PACKED_ICE_STAIRS = stairs("packed_ice_stairs", () -> Blocks.PACKED_ICE);
 
     public static final DeferredBlock<SugarCaneBlock> REED = block("reed", SugarCaneBlock::new, () -> Properties.of().mapColor(MapColor.PLANT)
             .noCollision().randomTicks().instabreak().sound(SoundType.GRASS).ignitedByLava().pushReaction(PushReaction.POPPED));

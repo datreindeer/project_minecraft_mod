@@ -95,6 +95,7 @@
     "mechanical:grass_stairs",
     "mechanical:coarse_dirt_stairs",
     "mechanical:sand_stairs",
-    "mechanical:red_sand_stairs"
+    "mechanical:red_sand_stairs",
+    "mechanical:packed_ice_stairs"
   ]
 }

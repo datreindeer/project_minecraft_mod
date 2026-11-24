@@ -20,7 +20,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SnowyBlock;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -39,8 +38,8 @@ final class MountainDecor extends StoneAgeFeature {
     static final MountainDecor TALUS = new MountainDecor(Kind.TALUS), FALLEN_ROCK = new MountainDecor(Kind.FALLEN_ROCK),
             ROCK_ARCH = new MountainDecor(Kind.ROCK_ARCH), BIRD_CLIFF = new MountainDecor(Kind.BIRD_CLIFF),
             WATERFALL = new MountainDecor(Kind.WATERFALL), SNOW_PATCH = new MountainDecor(Kind.SNOW_PATCH);
-    /** Snow patches from SNOW_FROM where snow never melts (Thaw.coldAllYear), from SNOW_HIGH in cool mountains. */
-    static final int SNOW_FROM = 150, SNOW_HIGH = 200;
+    /** Snow patches from SNOW_FROM in cool mountains, from SNOW_HIGH in warm ones, below where snow lies all year. */
+    static final int SNOW_FROM = 115, SNOW_HIGH = 150;
 
     /** A rock wall seen from its foot: the last ground before the wall, the way up, how high it rises, its rock. */
     record Cliff(BlockPos foot, Direction up, int rise, BlockState rock) {}
@@ -84,7 +83,10 @@ final class MountainDecor extends StoneAgeFeature {
      */
     private static BlockPos talus(WorldGenLevel level, RandomSource random, BlockPos c) {
         Cliff k = cliff(level, c, 6, 6, 7);
-        if (k == null || !dryNatural(level, k.foot().below()) || !openFoot(level, k)) return null;
+        if (k == null) return Decor.reject("talus:no_cliff");
+        if (!dryNatural(level, k.foot().below())) return Decor.reject("talus:wet_foot");
+        if (!openFoot(level, k)) return Decor.reject("talus:closed_foot");
+        if (!inSight(level, k)) return Decor.reject("talus:hidden");
         BlockPos b = k.foot();
         Direction out = k.up().getOpposite(), side = out.getClockWise();
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
@@ -138,11 +140,13 @@ final class MountainDecor extends StoneAgeFeature {
      */
     private static BlockPos fallenRock(WorldGenLevel level, RandomSource random, BlockPos c) {
         Cliff k = cliff(level, c, 8, 8, 8);
-        if (k == null || !openFoot(level, k)) return null;
+        if (k == null) return Decor.reject("fallen_rock:no_cliff");
+        if (!openFoot(level, k)) return Decor.reject("fallen_rock:closed_foot");
+        if (!inSight(level, k)) return Decor.reject("fallen_rock:hidden");
         Direction out = k.up().getOpposite(), side = out.getClockWise();
         int dist = 3 + random.nextInt(4);
         BlockPos b = top(level, k.foot().relative(out, dist).relative(side, random.nextInt(5) - 2));
-        if (!flat(level, b, 2, 1)) return null;
+        if (!flat(level, b, 2, 1)) return Decor.reject("fallen_rock:not_flat");
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
         double hx = 1.6 + random.nextDouble() * 1.3, hy = 1.3 + random.nextDouble() * 0.9, hz = 1.4 + random.nextDouble() * 1.1;
         double yaw = random.nextDouble() * Math.PI, pitch = (random.nextDouble() - 0.5) * 0.6, roll = (random.nextDouble() - 0.5) * 0.6;
@@ -307,43 +311,51 @@ final class MountainDecor extends StoneAgeFeature {
      */
     private static BlockPos birdCliff(WorldGenLevel level, RandomSource random, BlockPos c) {
         Cliff k = cliff(level, c, 6, 3, 9);
-        if (k == null) return null;
+        if (k == null) return Decor.reject("bird_cliff:no_cliff");
         Direction up = k.up(), side = up.getClockWise();
         BlockPos foot = k.foot();
         int sheer = sheer(level, foot, up);
-        if (sheer < 6) return null;
+        if (sheer < 8) return Decor.reject("bird_cliff:low");
         BlockState guano = VanillaGame.GUANO_PILE.get().defaultBlockState();
         BlockState ledge = Shaper.shape(0x0F, k.rock().getBlock(), Blocks.STONE);
         int ledges = 0;
-        for (int i = 0; i < 24 && ledges < 7; i++) {
-            BlockPos front = foot.relative(side, random.nextInt(9) - 4).above(3 + random.nextInt(sheer - 3));
+        // a colony: ledges all over the face, 9 each way along it, from 3 up to its top
+        for (int i = 0; i < 60 && ledges < 14; i++) {
+            BlockPos at = foot.relative(side, random.nextInt(19) - 9);
+            int s0 = sheer(level, top(level, at), up);
+            if (s0 < 6) continue;
+            BlockPos front = top(level, at).above(3 + random.nextInt(s0 - 3));
             BlockPos wall = front.relative(up);
             if (!level.getBlockState(front).isAir() || !level.getBlockState(front.above()).isAir() || !SmoothGround.rock(level.getBlockState(wall))
                     || level.getBlockState(front.relative(side)).getBlock() instanceof net.minecraft.world.level.block.SlabBlock
-                    || level.getBlockState(front.relative(side.getOpposite())).getBlock() instanceof net.minecraft.world.level.block.SlabBlock) continue;
+                    || level.getBlockState(front.relative(side.getOpposite())).getBlock() instanceof net.minecraft.world.level.block.SlabBlock
+                    || level.getBlockState(front.below()).getBlock() instanceof net.minecraft.world.level.block.SlabBlock) continue;
             set(level, front, ledge);
             BlockPos on = front.above();
             if (random.nextInt(3) > 0)
                 set(level, on, Birds.BIRD_NEST.get().defaultBlockState().setValue(BirdNestBlock.BIRD, BirdNestBlock.Bird.ROCK_DOVE).setValue(BirdNestBlock.EGGS, random.nextInt(3)));
             else set(level, on, guano.setValue(GuanoPileBlock.LAYERS, 1 + random.nextInt(2)));
-            // the white run under it: the face below the ledge, two wide at first, breaking up lower down
-            int len = 4 + random.nextInt(Math.max(1, front.getY() - foot.getY() - 2));
+            // the white run under it: the face below the ledge, two or three wide at first, thinning and breaking up lower down
+            int len = Math.max(3, (front.getY() - top(level, at).getY()) * 2 / 3 + random.nextInt(3));
             for (int j = 0; j < len; j++) {
                 BlockPos f = wall.below(j + 1);
-                if (random.nextInt(8) < 7 - j / 3) streak(level, random, f);
-                if (j < 3 && random.nextBoolean()) streak(level, random, f.relative(random.nextBoolean() ? side : side.getOpposite()));
+                if (random.nextInt(10) < 9 - j * 6 / len) streak(level, random, f);
+                if (j < len / 2 && random.nextInt(3) > 0) streak(level, random, f.relative(side));
+                if (j < len / 3 && random.nextInt(3) > 0) streak(level, random, f.relative(side.getOpposite()));
             }
             streak(level, random, wall);
+            streak(level, random, wall.relative(side));
+            streak(level, random, wall.relative(side.getOpposite()));
             ledges++;
         }
-        if (ledges < 3) return null;
-        for (int s = -5; s <= 5; s++)
+        if (ledges < 5) return Decor.reject("bird_cliff:few_ledges");
+        for (int s = -8; s <= 8; s++)
             for (int a = 0; a <= 2; a++) {
                 BlockPos g = top(level, foot.relative(side, s).relative(up.getOpposite(), a));
                 if (random.nextInt(2 + a) == 0 && Math.abs(g.getY() - foot.getY()) <= 1 && level.getBlockState(g).isAir())
                     onGround(level, g, guano.setValue(GuanoPileBlock.LAYERS, 1 + random.nextInt(a == 0 ? 3 : 1)));
             }
-        for (int i = 0, n = 2 + random.nextInt(3); i < n; i++)
+        for (int i = 0, n = 4 + random.nextInt(4); i < n; i++)
             spawn(level, random, Wildlife.ROCK_DOVE.get(), foot.relative(up.getOpposite(), 2).relative(side, random.nextInt(5) - 2).above(1 + random.nextInt(3)), m -> {});
         Decor.logPlaced("bird_cliff_dir_" + Decor.viewAngle(up.getOpposite()), foot.above(sheer / 2));
         return foot.above(sheer / 2);
@@ -415,19 +427,22 @@ final class MountainDecor extends StoneAgeFeature {
     /**
      * A snow patch that outlasts the summer, high up in a hollow or on a shelf where the drifts lie deepest: a ragged
      * patch 7-15 across of Snow Blocks laid flush in the ground (Thaw never melts Snow Blocks), so it follows the lie of
-     * the land instead of standing on it, fraying at its rim into scattered snow and wet, dark earth (Mud, Gravel) where
-     * it melts back. Where snow never melts (Thaw.coldAllYear) it swells in its middle with snow layers. From y 150 where
-     * snow never melts, from y 200 in the mountains (y 240 in warm ones such as Stony Peaks). Not on ground that is snow.
+     * the land instead of standing on it, fraying at its rim into scattered snow and bare earth (Coarse Dirt, Gravel) where
+     * it melts back. Below the land where snow lies all year (there everything is white and it would not show): from y 115
+     * in cool mountains, from y 150 in warm ones such as Stony Peaks. Not on ground that is snow.
      */
     private static BlockPos snowPatch(WorldGenLevel level, RandomSource random, BlockPos c) {
         BlockState ground = level.getBlockState(c.below());
-        if (c.getY() < SNOW_FROM || ground.is(Blocks.SNOW_BLOCK) || ground.is(Blocks.POWDER_SNOW) || !natural(ground) || !flat(level, c, 2, 2)) return null;
-        boolean frozen = Thaw.coldAllYear(level.getLevel(), level.getBiome(c).value(), c);
-        if (!frozen && (c.getY() < SNOW_HIGH || c.getY() < SNOW_HIGH + 40 && level.getBiome(c).value().getBaseTemperature() > 0.5F)) return null;
+        if (c.getY() < SNOW_FROM) return Decor.reject("snow_patch:low");
+        if (ground.is(Blocks.SNOW_BLOCK) || ground.is(Blocks.POWDER_SNOW) || level.getBlockState(c).is(Blocks.SNOW)) return Decor.reject("snow_patch:snowy");
+        if (!natural(ground) || !flat(level, c, 2, 2)) return Decor.reject("snow_patch:not_flat");
+        // where snow lies all year the land is white already and the patch would not show
+        if (Thaw.coldAllYear(level.getLevel(), level.getBiome(c).value(), c)) return Decor.reject("snow_patch:frozen");
+        if (c.getY() < SNOW_HIGH && level.getBiome(c).value().getBaseTemperature() > 0.5F) return Decor.reject("snow_patch:warm");
         // a hollow or a level shelf: the ground around lies no lower than here on the whole
         int sum = 0, n = 0;
         for (Direction d : Direction.Plane.HORIZONTAL) for (int k = 4; k <= 6; k += 2) { sum += top(level, c.relative(d, k)).getY() - c.getY(); n++; }
-        if (sum < -n / 2) return null;
+        if (sum < -n / 2) return Decor.reject("snow_patch:no_hollow");
         var noise = new net.minecraft.world.level.levelgen.synth.SimplexNoise(random);
         double rx = 3.5 + random.nextDouble() * 3.5, rz = 2.8 + random.nextDouble() * 2.2, ang = random.nextDouble() * Math.PI;
         double cos = Math.cos(ang), sin = Math.sin(ang);
@@ -445,15 +460,14 @@ final class MountainDecor extends StoneAgeFeature {
                 if (e > 0) { // the patch, flush with the ground
                     clear(level, t);
                     set(level, g, Blocks.SNOW_BLOCK.defaultBlockState());
-                    if (frozen && e > 0.35) set(level, t, Blocks.SNOW.defaultBlockState().setValue(SnowLayerBlock.LAYERS, Math.min(6, 1 + (int) ((e - 0.35) * 9))));
                     built++;
                 } else if (random.nextInt(3) == 0) { // the melting rim: a scrap of snow, wet dark earth, grit
                     if (e > -0.12 && random.nextBoolean()) set(level, g, Blocks.SNOW_BLOCK.defaultBlockState());
-                    else if (gs.is(net.minecraft.tags.BlockTags.SUBSTRATE_OVERWORLD)) set(level, g, (random.nextBoolean() ? Blocks.MUD : Blocks.COARSE_DIRT).defaultBlockState());
+                    else if (gs.is(net.minecraft.tags.BlockTags.SUBSTRATE_OVERWORLD)) set(level, g, Blocks.COARSE_DIRT.defaultBlockState());
                     else if (random.nextBoolean()) set(level, g, Blocks.GRAVEL.defaultBlockState());
                 }
             }
-        return built >= 20 ? c : null;
+        return built >= 20 ? c : Decor.reject("snow_patch:small");
     }
 
     // ------------------------------------------------------------------ helpers (DryColdDecor uses some)
@@ -465,6 +479,11 @@ final class MountainDecor extends StoneAgeFeature {
      * stone or sandstone). Null if there is none.
      */
     static Cliff cliff(WorldGenLevel level, BlockPos c, int search, int reach, int minRise) {
+        return cliff(level, c, search, reach, minRise, false);
+    }
+
+    /** clay: Terracotta counts as rock too (the badlands' walls). */
+    static Cliff cliff(WorldGenLevel level, BlockPos c, int search, int reach, int minRise, boolean clay) {
         Cliff best = null;
         for (Direction d : Direction.Plane.HORIZONTAL) {
             BlockPos foot = c;
@@ -480,7 +499,7 @@ final class MountainDecor extends StoneAgeFeature {
                         BlockState s = level.getBlockState(foot.relative(d).above(y));
                         if (!s.isSolid()) break;
                         faces++;
-                        if (SmoothGround.rock(s)) {
+                        if (SmoothGround.rock(s) || clay && s.is(net.minecraft.tags.BlockTags.TERRACOTTA)) {
                             rocks++;
                             if (rock == null) rock = s;
                         }
@@ -506,6 +525,18 @@ final class MountainDecor extends StoneAgeFeature {
             prev = t;
         }
         return !level.getBlockState(k.foot()).is(Blocks.SNOW);
+    }
+
+    /**
+     * Where a fan or a fallen block can be seen: out from the foot the land opens (no wall within 10 rising more than 3
+     * over the foot: not a ravine), no tree stands within 5 of the spot 3 out, and the land is not one that is snowed
+     * under all winter (snow would bury it).
+     */
+    static boolean inSight(WorldGenLevel level, Cliff k) {
+        Direction out = k.up().getOpposite();
+        for (int a = 6; a <= 10; a++) if (top(level, k.foot().relative(out, a)).getY() > k.foot().getY() + 3) return false;
+        BlockPos spot = k.foot().relative(out, 3);
+        return !cold(level, spot) && ForestDecor.woodNear(level, spot, 5) == null;
     }
 
     /** How many blocks up from foot the wall (the column toward up) is solid with open air (or a small plant) in front of it. */

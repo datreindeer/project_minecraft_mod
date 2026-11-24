@@ -114,6 +114,7 @@
     "mechanical:packed_sand_slab",
     "mechanical:packed_red_sand_slab",
     "mechanical:packed_snow_slab",
-    "mechanical:burnt_soil_slab"
+    "mechanical:burnt_soil_slab",
+    "mechanical:packed_ice_slab"
   ]
 }

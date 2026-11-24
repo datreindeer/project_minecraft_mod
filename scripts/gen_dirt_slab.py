@@ -197,6 +197,25 @@ for stem, (base, tex, double) in GROUND.items():
         recipe(s, ["#  ", "## ", "###"], base, 4)
         w(D / f"mechanical/loot_table/blocks/{s}.json", self_loot(s, s))
 
+# Packed Ice Slab and Stairs (the ice blocks on the snowy plains, gen_land_decor.py): plain cube models, a pickaxe's,
+# and like Packed Ice itself only silk touch gets them back
+ice = cube(V + "packed_ice")
+slab_models("packed_ice_slab", ice, "minecraft:block/slab")
+w(A / "blockstates/packed_ice_slab.json", {"variants": slab_variants("packed_ice_slab", V + "packed_ice")})
+stair_models("packed_ice_stairs", ice)
+w(A / "blockstates/packed_ice_stairs.json", {"variants": stair_variants("packed_ice_stairs")})
+recipe("packed_ice_slab", ["###"], "minecraft:packed_ice", 6)
+recipe("packed_ice_stairs", ["#  ", "## ", "###"], "minecraft:packed_ice", 4)
+for b in ("packed_ice_slab", "packed_ice_stairs"):
+    loot = slab_loot(b, b) if b.endswith("slab") else self_loot(b, b)
+    loot["pools"][0]["condition"] = "minecraft:tool/can_silk_touch"
+    w(D / f"mechanical/loot_table/blocks/{b}.json", loot)
+lang_new = {"block.mechanical.packed_ice_slab": "Packed Ice Slab", "block.mechanical.packed_ice_stairs": "Packed Ice Stairs"}
+tag_add("minecraft/tags/block/mineable/pickaxe.json", [M + "packed_ice_slab", M + "packed_ice_stairs"])
+for kind, b in (("slabs", "packed_ice_slab"), ("stairs", "packed_ice_stairs")):
+    tag_add(f"minecraft/tags/block/{kind}.json", [M + b])
+    tag_add(f"minecraft/tags/item/{kind}.json", [M + b])
+
 # Dirt Stairs and Grass Stairs (grass on the Turf stairs' grassy models, a snowy look like the Grass Slab's)
 stair_models("dirt_stairs", dirt)
 w(A / "blockstates/dirt_stairs.json", {"variants": stair_variants("dirt_stairs")})
@@ -245,4 +264,5 @@ lang_path = A / "lang/en_us.json"
 lang = json.loads(lang_path.read_text(encoding="utf-8"))
 lang.update({"block.mechanical.dirt_slab": "Dirt Slab", "block.mechanical.grass_slab": "Grass Slab", "block.mechanical.dirt_path_slab": "Dirt Path Slab"})
 lang.update({f"block.mechanical.{b}": title(b) for b in new_slabs + new_stairs})
+lang.update(lang_new)
 lang_path.write_text(json.dumps(lang, indent=2) + "\n", encoding="utf-8")

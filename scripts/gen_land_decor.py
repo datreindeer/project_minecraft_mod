@@ -57,8 +57,7 @@ def count(n):
 
 # placed feature: (feature type, biomes, tries per chunk). OFF: switched off until they look right in close-up shots
 # (code kept, feature type registered, no configured or placed feature or biome modifier): see docs/biomes.md for why.
-OFF = ["rock_overhang", "ice_blocks", "talus", "fallen_rock", "snow_patch", "farm_walls", "juniper_in_plains", "bird_cliff", "root_cellar",
-       "dry_creek", "frost_split", "anthill", "anthill_open"]  # lead review 2026-11-24: a pit, two lumps, a striped loaf
+OFF = ["rock_overhang", "talus", "fallen_rock", "farm_walls", "juniper_in_plains", "bird_cliff", "frost_split", "anthill", "anthill_open"]  # review 2026-11-24 (decor5)
 PLACED = {
     # mountains
     "talus": ("talus", MOUNTAINS + VALLEYS, count(3)),
@@ -76,11 +75,11 @@ PLACED = {
     "lone_tree": ("lone_tree", LONE, rarity(8)),
     "farm_walls": ("farm_walls", PLAINS, rarity(70)),
     "fire_ring": ("fire_ring", FIRE, rarity(40)),
-    "root_cellar": ("root_cellar", LONE, rarity(60)),
+    "root_cellar": ("root_cellar", LONE + mc("windswept_hills") + mod("chalk_downs"), rarity(12)),
     # dry and warm
     "dead_tree": ("dead_tree", DRY + SAVANNA, rarity(5)),
     "sand_skeleton": ("sand_skeleton", SAND, rarity(14)),
-    "dry_creek": ("dry_creek", DRY + SAVANNA, rarity(6)),
+    "dry_creek": ("dry_creek", DRY + SAVANNA, count(1)),  # once per chunk: each chunk lays its own stretch of the world's creeks
     "rock_overhang": ("rock_overhang", ROCKY_DRY, count(2)),
     # cold
     "frost_split": ("frost_split", FROST, rarity(20)),
@@ -93,7 +92,7 @@ import os
 if os.environ.get("DECOR_TEST"):
     OFF = []
     PLACED = {n: (f, b, rarity(t[0]["chance"] if t[0]["chance"] <= 7 else max(2, t[0]["chance"] // 4)) if t[0]["type"] == "minecraft:rarity_filter" else count(max(2, t[0]["count"])))
-              for n, (f, b, t) in PLACED.items()}
+              for n, (f, b, t) in PLACED.items() if n != "dry_creek"} | {"dry_creek": PLACED["dry_creek"]}
     PLACED["farm_walls"] = PLACED["farm_walls"][:2] + (rarity(2),)  # plains are few in the test areas
 for name, (feature, biomes, tries) in PLACED.items():
     if name in OFF:
@@ -226,7 +225,7 @@ if '"block.mechanical.rib_cage"' not in text:  # appended as text, so the rest o
     LANG.write_text(text, encoding="utf-8")
 print("old bones models ok")
 
-# ---------------------------------------------------------------- the anthill (worldgen/AnthillBlock): a dome of needles in fine steps
+# ---------------------------------------------------------------- the anthill (worldgen/AnthillBlock): a cap of needles in fine steps
 import random as _random
 
 from PIL import Image
@@ -279,7 +278,7 @@ def dome(layers, lumps):
 
 def box_el(x0, y0, z0, x1, y1, z1, rnd):
     v0, v1 = max(0, 16 - y1), min(16, 16 - y0)  # the texture runs on down the courses
-    u0 = rnd.uniform(0, 4)
+    u0 = 2  # the same for every course, so the needles run on down the flank without seams
     side = [round(u0, 2), round(v0, 2), round(min(16, u0 + 12), 2), round(v1, 2)]
     # unshaded: the ledges of the courses would otherwise show as light rings round the dome
     faces = {f: {"uv": side, "texture": "#n"} for f in ("north", "south", "east", "west")}
@@ -315,7 +314,8 @@ def split(layers, at):
 
 
 BIG_LO, BIG_HI = split(profile(20, 28, 5), 16)  # one dome over two blocks: the base, and the top that rounds it off
-ANTHILL = {"small": (profile(10, 11, 3), [(3.5, 10, 5, 3.5), (12, 6.5, 4, 3)]),
+# small: the cap on the crown of a mound (OpenDecor.anthill heaps the flanks of Podzol and Coarse Dirt half blocks)
+ANTHILL = {"small": (profile(7.5, 11, 3), [(5, 9.5, 3, 2.4), (11, 6, 2.5, 2.2)]),
            "base": (BIG_LO, [(-5, 8, 8, 6), (14, 17, 10, 7), (9, -4, 6, 6), (4, 21, 5, 5)]),
            "top": (BIG_HI, [])}
 for part, (layers, lumps) in ANTHILL.items():
