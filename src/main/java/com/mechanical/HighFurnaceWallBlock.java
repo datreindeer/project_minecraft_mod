@@ -53,6 +53,63 @@ public class HighFurnaceWallBlock extends Block {
     }
 
     /**
+     * Banded Furnace Casing. Loose, a plain brick cube; in a formed furnace the Front gives every wall block its
+     * {@link Part} by layer, its outward {@link #FACING} and whether it ends a side next to an empty corner
+     * ({@link #END_CW}, {@link #END_CCW}: a vertical iron corner strap there), so the furnace reads as a stone hearth
+     * with arches, sooty brick courses held by thin iron tie straps, an inset upper shaft and an iron-rimmed corbelled top.
+     */
+    public static class Casing extends HighFurnaceWallBlock {
+        public enum Part implements net.minecraft.util.StringRepresentable {
+            /** Loose or not part of a formed furnace. */
+            NONE,
+            /** The bottom layer: rusticated stone with a plinth stepping out. */
+            BASE,
+            /** The layer above the hearth: heat-stained brick whose joints glow. */
+            HOT,
+            PLAIN,
+            /** A course with an iron tie strap round it (every third layer). */
+            STRAP,
+            /** The upper shaft, set back a little (the bosh narrowing to the throat), sootier. */
+            UPPER,
+            UPPER_STRAP,
+            /** The top layer: inset, a corbelled iron rim at the charging throat that glows inside when hot. */
+            TOP;
+
+            @Override
+            public String getSerializedName() {
+                return name().toLowerCase(java.util.Locale.ROOT);
+            }
+        }
+
+        public static final net.minecraft.world.level.block.state.properties.EnumProperty<Part> PART =
+                net.minecraft.world.level.block.state.properties.EnumProperty.create("part", Part.class);
+        public static final net.minecraft.world.level.block.state.properties.EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+        public static final net.minecraft.world.level.block.state.properties.BooleanProperty END_CW =
+                net.minecraft.world.level.block.state.properties.BooleanProperty.create("end_cw"),
+                END_CCW = net.minecraft.world.level.block.state.properties.BooleanProperty.create("end_ccw");
+
+        public Casing(Properties properties) {
+            super(properties);
+            registerDefaultState(stateDefinition.any().setValue(HighFurnace.HEAT, 0).setValue(PART, Part.NONE).setValue(FACING, Direction.NORTH)
+                    .setValue(END_CW, false).setValue(END_CCW, false));
+        }
+
+        @Override
+        protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+            builder.add(HighFurnace.HEAT, PART, FACING, END_CW, END_CCW);
+        }
+
+        /** The look of a wall block at layer {@code dy} of a furnace {@code layers} tall. */
+        public static Part part(int dy, int layers) {
+            if (dy == 0) return Part.BASE;
+            if (dy == layers - 1) return Part.TOP;
+            if (dy == 1) return Part.HOT;
+            boolean strap = dy % 3 == 0, upper = dy >= (layers + 1) / 2;
+            return upper ? strap ? Part.UPPER_STRAP : Part.UPPER : strap ? Part.STRAP : Part.PLAIN;
+        }
+    }
+
+    /**
      * The Firebox (a cast-iron door with a grate and the bronze tuyere, facing out of the furnace) and the Taphole. A
      * Firebox takes Charcoal or Coal (up to {@link HighFurnaceBlockEntity#FUEL_MAX}) and is lit with a Fire Drill or
      * Flint and Steel: every Firebox of the furnace with fuel catches. Empty hand: its fuel and blast.

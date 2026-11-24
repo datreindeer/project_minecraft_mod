@@ -177,21 +177,21 @@ def layout():
 CELLS = layout()
 
 
-def silica_bricks(seed, speck=0.055):
+def silica_bricks(seed, speck=0.055, pal=SILICA, joint=JOINT):
     rng = random.Random(seed)
     img = Image.new("RGBA", (16, 16))
     tones = {}
     for (x, y), cell in CELLS.items():
         if cell[0] == "joint":
             t = 0.5 + rng.uniform(-0.12, 0.12) - (0.18 if cell[1] else 0)
-            img.putpixel((x, y), ramp(JOINT, t) + (255,))
+            img.putpixel((x, y), ramp(joint, t) + (255,))
             continue
         _, bid, ri, rn, k, ln = cell
         tone = tones.setdefault(bid, rng.uniform(-0.1, 0.07))
         t = 0.66 + tone + rng.uniform(-0.035, 0.035)
         t += 0.13 if ri == 0 else (-0.09 if ri == rn - 1 else 0)
         t += 0.06 if k == 0 else (-0.08 if k == ln - 1 else 0)
-        c = ramp(SILICA, t)
+        c = ramp(pal, t)
         r = rng.random()
         if r < speck:
             c = mix(c, OCHRE, rng.uniform(0.45, 0.7))
@@ -841,29 +841,611 @@ def brick_items():
     return fired, raw
 
 
-# ================================================================ write: phase 1-2
-def batch1():
-    save(silica_bricks(1000), BLOCK / "silica_bricks.png")
-    save(casing(1010), BLOCK / "banded_furnace_casing.png")
-    top = silica_bricks(1020)
-    rng = random.Random(1021)
+# ================================================================ v2: an old stone blast furnace (Bonawe, Hopewell, masugn)
+# The wall is warm grey-buff refractory brick in an irregular running bond; the iron straps, the rusticated stone base
+# with its hearth arches and the iron charging rim are separate 3D elements in the models, so nothing is painted over
+# the brick. Casing, upper (sooty) and hot (heat-stained) share one brick layout, so they stack seamlessly and the hot
+# glow lights exactly the hot casing's joints.
+BUFF = [(70, 63, 54), (98, 89, 77), (123, 113, 97), (143, 131, 113), (161, 149, 129), (179, 167, 146), (198, 187, 166)]
+WMORTAR = [(62, 59, 55), (84, 80, 74), (104, 100, 92), (122, 118, 109)]
+STONE = [(54, 52, 49), (78, 75, 70), (101, 97, 90), (123, 118, 109), (142, 136, 125), (160, 154, 142), (180, 174, 162)]
+ARCH = [(22, 20, 19), (36, 33, 30), (52, 48, 43), (70, 65, 58), (90, 84, 75), (112, 105, 94)]
+IRONR = [(26, 24, 23), (40, 37, 35), (56, 52, 48), (74, 69, 64), (96, 90, 83), (122, 115, 106), (154, 147, 138)]
+RUST = [(92, 46, 24), (128, 66, 34), (156, 90, 46), (178, 116, 64)]
+SCORCH = (34, 26, 22)
+TEMPER = [(170, 134, 72), (126, 72, 96), (74, 70, 132), (70, 102, 150)]  # straw, purple, blue, pale blue
+WALL_COURSES = ((0, 1, 2), (4, 5, 6), (8, 9, 10), (12, 13, 14))  # joints on rows 3, 7, 11, 15 (block edge on a joint)
+WALL_UNITS = ((6, 4, 6), (9, 7), (5, 7, 4), (7, 3, 6))  # brick + its joint: long, short and closer bricks
+TOP_COURSES = ((0, 1, 2), (4, 5, 6), (8, 9, 10), (12, 13, 14))
+TOP_UNITS = ((7, 9), (4, 8, 4), (9, 7), (3, 8, 5))
+
+
+def bond_offsets(units):
+    """Each course's start offset, keeping its head joints as far as possible from the courses above and below."""
+    def joints(i, off):
+        xs, x = [], off
+        for u in units[i]:
+            x += u
+            xs.append((x - 1) % 16)
+        return xs
+
+    def gap(i, a, j, b):
+        return min(min(abs(p - q), 16 - abs(p - q)) for p in joints(i, a) for q in joints(j, b))
+    best = None
+    n = len(units)
+    for o in ((0, a, b, c) for a in range(16) for b in range(16) for c in range(16)):
+        gaps = [gap(i, o[i], (i + 1) % n, o[(i + 1) % n]) for i in range(n)]
+        score = (min(gaps), sum(gaps))
+        if best is None or score > best[0]:
+            best = (score, o)
+    return best[1]
+
+
+def brick_layout(courses, units, seed):
+    """(x, y) -> ("joint", kind) or ("brick", id, row, rows, col, length). A few brick corners are chipped (the joint
+    is wider there) and a few joints have lost their mortar (kind "deep")."""
+    rng = random.Random(seed)
+    cells = {}
     for x in range(16):
         for y in range(16):
-            if min(x, y, 15 - x, 15 - y) == 0:
-                lit = x == 0 or y == 0
-                put(top, x, y, ramp(HOOP, (0.6 if lit else 0.3) + rng.uniform(-0.04, 0.04)))
-    save(top, BLOCK / "banded_furnace_casing_top.png")
+            cells[(x, y)] = ("joint", "bed")
+    offsets = bond_offsets(units)
+    for ci, rows in enumerate(courses):
+        x = offsets[ci]
+        for bi, u in enumerate(units[ci]):
+            for k in range(u):
+                for ri, y in enumerate(rows):
+                    cells[((x + k) % 16, y)] = ("joint", "head") if k == u - 1 else ("brick", (ci, bi), ri, len(rows), k, u - 1)
+            x += u
+    for p, c in list(cells.items()):
+        if c[0] != "brick":
+            continue
+        _, bid, ri, rn, k, ln = c
+        corner = (ri in (0, rn - 1)) and (k in (0, ln - 1))
+        if corner and rng.random() < 0.22:
+            cells[p] = ("joint", "chip")
+    for p, c in list(cells.items()):
+        if c == ("joint", "bed") and rng.random() < 0.09:
+            cells[p] = ("joint", "deep")
+    return cells
+
+
+WALL = brick_layout(WALL_COURSES, WALL_UNITS, 5000)
+WALL_TOP = brick_layout(TOP_COURSES, TOP_UNITS, 5001)
+
+
+def brick_wall(cells, seed, pal=BUFF, base=0.55):
+    """The bare bricks: a tone per brick (some warmer, some greyer, the odd dark clinker), lit from the top left."""
+    rng = random.Random(seed)
+    img = Image.new("RGBA", (16, 16))
+    tones = {}
+    for (x, y), cell in sorted(cells.items()):
+        if cell[0] == "joint":
+            t = {"bed": 0.62, "head": 0.5, "chip": 0.45, "deep": 0.12}[cell[1]] + rng.uniform(-0.08, 0.08)
+            put(img, x, y, ramp(WMORTAR, t))
+            continue
+        _, bid, ri, rn, k, ln = cell
+        if bid not in tones:
+            r = rng.random()
+            kind = "clinker" if r < 0.1 else "warm" if r < 0.32 else "grey" if r < 0.5 else "plain"
+            tones[bid] = (rng.uniform(-0.1, 0.08) - (0.17 if kind == "clinker" else 0), kind)
+        tone, kind = tones[bid]
+        t = base + tone + rng.uniform(-0.035, 0.035)
+        t += 0.09 if ri == 0 else (-0.08 if ri == rn - 1 else 0)
+        t += 0.04 if k == 0 else (-0.06 if k == ln - 1 else 0)
+        r = rng.random()
+        if r < 0.06:
+            t -= 0.16  # a pit in the fired clay
+        elif r < 0.09:
+            t += 0.1  # a pale grain
+        c = ramp(pal, t)
+        c = mix(c, {"warm": (156, 116, 78), "grey": (128, 127, 123), "clinker": (86, 64, 52)}.get(kind, c),
+                {"warm": 0.2, "grey": 0.28, "clinker": 0.35}.get(kind, 0))
+        put(img, x, y, c)
+    return img
+
+
+def casing2(variant="base"):
+    """variant: base (light soot), upper (heavy soot rising, darker to the top), hot (heat stains over the hearth)."""
+    img = brick_wall(WALL, 5010)
+    rng = random.Random(5011)
+    soot = tnoise(5012, 8)
+    fine = tnoise(5013, 4)
+    for x in range(16):
+        for y in range(16):
+            c = get(img, x, y)
+            joint = WALL[(x, y)][0] == "joint"
+            f = max(0.0, soot[y][x] - 0.45) * 0.4 + (0.06 if joint else 0)
+            if variant == "upper":
+                streak = 0.5 + 0.5 * math.sin(x * 1.9 + 1.3) * math.sin(x * 0.7 + 4.0)  # columns of rising smoke
+                f = 0.27 + 0.14 * (15 - y) / 15 + streak * 0.26 * (0.6 + 0.4 * fine[y][x]) + f * 0.6
+            if variant == "hot":
+                rust = tnoise(5014, 8)[y][x]
+                tint = tnoise(5017, 8)[y][x]
+                f += 0.06
+                if rust > 0.38:
+                    c = mix(c, RUST[1] if fine[y][x] > 0.5 else RUST[2], min(0.55, (rust - 0.38) * 1.3))
+                if tint > 0.7 and not joint:
+                    c = mix(c, TEMPER[1] if fine[y][x] < 0.5 else TEMPER[2], min(0.3, (tint - 0.7) * 1.6))
+                if joint:
+                    c = mix(c, SCORCH, 0.55)
+                elif any(WALL.get(((x + dx) % 16, (y + dy) % 16), ("",))[0] == "joint" for dx, dy in ((0, 1), (0, -1))):
+                    f += 0.1  # the scorch bleeds out of the joints into the brick edges
+            put(img, x, y, mix(c, SOOT, min(0.7, f * rng.uniform(0.85, 1.1))))
+    if variant == "hot":
+        for p in WALL_CRACKS:
+            put(img, *p, mix(get(img, *p), SCORCH, 0.38))
+    return img
+
+
+def _cracks():
+    """Hairline cracks running from a joint into a brick, 2-3 px, kept to the hot casing's bricks."""
+    out = []
+    for sx, sy, dx, dy, n in ((3, 1, 1, 1, 3), (11, 5, -1, 1, 2), (6, 9, 1, 1, 2), (13, 13, -1, 0, 3), (1, 12, 1, 1, 2)):
+        for i in range(n):
+            p = ((sx + dx * i) % 16, (sy + dy * i) % 16)
+            if WALL[p][0] == "brick":
+                out.append(p)
+    return out
+
+
+WALL_CRACKS = _cracks()
+WALL_JOINTS = sorted(p for p, c in WALL.items() if c[0] == "joint")
+
+
+def casing2_glow(stage):
+    pal = HEAT[stage] if stage == 1 else HEAT[stage - 1][1:] + HEAT[stage]  # brightest in the deep joints, dull elsewhere
+    phase = {p: random.Random(p[0] * 17 + p[1] * 31).uniform(0, 6.28) for p in WALL_JOINTS + WALL_CRACKS}
+    rng = random.Random(5100 + stage)
+    base = {p: rng.uniform(0.18, 0.62) + {"deep": 0.25, "chip": -0.1, "head": -0.05}.get(WALL[p][1], 0) for p in WALL_JOINTS}
+    cracks = WALL_CRACKS[: len(WALL_CRACKS) // 2] if stage == 2 else WALL_CRACKS if stage == 3 else []
+
+    def draw(f):
+        img = Image.new("RGBA", (16, 16))
+        for p in WALL_JOINTS:
+            put(img, *p, ramp(pal, base[p] + 0.22 * math.sin(f / 8 * 6.283 + phase[p])))
+        for p in cracks:
+            put(img, *p, ramp(pal, 0.2 + 0.2 * math.sin(f / 8 * 6.283 + phase[p])))
+        return img
+    return frames(8, draw)
+
+
+def casing2_top():
+    img = brick_wall(WALL_TOP, 5020, base=0.5)
+    soot, ash = tnoise(5021, 8), tnoise(5022, 4)
+    rng = random.Random(5023)
+    for x in range(16):
+        for y in range(16):
+            c = mix(get(img, x, y), SOOT, 0.14 + soot[y][x] * 0.28)
+            if ash[y][x] > 0.7 and rng.random() < 0.5:
+                c = mix(c, (128, 124, 118), 0.35)  # grey ash settled on the bricks
+            put(img, x, y, c)
+    return img
+
+
+# ---------------------------------------------------------------- the rusticated stone base
+BASE_COURSES = ((range(0, 7), 0, (9, 7)), (range(8, 15), 4, (8, 8)))  # rows, start x, stone + joint widths
+
+
+def ashlar(seed, relief=1.0, pal=STONE, base=0.5):
+    """Big rock-faced ashlar blocks, two courses: a bevelled, chipped arris lit top left, shadowed bottom right, a deep
+    dark joint between them. relief 0 gives the flat dressed top of the same stones."""
+    rng = random.Random(seed)
+    rough = tnoise(seed + 1, 2)
+    img = Image.new("RGBA", (16, 16))
+    for x in range(16):
+        for y in range(16):
+            put(img, x, y, ramp(pal, 0.06 + rng.uniform(0, 0.06)))
+    for si, (rows, x0, widths) in enumerate(BASE_COURSES):
+        rows = list(rows)
+        x = x0
+        for bi, w in enumerate(widths):
+            xs = [(x + k) % 16 for k in range(w - 1)]
+            tone = rng.uniform(-0.08, 0.08)
+            for k, xx in enumerate(xs):
+                for r, y in enumerate(rows):
+                    dl, dr, dt, db = k, len(xs) - 1 - k, r, len(rows) - 1 - r
+                    t = base + tone + (rough[y][xx] - 0.5) * 0.28 * relief + rng.uniform(-0.03, 0.03)
+                    if min(dl, dt) == 0 and min(dr, db) > 0:
+                        t += 0.22 * relief + 0.05
+                    elif min(dr, db) == 0:
+                        t -= 0.24 * relief + 0.06
+                    elif min(dl, dt) == 1 and relief:
+                        t += 0.07 * relief  # the bevel's second step
+                    elif min(dr, db) == 1 and relief:
+                        t -= 0.07 * relief
+                    else:
+                        t += 0.04 * relief * (1 - (abs(k - len(xs) / 2) + abs(r - len(rows) / 2)) / 7)  # the pillowed face
+                    edge = min(dl, dr, dt, db) == 0
+                    if edge and rng.random() < 0.18 * relief:
+                        t = 0.1  # a chip knocked off the arris
+                    elif rng.random() < 0.05:
+                        t -= 0.14  # a tool mark / pit
+                    put(img, xx, y, ramp(pal, t))
+            x += w
+    return img
+
+
+def furnace_base():
+    img = ashlar(5200, base=0.47)
+    soot, heat = tnoise(5201, 8), tnoise(5202, 4)
+    for x in range(16):
+        for y in range(16):
+            c = get(img, x, y)
+            if heat[y][x] > 0.6:
+                c = mix(c, (118, 82, 56), (heat[y][x] - 0.6) * 1.3)  # heat stains, rusty brown
+            c = mix(c, SOOT, 0.08 + max(0.0, soot[y][x] - 0.4) * 0.5 + (0.08 if y < 7 else 0))
+            put(img, x, y, c)
+    return img
+
+
+def furnace_base_top():
+    img = ashlar(5210, relief=0.35, base=0.55)
+    rng = random.Random(5211)
+    dust = tnoise(5212, 4)
+    for x in range(16):
+        for y in range(16):
+            c = mix(get(img, x, y), SOOT, 0.06 + dust[y][x] * 0.18)
+            if (x + y * 2) % 5 == 0 and rng.random() < 0.35 and c != get(img, x, y):
+                c = mix(c, STONE[2], 0.25)  # diagonal tooling of the dressed face
+            put(img, x, y, c)
+    return img
+
+
+# ---------------------------------------------------------------- the hearth arches
+ARCH_JOINT_ROWS = ({2, 7, 11, 15}, {4, 9, 13}, {1, 5, 10, 14}, {3, 7, 12})  # per 4 px column: stones of 3-5 px
+ARCH_JOINTS = sorted({(x, y) for x in range(16) for y in range(16) if x % 4 == 3 or y in ARCH_JOINT_ROWS[x // 4]})
+
+
+def hearth_arch():
+    """Soot-blackened arch stones in columns 4 px wide (x 0..2, 4..6, 8..10, 12..14), so a 3-4 px strip is always a
+    neat stack of stones; a few heat-glazed spots with a brown-orange sheen."""
+    rng = random.Random(5300)
+    soot = tnoise(5301, 4)
+    img = Image.new("RGBA", (16, 16))
+    joints = set(ARCH_JOINTS)
+    for x in range(16):
+        for y in range(16):
+            if (x, y) in joints:
+                put(img, x, y, ramp(ARCH, 0.03 + rng.uniform(0, 0.06)))
+                continue
+            up = (x, (y - 1) % 16) in joints
+            down = (x, (y + 1) % 16) in joints
+            left = ((x - 1) % 16, y) in joints
+            right = ((x + 1) % 16, y) in joints
+            tone = random.Random(5310 + x // 4 * 31 + sum(1 for j in ARCH_JOINT_ROWS[x // 4] if j < y) * 7).uniform(-0.08, 0.1)
+            t = 0.55 + tone + rng.uniform(-0.04, 0.04) + (0.16 if up else 0) + (0.07 if left and not up else 0)
+            t -= 0.2 if down else 0.08 if right else 0
+            t -= soot[y][x] * 0.25
+            put(img, x, y, ramp(ARCH, t))
+    for gx, gy in ((1, 4), (9, 0), (5, 11), (13, 7), (10, 12)):  # glazed spots where the flame licked
+        for (dx, dy), f in (((0, 0), 0.55), ((1, 0), 0.4), ((0, 1), 0.3)):
+            p = (gx + dx, gy + dy)
+            if p not in joints:
+                put(img, *p, mix(get(img, *p), (104, 62, 34), f))
+        put(img, gx, gy, mix(get(img, gx, gy), (150, 104, 66), 0.6))  # the glaze's sheen
+    return img
+
+
+def hearth_arch_glow():
+    edge = {(x, y) for x in range(16) for y in range(16) if x in (0, 15) or y == 0}
+    pts = sorted(set(ARCH_JOINTS) | edge)
+
+    def draw(f):
+        img = Image.new("RGBA", (16, 16))
+        for (x, y) in pts:
+            ph = random.Random(x * 13 + y * 29).uniform(0, 6.283)
+            t = (0.62 if (x, y) in edge else 0.3) + 0.2 * math.sin(f / 8 * 6.283 + ph)
+            put(img, x, y, ramp(HEAT[2], t))
+        return img
+    return frames(8, draw)
+
+
+# ---------------------------------------------------------------- iron: straps, bolt plate, charging rim
+def iron_field(seed, rust_amt=1.0):
+    rng = random.Random(seed)
+    nz, fine = tnoise(seed + 1, 4), tnoise(seed + 2, 2)
+    img = Image.new("RGBA", (16, 16))
+    for x in range(16):
+        for y in range(16):
+            c = ramp(IRONR, 0.42 + (fine[y][x] - 0.5) * 0.14 + rng.uniform(-0.03, 0.03))
+            r = nz[y][x] * 0.7 + fine[y][x] * 0.3
+            if r > 0.56:
+                c = mix(c, RUST[0] if r < 0.66 else RUST[1] if r < 0.74 else RUST[2], min(0.8, (r - 0.5) * 2.2 * rust_amt))
+            put(img, x, y, c)
+    return img
+
+
+def strap_bolt(img, x, y):
+    """A 2x2 domed bolt head on a 2 px band."""
+    put(img, x, y, ramp(IRONR, 0.95))
+    put(img, x + 1, y, ramp(IRONR, 0.62))
+    put(img, x, y + 1, ramp(IRONR, 0.5))
+    put(img, x + 1, y + 1, ramp(IRONR, 0.1))
+
+
+def furnace_strap():
+    img = iron_field(5400, rust_amt=0.55)
+    for x in range(16):
+        for y in range(16):
+            c = get(img, x, y)
+            put(img, x, y, mix(c, IRONR[5], 0.28) if y % 2 == 0 else mix(c, IRONR[0], 0.12))  # a lit top edge per 2 px band
+    for x, y in ((1, 0), (13, 2), (2, 12), (14, 14), (9, 0), (6, 14), (0, 6), (13, 8)):
+        strap_bolt(img, x, y)
+    # the bolt plate, x 4..11 y 4..11: a bevelled plate, a big hex nut x 6..9 y 6..9 with its shadow
+    rng = random.Random(5401)
+    for x in range(4, 12):
+        for y in range(4, 12):
+            t = 0.56 + rng.uniform(-0.03, 0.03)
+            if x == 11 or y == 11:
+                t = 0.14  # the plate's thick edge in shadow
+            elif x == 4 or y == 4:
+                t = 0.82  # its lit top-left arris
+            elif x == 10 or y == 10:
+                t = 0.36
+            c = ramp(IRONR, t)
+            if (x * 3 + y * 5) % 7 == 0 and 4 < x < 10 and 4 < y < 10:
+                c = mix(c, RUST[1], 0.45)
+            put(img, x, y, c)
+    nut = {(7, 6): 1.0, (8, 6): 0.9, (6, 7): 0.95, (7, 7): 0.8, (8, 7): 0.66, (9, 7): 0.42,
+           (6, 8): 0.72, (7, 8): 0.6, (8, 8): 0.46, (9, 8): 0.26, (7, 9): 0.3, (8, 9): 0.16}
+    for p, t in nut.items():
+        put(img, *p, ramp(IRONR, t))
+    put(img, 7, 7, (176, 168, 156))  # the bolt's end standing through the nut
+    for p in ((9, 9), (10, 8), (8, 10), (10, 9), (9, 10)):
+        put(img, *p, mix(get(img, *p), (0, 0, 0), 0.45))
+    for p in ((6, 6), (9, 6), (6, 9)):
+        put(img, *p, mix(get(img, *p), (0, 0, 0), 0.2))
+    return img
+
+
+def furnace_rim():
+    """The charging lip: a heavy iron plate edge, the top rows heat-tempered straw / purple / blue, two rivet rows."""
+    img = iron_field(5500, rust_amt=0.8)
+    rng = random.Random(5501)
+    for x in range(16):
+        for y in range(16):
+            c = get(img, x, y)
+            if y == 0:
+                c = mix(c, IRONR[6], 0.5)  # the rolled lip catching the light
+            elif y in (1, 2, 3, 4):
+                wob = math.sin(x * 0.785 + 1) * 0.6
+                band = TEMPER[min(3, max(0, int(y - 1 + wob)))]
+                c = mix(c, band, 0.42 - y * 0.05)
+            if y == 7:
+                c = mix(c, IRONR[0], 0.5)  # the lap seam
+            if y == 8:
+                c = mix(c, IRONR[5], 0.3)
+            if y == 15:
+                c = mix(c, IRONR[0], 0.45)
+            put(img, x, y, c)
+    for x in (1, 5, 9, 13):
+        strap_bolt(img, x, 2)
+        strap_bolt(img, (x + 2) % 16, 11)
+    for x in range(16):  # rust runs down from the lower rivets
+        if (x * 5) % 16 in (4, 15) and rng.random() < 0.9:
+            for y in (13, 14):
+                put(img, x, y, mix(get(img, x, y), RUST[1], 0.4))
+    return img
+
+
+def furnace_rim_glow():
+    drips = [(1, 3, 0.0), (4, 5, 2.1), (7, 2, 4.0), (10, 6, 1.0), (13, 4, 3.2)]  # x, length, phase
+
+    def draw(f):
+        img = Image.new("RGBA", (16, 16))
+        a = f / 8 * 6.283
+        for x in range(16):
+            for y in (0, 1):
+                t = (0.85 if y == 0 else 0.6) + 0.12 * math.sin(a + x * 0.9)
+                put(img, x, y, ramp(HEAT[3] if y == 0 else HEAT[2], t))
+        for x, ln, ph in drips:
+            cur = ln + round(1.2 * math.sin(a + ph))
+            for i in range(cur):
+                put(img, x, 2 + i, ramp(HEAT[2], 0.75 - i / max(1, cur) * 0.6))
+        return img
+    return frames(8, draw)
+
+
+# ---------------------------------------------------------------- the fronts, recessed in the arch (full face)
+def soot_top(img, rows=4, amt=0.35):
+    for x in range(16):
+        for y in range(rows):
+            put(img, x, y, mix(get(img, x, y), SOOT, amt * (rows - y) / rows))
+
+
+def high_front2():
+    rng = random.Random(5601)
+    img = Image.new("RGBA", (16, 16))
+    bevel(img, 0, 0, 15, 15, STEEL, 0.2, rng, hi=0.06, lo=0.0, noise=0.02)  # the door's edge
+    bevel(img, 1, 1, 14, 9, STEEL, 0.46, rng, hi=0.14, lo=0.22, noise=0.025)  # upper plate
+    bevel(img, 1, 10, 14, 14, STEEL, 0.42, rng, hi=0.14, lo=0.22, noise=0.025)  # lower plate
+    grime = tnoise(5602, 8)
+    for x in range(16):
+        for y in range(16):
+            put(img, x, y, mix(get(img, x, y), SOOT, grime[y][x] * 0.28 + (0.12 if y > 11 else 0)))
+    for x, y in ((2, 2), (12, 2), (2, 7), (12, 7), (4, 11), (8, 11), (12, 11), (2, 13), (12, 13)):
+        put(img, x, y, ramp(STEEL, 0.82))
+        put(img, x + 1, y, ramp(STEEL, 0.5))
+        put(img, x + 1, y + 1, ramp(STEEL, 0.12))
+    cx, cy = 7.5, 5.5
+    for (x, y) in disc(cx, cy, 4.7) - disc(cx, cy, 3.75):  # heat tint round the hatch: straw, then blue
+        put(img, x, y, mix(get(img, x, y), (160, 126, 70) if math.hypot(x - cx, y - cy) < 4.2 else (78, 96, 146), 0.4))
+    for (x, y) in disc(cx, cy, 3.75):
+        d = math.hypot(x - cx, y - cy)
+        lit = -((x - cx) + (y - cy)) / d if d else 0
+        put(img, x, y, (VOID if lit < 0.3 or d < 2.3 else (30, 20, 18)) if d <= 3.05 else ramp(STEEL, 0.42 + lit * 0.36))
+    for (x, y) in disc(cx + 0.7, cy + 0.7, 3.75) - disc(cx, cy, 3.75):
+        put(img, x, y, mix(get(img, x, y), (0, 0, 0), 0.4))
+    for y0, x1 in ((3, 3), (11, 5)):  # strap hinges from the left edge, a rounded tip and rivet
+        for x in range(0, x1 + 1):
+            put(img, x, y0 - 1, mix(get(img, x, y0 - 1), (0, 0, 0), 0.4))
+            put(img, x, y0, ramp(HOOP, 0.86 + rng.uniform(-0.03, 0.03)))
+            put(img, x, y0 + 1, ramp(HOOP, 0.5 + rng.uniform(-0.03, 0.03)))
+            put(img, x, y0 + 2, mix(get(img, x, y0 + 2), (0, 0, 0), 0.5))
+        put(img, x1 + 1, y0, ramp(HOOP, 0.5))
+        put(img, x1 + 1, y0 + 1, ramp(HOOP, 0.25))
+        put(img, x1 - 1, y0, HOOP[6])
+    for y in range(4, 10):  # the handle bar on the right, standing off the plate
+        bracket = y in (4, 9)
+        put(img, 12, y, ramp(HOOP, 0.5) if bracket else ramp(STEEL, 0.95 if y == 5 else 0.8))
+        put(img, 13, y, ramp(STEEL, 0.08))
+    put(img, 11, 4, ramp(HOOP, 0.3))
+    put(img, 11, 9, ramp(HOOP, 0.3))
+    soot_top(img, 3, 0.4)
+    for x, y in ((6, 1), (7, 1), (8, 0), (9, 1), (7, 0)):  # smoke from the hatch has blackened the plate above it
+        put(img, x, y, mix(get(img, x, y), SOOT, 0.4))
+    return img
+
+
+FB_TUYERE = (7.5, 3.5)
+FB_SLOTS_X = (4, 6, 9, 11)
+FB_SLOTS = [(x, y) for x in FB_SLOTS_X for y in range(8, 12)]
+FB_MOUTH = sorted(disc(*FB_TUYERE, 1.15))
+
+
+def firebox2():
+    rng = random.Random(5701)
+    img = plate(5700, CAST, base=0.44, mottle=0.16)
+    cx, cy = FB_TUYERE
+    for (x, y) in disc(cx, cy, 3.1):  # the bronze tuyere: flange, lip, dark mouth
+        d = math.hypot(x - cx, y - cy)
+        lit = -((x - cx) + (y - cy)) / 3.1
+        if d <= 1.15:
+            put(img, x, y, VOID)
+        elif d <= 2.0:
+            put(img, x, y, ramp(BRONZE, 0.55 - lit * 0.25))
+        elif d <= 2.7:
+            put(img, x, y, ramp(BRONZE, 0.58 + lit * 0.3 + rng.uniform(-0.04, 0.04)))
+        else:
+            put(img, x, y, ramp(BRONZE, 0.12))
+    for (x, y) in disc(cx + 0.8, cy + 0.8, 3.1) - disc(cx, cy, 3.1):
+        put(img, x, y, mix(get(img, x, y), (0, 0, 0), 0.35))
+    for bx, by in ((5, 2), (10, 2), (5, 5), (10, 5)):
+        put(img, bx, by, ramp(BRONZE, 0.95 if by == 2 else 0.7))
+    for x in range(3, 13):  # the grate: a raised bar frame round four slots
+        put(img, x, 7, ramp(CAST, 0.8))
+        put(img, x, 12, ramp(CAST, 0.16))
+        put(img, x, 13, mix(get(img, x, 13), (0, 0, 0), 0.3))
+    for y in range(8, 12):
+        for x in range(3, 13):
+            if x in FB_SLOTS_X:
+                put(img, x, y, VOID if y < 11 else (46, 20, 12))  # ash and a dead ember at the bottom
+            else:
+                left = x - 1 in FB_SLOTS_X or x == 3
+                put(img, x, y, ramp(CAST, 0.7 if left else 0.4) if x not in (7, 8) else ramp(CAST, 0.62 if x == 7 else 0.36))
+    for x in range(3, 13):
+        put(img, x, 7, mix(get(img, x, 7), (110, 60, 36), 0.3))  # heat-browned over the slots
+    for y0 in (2, 9):  # hinge straps from the left
+        for x in range(0, 4):
+            put(img, x, y0, ramp(CAST, 0.85))
+            put(img, x, y0 + 1, ramp(CAST, 0.5))
+            put(img, x, y0 + 2, mix(get(img, x, y0 + 2), (0, 0, 0), 0.4))
+        put(img, 2, y0, ramp(CAST, 1.0))
+    put(img, 12, 3, ramp(CAST, 0.95))  # the latch on the right
+    put(img, 12, 4, ramp(CAST, 0.6))
+    put(img, 13, 4, ramp(CAST, 0.1))
+    put(img, 12, 5, ramp(CAST, 0.2))
+    for x, y in ((3, 14), (12, 14), (7, 14)):
+        plate_rivet(img, x, y, CAST)
+    soot_top(img, 2, 0.35)
+    return img
+
+
+def firebox2_glow(stage):
+    pal = HEAT[stage]
+
+    def draw(f):
+        rng = random.Random(5800 + stage * 10 + f)
+        img = Image.new("RGBA", (16, 16))
+        for (x, y) in FB_SLOTS:
+            t = 0.25 + (y - 8) * 0.17 + math.sin(f / 8 * 6.283 * 2 + x * 1.7) * 0.12 + rng.uniform(-0.12, 0.12)
+            put(img, x, y, ramp(pal, t + (0.3 if rng.random() < 0.12 else 0)))
+        pulse = 0.55 + 0.3 * math.sin(f / 8 * 6.283)
+        for p in FB_MOUTH:
+            put(img, *p, ramp(pal, pulse + rng.uniform(-0.08, 0.08)))
+        return img
+    return frames(8, draw)
+
+
+TAP2 = (7.5, 6.5)
+TAP2_HOLE = sorted(disc(*TAP2, 2.95))  # x 5..10, y 4..9
+
+
+def taphole2(open_):
+    rng = random.Random(5901)
+    img = plate(5900, STEEL, base=0.34, mottle=0.16)
+    bevel(img, 2, 1, 13, 12, STEEL, 0.44, rng, hi=0.18, lo=0.28)   # the raised frame
+    bevel(img, 4, 3, 11, 10, STEEL, 0.3, rng, hi=-0.12, lo=0.06)    # the plate recessed inside it
+    for x in range(2, 14):
+        put(img, x, 13, mix(get(img, x, 13), (0, 0, 0), 0.4))
+    for x, y in ((2, 1), (12, 1), (2, 11), (12, 11), (7, 1), (2, 6), (12, 6), (7, 11)):
+        put(img, x, y, ramp(STEEL, 0.8))
+        put(img, x + 1, y, ramp(STEEL, 0.55))
+        put(img, x, y + 1, ramp(STEEL, 0.45))
+        put(img, x + 1, y + 1, ramp(STEEL, 0.12))
+    for x in range(4, 12):
+        for y in range(3, 5):
+            put(img, x, y, mix(get(img, x, y), SOOT, 0.25 - (y - 3) * 0.1))
+    cx, cy = TAP2
+    for (x, y) in TAP2_HOLE:
+        d = math.hypot(x - cx, y - cy)
+        lit = -((x - cx) + (y - cy)) / 2.95
+        if open_:
+            c = VOID if d < 2.2 else mix((54, 22, 14), (126, 46, 18), 0.5 - lit * 0.5)
+        else:
+            c = ramp(CLAYPLUG, 0.5 + lit * 0.35 - d * 0.06 + rng.uniform(-0.05, 0.05))
+        put(img, x, y, c)
+    if not open_:
+        for x, y in ((6, 5), (7, 6), (7, 7), (9, 5), (8, 8), (6, 8)):
+            put(img, x, y, ramp(CLAYPLUG, 0.08))
+        put(img, 6, 4, ramp(CLAYPLUG, 1.0))
+    for x, y in ((7, 10), (8, 10), (7, 11), (8, 12), (8, 13), (8, 14), (7, 15)):  # old slag run down the plate
+        put(img, x, y, mix(get(img, x, y), SLAGPAL[1], 0.6))
+    return img
+
+
+def taphole2_glow():
+    cx, cy = TAP2
+
+    def draw(f):
+        img = Image.new("RGBA", (16, 16))
+        for (x, y) in TAP2_HOLE:
+            d = math.hypot(x - cx, y - cy)
+            put(img, x, y, ramp(MOLTEN, 0.85 - d * 0.16 + 0.08 * math.sin(f / 8 * 6.283 + x + y * 0.7)))
+        return img
+    return frames(8, draw)
+
+
+SILICA2 = [(92, 88, 80), (120, 114, 103), (142, 136, 123), (158, 152, 139), (172, 166, 152), (188, 182, 168)]
+SILICA2_JOINT = [(86, 82, 76), (104, 100, 93), (122, 118, 110)]
+
+
+# ================================================================ write: phase 1-2
+def batch1():
+    save(silica_bricks(1000, pal=SILICA2, speck=0.025, joint=SILICA2_JOINT), BLOCK / "silica_bricks.png")
+    save(casing2("base"), BLOCK / "banded_furnace_casing.png")
+    save(casing2("upper"), BLOCK / "banded_furnace_casing_upper.png")
+    save(casing2("hot"), BLOCK / "banded_furnace_casing_hot.png")
+    save(casing2_top(), BLOCK / "banded_furnace_casing_top.png")
     for s in (1, 2, 3):
-        save(joint_glow(s), BLOCK / f"banded_furnace_casing_glow_{s}.png", {"frametime": 4, "interpolate": True})
-    save(firebox(), BLOCK / "firebox_front.png")
+        save(casing2_glow(s), BLOCK / f"banded_furnace_casing_glow_{s}.png", {"frametime": 4, "interpolate": True})
+    save(furnace_base(), BLOCK / "furnace_base.png")
+    save(furnace_base_top(), BLOCK / "furnace_base_top.png")
+    save(hearth_arch(), BLOCK / "hearth_arch.png")
+    save(hearth_arch_glow(), BLOCK / "hearth_arch_glow.png", {"frametime": 4, "interpolate": True})
+    save(furnace_strap(), BLOCK / "furnace_strap.png")
+    save(furnace_rim(), BLOCK / "furnace_rim.png")
+    save(furnace_rim_glow(), BLOCK / "furnace_rim_glow.png", {"frametime": 4, "interpolate": True})
+    save(firebox2(), BLOCK / "firebox_front.png")
     for s in (1, 2, 3):
-        save(firebox_glow(s), BLOCK / f"firebox_front_glow_{s}.png", 3)
-    save(high_front(), BLOCK / "high_furnace_front.png")
+        save(firebox2_glow(s), BLOCK / f"firebox_front_glow_{s}.png", 3)
+    save(high_front2(), BLOCK / "high_furnace_front.png")
     save(high_front_glow(), BLOCK / "high_furnace_front_glow.png", {"frametime": 4, "interpolate": True})
     save(hatch_cover(), BLOCK / "high_furnace_hatch.png")
-    save(taphole(False), BLOCK / "taphole_front.png")
-    save(taphole(True), BLOCK / "taphole_front_open.png")
-    save(taphole_glow(), BLOCK / "taphole_glow.png", {"frametime": 4, "interpolate": True})
+    save(taphole2(False), BLOCK / "taphole_front.png")
+    save(taphole2(True), BLOCK / "taphole_front_open.png")
+    save(taphole2_glow(), BLOCK / "taphole_glow.png", {"frametime": 4, "interpolate": True})
     save(bellows_leather(), BLOCK / "great_bellows_leather.png")
     save(bellows_board(), BLOCK / "great_bellows_board.png")
     save(bellows_frame(), BLOCK / "great_bellows_frame.png")

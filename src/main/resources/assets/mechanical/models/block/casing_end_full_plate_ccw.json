@@ -1,0 +1,167 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/banded_furnace_casing",
+    "side": "mechanical:block/banded_furnace_casing",
+    "end": "mechanical:block/banded_furnace_casing_top",
+    "hot": "mechanical:block/banded_furnace_casing_hot",
+    "upper": "mechanical:block/banded_furnace_casing_upper",
+    "base": "mechanical:block/furnace_base",
+    "base_top": "mechanical:block/furnace_base_top",
+    "strap": "mechanical:block/furnace_strap",
+    "rim": "mechanical:block/furnace_rim",
+    "rim_glow": "mechanical:block/furnace_rim_glow"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        -0.6
+      ],
+      "to": [
+        1.5,
+        16,
+        0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            14.5,
+            0,
+            16,
+            16
+          ],
+          "texture": "#strap"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            0.6000000000000014,
+            16
+          ],
+          "texture": "#strap"
+        },
+        "west": {
+          "uv": [
+            15.4,
+            0,
+            16,
+            16
+          ],
+          "texture": "#strap"
+        },
+        "up": {
+          "uv": [
+            0,
+            15.4,
+            1.5,
+            16
+          ],
+          "texture": "#strap"
+        }
+      }
+    },
+    {
+      "from": [
+        -0.6,
+        0,
+        -0.6
+      ],
+      "to": [
+        0.0,
+        16,
+        1.5
+      ],
+      "faces": {
+        "west": {
+          "uv": [
+            0.0,
+            0,
+            2.1,
+            16
+          ],
+          "texture": "#strap"
+        },
+        "south": {
+          "uv": [
+            15.4,
+            0,
+            16.0,
+            16
+          ],
+          "texture": "#strap"
+        },
+        "up": {
+          "uv": [
+            15.4,
+            0.0,
+            16.0,
+            2.1
+          ],
+          "texture": "#strap"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        5.5,
+        -1.1
+      ],
+      "to": [
+        3.5,
+        10.5,
+        -0.6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ],
+          "texture": "#strap"
+        },
+        "up": {
+          "uv": [
+            4,
+            4,
+            12,
+            5
+          ],
+          "texture": "#strap"
+        },
+        "down": {
+          "uv": [
+            4,
+            11,
+            12,
+            12
+          ],
+          "texture": "#strap"
+        },
+        "east": {
+          "uv": [
+            4,
+            4,
+            5,
+            12
+          ],
+          "texture": "#strap"
+        },
+        "west": {
+          "uv": [
+            11,
+            4,
+            12,
+            12
+          ],
+          "texture": "#strap"
+        }
+      }
+    }
+  ]
+}

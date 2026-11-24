@@ -1,16 +1,1896 @@
 {
-  "variants": {
-    "heat=0": {
-      "model": "mechanical:block/banded_furnace_casing"
+  "multipart": [
+    {
+      "when": {
+        "part": "none",
+        "facing": "north",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing"
+      }
     },
-    "heat=1": {
-      "model": "mechanical:block/banded_furnace_casing_heat_1"
+    {
+      "when": {
+        "part": "none",
+        "facing": "north",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing"
+      }
     },
-    "heat=2": {
-      "model": "mechanical:block/banded_furnace_casing_heat_2"
+    {
+      "when": {
+        "part": "none",
+        "facing": "north",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing"
+      }
     },
-    "heat=3": {
-      "model": "mechanical:block/banded_furnace_casing_heat_3"
+    {
+      "when": {
+        "part": "none",
+        "facing": "north",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing"
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "north",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base"
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "north",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base"
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "north",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base"
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "north",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base"
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "north",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot"
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "north",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_1"
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "north",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_2"
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "north",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_3"
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "north",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain"
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "north",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain"
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "north",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain"
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "north",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain"
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "north",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap"
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "north",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap"
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "north",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap"
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "north",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap"
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "north",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper"
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "north",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper"
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "north",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper"
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "north",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper"
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "north",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap"
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "north",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap"
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "north",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap"
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "north",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap"
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "north",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top"
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "north",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_1"
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "north",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_2"
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "north",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_3"
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "north",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw"
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "north",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw"
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "north",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw"
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "north",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw"
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "north",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_plate_ccw"
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "north",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_plate_cw"
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "north",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_ccw"
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "north",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_cw"
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "north",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_plate_ccw"
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "north",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_plate_cw"
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "north",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_top_ccw"
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "north",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_top_cw"
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "east",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "east",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "east",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "east",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "east",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "east",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "east",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "east",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "east",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "east",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "east",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "east",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "east",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "east",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "east",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "east",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "east",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "east",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "east",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "east",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "east",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "east",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "east",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "east",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "east",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "east",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "east",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "east",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "east",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "east",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "east",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "east",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "east",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "east",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "east",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "east",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "east",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_plate_ccw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "east",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_plate_cw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "east",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_ccw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "east",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_cw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "east",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_plate_ccw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "east",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_plate_cw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "east",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_top_ccw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "east",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_top_cw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "south",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "south",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "south",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "south",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "south",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "south",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "south",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "south",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "south",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "south",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "south",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "south",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "south",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "south",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "south",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "south",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "south",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "south",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "south",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "south",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "south",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "south",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "south",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "south",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "south",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "south",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "south",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "south",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "south",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "south",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "south",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "south",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "south",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "south",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "south",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "south",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "south",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_plate_ccw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "south",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_plate_cw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "south",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_ccw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "south",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_cw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "south",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_plate_ccw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "south",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_plate_cw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "south",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_top_ccw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "south",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_top_cw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "west",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "west",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "west",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "none",
+        "facing": "west",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/banded_furnace_casing",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "west",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "west",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "west",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "base",
+        "facing": "west",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_base",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "west",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "west",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "west",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "west",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_heat_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "west",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "west",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "west",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "west",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_plain",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "west",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "west",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "west",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "west",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_strap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "west",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "west",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "west",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "west",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "west",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "west",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "west",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "west",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_upper_strap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "west",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "west",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "west",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "west",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_top_heat_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "west",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot",
+        "facing": "west",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "west",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "plain",
+        "facing": "west",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "west",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_plate_ccw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "strap",
+        "facing": "west",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_plate_cw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "west",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_ccw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper",
+        "facing": "west",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_cw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "west",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_plate_ccw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "upper_strap",
+        "facing": "west",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_inset_plate_cw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "west",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_top_ccw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "top",
+        "facing": "west",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_top_cw",
+        "y": 270
+      }
     }
-  }
+  ]
 }

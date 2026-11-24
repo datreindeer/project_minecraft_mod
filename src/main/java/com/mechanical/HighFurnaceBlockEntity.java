@@ -97,7 +97,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
     private @Nullable Component problem = Component.translatable("message.mechanical.high_furnace.checking");
     private boolean paused, dirty;
     private int checkIn, syncIn, shownStep = -1;
-    /** Bottom-ring walls last decorated, so a broken furnace can put them back to cold. */
+    /** Wall blocks last decorated, so a broken furnace can put them back to their loose look. */
     private List<HighFurnaceShape.Wall> decorated = List.of();
     /** Client: the open top (from the synced shape) and whether it is drying out. */
     private @Nullable Top clientTop;
@@ -358,20 +358,42 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         int key = s * 31 + (shape == null ? -7 : fs.stream().mapToInt(f -> f.burning() ? 1 : 0).reduce(0, (a, b) -> a * 2 + b));
         if (key == shownStep) return;
         shownStep = key;
-        List<HighFurnaceShape.Wall> ring = shape == null ? List.of() : shape.ring();
-        for (HighFurnaceShape.Wall w : decorated) if (!ring.contains(w)) set(level, w, 0); // no longer part of it
-        for (HighFurnaceShape.Wall w : ring) {
-            int heat = s;
-            BlockState st = level.getBlockState(w.pos());
-            if (st.is(HighFurnace.FIREBOX.get())) {
-                int i = shape.fireboxes().indexOf(w);
-                heat = i >= 0 && i < fs.size() && fs.get(i).burning() ? Math.max(1, s) : Math.max(0, s - 1);
-            }
-            set(level, w, heat);
+        List<HighFurnaceShape.Wall> walls = new ArrayList<>();
+        if (shape != null) {
+            int layers = shape.max().getY() - shape.min().getY() + 1;
+            java.util.Set<BlockPos> ring = new java.util.HashSet<>();
+            for (HighFurnaceShape.Wall w : shape.ring()) ring.add(w.pos());
+            for (int dy = 0; dy < layers; dy++)
+                for (HighFurnaceShape.Wall w : shape.ring()) {
+                    HighFurnaceShape.Wall at = new HighFurnaceShape.Wall(w.pos().above(dy), w.out());
+                    walls.add(at);
+                    BlockState st = level.getBlockState(at.pos());
+                    int heat = dy == 0 || dy == 1 || dy == layers - 1 ? s : 0; // the hearth, the hot course and the glowing throat
+                    if (st.is(HighFurnace.FIREBOX.get())) {
+                        int i = shape.fireboxes().indexOf(w);
+                        heat = i >= 0 && i < fs.size() && fs.get(i).burning() ? Math.max(1, s) : Math.max(0, s - 1);
+                    }
+                    if (st.is(HighFurnace.BANDED_FURNACE_CASING.get())) {
+                        BlockState t = st.setValue(HighFurnace.HEAT, heat).setValue(HighFurnaceWallBlock.Casing.FACING, w.out())
+                                .setValue(HighFurnaceWallBlock.Casing.PART, HighFurnaceWallBlock.Casing.part(dy, layers))
+                                .setValue(HighFurnaceWallBlock.Casing.END_CW, !ring.contains(w.pos().relative(w.out().getClockWise())))
+                                .setValue(HighFurnaceWallBlock.Casing.END_CCW, !ring.contains(w.pos().relative(w.out().getCounterClockWise())));
+                        if (t != st) level.setBlock(at.pos(), t, Block.UPDATE_CLIENTS);
+                    } else set(level, at, heat);
+                }
         }
-        decorated = ring;
+        for (HighFurnaceShape.Wall w : decorated) if (!walls.contains(w)) loose(level, w.pos()); // no longer part of it
+        decorated = walls;
         BlockState me = getBlockState();
         if (me.getValue(HighFurnace.HEAT) != s) level.setBlock(worldPosition, me.setValue(HighFurnace.HEAT, s), Block.UPDATE_CLIENTS);
+    }
+
+    /** A wall block that is no longer part of a formed furnace: cold, and casing back to its loose look. */
+    private static void loose(ServerLevel level, BlockPos p) {
+        BlockState st = level.getBlockState(p);
+        BlockState t = st.is(HighFurnace.BANDED_FURNACE_CASING.get()) ? st.getBlock().defaultBlockState()
+                : st.hasProperty(HighFurnace.HEAT) && !st.is(HighFurnace.HIGH_FURNACE_FRONT.get()) ? st.setValue(HighFurnace.HEAT, 0) : st;
+        if (t != st) level.setBlock(p, t, Block.UPDATE_CLIENTS);
     }
 
     private static void set(ServerLevel level, HighFurnaceShape.Wall w, int heat) {

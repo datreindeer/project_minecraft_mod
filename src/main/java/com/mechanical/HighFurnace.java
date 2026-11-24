@@ -46,7 +46,7 @@ public final class HighFurnace {
     public static final DeferredBlock<Block> SILICA_BRICKS = BLOCKS.registerSimpleBlock("silica_bricks", p -> p
             .mapColor(MapColor.QUARTZ).strength(3.0F, 9.0F).sound(SoundType.STONE).requiresCorrectToolForDrops());
     public static final DeferredItem<BlockItem> SILICA_BRICKS_ITEM = ITEMS.registerSimpleBlockItem("silica_bricks", SILICA_BRICKS);
-    public static final DeferredBlock<HighFurnaceWallBlock> BANDED_FURNACE_CASING = BLOCKS.registerBlock("banded_furnace_casing", HighFurnaceWallBlock::new,
+    public static final DeferredBlock<HighFurnaceWallBlock.Casing> BANDED_FURNACE_CASING = BLOCKS.registerBlock("banded_furnace_casing", HighFurnaceWallBlock.Casing::new,
             p -> wall(p).lightLevel(s -> s.getValue(HEAT) * 4));
     public static final DeferredItem<BlockItem> BANDED_FURNACE_CASING_ITEM = ITEMS.registerSimpleBlockItem("banded_furnace_casing", BANDED_FURNACE_CASING);
     public static final DeferredBlock<HighFurnaceWallBlock.Facing> FIREBOX = BLOCKS.registerBlock("firebox", HighFurnaceWallBlock.Facing::new,

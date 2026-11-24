@@ -25,18 +25,17 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.jspecify.annotations.Nullable;
 
 /**
- * The Great Bellows' moving parts ({@link GreatBellowsBlockEntity}): the spur gears on the incoming axle (both sides),
- * the cam shaft above turning the other way, and the two bellows' top boards hinged at the nozzle end, lifted and let
- * fall in turn by the cams, with their leather pleats opening between the boards. All from the rotor's angle, so it
- * moves in step with the wheel. Part models: scripts/gen_high_furnace.py (hinges and axles at their model centre).
+ * The Great Bellows' moving parts ({@link GreatBellowsBlockEntity}): the shaft running across the block in line with the
+ * incoming axle, turning with it, and its cam pressing the top board down once a turn; between the strokes the board
+ * rises again on its hinge at the bellows' mouth and the folded leather opens under it. All from the rotor's angle, so
+ * it works in step with the wheel. Part models: scripts/gen_high_furnace.py (hinges and axles at their model centre).
  */
 public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlockEntity, GreatBellowsRenderer.State> {
-    /** The boards' widest opening, degrees; the gear ratio from the axle to the cam shaft. */
-    private static final float OPEN = 17, RATIO = 1.3F, PLEATS = 3;
-    private static final float[] BELLOWS_X = {1.5F, 8.5F};
+    /** The board's widest opening, degrees (it just clears the shaft); leather folds between the boards. */
+    private static final float OPEN = 12.5F, PLEATS = 5;
 
     public static class State extends BlockEntityRenderState {
-        ItemStackRenderState lid, pleat, cam, gear;
+        ItemStackRenderState lid, pleat, pleatIn, shaft;
         float yaw, axle;
     }
 
@@ -60,8 +59,8 @@ public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlo
         if (state.lid == null) {
             state.lid = WaterPowerRenderers.part(items, "great_bellows_lid", level, seed);
             state.pleat = WaterPowerRenderers.part(items, "great_bellows_pleat", level, seed);
-            state.cam = WaterPowerRenderers.part(items, "great_bellows_cam", level, seed);
-            state.gear = WaterPowerRenderers.part(items, "great_bellows_gear", level, seed);
+            state.pleatIn = WaterPowerRenderers.part(items, "great_bellows_pleat_in", level, seed);
+            state.shaft = WaterPowerRenderers.part(items, "great_bellows_shaft", level, seed);
         }
         state.yaw = -bellows.facing().toYRot() + 180; // the model's nozzle points north
         state.axle = bellows.angle(WaterPowerRenderers.time(level, partialTicks));
@@ -75,43 +74,27 @@ public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlo
     @Override
     public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
         int light = state.lightCoords, overlay = OverlayTexture.NO_OVERLAY;
-        float cam = -state.axle * RATIO;
+        float open = OPEN * (0.5F + 0.5F * Mth.cos(state.axle * Mth.DEG_TO_RAD)); // the cam down: pressed shut
         pose.pushPose();
         pose.translate(0.5F, 0.5F, 0.5F);
         pose.rotateDegrees(Axis.YP, state.yaw);
-        // the spur gears on the axle's ends, outside the side bearings
-        for (float x : new float[] {-0.1F, 16.1F}) {
-            pose.pushPose();
-            at(pose, x, 8, 8);
-            pose.rotateDegrees(Axis.YP, 90);
-            pose.rotateDegrees(Axis.ZP, state.axle);
-            state.gear.submit(pose, collector, light, overlay, 0);
-            pose.popPose();
-        }
-        // the cam shaft across the back posts
         pose.pushPose();
-        at(pose, 8, 13, 12.5F);
         pose.rotateDegrees(Axis.YP, 90);
-        pose.rotateDegrees(Axis.ZP, cam);
-        state.cam.submit(pose, collector, light, overlay, 0);
+        pose.rotateDegrees(Axis.ZP, state.axle);
+        state.shaft.submit(pose, collector, light, overlay, 0);
         pose.popPose();
-        // the two bellows: lids open in turn (half a turn apart), pleats spread between bottom and lid
-        for (int i = 0; i < 2; i++) {
-            float open = OPEN * (0.5F + 0.5F * Mth.sin((cam + i * 180) * Mth.DEG_TO_RAD));
-            float x0 = BELLOWS_X[i];
-            for (int k = 1; k <= PLEATS; k++) {
-                pose.pushPose();
-                at(pose, x0, 3.5F + k * 0.15F, 2.6F);
-                pose.rotateDegrees(Axis.XP, -open * k / (PLEATS + 1));
-                state.pleat.submit(pose, collector, light, overlay, 0);
-                pose.popPose();
-            }
+        for (int k = 1; k <= PLEATS; k++) {
             pose.pushPose();
-            at(pose, x0, 4.6F, 2);
-            pose.rotateDegrees(Axis.XP, -open);
-            state.lid.submit(pose, collector, light, overlay, 0);
+            at(pose, 2, 2.5F + k * 0.2F, 2.5F);
+            pose.rotateDegrees(Axis.XP, -open * k / (PLEATS + 1));
+            (k % 2 == 1 ? state.pleat : state.pleatIn).submit(pose, collector, light, overlay, 0);
             pose.popPose();
         }
+        pose.pushPose();
+        at(pose, 2, 3.6F, 2.5F);
+        pose.rotateDegrees(Axis.XP, -open);
+        state.lid.submit(pose, collector, light, overlay, 0);
+        pose.popPose();
         pose.popPose();
     }
 

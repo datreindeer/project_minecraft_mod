@@ -194,10 +194,7 @@ public final class FurnaceShots {
                 set(x0 + wide, y, z, c);
             }
         }
-        // corner pillars of Silica Bricks, as a builder would set them
-        for (int y = -1; y < layers; y++)
-            for (int[] p : new int[][] {{x0 - 1, z0 - 1}, {x0 + wide, z0 - 1}, {x0 - 1, z0 + deep}, {x0 + wide, z0 + deep}})
-                set(p[0], y, p[1], HighFurnace.SILICA_BRICKS.get().defaultBlockState());
+        // the corners are left open (they are not part of the furnace): the corner straps show there
         set(x0, 0, z0 - 1, HighFurnace.HIGH_FURNACE_FRONT.get().defaultBlockState().setValue(HighFurnaceFrontBlock.FACING, Direction.NORTH));
     }
 

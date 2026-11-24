@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mechanical:block/great_bellows_gear"
+    "model": "mechanical:block/great_bellows_shaft"
   }
 }

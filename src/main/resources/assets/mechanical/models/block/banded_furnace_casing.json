@@ -3,7 +3,14 @@
   "textures": {
     "particle": "mechanical:block/banded_furnace_casing",
     "side": "mechanical:block/banded_furnace_casing",
-    "end": "mechanical:block/banded_furnace_casing_top"
+    "end": "mechanical:block/banded_furnace_casing_top",
+    "hot": "mechanical:block/banded_furnace_casing_hot",
+    "upper": "mechanical:block/banded_furnace_casing_upper",
+    "base": "mechanical:block/furnace_base",
+    "base_top": "mechanical:block/furnace_base_top",
+    "strap": "mechanical:block/furnace_strap",
+    "rim": "mechanical:block/furnace_rim",
+    "rim_glow": "mechanical:block/furnace_rim_glow"
   },
   "elements": [
     {
