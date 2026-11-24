@@ -1,0 +1,247 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/refractory_trough_outside",
+    "out": "mechanical:block/refractory_trough_outside",
+    "lin": "mechanical:block/refractory_trough_lining",
+    "gate": "mechanical:block/trough_gate",
+    "lever": "mechanical:block/pouring_spout_lever",
+    "plate": "mechanical:block/furnace_strap"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        6,
+        0
+      ],
+      "to": [
+        13,
+        8,
+        16
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "x",
+        "angle": 45,
+        "rescale": true
+      },
+      "faces": {
+        "down": {
+          "uv": [
+            3,
+            0,
+            13,
+            16
+          ],
+          "texture": "#out"
+        },
+        "up": {
+          "uv": [
+            3,
+            0,
+            13,
+            16
+          ],
+          "texture": "#lin"
+        },
+        "north": {
+          "uv": [
+            3,
+            8,
+            13,
+            10
+          ],
+          "texture": "#out"
+        },
+        "south": {
+          "uv": [
+            3,
+            8,
+            13,
+            10
+          ],
+          "texture": "#out"
+        },
+        "east": {
+          "uv": [
+            0,
+            8,
+            16,
+            10
+          ],
+          "texture": "#out"
+        },
+        "west": {
+          "uv": [
+            0,
+            8,
+            16,
+            10
+          ],
+          "texture": "#out"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        8,
+        0
+      ],
+      "to": [
+        5,
+        11,
+        16
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "x",
+        "angle": 45,
+        "rescale": true
+      },
+      "faces": {
+        "down": {
+          "uv": [
+            3,
+            0,
+            5,
+            16
+          ],
+          "texture": "#out"
+        },
+        "up": {
+          "uv": [
+            3,
+            0,
+            5,
+            16
+          ],
+          "texture": "#out"
+        },
+        "north": {
+          "uv": [
+            11,
+            5,
+            13,
+            8
+          ],
+          "texture": "#out"
+        },
+        "south": {
+          "uv": [
+            3,
+            5,
+            5,
+            8
+          ],
+          "texture": "#out"
+        },
+        "east": {
+          "uv": [
+            0,
+            5,
+            16,
+            8
+          ],
+          "texture": "#lin"
+        },
+        "west": {
+          "uv": [
+            0,
+            5,
+            16,
+            8
+          ],
+          "texture": "#out"
+        }
+      }
+    },
+    {
+      "from": [
+        11,
+        8,
+        0
+      ],
+      "to": [
+        13,
+        11,
+        16
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "x",
+        "angle": 45,
+        "rescale": true
+      },
+      "faces": {
+        "down": {
+          "uv": [
+            11,
+            0,
+            13,
+            16
+          ],
+          "texture": "#out"
+        },
+        "up": {
+          "uv": [
+            11,
+            0,
+            13,
+            16
+          ],
+          "texture": "#out"
+        },
+        "north": {
+          "uv": [
+            3,
+            5,
+            5,
+            8
+          ],
+          "texture": "#out"
+        },
+        "south": {
+          "uv": [
+            11,
+            5,
+            13,
+            8
+          ],
+          "texture": "#out"
+        },
+        "east": {
+          "uv": [
+            0,
+            5,
+            16,
+            8
+          ],
+          "texture": "#out"
+        },
+        "west": {
+          "uv": [
+            0,
+            5,
+            16,
+            8
+          ],
+          "texture": "#lin"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:steel_age/glassmaker",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sight_glass"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:sight_glass"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.sight_glass.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.sight_glass.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

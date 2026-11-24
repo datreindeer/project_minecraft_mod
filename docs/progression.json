@@ -1379,6 +1379,27 @@
      "sv": "Kasta malm och tackor i den heta ugnens öppna topp: varje sak tar en plats och smälter till ett lager i pölen (malm ger dubbelt mot degeln, koppar och tenn blir brons 9:1 av sig själva). Vid **1450°** blir järnmalm smält **tackjärn** med slagg överst; kasta i flux för mer järn. Sätt en [[pouring_spout]] på ett [[taphole]], ställ en [[iron_ingot_mold]] under läppen och öppna pipen: ugnen häller det lager du klickat på i skärmen. Tackjärn och smidesjärn blandas till **stål** i pölen.",
      "en": "Throw ore and ingots in at the hot furnace's open top: each takes a place and melts into a layer of the pool (ore gives twice the crucible's, copper and tin mix into bronze 9:1 by themselves). At **1450°** iron ore becomes molten **pig iron** with slag on top; throw in flux for more iron. Set a [[pouring_spout]] on a [[taphole]], stand an [[iron_ingot_mold]] under its lip and open the spout: the furnace pours the layer you clicked in its screen. Pig iron and wrought iron mix into **steel** in the pool."
     }
+   },
+   {
+    "title": {
+     "sv": "Gjuteriet: rännor, sand och stora gjutningar",
+     "en": "The foundry: troughs, sand and big casts"
+    },
+    "items": [
+     "refractory_trough",
+     "trough_gate",
+     "casting_sand",
+     "molding_flask",
+     "pattern_bench",
+     "foundry_basin",
+     "finery_hearth",
+     "coke_oven",
+     "hot_blast_stove"
+    ],
+    "text": {
+     "sv": "Led metallen från pipen i [[refractory_trough]] (nedför, delas lika vid en T, stoppas av en [[trough_gate]]; hett järn spräcker lerrännor och fryser om rännan är för lång). En tackbädd av [[casting_sand]] tar en hel tappning; en [[molding_flask]] med trämönster från [[pattern_bench]] gjuter färdiga huvuden och järnformarna; en [[foundry_basin]] gjuter block, och med en lerform en klocka. Färska tackjärn till smidesjärn i en [[finery_hearth]]. Med koks från en [[coke_oven]] och en [[hot_blast_stove]] når ugnen 1800°.",
+     "en": "Lead the metal from the spout through [[refractory_trough]]s (downhill, shared at a T, stopped by a [[trough_gate]]; hot iron cracks clay channels and freezes if the line is too long). A pig bed of [[casting_sand]] takes a whole tapping; a [[molding_flask]] with wooden patterns from the [[pattern_bench]] casts finished heads and the iron molds; a [[foundry_basin]] casts blocks, and with a loam mold a bell. Fine pig iron into wrought iron in a [[finery_hearth]]. With coke from a [[coke_oven]] and a [[hot_blast_stove]] the furnace reaches 1800°."
+    }
    }
   ]
  }

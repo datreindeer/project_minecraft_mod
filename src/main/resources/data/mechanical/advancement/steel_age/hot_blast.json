@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:steel_age/coke",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:hot_blast_stove"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.hot_blast.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.hot_blast.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

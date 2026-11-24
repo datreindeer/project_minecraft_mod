@@ -33,7 +33,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class GreatBellowsBlock extends Block implements EntityBlock, WaterPower.Driven {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
-    private static final VoxelShape SHAPE = Shapes.or(box(0, 0, 0, 16, 4, 16), box(1, 4, 1, 15, 12, 15));
+    private static final VoxelShape SHAPE = Shapes.or(box(0, 0, 0, 16, 12, 16), box(2, 12, 1, 14, 15, 16));
 
     public GreatBellowsBlock(Properties properties) {
         super(properties);

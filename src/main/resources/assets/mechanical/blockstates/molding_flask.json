@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "stage=empty": {
+      "model": "mechanical:block/molding_flask_empty"
+    },
+    "stage=sand": {
+      "model": "mechanical:block/molding_flask_sand"
+    },
+    "stage=ready": {
+      "model": "mechanical:block/molding_flask_ready"
+    },
+    "stage=molten": {
+      "model": "mechanical:block/molding_flask_molten"
+    },
+    "stage=set": {
+      "model": "mechanical:block/molding_flask_set"
+    }
+  }
+}

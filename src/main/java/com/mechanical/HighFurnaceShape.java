@@ -153,7 +153,7 @@ public final class HighFurnaceShape {
     /** May this block stand in the wall: casing anywhere; in the bottom layer also Fireboxes, Tapholes and this Front. */
     static boolean wall(BlockState s, boolean bottom, boolean isFront) {
         if (s.is(HighFurnace.BANDED_FURNACE_CASING.get())) return true;
-        if (!bottom) return false;
+        if (!bottom) return s.is(HighFurnace.SIGHT_GLASS.get()); // a window anywhere above the hearth
         return isFront || s.is(HighFurnace.FIREBOX.get()) || s.is(HighFurnace.TAPHOLE.get());
     }
 

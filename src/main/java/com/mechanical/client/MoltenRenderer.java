@@ -39,6 +39,8 @@ import org.jspecify.annotations.Nullable;
 public final class MoltenRenderer {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/block/molten_flow.png");
     private static final RenderType TYPE = RenderTypes.beaconBeam(TEXTURE, false);
+    /** The steel age's melt (troughs, molds): crust drifting over a white-hot ground (scripts/gen_high_furnace_textures.py). */
+    public static final RenderType CRUST = RenderTypes.beaconBeam(Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/block/molten_crust.png"), false);
     private static final int CHARGE = 0xFF6A5040;
     /** The trough's inside, across: 5..11 px. */
     private static final float LO = 5F / 16, HI = 11F / 16;
@@ -122,10 +124,16 @@ public final class MoltenRenderer {
             // set metal: dull and dark
             int colour = !state.solid ? c : 0xFF000000 | ((c >> 16 & 0xFF) * 2 / 5) << 16 | ((c >> 8 & 0xFF) * 2 / 5) << 8 | (c & 0xFF) * 2 / 5;
             float t = state.solid ? 0 : state.time;
-            Direction up = state.up;
-            int sides = state.sides;
-            float fill = state.fill;
-            collector.submitCustomGeometry(pose, TYPE, (p, buf) -> {
+            channel(collector, pose, colour, t, state.up, state.sides, state.fill);
+        }
+
+        /** The metal in a channel-shaped trough (Clay Channel, Refractory Trough): flat with arms to its open sides, or a film on a slope. */
+        public static void channel(SubmitNodeCollector collector, PoseStack pose, int colour, float t, @Nullable Direction up, int sides, float fill) {
+            channel(collector, pose, TYPE, colour, t, up, sides, fill);
+        }
+
+        public static void channel(SubmitNodeCollector collector, PoseStack pose, RenderType type, int colour, float t, @Nullable Direction up, int sides, float fill) {
+            collector.submitCustomGeometry(pose, type, (p, buf) -> {
                 if (up != null) {
                     slope(p, buf, colour, up, (0.6F + 1.6F * fill) / 16, t);
                     return;

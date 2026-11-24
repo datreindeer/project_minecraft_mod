@@ -59,7 +59,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
 
     /** What a Firebox burns: natural heat, ceiling with full blast, ticks per piece at no blast. Coke comes in phase 7. */
     public enum Fuel {
-        CHARCOAL(800, 1600, 1200);
+        CHARCOAL(800, 1600, 1200), COKE(950, 1750, 2400);
 
         public final int natural, ceiling, ticks;
 
@@ -71,6 +71,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
     }
 
     public static @Nullable Fuel fuelOf(ItemStack stack) {
+        if (stack.is(HighFurnace.COKE.get())) return Fuel.COKE;
         return stack.is(Items.CHARCOAL) || stack.is(Items.COAL) ? Fuel.CHARCOAL : null;
     }
 
@@ -282,6 +283,19 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         return level.getBlockEntity(at) instanceof GreatBellowsBlockEntity b ? Math.min(FULL_BLAST, b.power()) : 0;
     }
 
+    public static final int HOT_BLAST = 100, MAX_HEAT = 1800;
+
+    /** Is there a Hot Blast Stove beside a Great Bellows that blows into one of this furnace's Fireboxes? */
+    public boolean hotBlast() {
+        if (shape == null || level == null) return false;
+        for (HighFurnaceShape.Wall w : shape.fireboxes()) {
+            BlockPos b = w.pos().relative(w.out());
+            if (!level.getBlockState(b).is(HighFurnace.GREAT_BELLOWS.get())) continue;
+            for (Direction d : Direction.values()) if (level.getBlockState(b.relative(d)).is(HighFurnace.HOT_BLAST_STOVE.get())) return true;
+        }
+        return false;
+    }
+
     public float effectiveBlast() {
         return shape == null ? 0 : Math.min(FULL_BLAST, totalBlast * 20F / shape.volume());
     }
@@ -292,7 +306,8 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         Fuel worst = null;
         for (Fire f : fireList()) if (f.burning() && (worst == null || f.kind.ceiling < worst.ceiling)) worst = f.kind;
         if (worst == null) return ambient;
-        float t = Math.min(worst.ceiling, worst.natural + BLAST_HEAT * effectiveBlast());
+        int hot = hotBlast() ? HOT_BLAST : 0; // a Hot Blast Stove at a bellows: +100 on target and ceiling, never past 1800
+        float t = Math.min(Math.min(MAX_HEAT, worst.ceiling + hot), worst.natural + hot + BLAST_HEAT * effectiveBlast());
         if (level != null && rainedOn()) t -= 100;
         if (dried < DRY_TICKS) t = Math.min(t, DRY_MAX);
         return t;
@@ -344,6 +359,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         if (t < goal) temp = Math.min(goal, t + (t < 800 ? RISE_LOW : RISE_HIGH) * k);
         else temp = Math.max(goal, t - (lit ? FALL_LIT : FALL_OUT) * k);
         if (temp >= WHITE_HEAT) Smelting.award(level, worldPosition, HighFurnace.WHITE_HEAT_ADVANCEMENT, 16);
+        if (temp >= MAX_HEAT - 1) Smelting.award(level, worldPosition, HighFurnace.HOT_BLAST_ADVANCEMENT, 16);
         decorate(level);
         if (shape != null) {
             intake(level);
@@ -427,6 +443,18 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         for (net.minecraft.world.entity.item.ItemEntity e : level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box)) {
             if (!e.isAlive()) continue;
             ItemStack stack = e.getItem();
+            if (stack.is(HighFurnace.FURNACE_SALAMANDER.get()) && temperature() >= 1200) {
+                int[] held = FurnaceSalamander.pool(stack);
+                MeltPool in = new MeltPool(Integer.MAX_VALUE);
+                in.load(held);
+                if (in.total() <= pool.room()) {
+                    for (var l : in.layers()) pool.add(l.getKey(), l.getValue());
+                    e.discard();
+                    level.playSound(null, e.blockPosition(), SoundEvents.LAVA_POP, SoundSource.BLOCKS, 1.0F, 0.6F);
+                    dirty = true;
+                }
+                continue;
+            }
             if (HighFurnaceMelting.isFlux(stack)) { // flux goes on the count, it takes no place
                 flux += stack.getCount() * HighFurnaceMelting.ORES_PER_FLUX;
                 e.discard();
@@ -533,7 +561,8 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
                     }
                     if (st.is(HighFurnace.BANDED_FURNACE_CASING.get())) {
                         BlockState t = st.setValue(HighFurnace.HEAT, heat).setValue(HighFurnaceWallBlock.Casing.FACING, w.out())
-                                .setValue(HighFurnaceWallBlock.Casing.PART, HighFurnaceWallBlock.Casing.part(dy, layers))
+                                .setValue(HighFurnaceWallBlock.Casing.PART, dy == 1 && !level.getBlockState(at.pos().below()).is(HighFurnace.BANDED_FURNACE_CASING.get())
+                                        ? HighFurnaceWallBlock.Casing.Part.HOT_ARCH : HighFurnaceWallBlock.Casing.part(dy, layers))
                                 .setValue(HighFurnaceWallBlock.Casing.END_CW, !ring.contains(w.pos().relative(w.out().getClockWise())))
                                 .setValue(HighFurnaceWallBlock.Casing.END_CCW, !ring.contains(w.pos().relative(w.out().getCounterClockWise())));
                         if (t != st) level.setBlock(at.pos(), t, Block.UPDATE_CLIENTS);
@@ -641,7 +670,16 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-        // the fuel in the fireboxes falls out (the melt and the Furnace Salamander come with the pool in phase 6)
+        // the fuel in the fireboxes and the unmelted items fall out; half the melt is left in a Furnace Salamander
+        if (level != null && !pool.isEmpty()) {
+            MeltPool half = new MeltPool(Integer.MAX_VALUE);
+            for (var l : pool.layers()) half.add(l.getKey(), l.getValue() / 2);
+            if (!half.isEmpty()) {
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), FurnaceSalamander.of(half.save()));
+                if (level instanceof ServerLevel server) Smelting.award(server, pos, HighFurnace.SALAMANDER_ADVANCEMENT, 12);
+            }
+            pool.load(new int[0]);
+        }
         if (level != null) {
             for (ItemStack it : slots) if (!it.isEmpty()) Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), it.copy());
             int fuel = 0;
@@ -677,7 +715,8 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         for (int i = 0; 3 * i + 2 < at.length && i < fuel.length && i < burn.length; i++) {
             Fire f = new Fire();
             f.fuel = fuel[i] & 0xFFFF;
-            f.lit = (fuel[i] >> 16) != 0;
+            f.lit = (fuel[i] >> 16 & 1) != 0;
+            f.kind = Fuel.values()[Math.min(Fuel.values().length - 1, fuel[i] >>> 17)];
             f.burn = burn[i];
             fires.put(new BlockPos(at[3 * i], at[3 * i + 1], at[3 * i + 2]).asLong(), f);
         }
@@ -711,7 +750,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
             at[3 * i] = p.getX();
             at[3 * i + 1] = p.getY();
             at[3 * i + 2] = p.getZ();
-            fuel[i] = e.getValue().fuel | (e.getValue().lit ? 1 << 16 : 0);
+            fuel[i] = e.getValue().fuel | (e.getValue().lit ? 1 << 16 : 0) | e.getValue().kind.ordinal() << 17;
             burn[i++] = Math.round(e.getValue().burn);
         }
         output.putIntArray("fire_pos", at);

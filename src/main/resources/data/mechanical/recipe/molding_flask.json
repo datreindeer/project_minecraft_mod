@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P P",
+    "R R",
+    "P P"
+  ],
+  "key": {
+    "P": "mechanical:iron_plate",
+    "R": "mechanical:iron_tool_rod"
+  },
+  "result": {
+    "id": "mechanical:molding_flask"
+  }
+}

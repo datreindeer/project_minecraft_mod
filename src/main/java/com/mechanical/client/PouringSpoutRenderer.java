@@ -37,8 +37,9 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
 
     public static class State extends BlockEntityRenderState {
         @Nullable Molten stream;
-        float fall, time;
+        float time;
         Direction facing = Direction.NORTH;
+        Vec3 lip = Vec3.ZERO, target = Vec3.ZERO;
     }
 
     public PouringSpoutRenderer(BlockEntityRendererProvider.Context context) {}
@@ -53,8 +54,9 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
             ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(spout, state, partialTicks, camera, breakProgress);
         state.stream = spout.stream();
-        state.fall = spout.fall();
         state.facing = spout.facing();
+        state.lip = spout.lip();
+        state.target = spout.target();
         state.time = WaterPowerRenderers.time(spout.getLevel(), partialTicks);
     }
 
@@ -63,30 +65,43 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
         if (state.stream == null) return;
         int c = 0xFF000000 | state.stream.color;
         float scroll = state.time * 0.08F;
+        Vec3 a = state.lip, b = state.target;
         pose.pushPose();
         pose.translate(0.5F, 0, 0.5F);
-        pose.rotateDegrees(com.mojang.math.Axis.YP, -state.facing.toYRot() + 180); // local -z: the way it pours
-        collector.submitCustomGeometry(pose, TYPE, (p, buf) -> {
-            // along the trough to the lip
-            quad(p, buf, c, -2.5F / 16, 6.1F / 16, 8F / 16, 2.5F / 16, 6.1F / 16, -1.5F / 16, -scroll * 0.6F);
-            // the falling column: 3 px thick, from the lip (y 6/16) down to the cast's surface
-            float x0 = -1.6F / 16, x1 = 1.6F / 16, z0 = -3.1F / 16, z1 = 0.1F / 16, top = 6.2F / 16, bottom = -state.fall + 0.32F;
-            column(p, buf, c, x0, z0, x1, z1, bottom, top, scroll);
-            // the splash: a short wider skirt where it lands
-            column(p, buf, c, x0 - 0.04F, z0 - 0.04F, x1 + 0.04F, z1 + 0.04F, bottom, bottom + 0.08F, scroll * 1.5F);
-        });
+        pose.rotateDegrees(com.mojang.math.Axis.YP, -state.facing.toYRot() + 180); // the metal along the trough to the lip
+        collector.submitCustomGeometry(pose, TYPE, (p, buf) -> quad(p, buf, c, -2.5F / 16, 6.1F / 16, 8F / 16, 2.5F / 16, 6.1F / 16, -1.5F / 16, -scroll * 0.6F));
         pose.popPose();
+        collector.submitCustomGeometry(pose, TYPE, (p, buf) -> {
+            // the stream: a round column (8 faces, the ones turned to the light brighter, a white-hot core line), 2.6 px at the
+            // lip thinning to 1.8 px, leaving the lip in a short arc and then falling to the metal it lands in
+            Vec3 out = new Vec3(state.facing.getStepX(), 0, state.facing.getStepZ());
+            Vec3 arc = a.add(out.scale(0.07)).add(0, -0.12, 0), bend = new Vec3(b.x, a.y - 0.3, b.z).lerp(arc, 0.35);
+            int hot = net.minecraft.util.ARGB.srgbLerp(0.6F, c, 0xFFFFFBEA) | 0xFF000000;
+            round(p, buf, c, hot, a, arc, 1.3F / 16, 1.2F / 16, scroll);
+            round(p, buf, c, hot, arc, bend, 1.2F / 16, 1.0F / 16, scroll);
+            round(p, buf, c, hot, bend, b, 1.0F / 16, 0.9F / 16, scroll);
+            // where it lands: a small bright ring on the surface
+            round(p, buf, c, hot, b.add(0, 0.03, 0), b, 1.6F / 16, 1.6F / 16, scroll * 1.5F);
+        });
     }
 
-    private static void column(PoseStack.Pose p, VertexConsumer buf, int c, float x0, float z0, float x1, float z1, float y0, float y1, float scroll) {
-        float[][] corners = {{x0, z0}, {x1, z0}, {x1, z1}, {x0, z1}};
-        for (int i = 0; i < 4; i++) {
-            float[] a = corners[i], b = corners[(i + 1) % 4];
-            float[][] q = {{a[0], y0, a[1], 0}, {a[0], y1, a[1], 0}, {b[0], y1, b[1], 0.25F}, {b[0], y0, b[1], 0.25F}};
+    /** A round (8-sided) segment from {@code a} (half-width ra) to {@code b} (half-width rb), its faces shaded round. */
+    private static void round(PoseStack.Pose p, VertexConsumer buf, int c, int hot, Vec3 a, Vec3 b, float ra, float rb, float scroll) {
+        int n = 8;
+        for (int i = 0; i < n; i++) {
+            double t0 = i * Math.PI * 2 / n, t1 = (i + 1) * Math.PI * 2 / n;
+            // faces turned toward the light (north-west, up) brighter, the back darker: it reads as a round, glowing core
+            float lightness = (float) (0.5 + 0.5 * Math.cos((t0 + t1) / 2 - Math.PI * 0.75));
+            int edge = net.minecraft.util.ARGB.srgbLerp(0.25F, c, 0xFFE0400A) | 0xFF000000; // the edges a deeper orange, the core white-hot
+            int col = net.minecraft.util.ARGB.srgbLerp(lightness, edge, hot) | 0xFF000000;
+            float[][] q = {{(float) (b.x + Math.cos(t0) * rb), (float) b.y, (float) (b.z + Math.sin(t0) * rb), 0},
+                    {(float) (a.x + Math.cos(t0) * ra), (float) a.y, (float) (a.z + Math.sin(t0) * ra), 0},
+                    {(float) (a.x + Math.cos(t1) * ra), (float) a.y, (float) (a.z + Math.sin(t1) * ra), 0.125F},
+                    {(float) (b.x + Math.cos(t1) * rb), (float) b.y, (float) (b.z + Math.sin(t1) * rb), 0.125F}};
             for (int s = 0; s < 2; s++)
                 for (int k = 0; k < 4; k++) {
                     float[] v = q[s == 0 ? k : 3 - k];
-                    vertex(p, buf, c, v[0], v[1], v[2], v[3] + i * 0.25F, v[1] - scroll);
+                    vertex(p, buf, col, v[0], v[1], v[2], v[3] + i * 0.125F, v[1] * 2 - scroll);
                 }
         }
     }
@@ -106,7 +121,7 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
 
     @Override
     public AABB getRenderBoundingBox(PouringSpoutBlockEntity spout) {
-        return new AABB(spout.getBlockPos()).expandTowards(0, -1.5, 0);
+        return new AABB(spout.getBlockPos()).inflate(0.5).expandTowards(0, -1.5, 0);
     }
 
     @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)

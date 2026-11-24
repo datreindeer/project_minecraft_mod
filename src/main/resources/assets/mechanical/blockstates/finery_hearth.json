@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "mechanical:block/finery_hearth"
+    },
+    "lit=true": {
+      "model": "mechanical:block/finery_hearth_lit"
+    }
+  }
+}

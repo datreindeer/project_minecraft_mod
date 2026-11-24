@@ -50,7 +50,7 @@ GROUND_TOP = ["grass_block", "mechanical:turf", "moss_block", "snow_block", "mec
 GROUND_LOW = ["mechanical:chalk_block", "mechanical:wood_ash", "mechanical:burnt_soil", "mechanical:loess", "coarse_dirt", "rooted_dirt", "mechanical:peat",
               "clay", "mechanical:kaolin", "mud", "packed_mud", "dirt"]
 # functional blocks that only look like masonry
-NOT_BLENDED = {"mechanical:furnace_bricks", "mechanical:silica_bricks", "mechanical:furnace_bricks_tuyere", "mechanical:bloomery_bricks", "mechanical:bloomery_bricks_sooty",
+NOT_BLENDED = {"mechanical:furnace_bricks", "mechanical:silica_bricks", "mechanical:slag_stone_bricks", "mechanical:furnace_bricks_tuyere", "mechanical:bloomery_bricks", "mechanical:bloomery_bricks_sooty",
                "minecraft:packed_ice"}  # the ice slabs (gen_dirt_slab.py): ice does not fray into ground
 
 

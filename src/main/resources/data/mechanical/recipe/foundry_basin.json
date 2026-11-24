@@ -3,12 +3,14 @@
   "category": "misc",
   "pattern": [
     "P P",
-    "PPP"
+    "PBP",
+    "BPB"
   ],
   "key": {
-    "P": "mechanical:iron_plate"
+    "P": "mechanical:steel_plate",
+    "B": "mechanical:silica_bricks"
   },
   "result": {
-    "id": "mechanical:iron_ingot_mold"
+    "id": "mechanical:foundry_basin"
   }
 }

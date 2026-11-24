@@ -270,3 +270,59 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
   pip i rännände; Pig Bed, Molding Flask, Wooden Patterns, Pattern Bench, Foundry Table/Basin, Iron Plate/Nugget Mold;
   Finery Hearth, Slag Stone; hela fas 6 (glas, Sight Glass, basalt, block, Loam Mold, Salamander, brännskador) och fas 7
   (Coke Oven, Hot Blast Stove, Obsidian, Steel Ladle).
+
+### 6d. Byggt: rännor (resten av fas 4)
+
+- **Refractory Trough** (`B B` / `PBP`: 3 Silica Brick + 2 Iron Plate → 4): samma form, portar och lutningar som en Clay
+  Channel, men 200 mB av vilken smälta som helst. Var 5:e tick: först en hel gjutning in i en form bredvid (Clay Mold,
+  Iron Ingot Mold ...), sedan nedför delat lika mellan alla lägre rännor, sedan till plana rännor med mindre i (rättvis
+  delning: en T fyller båda grenarna). Varje flytt tar exakt det den ger.
+- **Räckvidd:** smältan når 8 + 1 per 25° över smältpunkten rännor från tappen (stål tappat vid 1550°: 10); rännan efter
+  det fryser direkt.
+- **Trough Gate** (Trough + Iron Plate + Iron Tool Rod): rak, högerklick lyfter/sänker luckan; stängd har den inga portar.
+- **Lerrännor och hett järn:** en Clay Channel som fogas till en ränna med smälta över 1100° spricker och går sönder,
+  metallen förloras.
+- **Pouring Spout** häller i en ränna under sig (strålen landar på metallytan), och en pip i en rännas ände häller
+  rännans metall nedåt (kortare fläns, ingen tapphålsnisch bakom).
+- Stelnad metall slås ut med hacka: tackor och nuggets (22 mB), resten förloras. Ösa med Steel Ladle kommer i fas 7.
+- Test `trough_flow`, `trough_pour`. Inte gjort: Sand Runner (Pig Bed, fas 4b), sprickor i två synliga steg (lerrännan
+  går sönder direkt), cachat nät (varje ränna flyttar lokalt, ingen nätsökning behövs).
+
+### 6e. Byggt: gjutningens nya nivå (fas 4b)
+
+- **Coal Dust** (Coal på Stone Anvil → 2), **Casting Sand** (4 Sand + Clay Ball + Coal Dust → 4), **Burnt Casting Sand**
+  (4 + Clay Ball + Coal Dust → 4 Casting Sand).
+- **Tackbädd:** Casting Sand i golvet; spade → **Sand Runner** (en ränna i sanden: stelnar på halva tiden, halv räckvidd,
+  spaden gräver ut stelnad metall och sanden blir bränd); **Pig Pattern** → **Pig Mold** (400 mB → 2 tackor, sedan bränd).
+- **Molding Flask** (4 Iron Plate + 2 Iron Tool Rod): 4 Casting Sand, ett trämönster, metall, slå ur med hacka/hammare →
+  färdig gjutning + 3 Burnt Casting Sand. Verktygshuvuden ⅔ av lerformens metall (hackhuvud 400 mB). Av tackjärn: Iron
+  Ingot Mold (1000), Iron Plate Mold (1000), Iron Nugget Mold (600), Cast Iron Gear (200), Cast Iron Pot (800).
+- **Pattern Bench** (`PCP` / `L L`): plankor → trämönster (slits 128 tryck).
+- **Iron Plate Mold** (400 mB → Bronze/Iron/Steel Plate) och **Iron Nugget Mold** (400 mB → 18 nuggets), spricker aldrig.
+  **Iron Ingot Mold** gjuts nu i flaska (plåtreceptet borttaget).
+- **Foundry Table**: det som står på bordet stelnar på halva tiden (förenkling: formen står på bordet, bordet håller den inte).
+- **Foundry Basin**: block av 1800 mB metall (Copper/Gold/Lead/Bronze/Steel Block) eller 250 mB slagg/basalt/glas/obsidian;
+  fyllnaden stiger, stelnar på 10 s per 1000 mB.
+- Test `foundry_casting`. Inte gjort: Anvil i flaska (väntar på användaren), Steel Block kräver inte 1650°.
+
+### 6f. Byggt: färskning, glas, stora gjutningar och koks (resten av fas 5, fas 6 och 7)
+
+- **Finery Hearth** (`F F` / `FPF`, Fire Brick + Iron Plate): Charcoal och Pig Iron Ingots in, tänd, en Great Bellows mot
+  härden; från 1300° blir varje tackjärn ett Wrought Iron Ingot på 20 s (bränner en Charcoal).
+- **Slag Stone** (basängen, 250 mB slagg) och **Slag Stone Bricks** (4 → 4). Slab/Stairs/Wall saknas än.
+- **Glas:** Glass Batch (4 Sand + Wood Ash → 4) smälter vid 1400° till 250 mB glas, Foundry Basin gjuter Glass.
+  **Sight Glass** (Casing + 2 Glass Pane) får sitta i väggarna ovanför nedersta lagret.
+- **Basalt** (Basalt, Polished/Smooth Basalt) → 250 mB vid 1250° → Cast Basalt. **Obsidian** → 250 mB vid 1700° (kräver Coke).
+- **Loam Mold:** Loam (2 Clay Ball + Sand + Wheat → 4), Strickle Board (Bell/Cauldron), 4 Loam + board → obränd form,
+  bränd 600° i kilnen. I en Foundry Basin: Bell = 1600 mB brons, Cauldron = 1400 mB tackjärn; formen slås sönder.
+  Great Kettle är inte byggd.
+- **Furnace Salamander:** bryts Fronten med smälta i lämnas hälften av varje lager i en salamander som smälter tillbaka
+  vid ≥ 1200°.
+- **Brännskador:** den som går i en ränna med rinnande metall tar eld (4 skada, som lava).
+- **Coke Oven** (Silica Bricks + Iron Plate): 16 Coal → 12 Coke på 10 min utan bränsle. **Coke** i eldstäderna: 950°,
+  tak 1750°, brinner dubbelt så länge. **Hot Blast Stove** intill en Great Bellows som blåser i en eldstad: +100° på mål
+  och tak, högst 1800°. **Steel Ladle** (1000 mB): öser ur rännor och häller hela gjutningar.
+- Advancements: Walloon Forge, Glassmaker, Window on the Melt, Bell Founder (challenge), Salamander, Coke, Hot Blast
+  (challenge). Test `finery_hearth`, `high_furnace_glass_bell`, `high_furnace_salamander`, `high_furnace_coke`.
+- Inte gjort: Glass Pane i form, Anvil och Steel Block-kravet 1650°, Great Kettle, Hot Blast-bonus på brinntid,
+  slaggsten-slab/stairs/wall, brännskador i formar och bassänger.

@@ -6,7 +6,17 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:iron_plate"
+            "items": "mechanical:steel_plate"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:silica_bricks"
           }
         ]
       }
@@ -14,19 +24,20 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "mechanical:iron_ingot_mold"
+        "recipes": "mechanical:hot_blast_stove"
       }
     }
   },
   "requirements": [
     [
       "has_0",
+      "has_1",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "mechanical:iron_ingot_mold"
+      "mechanical:hot_blast_stove"
     ]
   }
 }

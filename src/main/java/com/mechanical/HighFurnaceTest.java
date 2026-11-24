@@ -15,6 +15,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -39,7 +41,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class HighFurnaceTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt", "high_furnace_pour", "high_furnace_iron"};
+    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt", "high_furnace_pour", "high_furnace_iron", "trough_flow", "trough_pour", "foundry_casting", "finery_hearth", "high_furnace_glass_bell", "high_furnace_salamander", "high_furnace_coke"};
 
     static {
         TEST_FUNCTIONS.register("high_furnace_shape", () -> HighFurnaceTest::shape);
@@ -47,6 +49,13 @@ public final class HighFurnaceTest {
         TEST_FUNCTIONS.register("high_furnace_melt", () -> HighFurnaceTest::melt);
         TEST_FUNCTIONS.register("high_furnace_pour", () -> HighFurnaceTest::pour);
         TEST_FUNCTIONS.register("high_furnace_iron", () -> HighFurnaceTest::iron);
+        TEST_FUNCTIONS.register("trough_flow", () -> HighFurnaceTest::troughFlow);
+        TEST_FUNCTIONS.register("trough_pour", () -> HighFurnaceTest::troughPour);
+        TEST_FUNCTIONS.register("foundry_casting", () -> HighFurnaceTest::foundryCasting);
+        TEST_FUNCTIONS.register("finery_hearth", () -> HighFurnaceTest::finery);
+        TEST_FUNCTIONS.register("high_furnace_glass_bell", () -> HighFurnaceTest::glassBell);
+        TEST_FUNCTIONS.register("high_furnace_salamander", () -> HighFurnaceTest::salamander);
+        TEST_FUNCTIONS.register("high_furnace_coke", () -> HighFurnaceTest::coke);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -58,7 +67,7 @@ public final class HighFurnaceTest {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "high_furnace"), new TestEnvironmentDefinition.AllOf(List.of()));
         for (String t : TESTS)
             event.registerTest(Identifier.fromNamespaceAndPath(MODID, t), new FunctionGameTestInstance(
-                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, t.endsWith("melt") || t.endsWith("iron") ? 1000 : 400, true)));
+                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, t.endsWith("melt") || t.endsWith("iron") || t.endsWith("casting") || t.endsWith("hearth") || t.endsWith("bell") ? 1000 : 400, true)));
     }
 
     /** Where a test furnace stands: its Front's position (relative), facing north; the inside starts right south of it. */
@@ -344,6 +353,283 @@ public final class HighFurnaceTest {
                         h.succeed();
                     });
                 });
+            });
+        });
+    }
+
+    private static TroughBlockEntity trough(GameTestHelper h, int x, int y, int z) {
+        h.setBlock(new BlockPos(x, y, z), HighFurnace.REFRACTORY_TROUGH.get());
+        return (TroughBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(x, y, z)));
+    }
+
+    /**
+     * Phase 4, troughs on their own: a level run shares evenly both ways from where the metal stands (a T fills its
+     * branches together); a shut Trough Gate stops it and opened lets it on; steel tapped at 1550° freezes past its
+     * reach (10 troughs); a Clay Channel joined to a trough of steel cracks and is gone, beside bronze it stays; and
+     * not a mB is made or lost in all of it.
+     */
+    private static void troughFlow(GameTestHelper h) {
+        long now = h.getLevel().getGameTime();
+        // 1. a T: the middle of a west-east run with a branch north; the metal shares out evenly
+        TroughBlockEntity w = trough(h, 2, 1, 2), mid = trough(h, 3, 1, 2), e = trough(h, 4, 1, 2), n = trough(h, 3, 1, 1);
+        mid.add(Molten.BRONZE, 200, 0, 1200, now);
+        // 2. a gate between two troughs, shut
+        TroughBlockEntity a = trough(h, 2, 1, 5), b = trough(h, 4, 1, 5);
+        h.setBlock(new BlockPos(3, 1, 5), HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.X));
+        a.add(Molten.COPPER, 200, 0, 1200, now);
+        // 3. a long level run of steel tapped at 1550°: reach 8 + 50 / 25 = 10
+        TroughBlockEntity[] run = new TroughBlockEntity[14];
+        for (int i = 0; i < run.length; i++) run[i] = trough(h, 1 + i, 1, 9);
+        run[0].add(Molten.STEEL, 200, 0, 1550, now);
+        h.assertTrue(TroughFlow.reach(1550, Molten.STEEL) == 10, "steel tapped at 1550 reaches 10 troughs");
+        // 4. clay channels beside steel and beside bronze
+        TroughBlockEntity hot = trough(h, 2, 1, 12), warm = trough(h, 6, 1, 12);
+        h.setBlock(new BlockPos(3, 1, 12), Smelting.CLAY_CHANNEL.get());
+        h.setBlock(new BlockPos(7, 1, 12), Smelting.CLAY_CHANNEL.get());
+        hot.add(Molten.STEEL, 200, 0, 1600, now);
+        warm.add(Molten.BRONZE, 200, 0, 1200, now);
+        h.runAfterDelay(TroughFlow.STEP_TICKS * 2 + 1, () -> {
+            int total = w.amount() + mid.amount() + e.amount() + n.amount();
+            h.assertTrue(total == 200, "the T makes and loses nothing: " + total);
+            int lo = Math.min(w.amount(), Math.min(e.amount(), n.amount())), hi = Math.max(w.amount(), Math.max(e.amount(), n.amount()));
+            h.assertTrue(lo > 0 && hi - lo <= 34, "the T shares evenly: " + w.amount() + " " + e.amount() + " " + n.amount() + " (middle " + mid.amount() + ")");
+            TroughBlockEntity shut = (TroughBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(3, 1, 5)));
+            h.assertTrue(b.amount() == 0 && a.amount() + shut.amount() == 200, "a shut gate stops the metal (it pools against the plate): " + a.amount() + " + " + shut.amount() + " / " + b.amount());
+            h.assertTrue(h.getBlockState(new BlockPos(3, 1, 12)).isAir(), "a clay channel by steel cracked and broke");
+            h.assertTrue(h.getBlockState(new BlockPos(7, 1, 12)).is(Smelting.CLAY_CHANNEL.get()), "a clay channel by bronze stands");
+            h.setBlock(new BlockPos(3, 1, 5), HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.X)
+                    .setValue(RefractoryTroughBlock.Gate.OPEN, true));
+            h.runAfterDelay(TroughFlow.STEP_TICKS * 6, () -> {
+                TroughBlockEntity gate = (TroughBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(3, 1, 5)));
+                h.assertTrue(b.amount() > 0 && a.amount() + gate.amount() + b.amount() == 200, "opened, the metal runs on: " + a.amount() + " " + gate.amount() + " " + b.amount());
+                h.runAfterDelay(TroughFlow.STEP_TICKS * 40, () -> {
+                    int sum = 0;
+                    for (TroughBlockEntity t : run) sum += t.amount();
+                    h.assertTrue(sum == 200, "the steel run makes and loses nothing: " + sum);
+                    h.assertTrue(run[11].amount() == 0 || run[11].solid(h.getLevel().getGameTime()), "past its reach the steel froze");
+                    h.assertTrue(run[12].amount() == 0 && run[13].amount() == 0, "nothing ran on past the frozen trough: " + run[12].amount());
+                    h.succeed();
+                });
+            });
+        });
+    }
+
+    /**
+     * Phase 4, pouring through troughs: a spout on the taphole pours into a trough under its lip, the metal runs down a
+     * level run and fills an Iron Ingot Mold standing beside its end; the whole way, the pool, the troughs, their
+     * buffers and the cast add up to what was tapped. A second spout at the trough line's other end pours it down.
+     */
+    private static void troughPour(GameTestHelper h) {
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        BlockPos tap = new BlockPos(4, 2, 6), spout = tap.south();
+        h.setBlock(tap, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
+        h.setBlock(spout, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.SOUTH).setValue(PouringSpoutBlock.OPEN, true));
+        TroughBlockEntity[] line = {trough(h, 4, 1, 7), trough(h, 4, 1, 8), trough(h, 4, 1, 9)};
+        h.setBlock(new BlockPos(4, 1, 10), HighFurnace.IRON_INGOT_MOLD.get());
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        for (int t = 1; t < 390; t++) h.runAtTickTime(t, () -> f.setTemperatureForTest(1300));
+        f.pool().add(Molten.GOLD, 1000);
+        PouringSpoutBlockEntity s = (PouringSpoutBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(spout));
+        h.runAfterDelay(320, () -> {
+            IngotMoldBlock.Entity mold = (IngotMoldBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(4, 1, 10)));
+            int inTroughs = 0;
+            for (TroughBlockEntity t : line) inTroughs += t.amount() + t.buffer;
+            int cast = mold.molten() == Molten.GOLD ? IngotMoldBlock.CAST : mold.filled;
+            int total = f.pool().get(Molten.GOLD) + inTroughs + cast + s.bufferForTest();
+            h.assertTrue(mold.molten() == Molten.GOLD, "the mold at the line's end was filled through the troughs: " + mold.molten() + " filled " + mold.filled);
+            h.assertTrue(total == 1000, "pool + troughs + cast = what was tapped: " + total);
+            h.succeed();
+        });
+    }
+
+    private static int count(Player p, net.minecraft.world.item.Item item) {
+        int n = 0;
+        for (ItemStack st : p.getInventory().getNonEquipmentItems()) if (st.is(item)) n += st.getCount();
+        return n;
+    }
+
+    private static int dropped(GameTestHelper h, net.minecraft.world.item.Item item) {
+        return h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new net.minecraft.world.phys.AABB(h.absolutePos(BlockPos.ZERO)).inflate(16), e -> e.getItem().is(item)).stream().mapToInt(e -> e.getItem().getCount()).sum();
+    }
+
+    /**
+     * Phase 4b: an Iron Ingot Mold gives 4 ingots of 800 mB, twice over (it never cracks), and sets in half the time on a
+     * Foundry Table; a Molding Flask rammed with Casting Sand and a Pickaxe Head pattern takes 400 mB of bronze and is
+     * knocked out into a finished Bronze Pickaxe Head and 3 Burnt Casting Sand; a Pig Mold dug in Casting Sand gives 2 Pig
+     * Iron Ingots of 400 mB and is burnt; a Foundry Basin casts a Gold Block of exactly 1800 mB.
+     */
+    private static void foundryCasting(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        Player player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        BlockPos mold = new BlockPos(2, 2, 2), table = new BlockPos(2, 1, 2), flask = new BlockPos(6, 1, 2), sand = new BlockPos(10, 1, 2), basin = new BlockPos(2, 1, 8);
+        h.setBlock(table, HighFurnace.FOUNDRY_TABLE.get());
+        h.setBlock(mold, HighFurnace.IRON_INGOT_MOLD.get());
+        h.setBlock(flask, HighFurnace.MOLDING_FLASK.get());
+        h.setBlock(sand, HighFurnace.CASTING_SAND.get());
+        h.setBlock(basin, HighFurnace.FOUNDRY_BASIN.get());
+        IngotMoldBlock.Sink molds = new IngotMoldBlock.Sink();
+        h.assertTrue(molds.need(level, h.absolutePos(mold), Molten.GOLD) == 800, "the ingot mold takes 800 mB");
+        molds.fill(level, h.absolutePos(mold), Molten.GOLD, 800);
+        IngotMoldBlock.Entity m = (IngotMoldBlock.Entity) level.getBlockEntity(h.absolutePos(mold));
+        h.assertTrue(m.setAt - level.getGameTime() == IngotMoldBlock.SET_TICKS / 2, "on a Foundry Table it sets in half the time: " + (m.setAt - level.getGameTime()));
+        // the flask: rammed, patterned, filled with bronze
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(HighFurnace.CASTING_SAND_ITEM.get(), 4));
+        h.useBlock(flask, player);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(HighFurnace.PATTERNS.get(MoldingFlaskBlock.FlaskShape.PICKAXE_HEAD).get()));
+        h.useBlock(flask, player);
+        h.assertTrue(h.getBlockState(flask).getValue(MoldingFlaskBlock.STAGE) == MoldingFlaskBlock.Stage.READY, "rammed and patterned: " + h.getBlockState(flask));
+        MoldingFlaskBlock.Sink flasks = new MoldingFlaskBlock.Sink();
+        h.assertTrue(flasks.need(level, h.absolutePos(flask), Molten.BRONZE) == 400, "a pickaxe head in sand takes 400 mB (two thirds of clay's 600): " + flasks.need(level, h.absolutePos(flask), Molten.BRONZE));
+        flasks.fill(level, h.absolutePos(flask), Molten.BRONZE, 400);
+        // the pig mold: a Pig Pattern pressed into Casting Sand
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(HighFurnace.PIG_PATTERN.get()));
+        h.useBlock(sand, player);
+        h.assertTrue(h.getBlockState(sand).is(HighFurnace.PIG_MOLD.get()), "the pig pattern pressed a pig mold");
+        h.assertTrue(molds.need(level, h.absolutePos(sand), Molten.PIG_IRON) == 400, "a pig mold takes 400 mB");
+        molds.fill(level, h.absolutePos(sand), Molten.PIG_IRON, 400);
+        FoundryBasinBlock.Sink basins = new FoundryBasinBlock.Sink();
+        h.assertTrue(basins.need(level, h.absolutePos(basin), Molten.GOLD) == Molten.BLOCK, "a block is exactly 1800 mB");
+        basins.fill(level, h.absolutePos(basin), Molten.GOLD, Molten.BLOCK);
+        h.runAfterDelay(IngotMoldBlock.SET_TICKS + 60, () -> {
+            player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            h.useBlock(mold, player);
+            h.assertTrue(count(player, net.minecraft.world.item.Items.GOLD_INGOT) == 4, "4 gold ingots out of the mold: " + count(player, net.minecraft.world.item.Items.GOLD_INGOT));
+            molds.fill(level, h.absolutePos(mold), Molten.GOLD, 800);
+            h.useBlock(sand, player);
+            h.assertTrue(count(player, HighFurnace.PIG_IRON_INGOT.get()) == 2, "2 pig iron ingots out of the pig mold");
+            h.assertTrue(h.getBlockState(sand).is(HighFurnace.BURNT_CASTING_SAND.get()), "the pig bed's sand is burnt");
+            player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+            h.useBlock(flask, player);
+            h.runAfterDelay(2, () -> {
+                h.assertTrue(dropped(h, Bronze.BRONZE_PICKAXE_HEAD.get()) == 1, "a finished bronze pickaxe head fell out of the flask");
+                h.assertTrue(dropped(h, HighFurnace.BURNT_CASTING_SAND_ITEM.get()) == 3, "and 3 burnt casting sand");
+                h.assertTrue(h.getBlockState(flask).getValue(MoldingFlaskBlock.STAGE) == MoldingFlaskBlock.Stage.EMPTY, "the frame stays, empty");
+                h.runAfterDelay(IngotMoldBlock.SET_TICKS, () -> {
+                    player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                    h.useBlock(mold, player);
+                    // (the first 4 ingots went when the pickaxe was put in the same hand slot)
+                    h.assertTrue(count(player, net.minecraft.world.item.Items.GOLD_INGOT) == 4 && h.getBlockState(mold).is(HighFurnace.IRON_INGOT_MOLD.get()),
+                            "the iron mold casts again and never cracks: " + count(player, net.minecraft.world.item.Items.GOLD_INGOT) + " " + h.getBlockState(mold)
+                                    + " " + ((IngotMoldBlock.Entity) level.getBlockEntity(h.absolutePos(mold))).molten() + " set " + (((IngotMoldBlock.Entity) level.getBlockEntity(h.absolutePos(mold))).setAt - level.getGameTime()));
+                    h.runAfterDelay(120, () -> { // a block sets in 10 s per 1000 mB: 18 s
+                        h.useBlock(basin, player);
+                        h.assertTrue(count(player, net.minecraft.world.item.Items.GOLD_BLOCK) == 1, "a gold block out of the basin");
+                        h.succeed();
+                    });
+                });
+            });
+        });
+    }
+
+    /** Phase 5: a Finery Hearth blown by a Great Bellows at full power fines 2 Pig Iron Ingots into 2 Wrought Iron Ingots. */
+    private static void finery(GameTestHelper h) {
+        Player player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        BlockPos hearth = new BlockPos(4, 1, 4);
+        h.setBlock(hearth, HighFurnace.FINERY_HEARTH.get());
+        GreatBellowsBlockEntity b = bellows(h, hearth, Direction.EAST);
+        for (int t = 1; t < 980; t++) h.runAtTickTime(t, () -> b.feed(4, 0, 0, 16));
+        FineryHearthBlock.Entity e = (FineryHearthBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(hearth));
+        for (net.minecraft.world.item.Item it : new net.minecraft.world.item.Item[] {Items.CHARCOAL, HighFurnace.PIG_IRON_INGOT.get(), HighFurnace.PIG_IRON_INGOT.get(), Items.FLINT_AND_STEEL}) {
+            player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(it, it == Items.CHARCOAL ? 8 : 1));
+            h.useBlock(hearth, player);
+        }
+        h.assertTrue(h.getBlockState(hearth).getValue(FineryHearthBlock.LIT), "the hearth is lit");
+        e.setForTest(1400);
+        h.runAfterDelay(2 * FineryHearthBlock.FINE_TICKS / 2 + 40, () -> {
+            h.assertTrue(e.wrought() == 2, "2 pig iron fined into 2 wrought iron: " + e.wrought() + " at " + e.temperature());
+            h.succeed();
+        });
+    }
+
+    /**
+     * Phase 6: Glass Batch melts at 1400° into 250 mB of glass that a Foundry Basin casts into a Glass block; a Loam Mold
+     * (Bell) set in a basin takes 1600 mB of bronze and gives a Bell, the loam broken off.
+     */
+    private static void glassBell(GameTestHelper h) {
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        for (int t = 1; t < 980; t++) h.runAtTickTime(t, () -> f.setTemperatureForTest(1410));
+        f.take(new ItemStack(HighFurnace.GLASS_BATCH.get()));
+        Player player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        BlockPos glassBasin = new BlockPos(10, 1, 2), bellBasin = new BlockPos(10, 1, 6);
+        h.setBlock(glassBasin, HighFurnace.FOUNDRY_BASIN.get());
+        h.setBlock(bellBasin, HighFurnace.FOUNDRY_BASIN.get());
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(HighFurnace.LOAM_MOLD_BELL.get()));
+        h.useBlock(bellBasin, player);
+        FoundryBasinBlock.Sink basins = new FoundryBasinBlock.Sink();
+        h.assertTrue(basins.need(h.getLevel(), h.absolutePos(bellBasin), Molten.BRONZE) == 1600, "a bell takes 1600 mB of bronze");
+        h.assertTrue(basins.need(h.getLevel(), h.absolutePos(bellBasin), Molten.GOLD) == 0, "a bell mold takes no gold");
+        h.runAfterDelay(200, () -> {
+            h.assertTrue(f.pool().get(Molten.GLASS) == 250, "glass batch melted into 250 mB glass: " + f.pool().layers());
+            basins.fill(h.getLevel(), h.absolutePos(glassBasin), Molten.GLASS, f.pool().drain(Molten.GLASS, 250));
+            basins.fill(h.getLevel(), h.absolutePos(bellBasin), Molten.BRONZE, 1600);
+            h.runAfterDelay(400, () -> {
+                player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                h.useBlock(glassBasin, player);
+                h.useBlock(bellBasin, player);
+                h.assertTrue(count(player, Items.GLASS) == 1, "a glass block out of the basin");
+                h.assertTrue(count(player, Items.BELL) == 1, "a bell out of the loam mold");
+                FoundryBasinBlock.Entity bb = (FoundryBasinBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(bellBasin));
+                h.assertTrue(bb.loam() == null, "the loam mold is broken off");
+                h.succeed();
+            });
+        });
+    }
+
+    /** Phase 6: breaking the Front leaves a Furnace Salamander with half of each layer; thrown into a hot furnace it melts back. */
+    private static void salamander(GameTestHelper h) {
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        f.pool().add(Molten.BRONZE, 1000);
+        f.pool().add(Molten.GOLD, 401);
+        h.getLevel().destroyBlock(h.absolutePos(b.front()), false);
+        var drops = h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(h.absolutePos(b.front())).inflate(2),
+                e -> e.getItem().is(HighFurnace.FURNACE_SALAMANDER.get()));
+        h.assertTrue(drops.size() == 1, "a salamander was left: " + drops.size());
+        MeltPool held = new MeltPool(Integer.MAX_VALUE);
+        held.load(FurnaceSalamander.pool(drops.get(0).getItem()));
+        h.assertTrue(held.get(Molten.BRONZE) == 500 && held.get(Molten.GOLD) == 200, "half of each layer: " + held.layers());
+        // a new furnace melts it back
+        h.setBlock(b.front(), HighFurnace.HIGH_FURNACE_FRONT.get().defaultBlockState().setValue(HighFurnaceFrontBlock.FACING, Direction.NORTH));
+        HighFurnaceBlockEntity g = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        g.check(h.getLevel());
+        for (int t = 1; t < 380; t++) h.runAtTickTime(t, () -> g.setTemperatureForTest(1300));
+        net.minecraft.world.phys.Vec3 top = g.topForTest();
+        drops.get(0).setPos(top.x, top.y + 0.5, top.z);
+        h.runAfterDelay(40, () -> {
+            h.assertTrue(g.pool().get(Molten.BRONZE) == 500 && g.pool().get(Molten.GOLD) == 200, "the salamander melted back: " + g.pool().layers());
+            h.succeed();
+        });
+    }
+
+    /** Phase 7: the smallest furnace on Coke with full blast heads for 1750°, with a Hot Blast Stove by its bellows for 1800°; a Coke Oven bakes 16 Coal into 12 Coke. */
+    private static void coke(GameTestHelper h) {
+        Built b = build(h, 2, 3, 2, 2, 5, 1);
+        GreatBellowsBlockEntity bl = bellows(h, b.fireboxes().get(0), Direction.EAST);
+        for (int t = 1; t < 380; t++) h.runAtTickTime(t, () -> bl.feed(4, 0, 0, 16));
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        f.addFuel(h.absolutePos(b.fireboxes().get(0)), new ItemStack(HighFurnace.COKE.get(), 16));
+        f.light();
+        f.setDriedForTest();
+        Player player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        BlockPos oven = new BlockPos(12, 1, 12);
+        h.setBlock(oven, HighFurnace.COKE_OVEN.get());
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.COAL, 16));
+        h.useBlock(oven, player);
+        h.assertTrue(h.getBlockState(oven).getValue(CokeOvenBlock.LIT), "16 coal: the oven closes and bakes");
+        ((CokeOvenBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(oven))).finishForTest();
+        h.runAfterDelay(4, () -> {
+            h.assertTrue(Math.round(f.target()) == 1750, "coke at full blast: 1750°, got " + f.target());
+            h.setBlock(b.fireboxes().get(0).east().north(), HighFurnace.HOT_BLAST_STOVE.get());
+            h.assertTrue(((CokeOvenBlock.Entity) h.getLevel().getBlockEntity(h.absolutePos(oven))).coke() == 12, "12 coke out of 16 coal");
+            h.runAfterDelay(2, () -> {
+                h.assertTrue(Math.round(f.target()) == 1800, "with a hot blast stove: 1800°, got " + f.target());
+                h.succeed();
             });
         });
     }

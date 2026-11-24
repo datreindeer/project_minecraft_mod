@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:sand",
+    "minecraft:sand",
+    "minecraft:sand",
+    "minecraft:sand",
+    "minecraft:clay_ball",
+    "mechanical:coal_dust"
+  ],
+  "result": {
+    "id": "mechanical:casting_sand",
+    "count": 4
+  }
+}

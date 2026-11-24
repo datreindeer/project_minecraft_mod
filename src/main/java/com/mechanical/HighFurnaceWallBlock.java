@@ -64,8 +64,10 @@ public class HighFurnaceWallBlock extends Block {
             NONE,
             /** The bottom layer: rusticated stone with a plinth stepping out. */
             BASE,
-            /** The layer above the hearth: heat-stained brick whose joints glow. */
+            /** The layer above the hearth: heat-stained brick. */
             HOT,
+            /** The same right over an arch: a few joints glow dull red when hot. */
+            HOT_ARCH,
             PLAIN,
             /** A course with an iron tie strap round it (every third layer). */
             STRAP,
@@ -116,15 +118,18 @@ public class HighFurnaceWallBlock extends Block {
      */
     public static class Facing extends HighFurnaceWallBlock {
         public static final net.minecraft.world.level.block.state.properties.EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+        /** A Taphole whose spout is pouring: the clay plug is out and the hole glows. */
+        public static final net.minecraft.world.level.block.state.properties.BooleanProperty OPEN =
+                net.minecraft.world.level.block.state.properties.BlockStateProperties.OPEN;
 
         public Facing(Properties properties) {
             super(properties);
-            registerDefaultState(stateDefinition.any().setValue(HighFurnace.HEAT, 0).setValue(FACING, Direction.NORTH));
+            registerDefaultState(stateDefinition.any().setValue(HighFurnace.HEAT, 0).setValue(FACING, Direction.NORTH).setValue(OPEN, false));
         }
 
         @Override
         protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-            builder.add(HighFurnace.HEAT, FACING);
+            builder.add(HighFurnace.HEAT, FACING, OPEN);
         }
 
         @Override

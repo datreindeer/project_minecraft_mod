@@ -32,12 +32,12 @@ import org.jspecify.annotations.Nullable;
 public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Entity, IngotMoldRenderer.State> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/block/molten_flow.png");
     private static final RenderType TYPE = RenderTypes.beaconBeam(TEXTURE, false);
-    /** The pockets on the plate (pixels): x and z ranges. */
-    private static final float[][] POCKETS = {{2.5F, 7.5F, 2.5F, 7.5F}, {8.5F, 13.5F, 2.5F, 7.5F}, {2.5F, 7.5F, 8.5F, 13.5F}, {8.5F, 13.5F, 8.5F, 13.5F}};
 
     public static class State extends BlockEntityRenderState {
         @Nullable Molten molten;
         float cooled;
+        float[] level = new float[0];
+        IngotMoldBlock.Kind kind = IngotMoldBlock.Kind.INGOT;
     }
 
     public IngotMoldRenderer(BlockEntityRendererProvider.Context context) {}
@@ -51,8 +51,11 @@ public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Ent
     public void extractRenderState(IngotMoldBlock.Entity mold, State state, float partialTicks, Vec3 camera,
             ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(mold, state, partialTicks, camera, breakProgress);
-        state.molten = mold.molten();
-        state.cooled = mold.getLevel() == null ? 1 : mold.cooled(mold.getLevel().getGameTime());
+        state.molten = mold.molten() != null ? mold.molten() : mold.filling();
+        state.cooled = mold.molten() == null || mold.getLevel() == null ? 0 : mold.cooled(mold.getLevel().getGameTime());
+        state.kind = mold.kind();
+        if (state.level.length != state.kind.pockets.length) state.level = new float[state.kind.pockets.length];
+        for (int i = 0; i < state.level.length; i++) state.level[i] = mold.pocket(i);
     }
 
     @Override
@@ -62,8 +65,13 @@ public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Ent
         int hot = 0xFF000000 | state.molten.color, skin = ARGB.srgbLerp(0.35F, 0xFF4A4642, hot) | 0xFF000000;
         int c = state.cooled < 0.6F ? ARGB.srgbLerp(state.cooled / 0.6F, hot, 0xFFB02A08) | 0xFF000000 : ARGB.srgbLerp((state.cooled - 0.6F) / 0.4F, 0xFFB02A08, skin) | 0xFF000000;
         boolean glow = state.cooled < 1;
-        collector.submitCustomGeometry(pose, TYPE, (p, buf) -> {
-            for (float[] q : POCKETS) quad(p, buf, c, q[0] / 16, q[2] / 16, q[1] / 16, q[3] / 16, 3.6F / 16, glow ? LightCoordsUtil.FULL_BRIGHT : state.lightCoords);
+        collector.submitCustomGeometry(pose, MoltenRenderer.CRUST, (p, buf) -> {
+            for (int i = 0; i < state.kind.pockets.length; i++) {
+                if (state.level[i] <= 0) continue;
+                float[] q = state.kind.pockets[i];
+                float y = (state.kind.floor + (state.kind.top - state.kind.floor) * state.level[i]) / 16;
+                quad(p, buf, c, q[0] / 16, q[2] / 16, q[1] / 16, q[3] / 16, y, glow ? LightCoordsUtil.FULL_BRIGHT : state.lightCoords);
+            }
         });
     }
 

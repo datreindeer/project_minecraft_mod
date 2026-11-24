@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:steel_age/pour",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:refractory_trough"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:refractory_trough"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.trough.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.trough.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

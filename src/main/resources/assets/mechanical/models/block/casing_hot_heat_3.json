@@ -10,8 +10,7 @@
     "base_top": "mechanical:block/furnace_base_top",
     "strap": "mechanical:block/furnace_strap",
     "rim": "mechanical:block/furnace_rim",
-    "rim_glow": "mechanical:block/furnace_rim_glow",
-    "glow": "mechanical:block/banded_furnace_casing_glow_2"
+    "rim_glow": "mechanical:block/furnace_rim_glow"
   },
   "elements": [
     {
@@ -85,32 +84,6 @@
           ],
           "texture": "#end",
           "cullface": "down"
-        }
-      }
-    },
-    {
-      "from": [
-        0,
-        0,
-        -0.01
-      ],
-      "to": [
-        16,
-        16,
-        -0.01
-      ],
-      "light_emission": 9,
-      "shade": false,
-      "faces": {
-        "north": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#glow",
-          "cullface": "north"
         }
       }
     }

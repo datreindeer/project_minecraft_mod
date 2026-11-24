@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:steel_age/high_furnace",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:furnace_salamander"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.salamander.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.salamander.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

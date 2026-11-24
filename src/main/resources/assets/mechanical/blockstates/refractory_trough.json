@@ -1,0 +1,131 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "slope": "none"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_middle"
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_arm"
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
+        "north": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_end"
+      }
+    },
+    {
+      "when": {
+        "slope": "north"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_slope"
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_arm",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
+        "east": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_end",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "slope": "east"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_slope",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_arm",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
+        "south": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_end",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "slope": "south"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_slope",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_arm",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "slope": "none",
+        "west": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_end",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "slope": "west"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_slope",
+        "y": 270
+      }
+    }
+  ]
+}

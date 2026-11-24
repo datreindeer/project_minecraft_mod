@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": "mechanical:slag_stone"
+  },
+  "result": {
+    "id": "mechanical:slag_stone_bricks",
+    "count": 4
+  }
+}

@@ -39,6 +39,8 @@ public class PouringSpoutBlock extends Block implements EntityBlock {
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     /** Metal is running out of it now (it glows; set by its block entity). */
     public static final BooleanProperty POURING = BooleanProperty.create("pouring");
+    /** Set at a trough's end (no taphole recess behind it): the flange stops at the block's face. */
+    public static final BooleanProperty SHORT = BooleanProperty.create("short");
     private static final VoxelShape[] SHAPES = new VoxelShape[4];
 
     static {
@@ -55,19 +57,27 @@ public class PouringSpoutBlock extends Block implements EntityBlock {
 
     public PouringSpoutBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(POURING, false));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(POURING, false).setValue(SHORT, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, OPEN, POURING);
+        builder.add(FACING, OPEN, POURING, SHORT);
     }
 
     /** It points away from the block it is set against. */
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction face = context.getClickedFace();
-        return defaultBlockState().setValue(FACING, face.getAxis().isHorizontal() ? face : context.getHorizontalDirection().getOpposite());
+        Direction facing = face.getAxis().isHorizontal() ? face : context.getHorizontalDirection().getOpposite();
+        return defaultBlockState().setValue(FACING, facing)
+                .setValue(SHORT, context.getLevel().getBlockState(context.getClickedPos().relative(facing.getOpposite())).getBlock() instanceof ClayChannelBlock);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader level, net.minecraft.world.level.ScheduledTickAccess ticks, BlockPos pos,
+            Direction direction, BlockPos neighbourPos, BlockState neighbourState, net.minecraft.util.RandomSource random) {
+        return direction == state.getValue(FACING).getOpposite() ? state.setValue(SHORT, neighbourState.getBlock() instanceof ClayChannelBlock) : state;
     }
 
     @Override

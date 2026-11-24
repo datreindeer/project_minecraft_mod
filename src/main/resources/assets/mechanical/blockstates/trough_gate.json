@@ -1,0 +1,143 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "slope": "none"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_middle"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_arm"
+      }
+    },
+    {
+      "when": {
+        "north": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_end"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_arm",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "east": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_end",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_arm",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "south": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_end",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_arm",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "west": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/refractory_trough_end",
+        "y": 270,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "axis": "z"
+      },
+      "apply": {
+        "model": "mechanical:block/trough_gate_frame"
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "open": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/trough_gate_shut"
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "open": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/trough_gate_open"
+      }
+    },
+    {
+      "when": {
+        "axis": "x"
+      },
+      "apply": {
+        "model": "mechanical:block/trough_gate_frame",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "axis": "x",
+        "open": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/trough_gate_shut",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "axis": "x",
+        "open": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/trough_gate_open",
+        "y": 90
+      }
+    }
+  ]
+}

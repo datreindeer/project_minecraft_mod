@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:casting_sand"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/casting_sand"
+}

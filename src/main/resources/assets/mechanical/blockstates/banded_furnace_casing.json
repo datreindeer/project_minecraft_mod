@@ -122,6 +122,46 @@
     },
     {
       "when": {
+        "part": "hot_arch",
+        "facing": "north",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch"
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "north",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_1"
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "north",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_2"
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "north",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_3"
+      }
+    },
+    {
+      "when": {
         "part": "plain",
         "facing": "north",
         "heat": "0"
@@ -333,6 +373,26 @@
     {
       "when": {
         "part": "hot",
+        "facing": "north",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw"
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "north",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw"
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
         "facing": "north",
         "end_cw": "true"
       },
@@ -574,6 +634,50 @@
     },
     {
       "when": {
+        "part": "hot_arch",
+        "facing": "east",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "east",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "east",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "east",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
         "part": "plain",
         "facing": "east",
         "heat": "0"
@@ -806,6 +910,28 @@
     {
       "when": {
         "part": "hot",
+        "facing": "east",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "east",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
         "facing": "east",
         "end_cw": "true"
       },
@@ -1058,6 +1184,50 @@
     },
     {
       "when": {
+        "part": "hot_arch",
+        "facing": "south",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "south",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "south",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "south",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
         "part": "plain",
         "facing": "south",
         "heat": "0"
@@ -1290,6 +1460,28 @@
     {
       "when": {
         "part": "hot",
+        "facing": "south",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "south",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
         "facing": "south",
         "end_cw": "true"
       },
@@ -1542,6 +1734,50 @@
     },
     {
       "when": {
+        "part": "hot_arch",
+        "facing": "west",
+        "heat": "0"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "west",
+        "heat": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "west",
+        "heat": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "west",
+        "heat": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_hot_arch_heat_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
         "part": "plain",
         "facing": "west",
         "heat": "0"
@@ -1774,6 +2010,28 @@
     {
       "when": {
         "part": "hot",
+        "facing": "west",
+        "end_cw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_cw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
+        "facing": "west",
+        "end_ccw": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/casing_end_full_ccw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "part": "hot_arch",
         "facing": "west",
         "end_cw": "true"
       },

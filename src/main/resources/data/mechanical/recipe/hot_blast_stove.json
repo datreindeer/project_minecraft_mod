@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PBP",
+    "B B",
+    "PBP"
+  ],
+  "key": {
+    "P": "mechanical:steel_plate",
+    "B": "mechanical:silica_bricks"
+  },
+  "result": {
+    "id": "mechanical:hot_blast_stove"
+  }
+}

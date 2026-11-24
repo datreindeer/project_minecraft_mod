@@ -1,0 +1,150 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/great_bellows_board",
+    "board": "mechanical:block/great_bellows_board",
+    "leather": "mechanical:block/great_bellows_leather",
+    "frame": "mechanical:block/great_bellows_frame",
+    "end": "mechanical:block/great_bellows_frame_end",
+    "bronze": "mechanical:block/great_bellows_nozzle",
+    "cam": "mechanical:block/great_bellows_cam"
+  },
+  "elements": [
+    {
+      "from": [
+        15,
+        0,
+        14.6
+      ],
+      "to": [
+        17.4,
+        24,
+        17.4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0,
+            2.3999999999999986,
+            24
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            13.600000000000001,
+            0,
+            16.0,
+            24
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            0,
+            2.799999999999999,
+            24
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            13.200000000000001,
+            0,
+            16.0,
+            24
+          ],
+          "texture": "#frame"
+        },
+        "up": {
+          "uv": [
+            13.600000000000001,
+            13.200000000000001,
+            16.0,
+            16.0
+          ],
+          "texture": "#end"
+        },
+        "down": {
+          "uv": [
+            13.600000000000001,
+            0.0,
+            16.0,
+            2.799999999999999
+          ],
+          "texture": "#end"
+        }
+      }
+    },
+    {
+      "from": [
+        14.7,
+        22,
+        14.2
+      ],
+      "to": [
+        17.7,
+        24.5,
+        17.8
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            13.0,
+            0.0,
+            16.0,
+            3.6000000000000014
+          ],
+          "texture": "#cam"
+        },
+        "up": {
+          "uv": [
+            13.0,
+            12.399999999999999,
+            16.0,
+            16.0
+          ],
+          "texture": "#cam"
+        },
+        "north": {
+          "uv": [
+            0.0,
+            7.5,
+            3.0,
+            10
+          ],
+          "texture": "#cam"
+        },
+        "south": {
+          "uv": [
+            13.0,
+            7.5,
+            16.0,
+            10
+          ],
+          "texture": "#cam"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            7.5,
+            3.6000000000000014,
+            10
+          ],
+          "texture": "#cam"
+        },
+        "west": {
+          "uv": [
+            12.399999999999999,
+            7.5,
+            16.0,
+            10
+          ],
+          "texture": "#cam"
+        }
+      }
+    }
+  ]
+}
