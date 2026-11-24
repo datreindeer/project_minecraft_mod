@@ -248,7 +248,7 @@ järnåldern (Iron Cauldron).
 
 ## 7. Sågverk (vattenkraft)
 
-Vattenkraften finns inte än. Sågverket kommer i samma fas som **vattenhjulet**, som behövs för både sågverk, kvarn och
+**Byggt v0.191.0** (se "Fas 5a och 5b: resultat" sist). Sågverket kom i samma fas som **vattenhjulet**, som behövs för både sågverk, kvarn och
 (senare) bälgar och hammare. Plan:
 
 ### Fas 5a: Water Wheel (järn- eller stålåldern)
@@ -297,8 +297,8 @@ Vattenkraften finns inte än. Sågverket kommer i samma fas som **vattenhjulet**
 | 4 | Vilda grönsaker och örter + förädling; bybornas varor; Clay Cooking Pot; Bronze Griddle/Ladle; rätter brons | sten–brons | Farming |
 | 4b | Den östra karavanen (varorna ovan) | brons–järn | handelsagentens karavaner |
 | 5 | Järnålderns kök (Skillet, Cauldron, Barrel, ost, korv, surkål); havssalt | järn | — |
-| 5a | Water Wheel + axlar | järn/stål | — |
-| 5b | Sawmill, Sawdust | järn/stål | 5a |
+| **5a (byggd)** | Water Wheel + axlar | järn | — |
+| **5b (byggd)** | Sawmill, Sawdust | stål | 5a |
 | 6 | Stålets kök (Knife Set, Mortar, Sieve, kryddblandningar) | stål | — |
 
 ---
@@ -330,3 +330,23 @@ Byggt v0.187.0. Spelarens beskrivning står i `docs/ages/01-stone-age.md` ("Snå
   hela block). Grass Stairs tas inte med. De gamla sju
   bärbuskarna har kvar sina fasta biomlistor (fas 2). Fern Flowers Luck gäller den som bryter blomman, inte den som
   plockar den på annat sätt (t.ex. med vatten eller kolv).
+
+## Fas 5a och 5b: resultat
+
+Byggt v0.191.0. Spelarens beskrivning står i `docs/ages/03-iron-age.md` ("Vattenkraft och sågverk").
+
+- **Vattenhjulet:** 5×5, bara navet är ett block. Kraften räknas per skovelruta (20 rutor): rinnande vatten runt hjulet 1,
+  fallande 2, med riktning (vatten åt samma håll överst och nederst tar ut varandra), högst 16. **Beslut (Claude, kan
+  ändras):** planens "fallhöjd" blev "fallande vatten räknas dubbelt"; undershot når högst 7, så sågverket (8) behöver
+  vatten som faller på hjulet. Rörelsen syns som fart (0,25°/tick per kraft) och i högerklick ("12 / 16"), inte i en
+  svävande tooltip.
+- **Axlar:** Wooden Shaft (rak) och Gearbox (rakt fram och runt hörnet, åt alla vågräta håll). Inga lodräta axlar.
+  Alla delar på en linje visar hjulets egen fas (ingen synk per tick), och stannar 2,5 s efter att hjulet slutat mata dem.
+  Två hjul på samma linje adderas inte (det senaste vinner).
+- **Sågverket:** som planen: 7 block, sågen i mitten, 3 Log Flumes på var sida, vatten mot sågen, minst 8 kraft, Steel
+  Saw Blade 512 stockar, utbytet enligt tabellen. Rännorna har inget riktigt vatten (vattenloggade block kan inte rinna),
+  de räknar själva varifrån vattnet kommer och visar rinnande eller stilla vatten. Det sågade flyter ut som föremål.
+- **Sawdust:** bränsle, kompost, Sawdust Briquette → Charcoal i Clay Kiln. Root Cellar-isolering, strö, papper och
+  spånplattor är inte gjorda.
+- **Generator:** `gen_waterpower.py` efter `gen_flora.py`, före `gen_winter_plants.py`; texturer `gen_waterpower_textures.py`
+  (fristående).
