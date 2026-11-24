@@ -378,9 +378,10 @@ var): P50 6,7–10,4 ms pausad mot 9,4–11,0 ms igång, alltså 0,6–2,8 ms me
 När chunkarna är i fas kostar klockan nästan inget: ett svep per laddad chunk och speldag (en timme). Stormfällning,
 torr blixt och brandvakten körs en gång i sekunden och är billiga utom själva elden (vanillas).
 
-**Höjdkartor:** i 26.x räknar höjdkartorna bara block i taggen `#minecraft:blocks_motion_in_heightmap`. Burnt Soil, Wood
-Ash, Charred Log, Deadwood, Broken Deadwood och Grub Log läggs till (`scripts/gen_nature_clock.py`), annars läser klockan
-(och regn, snö och spawning) marken under dem.
+**Höjdkartor:** i 26.x räknar höjdkartorna bara block i taggen `#minecraft:blocks_motion_in_heightmap`. Alla modens
+block som blockerar rörelse (efter den gamla regeln) läggs i taggen av `scripts/gen_heightmap.py`, bland dem Burnt Soil,
+Wood Ash, Charred Log, Deadwood, Broken Deadwood och Grub Log; annars läser klockan (och regn, snö och spawning) marken
+under dem. Gametesten `heightmap_tags` (`HeightmapTest`) kontrollerar listan mot de riktiga kollisionsformerna.
 
 **Gametests** (`worldgen/NatureClockTest`): `nature_rot` (en stock som lämnas 10 dagar har ruttnat bort i Moss Block och
 Podzol, med en ekplanta bredvid), `storm_felling`, `nature_regrowth` (ett brandfält är ung skog efter 300 dagar),
