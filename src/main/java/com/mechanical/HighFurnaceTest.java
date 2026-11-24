@@ -39,11 +39,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class HighFurnaceTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat"};
+    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt"};
 
     static {
         TEST_FUNCTIONS.register("high_furnace_shape", () -> HighFurnaceTest::shape);
         TEST_FUNCTIONS.register("high_furnace_heat", () -> HighFurnaceTest::heat);
+        TEST_FUNCTIONS.register("high_furnace_melt", () -> HighFurnaceTest::melt);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -55,7 +56,7 @@ public final class HighFurnaceTest {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "high_furnace"), new TestEnvironmentDefinition.AllOf(List.of()));
         for (String t : TESTS)
             event.registerTest(Identifier.fromNamespaceAndPath(MODID, t), new FunctionGameTestInstance(
-                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, 400, true)));
+                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, t.endsWith("melt") ? 1000 : 400, true)));
     }
 
     /** Where a test furnace stands: its Front's position (relative), facing north; the inside starts right south of it. */
@@ -205,6 +206,46 @@ public final class HighFurnaceTest {
                             h.succeed();
                         });
                     });
+                });
+            });
+        });
+    }
+
+    /**
+     * Phase 3: the smallest furnace holds 8000 mB in 20 places. At 900° 9 Crushed Copper Ore wait in their places while the
+     * Crushed Tin Ore (thrown in at the top) melts; at 1200° they melt and mix 9:1 into exactly 2000 mB Bronze; 9 Gold
+     * Nuggets give 198 mB (22 each); 10 Copper Ingots + 1 Tin Ingot give 2000 more Bronze and leave a 200 mB Copper layer.
+     */
+    private static void melt(GameTestHelper h) {
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(b.front()));
+        f.check(h.getLevel());
+        h.assertTrue(f.formed() && f.pool().capacity() == 8000 && f.slots().size() == 20, "8000 mB in 20 places: " + f.pool().capacity() + ", " + f.slots().size());
+        float[] heat = {900};
+        for (int t = 1; t < 980; t++) h.runAtTickTime(t, () -> f.setTemperatureForTest(heat[0]));
+        for (int i = 0; i < 9; i++) f.take(new ItemStack(BronzeOres.CRUSHED_COPPER_ORE.get()));
+        for (int i = 0; i < 9; i++) f.take(new ItemStack(net.minecraft.world.item.Items.GOLD_NUGGET));
+        // the tin goes in the real way: thrown in at the open top
+        net.minecraft.world.phys.Vec3 top = f.topForTest();
+        h.getLevel().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(h.getLevel(), top.x, top.y + 1, top.z, new ItemStack(BronzeOres.CRUSHED_TIN_ORE.get())));
+        h.runAfterDelay(150, () -> {
+            h.assertTrue(f.pool().get(Molten.TIN) == 200, "the tin melted at 900°: " + f.pool().layers());
+            h.assertTrue(f.pool().get(Molten.COPPER) == 0 && f.slots().stream().filter(s -> s.is(BronzeOres.CRUSHED_COPPER_ORE.get())).count() == 9,
+                    "the copper ore waits for 1085°: " + f.pool().layers());
+            heat[0] = 1200;
+            h.runAfterDelay(300, () -> {
+                h.assertTrue(f.pool().get(Molten.BRONZE) == 2000 && f.pool().get(Molten.COPPER) == 0 && f.pool().get(Molten.TIN) == 0,
+                        "9 + 1 Crushed Ore make 2000 mB Bronze: " + f.pool().layers());
+                h.assertTrue(f.pool().get(Molten.GOLD) == 9 * Molten.NUGGET, "9 nuggets give 198 mB: " + f.pool().get(Molten.GOLD));
+                for (int i = 0; i < 10; i++) f.take(new ItemStack(net.minecraft.world.item.Items.COPPER_INGOT));
+                f.take(new ItemStack(Mechanical.TIN_INGOT.get()));
+                h.runAfterDelay(300, () -> {
+                    h.assertTrue(f.pool().get(Molten.BRONZE) == 4000 && f.pool().get(Molten.COPPER) == 200,
+                            "10 Copper + 1 Tin Ingot: 2000 more Bronze and 200 Copper left: " + f.pool().layers());
+                    h.assertTrue(f.pool().bottom() == Molten.GOLD && f.pouring() == Molten.GOLD, "gold lies at the bottom and pours first");
+                    f.select(Molten.COPPER);
+                    h.assertTrue(f.pouring() == Molten.COPPER, "a chosen layer pours instead");
+                    h.succeed();
                 });
             });
         });

@@ -218,3 +218,21 @@ blåst, varje eldstads bränsle och blåst, uttorkningen och pölens storlek.
 
 Advancements (Steel Age-fliken): **Silica Brick**, **Hooped**, **High Furnace** (goal), **Wind of the River** (challenge, 16
 blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat`, `waterpower_shared(_bellows)`.
+
+### 6b. Byggt: smältning (fas 3, v0.200.0)
+
+- **Platser:** en per inre block (20–72), en sak per plats. Kasta in malm och tackor genom den öppna toppen; det som inte
+  smälter i ugnen kastas tillbaka ut med ett fräs, det som inte får plats ligger kvar på bädden tills en plats blir ledig.
+  Alla platser smälter samtidigt: **40 tick per 100 mB** vid smältpunkten, snabbare när det är hetare (som kilnen). För kallt
+  eller full pöl: platsen väntar (röd stapel i skärmen, "Needs 1085°").
+- **Utbyte:** Crushed Copper/Tin Ore 200 mB, Copper/Tin Concentrate, Native Copper och Raw Copper 400, Raw Gold 300, Raw
+  Galena 300 bly, tackor 200, nuggets 22 (9 nuggets blir 198 mB, aldrig en tacka), Copper Block och Gold Block 1800.
+- **Pölen:** 400 mB per inre block. Varje smälta är ett lager, efter densitet (guld underst, slagg överst). Koppar och tenn
+  blandar sig själva **exakt 9:1** till brons vid 950° (20 mB per tick); det som blir över ligger kvar som eget lager. Ingen
+  ny Poor Bronze; omsmälta Poor Bronze-tackor blir ett eget lager.
+- **Skärmen:** lagerkolumnen i varje smältas färg (tooltip: mB, tackor, smältpunkt). **Klick på ett lager** väljer vad
+  tapphålen ska hälla (ram runt bandet), klick igen går tillbaka till bottenlagret. Platserna visas med föremål och stapel.
+- **Utseende:** pölens lager syns som band på innerväggarna och ytan glöder i översta lagrets färg; föremål som smälter
+  flyter på ytan (högst 16).
+- Advancement **Layer Cake** (tre smältor i pölen samtidigt). Test `high_furnace_melt`.
+- Inte gjort: lägga föremål i platserna från skärmen (bara genom toppen); en kall pöl ritas inte.

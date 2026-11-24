@@ -1,6 +1,6 @@
 # Plan: High Furnace, stålålderns stora smältugn (2026-11-24)
 
-> Status: **fas 0–2 byggda (v0.200.0)**, se *Byggt* längst ned och `docs/ages/04-steel-age.md` 6a. Beslut märkta "Beslut (Claude, kan ändras)" är mina förslag; säg till så ändras de.
+> Status: **fas 0–3 byggda (v0.200.0)**, se *Byggt* längst ned och `docs/ages/04-steel-age.md` 6a. Beslut märkta "Beslut (Claude, kan ändras)" är mina förslag; säg till så ändras de.
 > Item- och blocknamn står på engelska. Byggs fas för fas (se *Faser*), och varje fas förs in i åldersdokumentet.
 
 Det här vill du ha (översatt): **ett nytt, stort multiblock av stålålderns block som når mycket höga temperaturer, där man
@@ -663,3 +663,6 @@ vanillas Anvil (järnålderns dokument säger ångåldern; gjuts inte från stå
 - **Fas 2 (v0.200.0):** Great Bellows (`WaterPower.Driven`), delad kraft (`WaterPower.share`), eldstadsbränsle, målformeln,
   storleksfaktor, uttorkning, regn, skärmen (utan lagerkolumn). Lågor/gnistor/rök från toppen och glöden i schaktet
   (`client/HighFurnaceRenderer`). Test `high_furnace_heat`, `waterpower_shared`, `waterpower_shared_bellows`.
+- **Fas 3 (v0.200.0):** `HighFurnaceMelting` (utbytestabellen), platser i Front, intag genom toppen, smältning parallellt,
+  auto-brons i `MeltPool`, val av lager (`HighFurnaceMenu.clickMenuButton`), lagerkolumn och platser i skärmen, lagren och
+  flytande föremål i `client/HighFurnaceRenderer`. Test `high_furnace_melt`. Inte gjort: insättning från skärmen.

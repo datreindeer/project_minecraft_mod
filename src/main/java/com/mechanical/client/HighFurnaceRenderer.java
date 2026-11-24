@@ -37,9 +37,19 @@ public class HighFurnaceRenderer implements BlockEntityRenderer<HighFurnaceBlock
     public static class State extends BlockEntityRenderState {
         int @Nullable [] box;
         float temp, time;
+        /** The pool's layers from the bottom: colour and height in blocks. */
+        final java.util.List<int[]> layers = new java.util.ArrayList<>();
+        float poolTop;
+        /** Items still melting, floating on the surface (at most {@link #FLOATING}). */
+        final java.util.List<net.minecraft.client.renderer.item.ItemStackRenderState> floating = new java.util.ArrayList<>();
     }
 
-    public HighFurnaceRenderer(BlockEntityRendererProvider.Context context) {}
+    private static final int FLOATING = 16;
+    private final net.minecraft.client.renderer.item.ItemModelResolver items;
+
+    public HighFurnaceRenderer(BlockEntityRendererProvider.Context context) {
+        items = context.itemModelResolver();
+    }
 
     @Override
     public State createRenderState() {
@@ -53,6 +63,26 @@ public class HighFurnaceRenderer implements BlockEntityRenderer<HighFurnaceBlock
         state.box = furnace.clientBox();
         state.temp = furnace.temperature();
         state.time = WaterPowerRenderers.time(furnace.getLevel(), partialTicks);
+        state.layers.clear();
+        state.floating.clear();
+        state.poolTop = 0;
+        int[] b = state.box;
+        com.mechanical.MeltPool pool = furnace.pool();
+        if (b == null || pool.capacity() <= 0) return;
+        float height = b[4] - b[1] + 1 - 0.4F, y = 0;
+        for (var e : pool.layers()) {
+            float h = Math.max(0.03F, e.getValue() * height / pool.capacity());
+            state.layers.add(new int[] {e.getKey().color, Float.floatToIntBits(h)});
+            y += h;
+        }
+        state.poolTop = y;
+        int seed = (int) furnace.getBlockPos().asLong();
+        for (net.minecraft.world.item.ItemStack it : furnace.slots()) {
+            if (it.isEmpty() || state.floating.size() >= FLOATING) continue;
+            var r = new net.minecraft.client.renderer.item.ItemStackRenderState();
+            items.updateForTopItem(r, it, net.minecraft.world.item.ItemDisplayContext.GROUND, furnace.getLevel(), null, seed + state.floating.size());
+            state.floating.add(r);
+        }
     }
 
     /** Fire's colour by heat: dull red, cherry, orange, gold, a pale yellow at the top (kept saturated: white reads as grey). */
@@ -79,11 +109,37 @@ public class HighFurnaceRenderer implements BlockEntityRenderer<HighFurnaceBlock
         float heat = Math.min(1, (state.temp - 450) / 1150F);
         float bedY = y0 + 0.35F, scroll = state.time * 0.004F;
         int bed = colour(state.temp, 255);
+        float surface = bedY + state.poolTop;
         collector.submitCustomGeometry(pose, BED, (p, buf) -> {
-            // the burning bed: two layers of the churning texture drifting against each other
+            // the burning bed under the melt, then the melt's layers up the inner walls and its surface in the top layer's colour
             quadUp(p, buf, bed, x0, z0, x1, z1, bedY, scroll, scroll * 0.6F);
+            float ya = bedY;
+            int topColour = bed;
+            for (int[] l : state.layers) {
+                float yb = ya + Float.intBitsToFloat(l[1]);
+                int c = 0xFF000000 | l[0];
+                float in = 0.02F;
+                band(p, buf, c, x0 + in, z0 + in, x1 - in, z0 + in, ya, yb);
+                band(p, buf, c, x1 - in, z0 + in, x1 - in, z1 - in, ya, yb);
+                band(p, buf, c, x1 - in, z1 - in, x0 + in, z1 - in, ya, yb);
+                band(p, buf, c, x0 + in, z1 - in, x0 + in, z0 + in, ya, yb);
+                ya = yb;
+                topColour = c;
+            }
+            if (!state.layers.isEmpty()) quadUp(p, buf, topColour, x0, z0, x1, z1, surface, scroll * 0.7F, -scroll * 0.4F);
         });
-        float glowTop = bedY + 0.6F + heat * 2.6F;
+        // the unmelted items floating on it, turning slowly, bobbing
+        for (int i = 0; i < state.floating.size(); i++) {
+            float fx = x0 + 0.3F + ((i * 0.61F) % 1) * (x1 - x0 - 0.6F), fz = z0 + 0.3F + ((i * 0.37F + 0.2F) % 1) * (z1 - z0 - 0.6F);
+            pose.pushPose();
+            pose.translate(fx, surface + 0.05F + 0.03F * net.minecraft.util.Mth.sin(state.time * 0.05F + i), fz);
+            pose.rotateDegrees(com.mojang.math.Axis.YP, i * 47 + state.time * 0.3F);
+            pose.rotateDegrees(com.mojang.math.Axis.XP, 90);
+            pose.scale(0.6F, 0.6F, 0.6F);
+            state.floating.get(i).submit(pose, collector, net.minecraft.util.LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+            pose.popPose();
+        }
+        float glowTop = bedY + state.poolTop + 0.6F + heat * 2.6F;
         int low = colour(state.temp, Math.round(110 + 110 * heat)), high = colour(state.temp, 0);
         collector.submitCustomGeometry(pose, GLOW, (p, buf) -> {
             float in = 0.01F;
@@ -93,6 +149,17 @@ public class HighFurnaceRenderer implements BlockEntityRenderer<HighFurnaceBlock
             wall(p, buf, low, high, x0 + in, z1 - in, x0 + in, z0 + in, bedY - 0.3F, glowTop, scroll);
             quadUp(p, buf, colour(state.temp, Math.round(90 * heat)), x0, z0, x1, z1, bedY + 0.04F, -scroll * 1.7F, scroll * 1.3F);
         });
+    }
+
+    /** An opaque band of a layer on the inner wall from (ax, az) to (bx, bz), from ya up to yb. */
+    private static void band(PoseStack.Pose pose, VertexConsumer buf, int c, float ax, float az, float bx, float bz, float ya, float yb) {
+        float len = Math.abs(bx - ax) + Math.abs(bz - az);
+        float[][] q = {{ax, ya, az, 0}, {ax, yb, az, 0}, {bx, yb, bz, len}, {bx, ya, bz, len}};
+        for (int s = 0; s < 2; s++)
+            for (int i = 0; i < 4; i++) {
+                float[] v = q[s == 0 ? i : 3 - i];
+                vertex(pose, buf, c, v[0], v[1], v[2], v[3] * 0.5F, v[1] * 0.5F);
+            }
     }
 
     private static void quadUp(PoseStack.Pose pose, VertexConsumer buf, int c, float x0, float z0, float x1, float z1, float y, float du, float dv) {

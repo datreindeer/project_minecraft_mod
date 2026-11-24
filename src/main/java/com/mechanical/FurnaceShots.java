@@ -287,7 +287,7 @@ public final class FurnaceShots {
                     then(2, () -> server(() -> {
                         var pl = Minecraft.getInstance().getSingleplayerServer().getPlayerList().getPlayers().get(0);
                         pl.teleportTo(level(), 10.5, ground, -3.5, java.util.Set.of(), 0, 20, true);
-                        if (level().getBlockEntity(rel(10, 0, -1)) instanceof HighFurnaceBlockEntity f) pl.openMenu(f);
+                        if (level().getBlockEntity(rel(10, 0, -1)) instanceof HighFurnaceBlockEntity f) pl.openMenu(f, buf -> buf.writeBlockPos(f.getBlockPos()));
                     }));
                     then(20, () -> shot("gui"));
                     then(2, () -> Minecraft.getInstance().player.closeContainer());

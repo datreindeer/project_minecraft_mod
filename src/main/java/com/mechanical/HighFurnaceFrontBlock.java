@@ -53,7 +53,7 @@ public class HighFurnaceFrontBlock extends Block implements EntityBlock {
         if (!(level instanceof ServerLevel server) || !(level.getBlockEntity(pos) instanceof HighFurnaceBlockEntity furnace)) return InteractionResult.SUCCESS;
         furnace.check(server);
         if (furnace.problem() != null) player.sendOverlayMessage(furnace.problem());
-        else player.openMenu(furnace);
+        else player.openMenu(furnace, buf -> buf.writeBlockPos(pos));
         return InteractionResult.SUCCESS;
     }
 

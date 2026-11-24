@@ -90,6 +90,11 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
 
     private final Map<Long, Fire> fires = new HashMap<>();
     final MeltPool pool = new MeltPool(0);
+    /** The melting places, one per inside block, each holding one item, and how far each has come (ticks at the melting point). */
+    private net.minecraft.core.NonNullList<ItemStack> slots = net.minecraft.core.NonNullList.withSize(0, ItemStack.EMPTY);
+    private float[] progress = new float[0];
+    /** The layer chosen in the screen for the tapholes to pour (a {@link Molten}), or null for the bottom layer. */
+    private @Nullable Molten selected;
     private float temp = Float.NaN, ambient = 20;
     private int dried, totalBlast;
     // worked out again after loading
@@ -206,6 +211,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         problem = r.problem();
         if (shape != null) {
             pool.setCapacity(shape.volume() * MB_PER_BLOCK);
+            resizeSlots(level, shape.volume());
             fires.keySet().retainAll(shape.fireboxes().stream().map(w -> w.pos().asLong()).toList()); // a firebox taken out loses its fire (its fuel drops with it)
             for (HighFurnaceShape.Wall w : shape.fireboxes()) fires.computeIfAbsent(w.pos().asLong(), k -> new Fire());
             if (!was) {
@@ -335,6 +341,11 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         else temp = Math.max(goal, t - (lit ? FALL_LIT : FALL_OUT) * k);
         if (temp >= WHITE_HEAT) Smelting.award(level, worldPosition, HighFurnace.WHITE_HEAT_ADVANCEMENT, 16);
         decorate(level);
+        if (shape != null) {
+            intake(level);
+            melt(level);
+            if (pool.mix(temperature())) dirty = true;
+        }
         setChanged();
         if (level.getGameTime() % 20 == 0) dirty = true; // the temperature for the client's flames
         if (dirty && --syncIn <= 0) {
@@ -342,6 +353,119 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
             syncIn = 10;
             sync();
         }
+    }
+
+    // ---------------------------------------------------------------- melting (phase 3)
+
+    public net.minecraft.core.NonNullList<ItemStack> slots() {
+        return slots;
+    }
+
+    /** How far the item in place {@code i} has melted, 0..1. */
+    public float progress(int i) {
+        HighFurnaceMelting.Melt m = i < slots.size() ? HighFurnaceMelting.of(slots.get(i)) : null;
+        return m == null || i >= progress.length ? 0 : Math.min(1, progress[i] / m.ticks());
+    }
+
+    public MeltPool pool() {
+        return pool;
+    }
+
+    public @Nullable Molten selected() {
+        return selected != null && pool.get(selected) > 0 ? selected : null;
+    }
+
+    /** The layer the tapholes pour: the chosen one while there is any of it, else the bottom layer. */
+    public @Nullable Molten pouring() {
+        Molten s = selected();
+        return s != null ? s : pool.bottom();
+    }
+
+    /** The screen chose a layer (null: back to the bottom layer). */
+    public void select(@Nullable Molten m) {
+        selected = m;
+        dirty = true;
+        setChanged();
+    }
+
+    /** One melting place per inside block; places lost when the furnace shrinks give their items back out of the top. */
+    private void resizeSlots(ServerLevel level, int n) {
+        if (slots.size() == n) return;
+        net.minecraft.core.NonNullList<ItemStack> next = net.minecraft.core.NonNullList.withSize(n, ItemStack.EMPTY);
+        float[] p = new float[n];
+        for (int i = 0; i < slots.size(); i++) {
+            if (i < n) {
+                next.set(i, slots.get(i));
+                p[i] = i < progress.length ? progress[i] : 0;
+            } else if (!slots.get(i).isEmpty()) spit(level, slots.get(i));
+        }
+        slots = next;
+        progress = p;
+    }
+
+    /** Puts one item of {@code stack} in a free place; false if it does not melt here or every place is taken. */
+    public boolean take(ItemStack stack) {
+        if (HighFurnaceMelting.of(stack) == null) return false;
+        for (int i = 0; i < slots.size(); i++)
+            if (slots.get(i).isEmpty()) {
+                slots.set(i, stack.copyWithCount(1));
+                progress[i] = 0;
+                dirty = true;
+                return true;
+            }
+        return false;
+    }
+
+    /** Items thrown in at the open top: what melts takes free places one by one; what never melts is thrown back out with a hiss. */
+    private void intake(ServerLevel level) {
+        BlockPos lo = shape.min(), hi = shape.max();
+        net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(lo.getX(), lo.getY(), lo.getZ(), hi.getX() + 1, hi.getY() + 1.5, hi.getZ() + 1);
+        for (net.minecraft.world.entity.item.ItemEntity e : level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box)) {
+            if (!e.isAlive()) continue;
+            ItemStack stack = e.getItem();
+            if (HighFurnaceMelting.of(stack) == null) {
+                ItemStack out = stack.copy();
+                e.discard();
+                spit(level, out);
+                continue;
+            }
+            int taken = 0;
+            while (taken < stack.getCount() && take(stack)) taken++;
+            if (taken == 0) continue; // every place busy: it lies on the charge until one frees up
+            level.playSound(null, e.blockPosition(), SoundEvents.LAVA_POP, SoundSource.BLOCKS, 0.6F, 0.8F + level.getRandom().nextFloat() * 0.4F);
+            if (taken >= stack.getCount()) e.discard();
+            else e.setItem(stack.copyWithCount(stack.getCount() - taken));
+        }
+    }
+
+    /** Throws an item back out of the top with a hiss. */
+    private void spit(ServerLevel level, ItemStack stack) {
+        if (shape == null) {
+            Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY() + 1, worldPosition.getZ(), stack);
+            return;
+        }
+        Vec3 top = topForTest();
+        net.minecraft.world.entity.item.ItemEntity e = new net.minecraft.world.entity.item.ItemEntity(level, top.x, top.y + 0.6, top.z, stack);
+        double a = level.getRandom().nextDouble() * Math.PI * 2;
+        e.setDeltaMovement(Math.cos(a) * 0.3, 0.45, Math.sin(a) * 0.3);
+        level.addFreshEntity(e);
+        level.playSound(null, BlockPos.containing(top), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.6F, 1.5F);
+    }
+
+    /** Every place melts at once: 40 ticks per 100 mB at the melting point, faster when hotter; it waits while too cold or the pool is full. */
+    private void melt(ServerLevel level) {
+        float t = temperature();
+        for (int i = 0; i < slots.size(); i++) {
+            HighFurnaceMelting.Melt m = HighFurnaceMelting.of(slots.get(i));
+            if (m == null || t < m.molten().melt || pool.room() < m.mb()) continue;
+            progress[i] += KilnBlockEntity.speed(t, m.molten().melt);
+            if (progress[i] < m.ticks()) continue;
+            pool.add(m.molten(), m.mb());
+            slots.set(i, ItemStack.EMPTY);
+            progress[i] = 0;
+            dirty = true;
+        }
+        if (dirty && pool.layers().size() >= 3) Smelting.award(level, worldPosition, HighFurnace.LAYER_CAKE_ADVANCEMENT, 16);
     }
 
     public static int step(float temp) {
@@ -485,6 +609,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         // the fuel in the fireboxes falls out (the melt and the Furnace Salamander come with the pool in phase 6)
         if (level != null) {
+            for (ItemStack it : slots) if (!it.isEmpty()) Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), it.copy());
             int fuel = 0;
             for (Fire f : fires.values()) fuel += f.fuel;
             if (fuel > 0) Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.CHARCOAL, fuel));
@@ -502,6 +627,13 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         temp = input.getFloatOr("temp", Float.NaN);
         dried = input.getIntOr("dried", 0);
         pool.load(input.getIntArray("pool").orElse(new int[0]));
+        int n = input.getIntOr("slot_count", 0);
+        slots = net.minecraft.core.NonNullList.withSize(n, ItemStack.EMPTY);
+        net.minecraft.world.ContainerHelper.loadAllItems(input, slots);
+        int[] pr = input.getIntArray("progress").orElse(new int[0]);
+        progress = new float[n];
+        for (int i = 0; i < n && i < pr.length; i++) progress[i] = pr[i] / 100F;
+        selected = Molten.byId(input.getStringOr("selected", ""));
         pool.setCapacity(input.getIntOr("capacity", 0));
         fires.clear();
         int[] at = input.getIntArray("fire_pos").orElse(new int[0]);
@@ -526,6 +658,12 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         if (!Float.isNaN(temp)) output.putFloat("temp", temp);
         output.putInt("dried", dried);
         output.putIntArray("pool", pool.save());
+        output.putInt("slot_count", slots.size());
+        net.minecraft.world.ContainerHelper.saveAllItems(output, slots);
+        int[] pr = new int[progress.length];
+        for (int i = 0; i < pr.length; i++) pr[i] = Math.round(progress[i] * 100);
+        output.putIntArray("progress", pr);
+        if (selected != null) output.putString("selected", selected.id);
         output.putInt("capacity", pool.capacity());
         int[] at = new int[fires.size() * 3];
         int[] fuel = new int[fires.size()], burn = new int[fires.size()];
@@ -563,7 +701,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new HighFurnaceMenu(containerId, inventory, this, data);
+        return new HighFurnaceMenu(containerId, inventory, this, data, worldPosition);
     }
 
     // ---------------------------------------------------------------- tests

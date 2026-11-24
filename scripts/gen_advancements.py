@@ -1619,6 +1619,9 @@ TABS["steel_age"][1].extend([
      "(machines on one axle share its power)", by_code()),
     ("white_heat", "high_furnace", "minecraft:charcoal", G, "White Heat",
      "Bring a High Furnace to 1450°: enough blast for its size, every Firebox burning Charcoal", by_code()),
+    ("layer_cake", "high_furnace", "bronze_ingot", T, "Layer Cake",
+     "Throw ore and ingots in at a hot High Furnace's open top until three different melts lie in its pool at once. "
+     "Copper and tin mix themselves into bronze, 9 to 1, and ore gives twice what a crucible does", by_code()),
 ])
 
 # stone families (StoneFamilies.java; gen_stone_families.py): one per Stone Age stone

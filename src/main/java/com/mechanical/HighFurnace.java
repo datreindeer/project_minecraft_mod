@@ -61,7 +61,7 @@ public final class HighFurnace {
     public static final Supplier<BlockEntityType<HighFurnaceBlockEntity>> HIGH_FURNACE_ENTITY = Mechanical.BLOCK_ENTITIES.register("high_furnace",
             () -> new BlockEntityType<>(HighFurnaceBlockEntity::new, HIGH_FURNACE_FRONT.get()));
     public static final Supplier<MenuType<HighFurnaceMenu>> HIGH_FURNACE_MENU = Mechanical.MENUS.register("high_furnace",
-            () -> new MenuType<>(HighFurnaceMenu::new, FeatureFlags.VANILLA_SET));
+            () -> net.neoforged.neoforge.common.extensions.IMenuTypeExtension.create(HighFurnaceMenu::client));
 
     public static final DeferredBlock<GreatBellowsBlock> GREAT_BELLOWS = BLOCKS.registerBlock("great_bellows", GreatBellowsBlock::new,
             p -> p.mapColor(MapColor.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion().forceSolidOn().ignitedByLava());
@@ -72,7 +72,8 @@ public final class HighFurnace {
     /** Advancements granted from code (see scripts/gen_advancements.py, the Steel Age tab). */
     public static final Identifier FORMED_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/high_furnace"),
             FULL_BLAST_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/wind_of_the_river"),
-            WHITE_HEAT_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/white_heat");
+            WHITE_HEAT_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/white_heat"),
+            LAYER_CAKE_ADVANCEMENT = Identifier.fromNamespaceAndPath(MODID, "steel_age/layer_cake");
 
     private static Block.Properties wall(Block.Properties p) {
         return p.mapColor(MapColor.QUARTZ).strength(3.5F, 9.0F).sound(SoundType.STONE).requiresCorrectToolForDrops();

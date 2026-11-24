@@ -7,20 +7,43 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 
-/** The High Furnace's screen (client/HighFurnaceScreen): no slots yet (phase 3 adds the melting places), only the synced numbers. */
+/**
+ * The High Furnace's screen (client/HighFurnaceScreen): the synced numbers, and on the client the Front's own block
+ * entity (synced every half second) for the melting places and the pool's layers. A click on a layer chooses what the
+ * tapholes pour ({@link #clickMenuButton}: the layer's {@link Molten} ordinal, {@link #BOTTOM} for the bottom layer).
+ */
 public class HighFurnaceMenu extends AbstractContainerMenu {
+    public static final int BOTTOM = 99;
     private final HighFurnaceBlockEntity furnace;
     private final ContainerData data;
+    private final net.minecraft.core.BlockPos pos;
+    private final net.minecraft.world.level.Level level;
 
-    public HighFurnaceMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, null, new SimpleContainerData(22));
+    static HighFurnaceMenu client(int containerId, Inventory inventory, net.minecraft.network.RegistryFriendlyByteBuf buf) {
+        return new HighFurnaceMenu(containerId, inventory, null, new SimpleContainerData(22), buf.readBlockPos());
     }
 
-    public HighFurnaceMenu(int containerId, Inventory inventory, HighFurnaceBlockEntity furnace, ContainerData data) {
+    public HighFurnaceMenu(int containerId, Inventory inventory, HighFurnaceBlockEntity furnace, ContainerData data, net.minecraft.core.BlockPos pos) {
         super(HighFurnace.HIGH_FURNACE_MENU.get(), containerId);
         this.furnace = furnace;
         this.data = data;
+        this.pos = pos;
+        this.level = inventory.player.level();
         addDataSlots(data);
+    }
+
+    /** The Front's block entity (the client's copy on the client), or null. */
+    public HighFurnaceBlockEntity furnace() {
+        return furnace != null ? furnace : level.getBlockEntity(pos) instanceof HighFurnaceBlockEntity f ? f : null;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (furnace == null) return false;
+        if (id == BOTTOM) furnace.select(null);
+        else if (id >= 0 && id < Molten.values().length) furnace.select(Molten.values()[id]);
+        else return false;
+        return true;
     }
 
     public int temperature() { return data.get(0); }
