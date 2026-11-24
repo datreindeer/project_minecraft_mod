@@ -533,7 +533,8 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
                     }
                     if (st.is(HighFurnace.BANDED_FURNACE_CASING.get())) {
                         BlockState t = st.setValue(HighFurnace.HEAT, heat).setValue(HighFurnaceWallBlock.Casing.FACING, w.out())
-                                .setValue(HighFurnaceWallBlock.Casing.PART, HighFurnaceWallBlock.Casing.part(dy, layers))
+                                .setValue(HighFurnaceWallBlock.Casing.PART, dy == 1 && !level.getBlockState(at.pos().below()).is(HighFurnace.BANDED_FURNACE_CASING.get())
+                                        ? HighFurnaceWallBlock.Casing.Part.HOT_ARCH : HighFurnaceWallBlock.Casing.part(dy, layers))
                                 .setValue(HighFurnaceWallBlock.Casing.END_CW, !ring.contains(w.pos().relative(w.out().getClockWise())))
                                 .setValue(HighFurnaceWallBlock.Casing.END_CCW, !ring.contains(w.pos().relative(w.out().getCounterClockWise())));
                         if (t != st) level.setBlock(at.pos(), t, Block.UPDATE_CLIENTS);

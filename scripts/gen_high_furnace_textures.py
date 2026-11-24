@@ -2357,3 +2357,31 @@ def batch2():
 batch1()
 batch2()
 print(f"high furnace textures ok ({len(WRITTEN)} files)")
+
+
+# ---- sparse hearth glow (review: the full joint grid read as magma): a few joints of the hot course, mostly the lower
+# ones right over an arch, dull red at heat 1-2 and orange-red at 3; derived pixel-exact from the full glows above
+def casing_glow_sparse():
+    import random as _r
+    from PIL import Image as _I
+    src = {1: "banded_furnace_casing_glow_1", 2: "banded_furnace_casing_glow_1", 3: "banded_furnace_casing_glow_2"}
+    dim = {1: 0.55, 2: 0.8, 3: 0.9}
+    for h, name in src.items():
+        im = _I.open(BLOCK / f"{name}.png").convert("RGBA")
+        w, hgt = im.size
+        rnd = _r.Random(4100 + h)
+        keep = {(x, y) for x in range(16) for y in range(16) if (y >= 12 and rnd.random() < 0.7) or (y >= 8 and rnd.random() < 0.18)}
+        out = _I.new("RGBA", (w, hgt), (0, 0, 0, 0))
+        px, po = im.load(), out.load()
+        for y in range(hgt):
+            for x in range(w):
+                r, g, b, a = px[x, y]
+                if a and (x, y % 16) in keep:
+                    po[x, y] = (int(r * dim[h]), int(g * dim[h] * 0.8), int(b * dim[h] * 0.6), int(a * (0.75 if h < 3 else 0.9)))
+        out.save(BLOCK / f"casing_glow_sparse_{h}.png")
+        meta = BLOCK / f"{name}.png.mcmeta"
+        if meta.exists():
+            (BLOCK / f"casing_glow_sparse_{h}.png.mcmeta").write_text(meta.read_text())
+
+
+casing_glow_sparse()

@@ -1,63 +1,123 @@
 {
   "variants": {
-    "facing=north,heat=0": {
+    "facing=north,heat=0,open=false": {
       "model": "mechanical:block/taphole"
     },
-    "facing=north,heat=1": {
+    "facing=north,heat=0,open=true": {
+      "model": "mechanical:block/taphole_open"
+    },
+    "facing=north,heat=1,open=false": {
       "model": "mechanical:block/taphole_heat_1"
     },
-    "facing=north,heat=2": {
+    "facing=north,heat=1,open=true": {
+      "model": "mechanical:block/taphole_open_heat_1"
+    },
+    "facing=north,heat=2,open=false": {
       "model": "mechanical:block/taphole_heat_2"
     },
-    "facing=north,heat=3": {
+    "facing=north,heat=2,open=true": {
+      "model": "mechanical:block/taphole_open_heat_2"
+    },
+    "facing=north,heat=3,open=false": {
       "model": "mechanical:block/taphole_heat_3"
     },
-    "facing=east,heat=0": {
+    "facing=north,heat=3,open=true": {
+      "model": "mechanical:block/taphole_open_heat_3"
+    },
+    "facing=east,heat=0,open=false": {
       "model": "mechanical:block/taphole",
       "y": 90
     },
-    "facing=east,heat=1": {
+    "facing=east,heat=0,open=true": {
+      "model": "mechanical:block/taphole_open",
+      "y": 90
+    },
+    "facing=east,heat=1,open=false": {
       "model": "mechanical:block/taphole_heat_1",
       "y": 90
     },
-    "facing=east,heat=2": {
+    "facing=east,heat=1,open=true": {
+      "model": "mechanical:block/taphole_open_heat_1",
+      "y": 90
+    },
+    "facing=east,heat=2,open=false": {
       "model": "mechanical:block/taphole_heat_2",
       "y": 90
     },
-    "facing=east,heat=3": {
+    "facing=east,heat=2,open=true": {
+      "model": "mechanical:block/taphole_open_heat_2",
+      "y": 90
+    },
+    "facing=east,heat=3,open=false": {
       "model": "mechanical:block/taphole_heat_3",
       "y": 90
     },
-    "facing=south,heat=0": {
+    "facing=east,heat=3,open=true": {
+      "model": "mechanical:block/taphole_open_heat_3",
+      "y": 90
+    },
+    "facing=south,heat=0,open=false": {
       "model": "mechanical:block/taphole",
       "y": 180
     },
-    "facing=south,heat=1": {
+    "facing=south,heat=0,open=true": {
+      "model": "mechanical:block/taphole_open",
+      "y": 180
+    },
+    "facing=south,heat=1,open=false": {
       "model": "mechanical:block/taphole_heat_1",
       "y": 180
     },
-    "facing=south,heat=2": {
+    "facing=south,heat=1,open=true": {
+      "model": "mechanical:block/taphole_open_heat_1",
+      "y": 180
+    },
+    "facing=south,heat=2,open=false": {
       "model": "mechanical:block/taphole_heat_2",
       "y": 180
     },
-    "facing=south,heat=3": {
+    "facing=south,heat=2,open=true": {
+      "model": "mechanical:block/taphole_open_heat_2",
+      "y": 180
+    },
+    "facing=south,heat=3,open=false": {
       "model": "mechanical:block/taphole_heat_3",
       "y": 180
     },
-    "facing=west,heat=0": {
+    "facing=south,heat=3,open=true": {
+      "model": "mechanical:block/taphole_open_heat_3",
+      "y": 180
+    },
+    "facing=west,heat=0,open=false": {
       "model": "mechanical:block/taphole",
       "y": 270
     },
-    "facing=west,heat=1": {
+    "facing=west,heat=0,open=true": {
+      "model": "mechanical:block/taphole_open",
+      "y": 270
+    },
+    "facing=west,heat=1,open=false": {
       "model": "mechanical:block/taphole_heat_1",
       "y": 270
     },
-    "facing=west,heat=2": {
+    "facing=west,heat=1,open=true": {
+      "model": "mechanical:block/taphole_open_heat_1",
+      "y": 270
+    },
+    "facing=west,heat=2,open=false": {
       "model": "mechanical:block/taphole_heat_2",
       "y": 270
     },
-    "facing=west,heat=3": {
+    "facing=west,heat=2,open=true": {
+      "model": "mechanical:block/taphole_open_heat_2",
+      "y": 270
+    },
+    "facing=west,heat=3,open=false": {
       "model": "mechanical:block/taphole_heat_3",
+      "y": 270
+    },
+    "facing=west,heat=3,open=true": {
+      "model": "mechanical:block/taphole_open_heat_3",
       "y": 270
     }
   }

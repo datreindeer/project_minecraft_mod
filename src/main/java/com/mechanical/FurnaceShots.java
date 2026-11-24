@@ -199,6 +199,7 @@ public final class FurnaceShots {
     }
 
     private static void build() {
+        Minecraft.getInstance().getSingleplayerServer().getPlayerList().getPlayers().get(0).teleportTo(level(), -30.5, 80, -30.5, java.util.Set.of(), 0, 0, true);
         for (String c : List.of("time set 5000", "gamerule advance_time false", "gamerule advance_weather false", "weather clear",
                 "gamerule spawn_mobs false", "difficulty peaceful"))
             cmd(c);

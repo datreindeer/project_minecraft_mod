@@ -25,17 +25,17 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.jspecify.annotations.Nullable;
 
 /**
- * The Great Bellows' moving parts ({@link GreatBellowsBlockEntity}): the shaft running across the block in line with the
- * incoming axle, turning with it, and its cam pressing the top board down once a turn; between the strokes the board
- * rises again on its hinge at the bellows' mouth and the folded leather opens under it. All from the rotor's angle, so
- * it works in step with the wheel. Part models: scripts/gen_high_furnace.py (hinges and axles at their model centre).
+ * The Great Bellows' moving parts ({@link GreatBellowsBlockEntity}): the shaft running through the trestle in line with
+ * the incoming axle, its crank, the connecting rod from the crank pin up through the bottom board, and the top board it
+ * lifts and lets down on its hinge at the nozzle end, with the leather folds opening between the boards. All from the
+ * rotor's angle, so it works in step with the wheel. Part models: scripts/gen_high_furnace.py (pivots at their centre).
  */
 public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlockEntity, GreatBellowsRenderer.State> {
-    /** The board's widest opening, degrees (it just clears the shaft); leather folds between the boards. */
-    private static final float OPEN = 12.5F, PLEATS = 5;
+    /** Crank radius and rod length (px); the top board's hinge; where the rod meets it (z); leather folds. */
+    private static final float CRANK = 1.3F, ROD = 4.4F, HINGE_Y = 10.2F, HINGE_Z = 1.5F, ROD_Z = 8, PLEATS = 5;
 
     public static class State extends BlockEntityRenderState {
-        ItemStackRenderState lid, pleat, pleatIn, shaft;
+        ItemStackRenderState lid, pleat, pleatIn, shaft, rod;
         float yaw, axle;
     }
 
@@ -61,6 +61,7 @@ public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlo
             state.pleat = WaterPowerRenderers.part(items, "great_bellows_pleat", level, seed);
             state.pleatIn = WaterPowerRenderers.part(items, "great_bellows_pleat_in", level, seed);
             state.shaft = WaterPowerRenderers.part(items, "great_bellows_shaft", level, seed);
+            state.rod = WaterPowerRenderers.part(items, "great_bellows_rod", level, seed);
         }
         state.yaw = -bellows.facing().toYRot() + 180; // the model's nozzle points north
         state.axle = bellows.angle(WaterPowerRenderers.time(level, partialTicks));
@@ -74,24 +75,32 @@ public class GreatBellowsRenderer implements BlockEntityRenderer<GreatBellowsBlo
     @Override
     public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
         int light = state.lightCoords, overlay = OverlayTexture.NO_OVERLAY;
-        float open = OPEN * (0.5F + 0.5F * Mth.cos(state.axle * Mth.DEG_TO_RAD)); // the cam down: pressed shut
+        float th = state.axle * Mth.DEG_TO_RAD;
+        float pinY = 8 + CRANK * Mth.cos(th), pinZ = 8 + CRANK * Mth.sin(th);
+        // the rod pushes the board's underside at ROD_Z up to the rod's top
+        float lift = pinY + ROD - HINGE_Y;
+        float open = (float) Math.toDegrees(Math.atan2(Math.max(0, lift), ROD_Z - HINGE_Z));
         pose.pushPose();
         pose.translate(0.5F, 0.5F, 0.5F);
         pose.rotateDegrees(Axis.YP, state.yaw);
-        pose.pushPose();
+        pose.pushPose(); // the shaft and crank (the part's crank arm points +y at angle 0)
         pose.rotateDegrees(Axis.YP, 90);
-        pose.rotateDegrees(Axis.ZP, state.axle);
+        pose.rotateDegrees(Axis.ZP, -state.axle);
         state.shaft.submit(pose, collector, light, overlay, 0);
+        pose.popPose();
+        pose.pushPose(); // the connecting rod from the pin up
+        at(pose, 8, pinY, pinZ);
+        state.rod.submit(pose, collector, light, overlay, 0);
         pose.popPose();
         for (int k = 1; k <= PLEATS; k++) {
             pose.pushPose();
-            at(pose, 2, 2.5F + k * 0.2F, 2.5F);
+            at(pose, 2, HINGE_Y - 0.4F + k * 0.02F, HINGE_Z);
             pose.rotateDegrees(Axis.XP, -open * k / (PLEATS + 1));
             (k % 2 == 1 ? state.pleat : state.pleatIn).submit(pose, collector, light, overlay, 0);
             pose.popPose();
         }
         pose.pushPose();
-        at(pose, 2, 3.6F, 2.5F);
+        at(pose, 2, HINGE_Y, HINGE_Z);
         pose.rotateDegrees(Axis.XP, -open);
         state.lid.submit(pose, collector, light, overlay, 0);
         pose.popPose();

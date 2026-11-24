@@ -131,6 +131,7 @@ CORBEL = box([0, 11, -1.5], [16, 16, 1], {"north": "#rim", "up": "#rim", "down":
 model("banded_furnace_casing", [cube(CASE_FACES)], CT)
 model("casing_base", [walls("#base"), PLINTH], {**CT, "end": B + "furnace_base_top"})
 model("casing_hot", [walls("#hot")], CT)
+model("casing_hot_arch", [walls("#hot")], CT)
 model("casing_plain", [walls("#side")], CT)
 model("casing_strap", [walls("#side"), strap(0)], CT)
 model("casing_upper", [walls("#upper", 1), sill()], CT)
@@ -138,12 +139,9 @@ model("casing_upper_strap", [walls("#upper", 1), sill(), strap(1)], CT)
 TOP_ELS = [walls("#upper", 1), sill(), CORBEL]
 model("casing_top", TOP_ELS, CT)
 for h in (1, 2, 3):
-    # the joints glow one step behind the heat and dimmer (a full white-hot grid shouts): red at heat 2, orange at 3
-    if h > 1:
-        model(f"casing_hot_heat_{h}", [walls("#hot")] + glow_planes(["north"], "#glow", LIGHT[h - 1] - 3),
-              {**CT, "glow": B + f"banded_furnace_casing_glow_{h - 1}"})
-    else:
-        model(f"casing_hot_heat_{h}", [walls("#hot")], CT)
+    # the hot course: only the blocks over an arch glow, a few joints dull red (heat 2) to orange-red (heat 3)
+    model(f"casing_hot_heat_{h}", [walls("#hot")], CT)
+    model(f"casing_hot_arch_heat_{h}", [walls("#hot")] + (glow_planes(["north"], "#glow", {1: 3, 2: 5, 3: 8}[h])), {**CT, "glow": B + f"casing_glow_sparse_{h}"})
     # the throat: the rim's inner face (toward the inside, +z) glows, and its top
     model(f"casing_top_heat_{h}", TOP_ELS + [
         {"from": [0, 10, 16.01], "to": [16, 16, 16.01], "light_emission": LIGHT[h], "shade": False,
@@ -173,8 +171,8 @@ for kind, z, top, plate in (("full", 0, False, False), ("full_plate", 0, False, 
     for ccw in (True, False):
         model(f"casing_end_{kind}_{'ccw' if ccw else 'cw'}", end_strap(z, ccw, top, plate), CT)
 
-PARTS = ["none", "base", "hot", "plain", "strap", "upper", "upper_strap", "top"]
-END_KIND = {"hot": "full", "plain": "full", "strap": "full_plate", "upper": "inset", "upper_strap": "inset_plate", "top": "top"}
+PARTS = ["none", "base", "hot", "hot_arch", "plain", "strap", "upper", "upper_strap", "top"]
+END_KIND = {"hot": "full", "hot_arch": "full", "plain": "full", "strap": "full_plate", "upper": "inset", "upper_strap": "inset_plate", "top": "top"}
 mp = []
 for f, y in ROT.items():
     rot = {"y": y} if y else {}
@@ -183,7 +181,7 @@ for f, y in ROT.items():
             if p == "none":
                 mdl = "banded_furnace_casing"
             else:
-                mdl = f"casing_{p}" + (f"_heat_{h}" if h and p in ("hot", "top") else "")
+                mdl = f"casing_{p}" + (f"_heat_{h}" if h and p in ("hot", "hot_arch", "top") else "")
             mp.append({"when": {"part": p, "facing": f, "heat": str(h)}, "apply": {"model": B + mdl, **rot}})
     for p, kind in END_KIND.items():
         for side in ("ccw", "cw"):
@@ -200,101 +198,126 @@ AT = {"particle": B + "furnace_base", "base": B + "furnace_base", "base_top": B 
 
 
 def arch_body(front_tex):
-    els = [box([0, 0, 3], [16, 16, 16], {"north": front_tex, "south": "#base", "east": "#base", "west": "#base", "up": "#base_top", "down": "#base_top"})]
+    """The stone around a hearth opening: piers x 0..2 and 14..16, a stepped round arch over x 2..14 rising to 14, 4 px deep;
+    the door plane at z 4; the plinth under the piers; an iron band round the arch."""
+    els = [box([0, 0, 4], [16, 16, 16], {"north": front_tex, "south": "#base", "east": "#base", "west": "#base", "up": "#base_top", "down": "#base_top"})]
     for f in ("south", "east", "west", "up", "down"):
         els[0]["faces"][f]["cullface"] = f
-    els += [box([0, 0, 0], [3, 16, 3], {"north": "#base", "east": "#arch", "west": "#base", "up": "#base_top", "down": "#base"}),
-            box([13, 0, 0], [16, 16, 3], {"north": "#base", "west": "#arch", "east": "#base", "up": "#base_top", "down": "#base"}),
-            box([3, 13, 0], [13, 16, 3], {"north": "#arch", "down": "#arch", "up": "#base_top"}),           # the arch ring's crown
-            box([3, 11, 0], [5, 13, 3], {"north": "#arch", "down": "#arch", "east": "#arch"}),             # its stepped haunches
-            box([11, 11, 0], [13, 13, 3], {"north": "#arch", "down": "#arch", "west": "#arch"}),
-            box([5, 12, 0], [6.5, 13, 3], {"north": "#arch", "down": "#arch", "east": "#arch"}),
-            box([9.5, 12, 0], [11, 13, 3], {"north": "#arch", "down": "#arch", "west": "#arch"}),
-            box([3, 0, 0], [13, 0.75, 3], {"north": "#base", "up": "#base_top"}),                         # threshold
-            box([0, 0, -2], [3, 4, 0], {"north": "#base", "up": "#base_top", "east": "#base", "west": "#base"}),
-            box([13, 0, -2], [16, 4, 0], {"north": "#base", "up": "#base_top", "east": "#base", "west": "#base"}),
-            box([2.6, 11.5, -0.4], [13.4, 12.2, 0], {"north": "#strap", "down": "#strap", "up": "#strap"})]  # an iron arch band
+    els += [box([0, 0, 0], [2, 16, 4], {"north": "#base", "east": "#arch", "west": "#base", "up": "#base_top", "down": "#base"}),
+            box([14, 0, 0], [16, 16, 4], {"north": "#base", "west": "#arch", "east": "#base", "up": "#base_top", "down": "#base"}),
+            box([2, 14, 0], [14, 16, 4], {"north": "#arch", "down": "#arch", "up": "#base_top"}),            # the crown
+            box([2, 11, 0], [3.5, 14, 4], {"north": "#arch", "down": "#arch", "east": "#arch"}),             # haunches, stepped
+            box([12.5, 11, 0], [14, 14, 4], {"north": "#arch", "down": "#arch", "west": "#arch"}),
+            box([3.5, 12.5, 0], [5, 14, 4], {"north": "#arch", "down": "#arch", "east": "#arch"}),
+            box([11, 12.5, 0], [12.5, 14, 4], {"north": "#arch", "down": "#arch", "west": "#arch"}),
+            box([5, 13.4, 0], [6.5, 14, 4], {"north": "#arch", "down": "#arch", "east": "#arch"}),
+            box([9.5, 13.4, 0], [11, 14, 4], {"north": "#arch", "down": "#arch", "west": "#arch"}),
+            box([2, 0, 0], [14, 0.75, 4], {"north": "#base", "up": "#base_top"}),                         # threshold
+            box([0, 0, -2], [2, 4, 0], {"north": "#base", "up": "#base_top", "east": "#base", "west": "#base"}),
+            box([14, 0, -2], [16, 4, 0], {"north": "#base", "up": "#base_top", "east": "#base", "west": "#base"}),
+            box([1.4, 14.3, -0.4], [14.6, 15.1, 0], {"north": "#strap", "down": "#strap", "up": "#strap"}),  # iron band over the arch
+            box([1.4, 0, -0.4], [2.2, 14.3, 0], {"north": "#strap", "east": "#strap", "west": "#strap"}),
+            box([13.8, 0, -0.4], [14.6, 14.3, 0], {"north": "#strap", "east": "#strap", "west": "#strap"})]
     return els
 
 
 def arch_glow(light):
     """The arch's inner faces glowing (joints and hot edge): inner sides of the piers and the underside of the ring."""
     g = {"light_emission": light, "shade": False}
-    return [{"from": [3.01, 0.75, 0], "to": [3.01, 11, 3], **g, "faces": {"east": {"uv": [13, 5, 16, 15], "texture": "#arch_glow"}}},
-            {"from": [12.99, 0.75, 0], "to": [12.99, 11, 3], **g, "faces": {"west": {"uv": [0, 5, 3, 15], "texture": "#arch_glow"}}},
-            {"from": [6.5, 12.99, 0], "to": [9.5, 12.99, 3], **g, "faces": {"down": {"uv": [6, 0, 10, 3], "texture": "#arch_glow"}}},
-            {"from": [3, 10.99, 0], "to": [5, 10.99, 3], **g, "faces": {"down": {"uv": [3, 0, 5, 3], "texture": "#arch_glow"}}},
-            {"from": [11, 10.99, 0], "to": [13, 10.99, 3], **g, "faces": {"down": {"uv": [11, 0, 13, 3], "texture": "#arch_glow"}}}]
+    return [{"from": [2.01, 0.75, 0], "to": [2.01, 11, 4], **g, "faces": {"east": {"uv": [12, 5, 16, 15], "texture": "#arch_glow"}}},
+            {"from": [13.99, 0.75, 0], "to": [13.99, 11, 4], **g, "faces": {"west": {"uv": [0, 5, 4, 15], "texture": "#arch_glow"}}},
+            {"from": [6.5, 13.99, 0], "to": [9.5, 13.99, 4], **g, "faces": {"down": {"uv": [6, 0, 10, 4], "texture": "#arch_glow"}}},
+            {"from": [2, 10.99, 0], "to": [3.5, 10.99, 4], **g, "faces": {"down": {"uv": [2, 0, 4, 4], "texture": "#arch_glow"}}},
+            {"from": [12.5, 10.99, 0], "to": [14, 10.99, 4], **g, "faces": {"down": {"uv": [12, 0, 14, 4], "texture": "#arch_glow"}}}]
 
 
 def door_glow(tex, light):
-    return {"from": [0, 0, 2.98], "to": [16, 16, 2.98], "light_emission": light, "shade": False,
+    return {"from": [0, 0, 3.98], "to": [16, 16, 3.98], "light_emission": light, "shade": False,
             "faces": {"north": {"uv": [0, 0, 16, 16], "texture": tex}}}
 
 
-def arched_block(name, front, front_glow, extra=(), hot_extra=lambda h: []):
+def arched_block(name, front, front_glow, extra=(), hot_extra=lambda h: [], open_front=None, open_glow=None, has_open=True):
+    """Models and blockstates of an arched hearth block; with open_front also open variants (the taphole while pouring)."""
     tex = {**AT, "front": B + front}
-    model(name, arch_body("#front") + list(extra), tex)
-    for h in (1, 2, 3):
-        t = dict(tex)
-        els = arch_body("#front") + list(extra) + arch_glow(LIGHT[h])
-        if front_glow:
-            t["fglow"] = B + (f"{front_glow}_{h}" if front_glow.endswith("glow") and front_glow.startswith("firebox") else front_glow)
-            els.append(door_glow("#fglow", LIGHT[h]))
-        model(f"{name}_heat_{h}", els + hot_extra(h), t)
-    w(A / f"blockstates/{name}.json", {"variants": {
-        f"facing={f},heat={h}": {"model": B + name + (f"_heat_{h}" if h else ""), **({"y": y} if y else {})}
-        for f, y in ROT.items() for h in range(4)}})
+    opens = (False, True) if open_front else (False,)
+    for op in opens:
+        t0 = {**tex, "front": B + open_front} if op else dict(tex)
+        suffix = "_open" if op else ""
+        base_els = arch_body("#front") + list(extra)
+        if op:
+            t0["oglow"] = B + open_glow
+            base_els = base_els + [door_glow("#oglow", 13)]
+        model(name + suffix, base_els, t0)
+        for h in (1, 2, 3):
+            t = dict(t0)
+            els = base_els + arch_glow(LIGHT[h])
+            if front_glow:
+                t["fglow"] = B + (f"{front_glow}_{h}" if front_glow.endswith("glow") and front_glow.startswith("firebox") else front_glow)
+                els.append(door_glow("#fglow", LIGHT[h]))
+            model(f"{name}{suffix}_heat_{h}", els + hot_extra(h), t)
+    if open_front:
+        variants = {f"facing={f},heat={h},open={str(op).lower()}": {"model": B + name + ("_open" if op else "") + (f"_heat_{h}" if h else ""), **({"y": y} if y else {})}
+                    for f, y in ROT.items() for h in range(4) for op in (False, True)}
+    elif has_open:
+        variants = {f"facing={f},heat={h},open={o}": {"model": B + name + (f"_heat_{h}" if h else ""), **({"y": y} if y else {})}
+                    for f, y in ROT.items() for h in range(4) for o in ("false", "true")}
+    else:
+        variants = {f"facing={f},heat={h}": {"model": B + name + (f"_heat_{h}" if h else ""), **({"y": y} if y else {})}
+                    for f, y in ROT.items() for h in range(4)}
+    w(A / f"blockstates/{name}.json", {"variants": variants})
     item_def(name, B + name)
     loot(name)
 
 
 arched_block("firebox", "firebox_front", "firebox_front_glow")
-arched_block("taphole", "taphole_front", None)
+arched_block("taphole", "taphole_front", None, open_front="taphole_front_open", open_glow="taphole_glow")
 # the Front: the hatch cover hangs open on its hinge in the recess, the handle bar stands off the door
 FRONT_EXTRA = [
-    {"from": [11, 7, 2.4], "to": [17, 13, 2.9], "rotation": {"angle": -45, "axis": "y", "origin": [11, 10, 2.65]},
+    {"from": [11, 7, 3.4], "to": [17, 13, 3.9], "rotation": {"angle": -45, "axis": "y", "origin": [11, 10, 3.65]},
      "faces": {"north": {"uv": [5, 3, 11, 9], "texture": "#hatch"}, "south": {"uv": [5, 3, 11, 9], "texture": "#hatch"},
                "east": {"uv": [5, 3, 6, 9], "texture": "#hatch"}, "west": {"uv": [10, 3, 11, 9], "texture": "#hatch"},
                "up": {"uv": [5, 3, 11, 4], "texture": "#hatch"}, "down": {"uv": [5, 8, 11, 9], "texture": "#hatch"}}},
-    box([10.6, 9, 2.1], [11.4, 11, 3], "#strap"),                                             # hinge knuckle
-    box([3.6, 4, 1.4], [4.6, 10, 2.2], "#strap"), box([3.6, 4.5, 2.2], [4.6, 5.5, 3], "#strap"), box([3.6, 8.5, 2.2], [4.6, 9.5, 3], "#strap")]
+    box([10.6, 9, 3.1], [11.4, 11, 4], "#strap"),                                             # hinge knuckle
+    box([3.6, 4, 2.4], [4.6, 10, 3.2], "#strap"), box([3.6, 4.5, 3.2], [4.6, 5.5, 4], "#strap"), box([3.6, 8.5, 3.2], [4.6, 9.5, 4], "#strap")]
 AT_FRONT = {"hatch": B + "high_furnace_hatch", "hglow": B + "high_furnace_front_glow"}
 AT.update(AT_FRONT)
-arched_block("high_furnace_front", "high_furnace_front", None, FRONT_EXTRA, lambda h: [
-    {"from": [5, 7, 2.98], "to": [11, 13, 2.98], "light_emission": LIGHT[h], "shade": False,
+arched_block("high_furnace_front", "high_furnace_front", None, FRONT_EXTRA, has_open=False, hot_extra=lambda h: [
+    {"from": [5, 7, 3.98], "to": [11, 13, 3.98], "light_emission": LIGHT[h], "shade": False,
      "faces": {"north": {"uv": [5, 3, 11, 9], "texture": "#hglow"}}}])
 
-# ---------------- Great Bellows (nozzle to the north): one big wedge bellows on a plank bed. Static: the bed, the bottom
-# board, two posts carrying the shaft across at the axle's height (y 8, z 8), and the bronze blowpipe rising from the
-# bellows' mouth and bending forward into the Firebox's tuyere (it reaches 3.5 px into the firebox's arched recess).
-# Moving (client/GreatBellowsRenderer): the top board hinged at the mouth, the folded leather, the shaft with its cam
-# that presses the board down once a turn.
+# ---------------- Great Bellows (nozzle to the north): a big wedge bellows riding on a timber trestle at the height of the
+# Firebox's tuyere, its bronze nozzle going straight into it. The axle from the wheel runs through the trestle's side rails
+# at the block's middle (y 8); a crank on it works a connecting rod up through a slot in the bottom board to the top
+# board, which is hinged at the nozzle end: each turn the bellows opens and is pressed shut. Static: trestle, rails,
+# bottom board, nozzle. Moving (client/GreatBellowsRenderer): the shaft with its crank, the rod, the top board and the
+# leather folds between the boards.
 BT = {"particle": B + "great_bellows_board", "board": B + "great_bellows_board", "leather": B + "great_bellows_leather",
       "frame": B + "great_bellows_frame", "end": B + "great_bellows_frame_end", "bronze": B + "great_bellows_nozzle", "cam": B + "great_bellows_cam"}
 POST = {"north": "#frame", "south": "#frame", "east": "#frame", "west": "#frame", "up": "#end", "down": "#end"}
-static = [
-    box([1, 0, 1], [15, 1.5, 16], "#board"),                                                     # the plank bed
-    box([2, 1.5, 2.5], [14, 2.5, 17], "#board"),                                                 # the bottom board (its tail over the bed's end)
-    box([0, 0, 6], [2, 10.5, 10], POST), box([14, 0, 6], [16, 10.5, 10], POST),                   # posts with the shaft bearings
-    box([-0.2, 6, 5.6], [2.2, 10, 6.4], "#cam"), box([13.8, 6, 5.6], [16.2, 10, 6.4], "#cam"),    # iron bearing straps
-    box([5.5, 1.5, 0.8], [10.5, 4.5, 2.8], "#bronze"),                                           # the bellows' mouth
-    box([6.5, 4.5, 0.6], [9.5, 13.5, 3], "#bronze"),                                             # the blowpipe rising
-    box([6.5, 11, -3.5], [9.5, 14, 0.6], "#bronze"),                                             # and bending into the tuyere
-    box([6, 10.6, -3.9], [10, 14.4, -3.5], "#cam"),                                               # its flange
-]
+RAIL = {"north": "#end", "south": "#end", "east": "#frame", "west": "#frame", "up": "#frame", "down": "#frame"}
+static = [box([1, 0, 1], [3, 9, 3], POST), box([13, 0, 1], [15, 9, 3], POST),            # trestle legs
+          box([1, 0, 13], [3, 9, 15], POST), box([13, 0, 13], [15, 9, 15], POST),
+          box([0.5, 6.5, 0.5], [3, 9, 15.5], RAIL), box([13, 6.5, 0.5], [15.5, 9, 15.5], RAIL),  # side rails carrying the axle
+          box([3, 1, 1.5], [13, 2.5, 2.5], "#frame"), box([3, 1, 13.5], [13, 2.5, 14.5], "#frame"),  # stretchers
+          box([0.2, 6, 6.2], [3.2, 10, 6.8], "#cam"), box([12.8, 6, 6.2], [15.8, 10, 6.8], "#cam"),  # bearing straps
+          box([2, 9, 1.5], [14, 10, 15.5], "#board"),                                     # the bottom board
+          box([5.5, 9.2, 0.2], [10.5, 12.8, 1.6], "#bronze"),                             # the bellows' mouth
+          box([6.5, 10, -4.5], [9.5, 13, 0.2], "#bronze"),                                # the nozzle into the tuyere
+          box([6, 9.6, -4.9], [10, 13.4, -4.5], "#cam")]                                   # its flange
 model("great_bellows", static, BT)
 w(A / "blockstates/great_bellows.json", {"variants": {
     f"facing={f}": {"model": B + "great_bellows", **({"y": y} if y else {})} for f, y in ROT.items()}})
 loot("great_bellows")
-# part models, their hinge / axle at the model's centre (8, 8, 8)
-model("great_bellows_lid", [box([8, 8, 8], [20, 9, 22.5], "#board"), box([8.5, 9, 15.5], [19.5, 9.6, 17], "#cam"),
-                            box([8.5, 9, 9], [19.5, 9.6, 10.5], "#cam")], BT)               # the top board and its iron bands
-model("great_bellows_pleat", [box([7.4, 8, 8.2], [20.6, 8.9, 22.2], "#leather")], BT)       # a fold standing out past the boards
-model("great_bellows_pleat_in", [box([8.6, 8, 8.6], [19.4, 8.9, 21.8], "#leather")], BT)    # a fold tucked in
-model("great_bellows_shaft", [box([6.6, 6.6, 0], [9.4, 9.4, 16], {"north": "#end", "south": "#end", "east": "#frame", "west": "#frame", "up": "#frame", "down": "#frame"}),
-                              box([6.1, 6.1, 5.5], [9.9, 12.4, 10.5], "#cam")], BT)          # the shaft and its cam
-for p in ("great_bellows_lid", "great_bellows_pleat", "great_bellows_pleat_in", "great_bellows_shaft"):
+# part models, their hinge / axle / pin at the model's centre (8, 8, 8)
+model("great_bellows_lid", [box([8, 8, 8], [20, 9, 22], "#board"), box([8.4, 9, 17.5], [19.6, 9.6, 18.7], "#cam"),
+                            box([8.4, 9, 10.5], [19.6, 9.6, 11.7], "#cam"), box([12.5, 9.6, 19.5], [15.5, 10.4, 21.5], "#frame")], BT)
+model("great_bellows_pleat", [box([7.2, 8, 8.2], [20.8, 9, 21.8], "#leather")], BT)         # a fold standing out past the boards
+model("great_bellows_pleat_in", [box([8.3, 8, 8.4], [19.7, 9, 21.3], "#leather")], BT)      # a fold tucked in
+model("great_bellows_shaft", [box([6.7, 6.7, 0], [9.3, 9.3, 16], {"north": "#end", "south": "#end", "east": "#frame", "west": "#frame", "up": "#frame", "down": "#frame"}),
+                              box([5.8, 5.8, 7], [10.2, 10.2, 9], "#cam"),                    # the crank disc
+                              box([7.2, 8, 7.5], [8.8, 10.6, 8.5], "#cam")], BT)              # its arm out to the pin
+model("great_bellows_rod", [box([7.4, 8, 7.4], [8.6, 12.4, 8.6], "#cam"), box([7, 7.4, 7], [9, 8.6, 9], "#cam")], BT)
+for p in ("great_bellows_lid", "great_bellows_pleat", "great_bellows_pleat_in", "great_bellows_shaft", "great_bellows_rod"):
     item_def(p, B + p)
 item_def("great_bellows", B + "great_bellows")
 
@@ -324,16 +347,16 @@ w(D / f"mechanical/loot_table/blocks/clay_{s}_mold.json", {"type": "minecraft:bl
 # with raised sides, its lip at z 6.5 over the middle of the block below; a lever on the right, up when shut, thrown
 # forward when open; pouring, the metal in the trough glows (the falling stream is client/PouringSpoutRenderer).
 ST = {"particle": B + "pouring_spout_steel", "steel": B + "pouring_spout_steel", "lever": B + "pouring_spout_lever", "glow": B + "taphole_glow"}
-SPOUT = [box([3, 3, 15], [13, 11, 16], "#steel"),                                    # flange bolted to the taphole frame
-         box([5, 4.5, 6.5], [11, 6, 15], "#steel"),                                  # trough floor
-         box([4, 4.5, 6.5], [5, 8.5, 15], "#steel"), box([11, 4.5, 6.5], [12, 8.5, 15], "#steel"),   # sides
+SPOUT = [box([3, 3, 19], [13, 11, 20], "#steel"),                                    # flange bolted to the taphole frame in its recess
+         box([5, 4.5, 6.5], [11, 6, 19], "#steel"),                                  # trough floor
+         box([4, 4.5, 6.5], [5, 8.5, 19], "#steel"), box([11, 4.5, 6.5], [12, 8.5, 19], "#steel"),   # sides
          box([5, 4, 6], [11, 5, 7], "#steel"),                                        # the lip, turned down
          box([4.5, 3.5, 9], [11.5, 4.5, 10.5], "#steel"), box([4.5, 3.5, 12.5], [11.5, 4.5, 14], "#steel"),  # straps under it
          box([12, 6, 11.5], [13, 7, 12.5], "#lever")]                                 # lever pivot
 LEVER_SHUT = [box([12.2, 6.5, 11.6], [12.9, 13, 12.4], "#lever")]
 LEVER_OPEN = [{"from": [12.2, 6.5, 11.6], "to": [12.9, 13, 12.4], "rotation": {"angle": -45, "axis": "x", "origin": [12.5, 6.5, 12]},
                "faces": {f: {"uv": [7, 2, 8, 9], "texture": "#lever"} for f in FACES}}]
-GLOW = [{"from": [5, 6.05, 6.5], "to": [11, 6.05, 15], "light_emission": 15, "shade": False,
+GLOW = [{"from": [5, 6.05, 6.5], "to": [11, 6.05, 19], "light_emission": 15, "shade": False,
          "faces": {"up": {"uv": [5, 4, 11, 12], "texture": "#glow"}}}]
 model("pouring_spout", SPOUT + LEVER_SHUT, ST)
 model("pouring_spout_open", SPOUT + LEVER_OPEN, ST)

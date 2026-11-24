@@ -151,6 +151,10 @@ public class PouringSpoutBlockEntity extends BlockEntity {
             stream = running;
             if (getBlockState().getValue(PouringSpoutBlock.POURING) != (running != null))
                 level.setBlock(worldPosition, getBlockState().setValue(PouringSpoutBlock.POURING, running != null), Block.UPDATE_CLIENTS);
+            BlockPos tap = worldPosition.relative(facing().getOpposite());
+            BlockState ts = level.getBlockState(tap);
+            if (ts.is(HighFurnace.TAPHOLE.get()) && ts.getValue(HighFurnaceWallBlock.Facing.OPEN) != (running != null)) // the plug out while it pours
+                level.setBlock(tap, ts.setValue(HighFurnaceWallBlock.Facing.OPEN, running != null), Block.UPDATE_CLIENTS);
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
             if (running != null) level.playSound(null, worldPosition, SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.BLOCKS, 0.8F, 0.9F);
