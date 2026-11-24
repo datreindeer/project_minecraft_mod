@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mechanical:block/iron_ingot_mold"
+    "model": "mechanical:block/iron_ingot_mold_inventory"
   }
 }

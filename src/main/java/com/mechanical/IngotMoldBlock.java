@@ -61,6 +61,21 @@ public class IngotMoldBlock extends Block implements EntityBlock {
             this.top = top;
         }
 
+        /**
+         * The gate cut through the rim on side {@code d} where a trough joins (pixels x0 x1 z0 z1 and its floor): the
+         * iron molds' 6 px notch over their 1 px lip into the pockets, a Pig Mold's narrow 3 px gate down to its trench.
+         */
+        public float[] gate(net.minecraft.core.Direction d) {
+            float w0 = this == PIG ? 6.5F : 5, w1 = 16 - w0, depth = this == PIG ? (d.getAxis() == net.minecraft.core.Direction.Axis.Z ? 5.5F : 3) : 2.5F;
+            float f = this == PIG ? 14 : floor;
+            return switch (d) {
+                case NORTH -> new float[] {w0, w1, 0, depth, f};
+                case SOUTH -> new float[] {w0, w1, 16 - depth, 16, f};
+                case WEST -> new float[] {0, depth, w0, w1, f};
+                default -> new float[] {16 - depth, 16, w0, w1, f};
+            };
+        }
+
         private static float[][] grid() {
             float[][] g = new float[9][];
             for (int i = 0; i < 9; i++) {
@@ -103,6 +118,37 @@ public class IngotMoldBlock extends Block implements EntityBlock {
     public IngotMoldBlock(Properties properties, Kind kind) {
         super(properties);
         this.kind = kind;
+        registerDefaultState(ChannelFlow.shut(stateDefinition.any()));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(net.minecraft.world.level.block.PipeBlock.NORTH, net.minecraft.world.level.block.PipeBlock.EAST, net.minecraft.world.level.block.PipeBlock.SOUTH,
+                net.minecraft.world.level.block.PipeBlock.WEST);
+    }
+
+    // open sides where a trough joins it (ChannelFlow.connect): the rim notched or a chute hung over it there
+    @Override
+    public BlockState getStateForPlacement(net.minecraft.world.item.context.BlockPlaceContext context) {
+        return ChannelFlow.connect(context.getLevel(), context.getClickedPos(), defaultBlockState());
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader level, net.minecraft.world.level.ScheduledTickAccess ticks, BlockPos pos,
+            net.minecraft.core.Direction direction, BlockPos neighbourPos, BlockState neighbourState, net.minecraft.util.RandomSource random) {
+        return ChannelFlow.connect(level, pos, state);
+    }
+
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (state != oldState) ChannelFlow.castPlaced(level, pos, state);
+    }
+
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        ClayChannelBlock.refreshAround(level, pos);
     }
 
     /** The ingot a melt sets into, or null (glass, slag ... have none). */
@@ -168,14 +214,22 @@ public class IngotMoldBlock extends Block implements EntityBlock {
             return filling;
         }
 
+        /** Does a trough join it at a side (its rim is cut there)? */
+        public boolean gated() {
+            BlockState s = getBlockState();
+            for (var p : ClayChannelBlock.SIDES.values()) if (s.hasProperty(p) && s.getValue(p)) return true;
+            return false;
+        }
+
         public Kind kind() {
             return getBlockState().getBlock() instanceof IngotMoldBlock b ? b.kind : Kind.INGOT;
         }
 
-        /** How full pocket {@code i} is (0..1): all of it once poured, else what the stream has put in so far. */
+        /** How full pocket {@code i} is (0..1): all of it once poured, else what the stream has put in so far (fed through a side gate, all together). */
         public float pocket(int i) {
             Kind k = kind();
             int per = k.cast / k.pockets.length, in = molten != null ? k.cast : filling != null ? filled : 0;
+            if (gated()) return Math.clamp(in / (float) k.cast, 0, 1);
             return Math.clamp((in - i * per) / (float) per, 0, 1);
         }
 

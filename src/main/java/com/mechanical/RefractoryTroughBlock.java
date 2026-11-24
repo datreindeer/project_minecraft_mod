@@ -89,8 +89,9 @@ public class RefractoryTroughBlock extends ClayChannelBlock {
     }
 
     /**
-     * A Sand Runner (the "sow" of a Pig Bed): a trough dug with a shovel in Casting Sand on the floor. It joins like any
-     * trough at its own level (no slopes) and fills the Pig Molds beside it, but sand draws the heat: the metal sets in half
+     * A Sand Runner (the "sow" of a Pig Bed): a trough dug with a shovel in Casting Sand in the floor. Its groove is at the
+     * top of the block, so its ports are one block up ({@link ChannelFlow#ports}): it joins the runners and Pig Molds beside
+     * it and a trough standing on the floor next to it (which pours down into it), never slopes, and fills the Pig Molds, but sand draws the heat: the metal sets in half
      * the time and runs half as far. Once the metal has set a shovel digs it out as ingots and nuggets, and the sand is
      * burnt: dig a fresh runner in new Casting Sand.
      */
@@ -102,7 +103,7 @@ public class RefractoryTroughBlock extends ClayChannelBlock {
         @Override
         public BlockState stateAt(LevelReader level, BlockPos pos) {
             BlockState s = defaultBlockState();
-            for (var e : SIDES.entrySet()) s = s.setValue(e.getValue(), ChannelFlow.across(level, pos, ChannelFlow.port(pos, e.getKey(), pos.getY())) != null);
+            for (var e : SIDES.entrySet()) s = s.setValue(e.getValue(), ChannelFlow.across(level, pos, s, ChannelFlow.port(pos, e.getKey(), pos.getY() + 1)) != null);
             return s;
         }
 
@@ -162,7 +163,7 @@ public class RefractoryTroughBlock extends ClayChannelBlock {
             BlockState s = defaultBlockState().setValue(AXIS, axis).setValue(OPEN, open);
             for (var e : SIDES.entrySet()) {
                 boolean along = e.getKey().getAxis() == s.getValue(AXIS);
-                s = s.setValue(e.getValue(), along && ChannelFlow.across(level, pos, ChannelFlow.port(pos, e.getKey(), pos.getY())) != null);
+                s = s.setValue(e.getValue(), along && ChannelFlow.across(level, pos, s, ChannelFlow.port(pos, e.getKey(), pos.getY())) != null);
             }
             return s;
         }

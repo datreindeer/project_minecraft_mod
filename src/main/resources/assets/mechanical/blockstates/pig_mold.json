@@ -1,7 +1,41 @@
 {
-  "variants": {
-    "": {
-      "model": "mechanical:block/pig_mold"
+  "multipart": [
+    {
+      "apply": {
+        "model": "mechanical:block/pig_mold"
+      }
+    },
+    {
+      "when": {
+        "north": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/pig_mold_shut_north"
+      }
+    },
+    {
+      "when": {
+        "south": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/pig_mold_shut_south"
+      }
+    },
+    {
+      "when": {
+        "west": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/pig_mold_shut_west"
+      }
+    },
+    {
+      "when": {
+        "east": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/pig_mold_shut_east"
+      }
     }
-  }
+  ]
 }

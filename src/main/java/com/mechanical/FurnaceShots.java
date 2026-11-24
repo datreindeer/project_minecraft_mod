@@ -224,27 +224,27 @@ public final class FurnaceShots {
         set(8, 0, 1, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.EAST));
         set(12, 0, 3, HighFurnace.FIREBOX.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
         set(12, 0, 4, HighFurnace.GREAT_BELLOWS.get().defaultBlockState().setValue(GreatBellowsBlock.FACING, Direction.NORTH));
-        // the big furnace's casting floor, north of it clear of everything: a taphole and spout pouring into a trough line in a
-        // pit, a T to two molds, a shut gate holding the metal back from the third mold
+        // the big furnace's casting floor, north of it, built only with direct joins: the taphole straight into a trough
+        // line on the yard, a T at z -4 (west to a Foundry Basin sunk a block in the yard, east to an Iron Ingot Mold on
+        // it), on north past a Molding Flask sunk to the west, and down into a pig bed in Casting Sand (a runner and four pigs)
+        for (int x = 8; x <= 16; x++) for (int z = -12; z <= -7; z++) set(x, -1, z, (x * 7 + z * 3) % 5 == 0 ? Blocks.GRAVEL.defaultBlockState() : cobble);
         set(12, 0, -1, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.NORTH));
-        set(12, 0, -2, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.NORTH).setValue(PouringSpoutBlock.OPEN, true));
-        for (int x = 9; x <= 15; x++) for (int z = -10; z <= -2; z++) set(x, -1, z, Blocks.AIR.defaultBlockState());
-        set(12, -1, -2, Blocks.AIR.defaultBlockState());
-        for (int[] q : new int[][] {{12, -2}, {12, -3}, {12, -4}, {11, -5}, {12, -5}, {13, -5}, {12, -7}})
-            set(q[0], -1, q[1], HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
-        set(12, -1, -6, HighFurnace.TROUGH_GATE.get().defaultBlockState().setValue(RefractoryTroughBlock.Gate.AXIS, Direction.Axis.Z));
-        set(10, -1, -5, HighFurnace.FOUNDRY_BASIN.get().defaultBlockState());
-        set(14, -1, -5, HighFurnace.IRON_PLATE_MOLD.get().defaultBlockState());
-        set(12, -1, -8, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.NORTH).setValue(PouringSpoutBlock.OPEN, true)
-                .setValue(PouringSpoutBlock.SHORT, true));
-        for (int x = 11; x <= 13; x++) for (int z = -10; z <= -8; z++) for (int y = -3; y <= -2; y++) set(x, y, z, Blocks.AIR.defaultBlockState());
-        set(12, -3, -9, HighFurnace.FOUNDRY_TABLE.get().defaultBlockState());
-        set(12, -3, -10, Blocks.STONE_BRICKS.defaultBlockState());
-        set(12, -3, -8, HighFurnace.FOUNDRY_TABLE.get().defaultBlockState());
-        set(12, -2, -8, HighFurnace.MOLDING_FLASK.get().defaultBlockState().setValue(MoldingFlaskBlock.STAGE, MoldingFlaskBlock.Stage.READY));
-        if (level().getBlockEntity(rel(12, -2, -8)) instanceof MoldingFlaskBlock.Entity fe) {
+        for (int[] q : new int[][] {{12, -2}, {12, -3}, {12, -4}, {11, -4}, {10, -4}, {13, -4}, {12, -5}, {12, -6}, {12, -7}})
+            set(q[0], 0, q[1], HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState());
+        set(9, -1, -4, HighFurnace.FOUNDRY_BASIN.get().defaultBlockState());
+        set(14, 0, -4, HighFurnace.IRON_INGOT_MOLD.get().defaultBlockState());
+        set(11, -1, -6, HighFurnace.MOLDING_FLASK.get().defaultBlockState().setValue(MoldingFlaskBlock.STAGE, MoldingFlaskBlock.Stage.READY));
+        if (level().getBlockEntity(rel(11, -1, -6)) instanceof MoldingFlaskBlock.Entity fe) {
             fe.shape = MoldingFlaskBlock.FlaskShape.PICKAXE_HEAD;
             fe.setChanged();
+        }
+        for (int x = 10; x <= 14; x++) for (int z = -11; z <= -8; z++) set(x, -1, z, HighFurnace.CASTING_SAND.get().defaultBlockState());
+        for (int z = -10; z <= -8; z++) set(12, -1, z, HighFurnace.SAND_RUNNER.get().defaultBlockState());
+        for (int[] q : new int[][] {{11, -9}, {13, -9}, {11, -10}, {13, -10}}) set(q[0], -1, q[1], HighFurnace.PIG_MOLD.get().defaultBlockState());
+        for (int x = 8; x <= 16; x++) for (int z = -12; z <= -1; z++) for (int y = -1; y <= 0; y++) {
+            BlockPos q = rel(x, y, z);
+            BlockState was = level().getBlockState(q), now = ChannelFlow.reshape(level(), q, was);
+            if (now != was) level().setBlockAndUpdate(q, now);
         }
         // the flow demonstration east of the furnaces: a level run with a T branching north to a closed end, then a step
         // down a slope to a lower run (dug into the yard) that is longer than steel's reach
@@ -286,11 +286,6 @@ public final class FurnaceShots {
         set(4, 0, -6, HighFurnace.IRON_INGOT_MOLD.get().defaultBlockState());
         set(5, 0, -6, HighFurnace.IRON_PLATE_MOLD.get().defaultBlockState());
         set(6, 0, -6, HighFurnace.IRON_NUGGET_MOLD.get().defaultBlockState());
-        // the troughs take their shape from their neighbours: shape them all again now everything stands
-        for (int x = 9; x <= 15; x++) for (int z = -10; z <= -2; z++) {
-            BlockPos q = rel(x, -1, z);
-            if (level().getBlockState(q).getBlock() instanceof ClayChannelBlock c) level().setBlockAndUpdate(q, c.stateAt(level(), q));
-        }
         // a taphole in the small furnace's back wall with a spout pouring into an iron ingot mold in a pit
         set(1, 0, 2, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
         set(1, 0, 3, HighFurnace.POURING_SPOUT.get().defaultBlockState().setValue(PouringSpoutBlock.FACING, Direction.SOUTH).setValue(PouringSpoutBlock.OPEN, true));
@@ -389,6 +384,10 @@ public final class FurnaceShots {
                         if (level().getBlockEntity(rel(x, y, z)) instanceof TroughBlockEntity t) t.take(t.amount(), level().getGameTime());
                 }));
                 case "!demostop" -> then(1, demoAt::clear);
+                case "!tap" -> then(2, () -> server(() -> { // knock the plug out of the big furnace's taphole ("!tap shut" plugs it)
+                    BlockPos q = rel(12, 0, -1);
+                    level().setBlockAndUpdate(q, level().getBlockState(q).setValue(HighFurnaceWallBlock.Facing.OPEN, p.length < 2));
+                }));
                 case "!clay" -> then(1, () -> server(() -> { // a Clay Channel joined to a trough (it cracks by hot iron)
                     BlockPos q = rel(Integer.parseInt(p[1]), Integer.parseInt(p[2]), Integer.parseInt(p[3]));
                     level().setBlockAndUpdate(q, Smelting.CLAY_CHANNEL.get().defaultBlockState());

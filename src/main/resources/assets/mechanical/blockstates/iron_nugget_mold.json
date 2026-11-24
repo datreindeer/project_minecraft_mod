@@ -1,7 +1,76 @@
 {
-  "variants": {
-    "": {
-      "model": "mechanical:block/iron_nugget_mold"
+  "multipart": [
+    {
+      "apply": {
+        "model": "mechanical:block/iron_nugget_mold"
+      }
+    },
+    {
+      "when": {
+        "north": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/iron_nugget_mold_shut_north"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/iron_nugget_mold_lip"
+      }
+    },
+    {
+      "when": {
+        "south": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/iron_nugget_mold_shut_south"
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/iron_nugget_mold_lip",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/iron_nugget_mold_shut_west"
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/iron_nugget_mold_lip",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "east": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/iron_nugget_mold_shut_east"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/iron_nugget_mold_lip",
+        "y": 90
+      }
     }
-  }
+  ]
 }

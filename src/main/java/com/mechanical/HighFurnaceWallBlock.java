@@ -188,10 +188,28 @@ public class HighFurnaceWallBlock extends Block {
 
         @Override
         protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+            if (state.is(HighFurnace.TAPHOLE.get())) return tap(state, level, pos, player);
             if (!(level instanceof ServerLevel server) || !state.is(HighFurnace.FIREBOX.get())) return InteractionResult.PASS;
             HighFurnaceBlockEntity furnace = HighFurnaceBlockEntity.find(server, pos);
             player.sendOverlayMessage(furnace != null && furnace.isFirebox(pos) ? furnace.describeFirebox(pos)
                     : furnace != null && furnace.problem() != null ? furnace.problem() : Component.translatable("message.mechanical.high_furnace.no_furnace"));
+            return InteractionResult.SUCCESS;
+        }
+
+        /**
+         * A Taphole with a channel straight at its front: an empty hand knocks the clay plug out (the furnace pours into the
+         * channel, {@link HighFurnaceBlockEntity}) or rams a new one in. With a Pouring Spout there the spout's lever does it.
+         */
+        private static InteractionResult tap(BlockState state, Level level, BlockPos pos, Player player) {
+            if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
+            if (level.getBlockState(pos.relative(state.getValue(FACING))).getBlock() instanceof PouringSpoutBlock) {
+                player.sendOverlayMessage(Component.translatable("message.mechanical.taphole.spout"));
+                return InteractionResult.SUCCESS;
+            }
+            boolean open = !state.getValue(OPEN);
+            server.setBlock(pos, state.setValue(OPEN, open), Block.UPDATE_ALL);
+            server.playSound(null, pos, open ? SoundEvents.DECORATED_POT_BREAK : SoundEvents.MUD_PLACE, SoundSource.BLOCKS, 0.8F, open ? 0.7F : 0.9F);
+            player.sendOverlayMessage(Component.translatable(open ? "message.mechanical.taphole.open" : "message.mechanical.taphole.plugged"));
             return InteractionResult.SUCCESS;
         }
 

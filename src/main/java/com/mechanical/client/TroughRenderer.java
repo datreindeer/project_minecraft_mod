@@ -40,6 +40,11 @@ import org.jspecify.annotations.Nullable;
  * against the plate on the side it came from;</li>
  * <li>white-hot near the tap, dimming down the line; setting crusts from the edges inward, then goes dark and solid
  * (frozen metal at the reach limit is dark at once).</li>
+ * <li>at the joints with what is not another trough (the arm is open toward it, {@link com.mechanical.ChannelFlow#ports}):
+ * from an open High Furnace Taphole the metal runs off its lip and drops into the arm; into a Foundry Basin or Molding
+ * Flask a block down it runs along the cast's chute and falls off its lip; into a Pig Mold or Sand Runner a block down it
+ * falls straight over the arm's end into the gate; into an iron mold at its level it runs over the lip into the gate.
+ * Standing still at such an open end it shows a bright edge, never running past it.</li>
  * </ul>
  * Slopes keep their tilted film ({@link MoltenRenderer.Channel#channel}).
  */
@@ -57,7 +62,14 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
         @Nullable Direction up, arrivedFrom, gateFrom;
         boolean sand, still, shutGate;
         Direction.Axis gateAxis = Direction.Axis.Z;
+        /** Per side (2D data value): the joint (0 a trough or nothing, TAP an open taphole, DROP a cast or runner a block
+         * down, LOW an iron mold at its level), metal crossing it now, the chute's length and where the metal lands (blocks). */
+        final int[] joint = new int[4];
+        final boolean[] flow = new boolean[4];
+        final float[] chute = new float[4], land = new float[4];
     }
+
+    private static final int TAP = 1, DROP = 2, LOW = 3;
 
     public TroughRenderer(BlockEntityRendererProvider.Context context) {}
 
@@ -70,8 +82,12 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
     public void extractRenderState(TroughBlockEntity t, State state, float partialTicks, Vec3 camera, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(t, state, partialTicks, camera, breakProgress);
         long now = t.getLevel() == null ? 0 : t.getLevel().getGameTime();
-        state.molten = t.molten();
-        state.fill = Math.min(1, t.amount() / (float) TroughBlockEntity.CAPACITY);
+        // pouring a cast through it: the metal runs on through even while its buffer holds what came in (a thin running film)
+        // (and a trough that passes all it gets straight on, down a step: what runs through it now)
+        Direction pouring = t.pouringTo();
+        boolean passing = t.molten() == null && pouring == null && t.lastMolten() != null && anyRecent(t, now);
+        state.molten = t.molten() != null ? t.molten() : pouring != null ? t.bufferMolten() : passing ? t.lastMolten() : null;
+        state.fill = Math.max(Math.min(1, t.amount() / (float) TroughBlockEntity.CAPACITY), pouring != null || passing ? 0.25F : 0);
         state.cooled = t.cooled(now);
         state.hot = state.molten == null ? 0 : Math.clamp(1 - t.dist() / (float) Math.max(1, TroughFlow.reach(t.heat(), state.molten) + 1), 0, 1);
         state.time = ((now % 2000) + partialTicks) * 0.05F;
@@ -79,19 +95,54 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
         state.in = 0;
         state.level = level(state.fill);
         BlockState here = t.getBlockState();
-        boolean moving = t.running(now) || anyRecent(t, now);
+        boolean moving = t.running(now) || anyRecent(t, now) || pouring != null;
         for (Direction d : Direction.Plane.HORIZONTAL) {
-            int bit = 1 << d.get2DDataValue();
-            state.edge[d.get2DDataValue()] = state.level;
+            int i = d.get2DDataValue(), bit = 1 << i;
+            state.edge[i] = state.level;
+            state.joint[i] = 0;
+            state.flow[i] = false;
             if (!(here.getBlock() instanceof ClayChannelBlock) || !here.getValue(ClayChannelBlock.SIDES.get(d)) || t.getLevel() == null) continue;
-            BlockPos q = com.mechanical.ChannelFlow.across(t.getLevel(), t.getBlockPos(), com.mechanical.ChannelFlow.port(t.getBlockPos(), d, t.getBlockPos().getY()));
-            if (q != null && t.getLevel().getBlockEntity(q) instanceof TroughBlockEntity n) {
-                // the surfaces meet half way between the two levels at the shared edge
-                if (n.molten() != null) state.edge[d.get2DDataValue()] = (state.level + level(Math.min(1, n.amount() / (float) TroughBlockEntity.CAPACITY))) / 2;
-                // which way it runs: away from the tap (toward troughs further out), in from those nearer
-                if (moving && n.molten() != null && n.dist() > t.dist() || moving && n.molten() == null && now - t.outAt(d) < RECENT) state.out |= bit;
-                else if (moving && n.molten() != null && n.dist() < t.dist()) state.in |= bit;
-            } else if (moving && now - t.outAt(d) < RECENT) state.out |= bit; // into a mold or a spout
+            BlockPos port = com.mechanical.ChannelFlow.portOn(t.getBlockPos(), here, d);
+            BlockPos q = port == null ? null : com.mechanical.ChannelFlow.across(t.getLevel(), t.getBlockPos(), here, port);
+            if (q == null) continue;
+            BlockState qs = t.getLevel().getBlockState(q);
+            int dy = q.getY() - t.getBlockPos().getY();
+            boolean outNow = now - t.outAt(d) < RECENT;
+            if (qs.is(HighFurnace.TAPHOLE.get())) {
+                state.joint[i] = TAP;
+                state.flow[i] = qs.getValue(com.mechanical.HighFurnaceWallBlock.Facing.OPEN) && now - t.inAt(d) < RECENT;
+                if (moving && state.flow[i]) state.in |= bit;
+            } else if (t.getLevel().getBlockEntity(q) instanceof TroughBlockEntity n) {
+                if (dy < 0) { // a Sand Runner dug in the floor below: over the arm's end and down into its groove
+                    state.joint[i] = DROP;
+                    state.flow[i] = outNow && moving;
+                    state.land[i] = dy + 11 / 16F + (n.molten() == null ? 2.3F / 16 : level(Math.min(1, n.amount() / (float) TroughBlockEntity.CAPACITY)));
+                    if (state.flow[i]) state.out |= bit;
+                } else if (dy > 0) { // the trough above pours down into this runner
+                    if (moving && n.molten() != null && n.dist() < t.dist()) state.in |= bit;
+                } else {
+                    // the surfaces meet half way between the two levels at the shared edge
+                    if (n.molten() != null) state.edge[i] = (state.level + level(Math.min(1, n.amount() / (float) TroughBlockEntity.CAPACITY))) / 2;
+                    // which way it runs: away from the tap (toward troughs further out), in from those nearer
+                    if (moving && n.molten() != null && n.dist() > t.dist() || moving && n.molten() == null && outNow) state.out |= bit;
+                    else if (moving && n.molten() != null && n.dist() < t.dist()) state.in |= bit;
+                }
+            } else {
+                if (moving && outNow) state.out |= bit; // into a mold or a spout
+                if (!com.mechanical.ChannelFlow.isCast(qs)) continue;
+                state.flow[i] = moving && outNow;
+                boolean pig = qs.getBlock() instanceof com.mechanical.PigMoldBlock;
+                if (dy < 0) {
+                    state.joint[i] = DROP;
+                    boolean basin = qs.getBlock() instanceof com.mechanical.FoundryBasinBlock;
+                    state.chute[i] = pig ? 0 : basin ? 4.5F / 16 : 7F / 16;
+                    float y = t.pourY() > 0 ? t.pourY() : pig ? 14.3F / 16 : basin ? 3F / 16 : 12.3F / 16;
+                    state.land[i] = dy + (pig ? Math.max(y, 14.3F / 16) : y);
+                } else if (qs.getBlock() instanceof com.mechanical.IngotMoldBlock mold) {
+                    state.joint[i] = LOW;
+                    state.land[i] = (mold.kind.gate(d.getOpposite())[4] + 0.3F) / 16 - (here.getBlock() instanceof RefractoryTroughBlock.SandRunner ? 11 / 16F : 0);
+                }
+            }
         }
         if (moving && t.arrivedFrom() != null && state.in == 0 && state.out != 0) state.in |= 1 << t.arrivedFrom().get2DDataValue();
         state.still = !moving || state.out == 0 || state.cooled > 0.3F;
@@ -249,6 +300,61 @@ public class TroughRenderer implements BlockEntityRenderer<TroughBlockEntity, Tr
                 }
             }
         });
+        joints(state, pose, collector, c, y);
+    }
+
+    /**
+     * The joints with what is not a trough, each drawn in a frame turned so the side is -z (its edge at z -0.5): the run
+     * off a taphole's lip, off a chute's lip or over the arm's end into a cast below, over an iron mold's lip into its gate;
+     * the plain 2 px column the Pouring Spout's stream has, a brighter splash where it lands; standing, a bright edge.
+     */
+    private static void joints(State state, PoseStack pose, SubmitNodeCollector collector, int c, float y) {
+        int bright = ARGB.srgbLerp(0.3F, c, 0xFFFFF2B0) | 0xFF000000, edgeLine = ARGB.srgbLerp(0.35F, c, 0xFFFFFFFF) | 0xFF000000;
+        float scroll = state.time * 1.6F, px = 1 / 16F, e = -0.5F;
+        for (Direction d : Direction.Plane.HORIZONTAL) {
+            int i = d.get2DDataValue(), j = state.joint[i];
+            if (j == 0) continue;
+            boolean flow = state.flow[i] && state.cooled < 0.3F;
+            if (!flow && j == TAP) continue;
+            pose.pushPose();
+            pose.translate(0.5F, 0, 0.5F);
+            pose.rotateDegrees(com.mojang.math.Axis.YP, -d.toYRot() + 180);
+            float land = state.land[i], l = state.chute[i];
+            if (!flow) { // standing at the open end: a bright edge where it stops
+                collector.submitCustomGeometry(pose, MoltenRenderer.CRUST, (p, buf) ->
+                        PouringSpoutRenderer.quad(p, buf, edgeLine, LO - 0.5F, y + 0.25F * px, e + 0.4F * px, HI - 0.5F, y + 0.25F * px, e, 0));
+            } else if (j == TAP) { // along the taphole's lip (its channel floor at 5.4) and down into the arm
+                float top = 5.5F * px;
+                collector.submitCustomGeometry(pose, MoltenRenderer.CRUST, (p, buf) -> PouringSpoutRenderer.quad(p, buf, c, -1.4F * px, top, e - 4 * px, 1.4F * px, top, e, -scroll * 0.4F));
+                collector.submitCustomGeometry(pose, PouringSpoutRenderer.STREAM, (p, buf) -> {
+                    PouringSpoutRenderer.box(p, buf, bright, -1.5F * px, top - 0.6F * px, e - 0.4F * px, 1.5F * px, top, e, scroll);
+                    PouringSpoutRenderer.box(p, buf, bright, -px, y, e, px, top, e + 2 * px, scroll);
+                    PouringSpoutRenderer.quad(p, buf, bright, -2 * px, y + 0.004F, e + 2.5F * px, 2 * px, y + 0.004F, e - 0.5F * px, -scroll * 0.3F);
+                });
+            } else if (j == LOW) { // over the lip and down into the gate
+                collector.submitCustomGeometry(pose, MoltenRenderer.CRUST, (p, buf) -> PouringSpoutRenderer.quad(p, buf, c, -2.5F * px, y, e, 2.5F * px, land, e - 1.5F * px, -scroll * 0.4F));
+            } else if (l > 0) { // along the chute (its floor flush with the trough's), off its turned-down lip into the cast
+                float top = 2.4F * px, lip = e - l - 0.6F * px;
+                collector.submitCustomGeometry(pose, MoltenRenderer.CRUST, (p, buf) -> PouringSpoutRenderer.quad(p, buf, c, -2 * px, top, e + 0.5F * px, 2 * px, top, lip + 0.8F * px, -scroll * 0.4F));
+                collector.submitCustomGeometry(pose, PouringSpoutRenderer.STREAM, (p, buf) -> {
+                    PouringSpoutRenderer.box(p, buf, bright, -2 * px, 1.3F * px, lip, 2 * px, top, lip + 0.8F * px, scroll);
+                    PouringSpoutRenderer.box(p, buf, bright, -px, land, lip - 2 * px, px, top, lip, scroll);
+                    PouringSpoutRenderer.quad(p, buf, bright, -2 * px, land + 0.004F, lip + px, 2 * px, land + 0.004F, lip - 3 * px, -scroll * 0.3F);
+                });
+            } else { // straight over the arm's end into the gate or groove below
+                collector.submitCustomGeometry(pose, PouringSpoutRenderer.STREAM, (p, buf) -> {
+                    PouringSpoutRenderer.box(p, buf, bright, -2 * px, y - 0.7F * px, e, 2 * px, y, e + 0.6F * px, scroll);
+                    PouringSpoutRenderer.box(p, buf, bright, -px, land, e - 2 * px, px, y, e, scroll);
+                    PouringSpoutRenderer.quad(p, buf, bright, -2 * px, land + 0.004F, e, 2 * px, land + 0.004F, e - 3.5F * px, -scroll * 0.3F);
+                });
+            }
+            pose.popPose();
+        }
+    }
+
+    @Override
+    public net.minecraft.world.phys.AABB getRenderBoundingBox(TroughBlockEntity t) {
+        return new net.minecraft.world.phys.AABB(t.getBlockPos()).inflate(1, 0, 1).expandTowards(0, -1, 0); // the runs into the casts around it
     }
 
     /** The part of the block from side {@code d} reaching {@code f} (0..1) into it. */

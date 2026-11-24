@@ -283,7 +283,11 @@ def arched_block(name, front, front_glow, extra=(), hot_extra=lambda h: [], open
 
 
 arched_block("firebox", "firebox_front", "firebox_front_glow")
-arched_block("taphole", "taphole_front", None, open_front="taphole_front_open", open_glow="taphole_glow")
+# the taphole's lip: a short iron tongue under the hole from the door out to the face (a trough joined straight to the
+# taphole takes the metal running off it; client/TroughRenderer draws the run), on a little prop off the threshold
+TAP_LIP = [box([5.5, 4.4, 0], [10.5, 5.4, 4], "#strap"), box([5.5, 5.4, 0], [6.5, 6.3, 4], "#strap"), box([9.5, 5.4, 0], [10.5, 6.3, 4], "#strap"),
+           box([7.5, 0.75, 0.6], [8.5, 4.4, 1.6], "#strap")]
+arched_block("taphole", "taphole_front", None, TAP_LIP, open_front="taphole_front_open", open_glow="taphole_glow")
 # the Front: the hatch cover hangs open on its hinge in the recess, the handle bar stands off the door
 FRONT_EXTRA = [
     {"from": [11, 7, 3.4], "to": [17, 13, 3.9], "rotation": {"angle": -45, "axis": "y", "origin": [11, 10, 3.65]},
@@ -417,7 +421,57 @@ tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "pouring_spout")
 merge(A / "lang/en_us.json", {"block.mechanical.pouring_spout": "Pouring Spout",
     "message.mechanical.pouring_spout.open": "Spout open: it pours the chosen layer into what stands under its lip",
     "message.mechanical.pouring_spout.closed": "Spout shut",
+    "message.mechanical.taphole.open": "Plug knocked out: the chosen layer runs into the trough at the taphole's lip",
+    "message.mechanical.taphole.plugged": "Taphole plugged with clay",
+    "message.mechanical.taphole.spout": "The Pouring Spout's lever opens and shuts this taphole",
     "message.mechanical.pouring_spout.too_hot": "Too hot for clay: a Clay Mold takes nothing hotter than 1100°"})
+
+def gate_parts(els, gates, floor):
+    """Splits a cast's rim at its side gates (side -> x0 x1 z0 z1, cut down to {floor}): the elements that always stand,
+    and per side the pieces that fill that gate when no trough joins there (ChannelFlow.connect opens it)."""
+    cuts = sorted({v for g in gates.values() for v in g})
+    base, shut = [], {side: [] for side in gates}
+    for e in els:
+        (x0, y0, z0), (x1, y1, z1) = e["from"], e["to"]
+        if y1 <= floor:
+            base.append(e)
+            continue
+        tex = {f: v["texture"] for f, v in e["faces"].items()}
+        xs = [x0] + [c for c in cuts if x0 < c < x1] + [x1]
+        zs = [z0] + [c for c in cuts if z0 < c < z1] + [z1]
+        ys = [y0] + ([floor] if y0 < floor < y1 else []) + [y1]
+        for i in range(len(xs) - 1):
+            for k in range(len(zs) - 1):
+                for j in range(len(ys) - 1):
+                    a, b = [xs[i], ys[j], zs[k]], [xs[i + 1], ys[j + 1], zs[k + 1]]
+                    side = next((sd for sd, (gx0, gx1, gz0, gz1) in gates.items()
+                                 if a[1] >= floor and gx0 <= a[0] and b[0] <= gx1 and gz0 <= a[2] and b[2] <= gz1), None)
+                    (shut[side] if side else base).append(box(a, b, tex))
+    return base, shut
+
+
+def gated_cast(name, els, tex, gates, floor, lip=None, item=True):
+    """A cast's models and multipart: the rim with its gates cut, a shut piece per side, an open side's lip (north, turned)."""
+    base, shut = gate_parts(els, gates, floor)
+    model(name, base, tex)
+    parts = [{"apply": {"model": B + name}}]
+    for side in gates:
+        model(f"{name}_shut_{side}", shut[side], tex)
+        parts.append({"when": {side: "false"}, "apply": {"model": B + f"{name}_shut_{side}"}})
+        if lip:
+            parts.append({"when": {side: "true"}, "apply": {"model": B + f"{name}_lip", **({"y": ROT[side]} if ROT[side] else {})}})
+    if lip:
+        model(f"{name}_lip", lip, tex)
+    w(A / f"blockstates/{name}.json", {"multipart": parts})
+    if item:
+        model(f"{name}_inventory", base + [e for side in gates for e in shut[side]], tex)
+        item_def(name, B + f"{name}_inventory")
+
+
+# the iron molds' gates: a 6 px notch through the 1.5 px rim (x 5..11) down to the plate, over a 1 px iron lip that
+# bridges the gap to the block edge, its cheeks in line with a trough's walls
+IRON_GATES = {"north": (5, 11, 1, 2.5), "south": (5, 11, 13.5, 15), "west": (1, 2.5, 5, 11), "east": (13.5, 15, 5, 11)}
+IRON_LIP = [box([5, 0, 0], [11, 1.6, 1], "#side"), box([3, 0, 0], [5, 4, 1], "#side"), box([11, 0, 0], [13, 4, 1], "#side")]
 
 # ---------------- Iron Ingot Mold (phase 4b/5): a cast-iron plate with four ingot pockets that never cracks; its melt
 # is drawn by client/IngotMoldRenderer. Cast from pig iron in a Molding Flask with the Ingot Mold pattern.
@@ -430,9 +484,7 @@ for x0, x1 in ((1, 2.5), (7.5, 8.5), (13.5, 15)):                               
 for z0, z1 in ((1, 2.5), (7.5, 8.5), (13.5, 15)):                                     # and across x, between them
     for xa, xb in ((2.5, 7.5), (8.5, 13.5)):
         MOLD.append(box([xa, 1.6, z0], [xb, 4, z1], {"up": "#top", **SIDES4}))
-model("iron_ingot_mold", MOLD, IM)
-w(A / "blockstates/iron_ingot_mold.json", {"variants": {"": {"model": B + "iron_ingot_mold"}}})
-item_def("iron_ingot_mold", B + "iron_ingot_mold")
+gated_cast("iron_ingot_mold", MOLD, IM, IRON_GATES, 1.6, IRON_LIP)
 loot("iron_ingot_mold")
 (D / "mechanical/recipe/iron_ingot_mold.json").unlink(missing_ok=True)  # cast in a Molding Flask now (phase 4b)
 tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "iron_ingot_mold")
@@ -516,9 +568,7 @@ def pocket_mold(name, xs, zs, top):
     for z0, z1 in gaps(zs):
         for xa, xb in xs:
             els.append(box([xa, 1.6, z0], [xb, 4, z1], {"up": "#top", **side4}))
-    model(name, els, tex)
-    w(A / f"blockstates/{name}.json", {"variants": {"": {"model": B + name}}})
-    item_def(name, B + name)
+    gated_cast(name, els, tex, IRON_GATES, 1.6, IRON_LIP)
     loot(name)
 
 
@@ -548,8 +598,9 @@ w(D / "mechanical/loot_table/blocks/sand_runner.json", {"type": "minecraft:block
 # Pig Mold: a trench pressed in the top of Casting Sand (x 3..13, z 5.5..10.5, floor 13)
 PIG = [box([0, 0, 0], [16, 13, 16], {**SANDF, "up": "#burnt"}), box([0, 13, 0], [16, 16, 5.5], SANDF), box([0, 13, 10.5], [16, 16, 16], SANDF),
        box([0, 13, 5.5], [3, 16, 10.5], SANDF), box([13, 13, 5.5], [16, 16, 10.5], SANDF)]
-model("pig_mold", PIG, SR)
-w(A / "blockstates/pig_mold.json", {"variants": {"": {"model": B + "pig_mold"}}})
+# a 3 px gate cut down to 14 from each side a runner or trough joins, into the trench (its ends, or across a long wall)
+gated_cast("pig_mold", PIG, SR, {"north": (6.5, 9.5, 0, 5.5), "south": (6.5, 9.5, 10.5, 16), "west": (0, 3, 6.5, 9.5), "east": (13, 16, 6.5, 9.5)},
+           14, item=False)
 w(D / "mechanical/loot_table/blocks/pig_mold.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": M + "burnt_casting_sand"}]}],
    "random_sequence": "mechanical:blocks/pig_mold"})
 
@@ -571,7 +622,26 @@ BASIN = [box([0, 0, 0], [16, 3, 16], {"up": "#in", "down": "#side", "north": "#s
          box([14, 3, 2], [16, 14, 14], {"east": "#side", "west": "#in", "up": "#side"}),
          box([-1, 8, 6], [0, 10, 10], "#lug"), box([16, 8, 6], [17, 10, 10], "#lug")]
 model("foundry_basin", BASIN, FB)
-w(A / "blockstates/foundry_basin.json", {"variants": {"": {"model": B + "foundry_basin"}}})
+
+
+def chute(length, prop):
+    """A trough's end-spout hung on a tall cast (north side; the trough stands a block up beside it): the trough itself
+    carried on {length} px over the rim, the same iron outside, silica-lined floor flush with the trough's (y 18) and
+    walls as high (21), ending in an iron lip turned down; the metal runs along it and falls off the lip (client/TroughRenderer)."""
+    out = {f: "#tout" for f in FACES}
+    return [box([5, 16, 0], [11, 18, length], {**out, "up": "#lin"}),
+            box([3, 16, 0], [5, 21, length - 1], {**out, "up": "#lin", "east": "#lin"}),
+            box([11, 16, 0], [13, 21, length - 1], {**out, "up": "#lin", "west": "#lin"}),
+            box([3.5, 16, length - 1], [5, 19, length], out), box([11, 16, length - 1], [12.5, 19, length], out),   # cheeks stepping down to the lip
+            box([5, 15.6, length - 0.4], [11, 17.2, length + 0.6], "#steel"),            # the lip, turned down
+            box([2.6, 16.5, 0.6], [13.4, 17.5, 1.4], "#tout")] + prop                     # a rivet band at the joint
+
+
+FB.update({"steel": B + "pouring_spout_steel", "lin": B + "refractory_trough_lining", "tout": B + "refractory_trough_outside"})
+# on the basin it hooks over the 2 px wall (a hanger on the rim and a strap down the outside)
+model("foundry_basin_chute", chute(4.5, [box([6, 14, 0], [10, 16, 2.4], "#tout"), box([6, 11, -0.4], [10, 16, 0], "#tout")]), FB)
+w(A / "blockstates/foundry_basin.json", {"multipart": [{"apply": {"model": B + "foundry_basin"}}] + [
+    {"when": {side: "true"}, "apply": {"model": B + "foundry_basin_chute", **({"y": y} if y else {})}} for side, y in ROT.items()]})
 item_def("foundry_basin", B + "foundry_basin")
 loot("foundry_basin")
 # Molding Flask: an iron frame of two halves round rammed sand; the top shows the stage (empty frame, sand, the pouring
@@ -596,7 +666,11 @@ model("molding_flask_sand", flask("#inside"), MF)
 model("molding_flask_ready", flask("#sand"), MF)
 model("molding_flask_molten", flask("#sand", True), MF)
 model("molding_flask_set", flask("#sand"), MF)
-w(A / "blockstates/molding_flask.json", {"variants": {f"stage={st}": {"model": B + f"molding_flask_{st}"} for st in ("empty", "sand", "ready", "molten", "set")}})
+# on the flask it reaches 7 px in, over the pouring cup, on a post standing on the frame
+MF.update({"steel": B + "pouring_spout_steel", "lin": B + "refractory_trough_lining", "tout": B + "refractory_trough_outside"})
+model("molding_flask_chute", chute(7, [box([6.5, 12, 1], [9.5, 16, 2.5], "#tout"), box([6, 12, 0.5], [10, 12.6, 3], "#tout")]), MF)
+w(A / "blockstates/molding_flask.json", {"multipart": [{"when": {"stage": st}, "apply": {"model": B + f"molding_flask_{st}"}} for st in ("empty", "sand", "ready", "molten", "set")] + [
+    {"when": {side: "true"}, "apply": {"model": B + "molding_flask_chute", **({"y": y} if y else {})}} for side, y in ROT.items()]})
 item_def("molding_flask", B + "molding_flask_empty")
 loot("molding_flask")
 # Pattern Bench: a joiner's bench (legs, top, a vice at the front)

@@ -112,12 +112,37 @@ public class MoldingFlaskBlock extends Block implements EntityBlock {
 
     public MoldingFlaskBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(STAGE, Stage.EMPTY));
+        registerDefaultState(ChannelFlow.shut(stateDefinition.any().setValue(STAGE, Stage.EMPTY)));
+    }
+
+    // open sides where a trough joins it (ChannelFlow.connect): the rim notched or a chute hung over it there
+    @Override
+    public BlockState getStateForPlacement(net.minecraft.world.item.context.BlockPlaceContext context) {
+        return ChannelFlow.connect(context.getLevel(), context.getClickedPos(), defaultBlockState());
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader level, net.minecraft.world.level.ScheduledTickAccess ticks, BlockPos pos,
+            net.minecraft.core.Direction direction, BlockPos neighbourPos, BlockState neighbourState, net.minecraft.util.RandomSource random) {
+        return ChannelFlow.connect(level, pos, state);
+    }
+
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (state != oldState) ChannelFlow.castPlaced(level, pos, state);
+    }
+
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        ClayChannelBlock.refreshAround(level, pos);
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(STAGE);
+        builder.add(STAGE, net.minecraft.world.level.block.PipeBlock.NORTH, net.minecraft.world.level.block.PipeBlock.EAST, net.minecraft.world.level.block.PipeBlock.SOUTH,
+                net.minecraft.world.level.block.PipeBlock.WEST);
     }
 
     @Override

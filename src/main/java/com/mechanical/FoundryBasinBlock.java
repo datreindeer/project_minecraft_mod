@@ -41,6 +41,37 @@ public class FoundryBasinBlock extends Block implements EntityBlock {
 
     public FoundryBasinBlock(Properties properties) {
         super(properties);
+        registerDefaultState(ChannelFlow.shut(stateDefinition.any()));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(net.minecraft.world.level.block.PipeBlock.NORTH, net.minecraft.world.level.block.PipeBlock.EAST, net.minecraft.world.level.block.PipeBlock.SOUTH,
+                net.minecraft.world.level.block.PipeBlock.WEST);
+    }
+
+    // open sides where a trough joins it (ChannelFlow.connect): the rim notched or a chute hung over it there
+    @Override
+    public BlockState getStateForPlacement(net.minecraft.world.item.context.BlockPlaceContext context) {
+        return ChannelFlow.connect(context.getLevel(), context.getClickedPos(), defaultBlockState());
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader level, net.minecraft.world.level.ScheduledTickAccess ticks, BlockPos pos,
+            net.minecraft.core.Direction direction, BlockPos neighbourPos, BlockState neighbourState, net.minecraft.util.RandomSource random) {
+        return ChannelFlow.connect(level, pos, state);
+    }
+
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (state != oldState) ChannelFlow.castPlaced(level, pos, state);
+    }
+
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        ClayChannelBlock.refreshAround(level, pos);
     }
 
     /** The block a melt casts into here, or null. */

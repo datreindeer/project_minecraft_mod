@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
  */
 public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlockEntity, PouringSpoutRenderer.State> {
     /** The stream: lava-like pixels in three tones, tinted by the melt (scripts/gen_high_furnace_textures.py). */
-    private static final RenderType STREAM = RenderTypes.beaconBeam(Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/block/molten_stream.png"), false);
+    static final RenderType STREAM = RenderTypes.beaconBeam(Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/block/molten_stream.png"), false);
 
     public static class State extends BlockEntityRenderState {
         @Nullable Molten stream;
@@ -83,7 +83,7 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
     }
 
     /** A box of melt from (x0, y0, z0) to (x1, y1, z1), every face seen from both sides, one texel per pixel, rolling down. */
-    private static void box(PoseStack.Pose p, VertexConsumer buf, int c, float x0, float y0, float z0, float x1, float y1, float z1, float scroll) {
+    static void box(PoseStack.Pose p, VertexConsumer buf, int c, float x0, float y0, float z0, float x1, float y1, float z1, float scroll) {
         float[][][] faces = {
                 {{x0, y0, z0}, {x0, y1, z0}, {x1, y1, z0}, {x1, y0, z0}}, {{x0, y0, z1}, {x0, y1, z1}, {x1, y1, z1}, {x1, y0, z1}},
                 {{x0, y0, z0}, {x0, y1, z0}, {x0, y1, z1}, {x0, y0, z1}}, {{x1, y0, z0}, {x1, y1, z0}, {x1, y1, z1}, {x1, y0, z1}},
@@ -97,7 +97,7 @@ public class PouringSpoutRenderer implements BlockEntityRenderer<PouringSpoutBlo
                 }
     }
 
-    private static void quad(PoseStack.Pose p, VertexConsumer buf, int c, float x0, float y, float z0, float x1, float y1, float z1, float scroll) {
+    static void quad(PoseStack.Pose p, VertexConsumer buf, int c, float x0, float y, float z0, float x1, float y1, float z1, float scroll) {
         float[][] q = {{x0, y, z0}, {x0, y1, z1}, {x1, y1, z1}, {x1, y, z0}};
         for (int s = 0; s < 2; s++)
             for (int k = 0; k < 4; k++) {

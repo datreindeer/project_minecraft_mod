@@ -1,0 +1,146 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/casting_sand",
+    "sand": "mechanical:block/casting_sand",
+    "burnt": "mechanical:block/burnt_casting_sand"
+  },
+  "elements": [
+    {
+      "from": [
+        6.5,
+        14,
+        10.5
+      ],
+      "to": [
+        9.5,
+        16,
+        13
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6.5,
+            3,
+            9.5,
+            5.5
+          ],
+          "texture": "#sand"
+        },
+        "up": {
+          "uv": [
+            6.5,
+            10.5,
+            9.5,
+            13
+          ],
+          "texture": "#sand"
+        },
+        "north": {
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            2
+          ],
+          "texture": "#sand"
+        },
+        "south": {
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            2
+          ],
+          "texture": "#sand"
+        },
+        "east": {
+          "uv": [
+            3,
+            0,
+            5.5,
+            2
+          ],
+          "texture": "#sand"
+        },
+        "west": {
+          "uv": [
+            10.5,
+            0,
+            13,
+            2
+          ],
+          "texture": "#sand"
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        14,
+        13
+      ],
+      "to": [
+        9.5,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            3
+          ],
+          "texture": "#sand"
+        },
+        "up": {
+          "uv": [
+            6.5,
+            13,
+            9.5,
+            16
+          ],
+          "texture": "#sand"
+        },
+        "north": {
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            2
+          ],
+          "texture": "#sand"
+        },
+        "south": {
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            2
+          ],
+          "texture": "#sand"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#sand"
+        },
+        "west": {
+          "uv": [
+            13,
+            0,
+            16,
+            2
+          ],
+          "texture": "#sand"
+        }
+      }
+    }
+  ]
+}

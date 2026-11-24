@@ -41,7 +41,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class HighFurnaceTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt", "high_furnace_pour", "high_furnace_iron", "trough_flow", "trough_pour", "foundry_casting", "finery_hearth", "high_furnace_glass_bell", "high_furnace_salamander", "high_furnace_coke"};
+    private static final String[] TESTS = {"high_furnace_shape", "high_furnace_heat", "high_furnace_melt", "high_furnace_pour", "high_furnace_iron", "trough_flow", "trough_pour", "foundry_casting", "finery_hearth", "high_furnace_glass_bell", "high_furnace_salamander", "high_furnace_coke", "trough_connect"};
 
     static {
         TEST_FUNCTIONS.register("high_furnace_shape", () -> HighFurnaceTest::shape);
@@ -51,6 +51,7 @@ public final class HighFurnaceTest {
         TEST_FUNCTIONS.register("high_furnace_iron", () -> HighFurnaceTest::iron);
         TEST_FUNCTIONS.register("trough_flow", () -> HighFurnaceTest::troughFlow);
         TEST_FUNCTIONS.register("trough_pour", () -> HighFurnaceTest::troughPour);
+        TEST_FUNCTIONS.register("trough_connect", () -> HighFurnaceTest::troughConnect);
         TEST_FUNCTIONS.register("foundry_casting", () -> HighFurnaceTest::foundryCasting);
         TEST_FUNCTIONS.register("finery_hearth", () -> HighFurnaceTest::finery);
         TEST_FUNCTIONS.register("high_furnace_glass_bell", () -> HighFurnaceTest::glassBell);
@@ -67,7 +68,7 @@ public final class HighFurnaceTest {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "high_furnace"), new TestEnvironmentDefinition.AllOf(List.of()));
         for (String t : TESTS)
             event.registerTest(Identifier.fromNamespaceAndPath(MODID, t), new FunctionGameTestInstance(
-                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, t.endsWith("melt") || t.endsWith("iron") || t.endsWith("casting") || t.endsWith("hearth") || t.endsWith("bell") ? 1000 : 400, true)));
+                    ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, t)), TestArea.of(env, t.endsWith("melt") || t.endsWith("connect") || t.endsWith("iron") || t.endsWith("casting") || t.endsWith("hearth") || t.endsWith("bell") ? 1000 : 400, true)));
     }
 
     /** Where a test furnace stands: its Front's position (relative), facing north; the inside starts right south of it. */
@@ -441,6 +442,87 @@ public final class HighFurnaceTest {
             h.assertTrue(mold.molten() == Molten.GOLD, "the mold at the line's end was filled through the troughs: " + mold.molten() + " filled " + mold.filled);
             h.assertTrue(total == 1000, "pool + troughs + cast = what was tapped: " + total);
             h.succeed();
+        });
+    }
+
+    /** Places a trough (or a Clay Channel) shaped as a player placing it would get it. */
+    private static void placeShaped(GameTestHelper h, BlockPos p, ClayChannelBlock block) {
+        h.setBlock(p, block);
+        h.setBlock(p, block.stateAt(h.getLevel(), h.absolutePos(p)));
+    }
+
+    private static boolean open(GameTestHelper h, BlockPos p, Direction d) {
+        return h.getBlockState(p).getValue(ClayChannelBlock.SIDES.get(d));
+    }
+
+    /**
+     * A casting line built only with direct connections: the plug knocked out of a Taphole runs bronze straight into the
+     * trough at its front (no spout); the troughs open their arms exactly toward what they fill (a Foundry Basin and a
+     * Molding Flask a block down, an Iron Ingot Mold at their level, a Sand Runner in the floor feeding two Pig Molds) and
+     * those open their sides back; everything fills and not a mB is made or lost. Beside a basin at its own level, a
+     * furnace wall, or (a Clay Channel) an iron mold, it stays shut.
+     */
+    private static void troughConnect(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        Built b = build(h, 4, 4, 2, 2, 5, 1);
+        BlockPos tap = new BlockPos(4, 2, 6), t1 = new BlockPos(4, 2, 7), t2 = new BlockPos(4, 2, 8), t3 = new BlockPos(4, 2, 9);
+        BlockPos basin = new BlockPos(5, 1, 8), flask = new BlockPos(3, 1, 8), mold = new BlockPos(5, 2, 9);
+        BlockPos r1 = new BlockPos(4, 1, 10), r2 = new BlockPos(4, 1, 11), pigW = new BlockPos(3, 1, 11), pigE = new BlockPos(5, 1, 11);
+        h.setBlock(tap, HighFurnace.TAPHOLE.get().defaultBlockState().setValue(HighFurnaceWallBlock.Facing.FACING, Direction.SOUTH));
+        for (int x = 2; x <= 6; x++) for (int z = 7; z <= 12; z++) h.setBlock(new BlockPos(x, 1, z), HighFurnace.CASTING_SAND.get());
+        for (BlockPos t : new BlockPos[] {t1, t2, t3}) placeShaped(h, t, HighFurnace.REFRACTORY_TROUGH.get());
+        for (BlockPos r : new BlockPos[] {r1, r2}) placeShaped(h, r, HighFurnace.SAND_RUNNER.get());
+        h.setBlock(basin, HighFurnace.FOUNDRY_BASIN.get());
+        h.setBlock(flask, HighFurnace.MOLDING_FLASK.get().defaultBlockState().setValue(MoldingFlaskBlock.STAGE, MoldingFlaskBlock.Stage.READY));
+        ((MoldingFlaskBlock.Entity) level.getBlockEntity(h.absolutePos(flask))).shape = MoldingFlaskBlock.FlaskShape.PICKAXE_HEAD;
+        h.setBlock(mold, HighFurnace.IRON_INGOT_MOLD.get());
+        h.setBlock(pigW, HighFurnace.PIG_MOLD.get());
+        h.setBlock(pigE, HighFurnace.PIG_MOLD.get());
+        // what must stay shut: a trough beside a basin at its own level, beside the furnace's wall; a Clay Channel beside an iron mold
+        h.setBlock(new BlockPos(9, 2, 12), HighFurnace.FOUNDRY_BASIN.get());
+        placeShaped(h, new BlockPos(8, 2, 12), HighFurnace.REFRACTORY_TROUGH.get());
+        placeShaped(h, new BlockPos(7, 2, 5), HighFurnace.REFRACTORY_TROUGH.get());
+        h.setBlock(new BlockPos(9, 2, 16), HighFurnace.IRON_INGOT_MOLD.get());
+        placeShaped(h, new BlockPos(8, 2, 16), Smelting.CLAY_CHANNEL.get());
+        h.assertTrue(open(h, t1, Direction.NORTH) && open(h, t1, Direction.SOUTH) && !open(h, t1, Direction.EAST), "the first trough joins the taphole: " + h.getBlockState(t1));
+        h.assertTrue(open(h, t2, Direction.EAST) && open(h, t2, Direction.WEST), "the trough opens toward the basin and the flask below it: " + h.getBlockState(t2));
+        h.assertTrue(open(h, t3, Direction.EAST) && open(h, t3, Direction.SOUTH) && !open(h, t3, Direction.WEST), "toward the ingot mold and the runner: " + h.getBlockState(t3));
+        h.assertTrue(open(h, basin, Direction.WEST) && open(h, flask, Direction.EAST) && open(h, mold, Direction.WEST) && !open(h, mold, Direction.NORTH),
+                "the casts open their sides toward the trough: " + h.getBlockState(basin) + " " + h.getBlockState(flask) + " " + h.getBlockState(mold));
+        h.assertTrue(open(h, pigW, Direction.EAST) && open(h, pigE, Direction.WEST) && open(h, r1, Direction.NORTH) && open(h, r2, Direction.WEST),
+                "the runner joins the trough above and the pig molds: " + h.getBlockState(r1) + " " + h.getBlockState(pigW));
+        h.assertTrue(!open(h, new BlockPos(8, 2, 12), Direction.EAST) && !open(h, new BlockPos(9, 2, 12), Direction.WEST), "a basin at the trough's own level is not joined");
+        h.assertTrue(!open(h, new BlockPos(7, 2, 5), Direction.WEST), "a trough beside the furnace wall stays shut");
+        h.assertTrue(!open(h, new BlockPos(8, 2, 16), Direction.EAST) && !open(h, new BlockPos(9, 2, 16), Direction.WEST), "a Clay Channel does not join an iron mold");
+        HighFurnaceBlockEntity f = (HighFurnaceBlockEntity) level.getBlockEntity(h.absolutePos(b.front()));
+        f.check(level);
+        h.assertTrue(f.formed() && f.shape().tapholes().size() == 1, "formed with a taphole: " + f.problem());
+        for (int t = 1; t < 990; t++) h.runAtTickTime(t, () -> f.setTemperatureForTest(1300));
+        f.pool().add(Molten.BRONZE, 6000);
+        TroughBlockEntity first = (TroughBlockEntity) level.getBlockEntity(h.absolutePos(t1));
+        h.runAfterDelay(10, () -> {
+            h.assertTrue(first.amount() == 0 && f.pool().get(Molten.BRONZE) == 6000, "plugged, nothing runs: " + first.amount());
+            h.setBlock(tap, h.getBlockState(tap).setValue(HighFurnaceWallBlock.Facing.OPEN, true));
+            h.runAfterDelay(3, () -> h.assertTrue(first.amount() > 0 && first.molten() == Molten.BRONZE, "open, the taphole runs straight into the trough at its front: " + first.amount()));
+            h.runAfterDelay(700, () -> {
+                FoundryBasinBlock.Entity be = (FoundryBasinBlock.Entity) level.getBlockEntity(h.absolutePos(basin));
+                MoldingFlaskBlock.Entity fe = (MoldingFlaskBlock.Entity) level.getBlockEntity(h.absolutePos(flask));
+                IngotMoldBlock.Entity me = (IngotMoldBlock.Entity) level.getBlockEntity(h.absolutePos(mold));
+                IngotMoldBlock.Entity pw = (IngotMoldBlock.Entity) level.getBlockEntity(h.absolutePos(pigW)), pe = (IngotMoldBlock.Entity) level.getBlockEntity(h.absolutePos(pigE));
+                h.assertTrue(be.whole && be.molten() == Molten.BRONZE, "the basin a block down filled: " + be.molten() + " " + be.filled);
+                h.assertTrue(h.getBlockState(flask).getValue(MoldingFlaskBlock.STAGE).compareTo(MoldingFlaskBlock.Stage.MOLTEN) >= 0, "the flask filled: " + h.getBlockState(flask));
+                h.assertTrue(me.molten() == Molten.BRONZE, "the ingot mold at the trough's level filled");
+                h.assertTrue(pw.molten() == Molten.BRONZE && pe.molten() == Molten.BRONZE, "both pig molds filled from the runner: " + pw.molten() + " " + pe.molten());
+                int inLine = 0;
+                for (BlockPos t : new BlockPos[] {t1, t2, t3, r1, r2}) {
+                    TroughBlockEntity tb = (TroughBlockEntity) level.getBlockEntity(h.absolutePos(t));
+                    inLine += tb.amount() + tb.buffer;
+                }
+                int casts = be.filled + MoldingFlaskBlock.FlaskShape.PICKAXE_HEAD.mb + IngotMoldBlock.CAST + 2 * IngotMoldBlock.Kind.PIG.cast;
+                int total = f.pool().get(Molten.BRONZE) + inLine + casts;
+                h.assertTrue(total == 6000, "pool + troughs + casts = what was tapped: " + total);
+                h.succeed();
+            });
         });
     }
 

@@ -365,6 +365,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
             intake(level);
             melt(level);
             if (pool.mix(temperature())) dirty = true;
+            tapDirect(level);
         }
         setChanged();
         if (level.getGameTime() % 20 == 0) dirty = true; // the temperature for the client's flames
@@ -492,6 +493,43 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
     }
 
     /** Every place melts at once: 40 ticks per 100 mB at the melting point, faster when hotter; it waits while too cold or the pool is full. */
+    /**
+     * Tapholes with the plug out and a channel joined straight to their front ({@link ChannelFlow#ports}): the chosen
+     * layer runs out at a spout's rate into a Refractory Trough. A Clay Channel there takes copper and bronze (as from a
+     * Furnace Tap, in quarters) but anything hotter than clay stands cracks it and is lost with it.
+     */
+    private void tapDirect(ServerLevel level) {
+        Molten m = pouring();
+        if (m == null || temperature() < m.melt) return;
+        long now = level.getGameTime();
+        for (HighFurnaceShape.Wall w : shape.tapholes()) {
+            BlockState ts = level.getBlockState(w.pos());
+            if (!ts.is(HighFurnace.TAPHOLE.get()) || !ts.getValue(HighFurnaceWallBlock.Facing.OPEN)) continue;
+            Direction out = ts.getValue(HighFurnaceWallBlock.Facing.FACING);
+            BlockPos q = ChannelFlow.across(level, w.pos(), ts, ChannelFlow.port(w.pos(), out, w.pos().getY()));
+            if (q == null) continue;
+            if (level.getBlockEntity(q) instanceof TroughBlockEntity t) {
+                int n = Math.min(Math.min(PouringSpoutBlockEntity.RATE, t.room()), pool.get(m));
+                if (n <= 0 || !t.takes(m, now)) continue;
+                t.add(m, pool.drain(m, n), 0, Math.round(temperature()), now, out.getOpposite());
+                dirty = true;
+                Smelting.award(level, w.pos(), HighFurnace.POUR_ADVANCEMENT, 16);
+            } else if (level.getBlockEntity(q) instanceof ClayChannelBlockEntity) {
+                if (m.melt > PouringSpoutBlockEntity.CLAY_MAX) {
+                    if (TroughFlow.crack(level, q, now)) pool.drain(m, Math.min(TroughFlow.RATE / 2, pool.get(m)));
+                } else if (m.metal != null && now % ChannelFlow.STEP_TICKS == 0) {
+                    FurnaceMelt clay = new FurnaceMelt(); // the pool's layer in quarters, for the Clay Channels' own flow
+                    int had = pool.get(m) / Molten.QUARTER;
+                    clay.setPool(m.metal, had);
+                    if (ChannelFlow.step(level, q, clay, clay.alloy())) {
+                        pool.drain(m, (had - clay.poolTotal()) * Molten.QUARTER);
+                        dirty = true;
+                    }
+                }
+            }
+        }
+    }
+
     private void melt(ServerLevel level) {
         float t = temperature();
         for (int i = 0; i < slots.size(); i++) {

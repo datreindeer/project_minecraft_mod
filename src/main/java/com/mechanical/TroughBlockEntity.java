@@ -62,6 +62,25 @@ public class TroughBlockEntity extends BlockEntity {
     int buffer;
     @Nullable Direction bufferSide;
     @Nullable Molten bufferMolten;
+    /** Synced while it pours into a cast: where the metal lands in it (the sink's target height, in the cast's block). */
+    float pourY;
+
+    public @Nullable Direction pouringTo() {
+        return buffer > 0 ? bufferSide : null;
+    }
+
+    /** The melt that last ran through it (still there or not). */
+    public @Nullable Molten lastMolten() {
+        return molten;
+    }
+
+    public @Nullable Molten bufferMolten() {
+        return bufferMolten;
+    }
+
+    public float pourY() {
+        return pourY;
+    }
 
     public TroughBlockEntity(BlockPos pos, BlockState state) {
         super(HighFurnace.TROUGH_ENTITY.get(), pos, state);
@@ -140,10 +159,7 @@ public class TroughBlockEntity extends BlockEntity {
         int out = Math.min(amount, mb);
         if (out <= 0) return 0;
         mb -= out;
-        if (mb == 0) {
-            molten = null;
-            frozen = false;
-        }
+        if (mb == 0) frozen = false; // the melt is kept as what last ran through (the client draws a run passing on)
         movedAt = now;
         sync();
         return out;
@@ -181,17 +197,19 @@ public class TroughBlockEntity extends BlockEntity {
             output.putInt("heat", heat);
             output.putLong("moved_at", movedAt);
             output.putBoolean("frozen", frozen);
-            for (int k = 0; k < 4; k++) {
-                output.putLong("out_at_" + k, outAt[k]);
-                output.putLong("in_at_" + k, inAt[k]);
-            }
             output.putLong("arrived_at", arrivedAt);
             if (arrivedFrom != null) output.putString("arrived_from", arrivedFrom.getSerializedName());
+        }
+        if (molten != null) output.putString("last_molten", molten.id);
+        for (int k = 0; k < 4; k++) { // also while it pours a cast with all its metal in the buffer (the client draws the run)
+            output.putLong("out_at_" + k, outAt[k]);
+            output.putLong("in_at_" + k, inAt[k]);
         }
         if (buffer > 0 && bufferSide != null && bufferMolten != null) {
             output.putInt("buffer", buffer);
             output.putString("buffer_side", bufferSide.getSerializedName());
             output.putString("buffer_molten", bufferMolten.id);
+            output.putFloat("pour_y", pourY);
         }
     }
 
@@ -200,6 +218,7 @@ public class TroughBlockEntity extends BlockEntity {
         super.loadAdditional(input);
         molten = Molten.byId(input.getStringOr("molten", ""));
         mb = molten == null ? 0 : input.getIntOr("mb", 0);
+        if (molten == null) molten = Molten.byId(input.getStringOr("last_molten", ""));
         dist = input.getIntOr("dist", 0);
         heat = input.getIntOr("heat", 0);
         movedAt = input.getLongOr("moved_at", 0);
@@ -213,6 +232,7 @@ public class TroughBlockEntity extends BlockEntity {
         buffer = input.getIntOr("buffer", 0);
         bufferSide = Direction.byName(input.getStringOr("buffer_side", ""));
         bufferMolten = Molten.byId(input.getStringOr("buffer_molten", ""));
+        pourY = input.getFloatOr("pour_y", 0);
         if (bufferSide == null || bufferMolten == null) buffer = 0;
     }
 

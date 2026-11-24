@@ -683,3 +683,9 @@ vanillas Anvil (järnålderns dokument säger ångåldern; gjuts inte från stå
   `CokeOvenBlock`, Coke i eldstäderna, Hot Blast Stove (`HighFurnaceBlockEntity.hotBlast`), `SteelLadleItem`.
   Test `finery_hearth`, `high_furnace_glass_bell`, `high_furnace_salamander`, `high_furnace_coke`. Kvar/förenklat: se
   `docs/ages/04-steel-age.md` 6f.
+- **Fogar (v0.207.0):** `ChannelFlow.ports` är enda sanningen för vad som fogas (också `TroughFlow.pourIntoSink`, som förut
+  fyllde vilken sänka som helst bredvid), `ChannelFlow.joins` (kokill/flaska/bassäng/pip bara med Refractory Trough, Furnace
+  Tap bara med lerränna, formar aldrig med varandra), `ChannelFlow.connect` (formarnas öppna sidor, `PipeBlock`-egenskaper
+  och multipart med skåror/rännläppar), Taphole-port och direkttappning (`HighFurnaceBlockEntity.tapDirect`, pluggen med tom
+  hand), höga formar (bassäng, flaska, tackform, löpare) med portar ett block upp, fogarna i `client/TroughRenderer`
+  (läpp-, ränn- och fallstrålar). Test `trough_connect`. Se `docs/ages/04-steel-age.md` 6e2.

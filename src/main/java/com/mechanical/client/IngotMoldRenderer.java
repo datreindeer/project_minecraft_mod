@@ -38,6 +38,8 @@ public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Ent
         float cooled;
         float[] level = new float[0];
         IngotMoldBlock.Kind kind = IngotMoldBlock.Kind.INGOT;
+        /** The sides a trough joins (their gates are cut): the melt shows in the gate too, so it reads as one run. */
+        final java.util.List<net.minecraft.core.Direction> gates = new java.util.ArrayList<>(4);
     }
 
     public IngotMoldRenderer(BlockEntityRendererProvider.Context context) {}
@@ -56,6 +58,9 @@ public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Ent
         state.kind = mold.kind();
         if (state.level.length != state.kind.pockets.length) state.level = new float[state.kind.pockets.length];
         for (int i = 0; i < state.level.length; i++) state.level[i] = mold.pocket(i);
+        state.gates.clear();
+        var bs = mold.getBlockState();
+        for (var e : com.mechanical.ClayChannelBlock.SIDES.entrySet()) if (bs.hasProperty(e.getValue()) && bs.getValue(e.getValue())) state.gates.add(e.getKey());
     }
 
     @Override
@@ -71,6 +76,13 @@ public class IngotMoldRenderer implements BlockEntityRenderer<IngotMoldBlock.Ent
                 float[] q = state.kind.pockets[i];
                 float y = (state.kind.floor + (state.kind.top - state.kind.floor) * state.level[i]) / 16;
                 quad(p, buf, c, q[0] / 16, q[2] / 16, q[1] / 16, q[3] / 16, y, glow ? LightCoordsUtil.FULL_BRIGHT : state.lightCoords);
+            }
+            // the gates a trough runs in through: melt over the gate's floor at the pockets' level (running in: just above the floor)
+            float lv = state.level.length == 0 ? 0 : state.level[0];
+            for (net.minecraft.core.Direction d : state.gates) {
+                float[] g = state.kind.gate(d);
+                float y = Math.max(state.kind.floor + (state.kind.top - state.kind.floor) * lv, g[4] + 0.3F) / 16;
+                quad(p, buf, c, g[0] / 16, g[2] / 16, g[1] / 16, g[3] / 16, y, glow ? LightCoordsUtil.FULL_BRIGHT : state.lightCoords);
             }
         });
     }

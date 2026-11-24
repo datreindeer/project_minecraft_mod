@@ -1,0 +1,78 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/casting_sand",
+    "sand": "mechanical:block/casting_sand",
+    "burnt": "mechanical:block/burnt_casting_sand"
+  },
+  "elements": [
+    {
+      "from": [
+        13,
+        14,
+        6.5
+      ],
+      "to": [
+        16,
+        16,
+        9.5
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            13,
+            6.5,
+            16,
+            9.5
+          ],
+          "texture": "#sand"
+        },
+        "up": {
+          "uv": [
+            13,
+            6.5,
+            16,
+            9.5
+          ],
+          "texture": "#sand"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            3,
+            2
+          ],
+          "texture": "#sand"
+        },
+        "south": {
+          "uv": [
+            13,
+            0,
+            16,
+            2
+          ],
+          "texture": "#sand"
+        },
+        "east": {
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            2
+          ],
+          "texture": "#sand"
+        },
+        "west": {
+          "uv": [
+            6.5,
+            0,
+            9.5,
+            2
+          ],
+          "texture": "#sand"
+        }
+      }
+    }
+  ]
+}

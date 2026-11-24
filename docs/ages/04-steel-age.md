@@ -305,6 +305,29 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
   fyllnaden stiger, stelnar på 10 s per 1000 mB.
 - Test `foundry_casting`. Inte gjort: Anvil i flaska (väntar på användaren), Steel Block kräver inte 1650°.
 
+### 6e2. Byggt: synliga fogar mellan rännor, tapphål och formar (v0.207.0)
+
+- **En sanning för vad som fogas:** allt som tar emot eller ger metall i sidled har portar (`ChannelFlow.ports`), och en
+  ränna öppnar en arm exakt dit metall kan gå (`ChannelFlow.joins`). En ränna fyller aldrig något den inte syns fogad mot,
+  och metall rinner aldrig "in i en vägg". Gjutformarna öppnar sina sidor tillbaka mot rännan.
+- **Taphole direkt:** en ränna (eller en lutning ner) rakt framför ett Taphole fogas till dess front. Tom hand på tapphålet
+  slår ut lerpluggen / pluggar igen; öppet häller ugnen det valda lagret i rännan, 40 mB per tick. Tapphålet har en kort
+  järnläpp under hålet, och metallen syns rinna av läppen ner i rännan. Pipen (Pouring Spout) fungerar som förut, och med en
+  pip på tapphålet styr pipens spak det. En **Clay Channel** framför tapphålet tar koppar och brons (som från en Furnace
+  Tap), men spricker och går sönder av smältor över 1100°.
+- **Låga formar på rännans nivå:** Iron Ingot/Plate/Nugget Mold får en 6 px skåra i kanten och en kort järnläpp där en
+  ränna fogas; metallen rinner över läppen in i skåran och alla fickor fylls samtidigt.
+- **Höga formar ett block ner** (en ränna på golvet bredvid en nedsänkt form): **Foundry Basin** och **Molding Flask** får
+  en kort stålränna hängd över kanten (bassängen 4,5 px, flaskan 7 px ut över ingjutskoppen); metallen rinner längs den och
+  faller från läppen ner i formen. **Pig Mold** och **Sand Runner** sitter i golvet: deras portar är ett block upp, så en
+  ränna på golvet bredvid häller rakt över sin ände ner i löparen eller tackans 3 px inlopp. Tackformen får inlopp mot de
+  sidor där en löpare eller ränna fogas.
+- Kokill, flaska och bassäng fogas bara till Refractory Troughs (inte lerrännor), en Furnace Tap bara till lerrännor, och
+  formar fogas aldrig till varandra. Står metallen still vid en öppen ände syns en ljus kant där den stannar.
+- Test `trough_connect`. Inte gjort: en Clay Mold vid en ränna är fogad även när smältan är för het för lera (den tar då
+  inget); Finery Hearth, Foundry Table och Steel Ladle tar inte emot i sidled (härden matas med tackor, bordet står under
+  formen, skopan är ett föremål).
+
 ### 6f. Byggt: färskning, glas, stora gjutningar och koks (resten av fas 5, fas 6 och 7)
 
 - **Finery Hearth** (`F F` / `FPF`, Fire Brick + Iron Plate): Charcoal och Pig Iron Ingots in, tänd, en Great Bellows mot

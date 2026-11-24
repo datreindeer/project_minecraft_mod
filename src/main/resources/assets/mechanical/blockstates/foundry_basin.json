@@ -1,7 +1,44 @@
 {
-  "variants": {
-    "": {
-      "model": "mechanical:block/foundry_basin"
+  "multipart": [
+    {
+      "apply": {
+        "model": "mechanical:block/foundry_basin"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/foundry_basin_chute"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/foundry_basin_chute",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/foundry_basin_chute",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/foundry_basin_chute",
+        "y": 270
+      }
     }
-  }
+  ]
 }

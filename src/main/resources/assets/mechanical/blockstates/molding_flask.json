@@ -1,19 +1,79 @@
 {
-  "variants": {
-    "stage=empty": {
-      "model": "mechanical:block/molding_flask_empty"
+  "multipart": [
+    {
+      "when": {
+        "stage": "empty"
+      },
+      "apply": {
+        "model": "mechanical:block/molding_flask_empty"
+      }
     },
-    "stage=sand": {
-      "model": "mechanical:block/molding_flask_sand"
+    {
+      "when": {
+        "stage": "sand"
+      },
+      "apply": {
+        "model": "mechanical:block/molding_flask_sand"
+      }
     },
-    "stage=ready": {
-      "model": "mechanical:block/molding_flask_ready"
+    {
+      "when": {
+        "stage": "ready"
+      },
+      "apply": {
+        "model": "mechanical:block/molding_flask_ready"
+      }
     },
-    "stage=molten": {
-      "model": "mechanical:block/molding_flask_molten"
+    {
+      "when": {
+        "stage": "molten"
+      },
+      "apply": {
+        "model": "mechanical:block/molding_flask_molten"
+      }
     },
-    "stage=set": {
-      "model": "mechanical:block/molding_flask_set"
+    {
+      "when": {
+        "stage": "set"
+      },
+      "apply": {
+        "model": "mechanical:block/molding_flask_set"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/molding_flask_chute"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/molding_flask_chute",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/molding_flask_chute",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/molding_flask_chute",
+        "y": 270
+      }
     }
-  }
+  ]
 }

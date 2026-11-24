@@ -42,12 +42,21 @@ public final class ChannelFlow {
         return new BlockPos(2 * p.getX() + 1 + d.getStepX(), h, 2 * p.getZ() + 1 + d.getStepZ());
     }
 
+    /**
+     * Every port of the thing at {@code p}: the one source of truth for what joins what, asked by the Clay Channels, the
+     * Refractory Troughs ({@link TroughFlow}) and the casts' open sides ({@link #connect}). Casts that stand lower than a
+     * trough (a Foundry Basin, a Molding Flask, a Pig Mold, and a Sand Runner dug in the floor) have their ports one block
+     * up: a trough standing on the floor beside one joins it and pours over its rim.
+     */
     public static List<BlockPos> ports(BlockPos p, BlockState s) {
         List<BlockPos> out = new ArrayList<>(4);
-        if (s.getBlock() instanceof RefractoryTroughBlock.Gate) { // a gate: its two ends (shut, TroughFlow passes nothing on through it)
+        Block b = s.getBlock();
+        if (b instanceof RefractoryTroughBlock.Gate) { // a gate: its two ends (shut, TroughFlow passes nothing on through it)
             for (Direction.AxisDirection a : Direction.AxisDirection.values())
                     out.add(port(p, Direction.fromAxisAndDirection(s.getValue(RefractoryTroughBlock.Gate.AXIS), a), p.getY()));
-        } else if (s.getBlock() instanceof ClayChannelBlock) {
+        } else if (b instanceof RefractoryTroughBlock.SandRunner || b instanceof PigMoldBlock || b instanceof FoundryBasinBlock || b instanceof MoldingFlaskBlock) {
+            for (Direction d : Direction.Plane.HORIZONTAL) out.add(port(p, d, p.getY() + 1));
+        } else if (b instanceof ClayChannelBlock) {
             Direction up = s.getValue(ClayChannelBlock.SLOPE).up;
             if (up != null) {
                 out.add(port(p, up.getOpposite(), p.getY()));
@@ -55,33 +64,94 @@ public final class ChannelFlow {
             } else {
                 for (Direction d : Direction.Plane.HORIZONTAL) out.add(port(p, d, p.getY()));
             }
-        } else if (s.getBlock() instanceof ClayMoldBlock) {
+        } else if (b instanceof ClayMoldBlock || b instanceof IngotMoldBlock) { // the iron molds sit beside troughs at their level
             for (Direction d : Direction.Plane.HORIZONTAL) out.add(port(p, d, p.getY()));
-        } else if (s.getBlock() instanceof IngotMoldBlock) { // the High Furnace's casts sit beside troughs like molds
-            for (Direction d : Direction.Plane.HORIZONTAL) out.add(port(p, d, p.getY()));
-        } else if (s.getBlock() instanceof PouringSpoutBlock) { // a spout at a trough's end: its back
+        } else if (b instanceof PouringSpoutBlock) { // a spout at a trough's end: its back
             out.add(port(p, s.getValue(PouringSpoutBlock.FACING).getOpposite(), p.getY()));
-        } else if (s.getBlock() instanceof FurnaceTapBlock) {
+        } else if (b instanceof FurnaceTapBlock) {
             out.add(port(p, s.getValue(FurnaceTapBlock.FACING), p.getY()));
+        } else if (s.is(HighFurnace.TAPHOLE.get())) { // the High Furnace's taphole: its front, at the hole's lip
+            out.add(port(p, s.getValue(HighFurnaceWallBlock.Facing.FACING), p.getY()));
         }
         return out;
     }
 
+    /** The port of {@code p} on side {@code d}, or null. */
+    public static @Nullable BlockPos portOn(BlockPos p, BlockState s, Direction d) {
+        for (BlockPos port : ports(p, s)) if (port.getX() == 2 * p.getX() + 1 + d.getStepX() && port.getZ() == 2 * p.getZ() + 1 + d.getStepZ()) return port;
+        return null;
+    }
+
+    /**
+     * Whether two things sharing a port pass metal, so they join: always through a channel (casts never join each other),
+     * a steel-age cast or a Pouring Spout only with a Refractory Trough, a bronze Furnace Tap only with a Clay Channel.
+     */
+    public static boolean joins(Block a, Block b) {
+        return (a instanceof ClayChannelBlock || b instanceof ClayChannelBlock) && takes(a, b) && takes(b, a);
+    }
+
+    private static boolean takes(Block a, Block other) {
+        if (a instanceof IngotMoldBlock || a instanceof FoundryBasinBlock || a instanceof MoldingFlaskBlock || a instanceof PouringSpoutBlock)
+            return other instanceof RefractoryTroughBlock;
+        if (a instanceof FurnaceTapBlock) return other instanceof ClayChannelBlock && !(other instanceof RefractoryTroughBlock);
+        return true;
+    }
+
+    /** A steel-age cast with open sides (the iron molds, Pig Mold, Foundry Basin, Molding Flask). */
+    public static boolean isCast(BlockState s) {
+        return s.getBlock() instanceof IngotMoldBlock || s.getBlock() instanceof FoundryBasinBlock || s.getBlock() instanceof MoldingFlaskBlock;
+    }
+
+    /** A cast's open sides: true where a trough joins it (its rim is notched there, or a chute hangs over it). */
+    public static BlockState connect(LevelReader level, BlockPos pos, BlockState s) {
+        for (var e : ClayChannelBlock.SIDES.entrySet()) {
+            BlockPos port = portOn(pos, s, e.getKey());
+            s = s.setValue(e.getValue(), port != null && across(level, pos, s, port) != null);
+        }
+        return s;
+    }
+
+    /** A cast placed or changed: its own open sides, and the troughs diagonally above it that may now join it. */
+    static void castPlaced(net.minecraft.world.level.Level level, BlockPos pos, BlockState state) {
+        if (level.isClientSide()) return;
+        BlockState t = connect(level, pos, state);
+        if (t != state) level.setBlock(pos, t, Block.UPDATE_ALL);
+        ClayChannelBlock.refreshAround(level, pos);
+    }
+
+    /** The open sides a cast's block state carries (all shut). */
+    static BlockState shut(BlockState s) {
+        for (var p : ClayChannelBlock.SIDES.values()) s = s.setValue(p, false);
+        return s;
+    }
+
+    /** The shape something that joins takes here now (a channel's arms and slope, a cast's open sides), or {@code s} itself. */
+    static BlockState reshape(LevelReader level, BlockPos pos, BlockState s) {
+        if (s.getBlock() instanceof ClayChannelBlock channel) return channel.stateAt(level, pos);
+        return isCast(s) ? connect(level, pos, s) : s;
+    }
+
     /** Height for the flow, in half blocks: a mold sits below the channels beside it (it fills first), a slope between its two levels. */
     static int elevation(BlockPos p, BlockState s) {
-        if (s.getBlock() instanceof ClayMoldBlock || s.getBlock() instanceof IngotMoldBlock) return 2 * p.getY() - 1;
+        if (s.getBlock() instanceof ClayMoldBlock || isCast(s)) return 2 * p.getY() - 1;
         if (s.getBlock() instanceof ClayChannelBlock && s.getValue(ClayChannelBlock.SLOPE).up != null) return 2 * p.getY() + 1;
         return 2 * p.getY();
     }
 
     /** What shares {@code port} with {@code self} on the other side of its edge (at the port's height, or a slope one below), or null. */
     public static @Nullable BlockPos across(BlockGetter level, BlockPos self, BlockPos port) {
+        return across(level, self, level.getBlockState(self), port);
+    }
+
+    /** The same, for {@code self} being {@code selfState} (a block being placed is not in the level yet); only what {@link #joins} it. */
+    public static @Nullable BlockPos across(BlockGetter level, BlockPos self, BlockState selfState, BlockPos port) {
         int dx = port.getX() - (2 * self.getX() + 1), dz = port.getZ() - (2 * self.getZ() + 1);
         if (dx == 0 && dz == 0) return null;
         for (int y = port.getY(); y >= port.getY() - 1; y--) {
             BlockPos q = new BlockPos(self.getX() + dx, y, self.getZ() + dz);
             if (level instanceof LevelReader reader && !reader.hasChunkAt(q)) return null;
-            if (ports(q, level.getBlockState(q)).contains(port)) return q;
+            BlockState qs = level.getBlockState(q);
+            if (ports(q, qs).contains(port) && joins(selfState.getBlock(), qs.getBlock())) return q;
         }
         return null;
     }

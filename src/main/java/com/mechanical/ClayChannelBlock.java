@@ -121,25 +121,23 @@ public class ClayChannelBlock extends Block implements EntityBlock {
         for (Direction d : Direction.Plane.HORIZONTAL) {
             if (level.getBlockState(pos.relative(d)).getBlock() instanceof ClayChannelBlock) continue; // a level channel there: stay flat
             BlockPos high = pos.relative(d).above();
-            if (ChannelFlow.ports(high, level.getBlockState(high)).contains(ChannelFlow.port(pos, d, pos.getY() + 1))) return s.setValue(SLOPE, Slope.of(d));
+            BlockState hs = level.getBlockState(high);
+            if (ChannelFlow.ports(high, hs).contains(ChannelFlow.port(pos, d, pos.getY() + 1)) && ChannelFlow.joins(this, hs.getBlock())) return s.setValue(SLOPE, Slope.of(d));
         }
-        for (var e : SIDES.entrySet()) s = s.setValue(e.getValue(), ChannelFlow.across(level, pos, ChannelFlow.port(pos, e.getKey(), pos.getY())) != null);
+        for (var e : SIDES.entrySet()) s = s.setValue(e.getValue(), ChannelFlow.across(level, pos, s, ChannelFlow.port(pos, e.getKey(), pos.getY())) != null);
         return s;
     }
 
     /**
-     * Re-shapes the channels diagonally above and below (they may join or slope to this one; their direct neighbours
-     * update themselves through {@link #updateShape}). Also called by the tap and molds' neighbours via the level.
+     * Re-shapes the channels and casts diagonally above and below (they may join or slope to this one; their direct
+     * neighbours update themselves through {@link #updateShape}). Also called by the tap and the casts.
      */
     static void refreshAround(Level level, BlockPos pos) {
         for (Direction d : Direction.Plane.HORIZONTAL) {
             for (int dy = -1; dy <= 1; dy += 2) {
                 BlockPos q = pos.relative(d).above(dy);
-                BlockState s = level.getBlockState(q);
-                if (s.getBlock() instanceof ClayChannelBlock channel) {
-                    BlockState t = channel.stateAt(level, q);
-                    if (t != s) level.setBlock(q, t, Block.UPDATE_ALL);
-                }
+                BlockState s = level.getBlockState(q), t = ChannelFlow.reshape(level, q, s);
+                if (t != s) level.setBlock(q, t, Block.UPDATE_ALL);
             }
         }
     }

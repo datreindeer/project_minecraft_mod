@@ -17,7 +17,8 @@ import net.minecraft.world.level.block.state.BlockState;
  * Clay Channels do ({@link ChannelFlow#ports}, {@link ChannelFlow#across}: block-edge ports, slopes like rails, molds
  * beside them), but each trough moves its own metal every {@link #STEP_TICKS}, in mB, any melt:
  * <ol>
- * <li>a mold (or flask, table, basin ...) beside it takes a whole cast through the trough's buffer, as under a spout;</li>
+ * <li>a cast joined to it (an iron mold or a Clay Mold at its level, a Foundry Basin, Molding Flask or Pig Mold one block
+ * down: {@link ChannelFlow#ports}) takes a whole cast through the trough's buffer, as under a spout;</li>
  * <li>downhill first, shared evenly between every lower trough (a T or a fork fills its branches together);</li>
  * <li>then level troughs with less in them get half the difference (it spreads evenly along a level run).</li>
  * </ol>
@@ -58,7 +59,7 @@ public final class TroughFlow {
                 if (e < elev) down.add(o);
                 else if (e == elev && o.mb < t.mb) flat.add(o);
             } else if (qs.getBlock() instanceof ClayChannelBlock && !(qs.getBlock() instanceof RefractoryTroughBlock) && m.melt > PouringSpoutBlockEntity.CLAY_MAX) {
-                crack(level, q, t, now);
+                if (crack(level, q, now)) t.take(Math.min(RATE / 2, t.mb), now);
                 if (t.mb == 0) return;
             }
         }
@@ -99,8 +100,11 @@ public final class TroughFlow {
     /** How long hot iron takes to break a Clay Channel: cracks spread over it, smoking, before it gives. */
     static final int CRACK_TICKS = 25;
 
-    /** Hot iron in clay: the channel cracks (the cracks spreading, a little smoke) and then breaks; what ran into it is lost. */
-    private static void crack(ServerLevel level, BlockPos q, TroughBlockEntity t, long now) {
+    /**
+     * Hot iron in clay: the channel cracks (the cracks spreading, a little smoke) and then breaks. True when it broke (the
+     * caller loses what ran into it).
+     */
+    static boolean crack(ServerLevel level, BlockPos q, long now) {
         if (level.getBlockEntity(q) instanceof ClayChannelBlockEntity c) {
             if (c.crackedAt < 0) {
                 c.crackedAt = now;
@@ -110,23 +114,27 @@ public final class TroughFlow {
             if (age < CRACK_TICKS) {
                 level.destroyBlockProgress(q.hashCode(), q, (int) (age * 10 / CRACK_TICKS));
                 level.sendParticles(ParticleTypes.SMOKE, q.getX() + 0.5, q.getY() + 0.3, q.getZ() + 0.5, 2, 0.2, 0.05, 0.2, 0.01);
-                return;
+                return false;
             }
         }
         level.destroyBlockProgress(q.hashCode(), q, -1);
-        t.take(Math.min(RATE / 2, t.mb), now);
         level.sendParticles(ParticleTypes.LAVA, q.getX() + 0.5, q.getY() + 0.2, q.getZ() + 0.5, 6, 0.25, 0.05, 0.25, 0.0);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, q.getX() + 0.5, q.getY() + 0.3, q.getZ() + 0.5, 4, 0.2, 0.1, 0.2, 0.02);
         level.playSound(null, q, SoundEvents.DECORATED_POT_SHATTER, SoundSource.BLOCKS, 1.0F, 0.8F);
         level.playSound(null, q, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 0.9F);
         level.setBlock(q, Blocks.AIR.defaultBlockState(), 3);
+        return true;
     }
 
-    /** Fills a mold beside the trough through the trough's buffer (a whole cast at a time, as under a spout). */
+    /**
+     * Fills a cast joined to the trough through the trough's buffer (a whole cast at a time, as under a spout). Only what
+     * shares a port with it ({@link ChannelFlow#across}): the trough's arm is open toward it, so the metal never runs into a wall.
+     */
     private static void pourIntoSink(ServerLevel level, BlockPos pos, TroughBlockEntity t, Molten m, long now) {
+        BlockState state = level.getBlockState(pos);
         if (t.bufferSide != null) {
-            BlockPos q = pos.relative(t.bufferSide);
-            PouringSpoutBlockEntity.Sink sink = sinkAt(level, q, t.bufferMolten);
+            BlockPos port = ChannelFlow.portOn(pos, state, t.bufferSide), q = port == null ? null : ChannelFlow.across(level, pos, state, port);
+            PouringSpoutBlockEntity.Sink sink = q == null ? null : sinkAt(level, q, t.bufferMolten);
             int need = sink == null ? 0 : sink.need(level, q, t.bufferMolten);
             if (need == 0 || t.bufferMolten != m) {
                 if (sink != null) sink.abort(level, q);
@@ -137,6 +145,7 @@ public final class TroughFlow {
             t.markOut(t.bufferSide, now);
             t.buffer += n;
             sink.progress(level, q, m, t.buffer, need);
+            t.pourY = (float) sink.target(level, q, t.buffer, need).y;
             if (t.buffer >= need) {
                 sink.fill(level, q, m, t.buffer, t.heat);
                 t.buffer = 0;
@@ -147,10 +156,10 @@ public final class TroughFlow {
             t.sync();
             return;
         }
-        for (Direction d : Direction.Plane.HORIZONTAL) {
-            BlockPos q = pos.relative(d);
-            PouringSpoutBlockEntity.Sink sink = sinkAt(level, q, m);
-            if (sink == null) continue;
+        for (BlockPos port : ChannelFlow.ports(pos, state)) {
+            BlockPos q = ChannelFlow.across(level, pos, state, port);
+            Direction d = q == null ? null : side(pos, q);
+            if (d == null || sinkAt(level, q, m) == null) continue;
             t.bufferSide = d;
             t.bufferMolten = m;
             return;
