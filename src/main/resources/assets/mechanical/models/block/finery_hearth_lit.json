@@ -4,7 +4,8 @@
     "particle": "mechanical:block/finery_hearth_side",
     "side": "mechanical:block/finery_hearth_side",
     "top": "mechanical:block/finery_hearth_top",
-    "lit": "mechanical:block/finery_hearth_top_lit"
+    "lit": "mechanical:block/finery_hearth_top_lit",
+    "rim": "mechanical:block/finery_hearth_rim"
   },
   "elements": [
     {
@@ -130,7 +131,7 @@
             16,
             2
           ],
-          "texture": "#side"
+          "texture": "#rim"
         }
       }
     },
@@ -189,7 +190,7 @@
             16,
             16
           ],
-          "texture": "#side"
+          "texture": "#rim"
         }
       }
     },
@@ -248,7 +249,7 @@
             2,
             14
           ],
-          "texture": "#side"
+          "texture": "#rim"
         }
       }
     },
@@ -307,7 +308,7 @@
             16,
             14
           ],
-          "texture": "#side"
+          "texture": "#rim"
         }
       }
     },

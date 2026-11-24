@@ -3,7 +3,8 @@
   "textures": {
     "particle": "mechanical:block/foundry_basin_side",
     "side": "mechanical:block/foundry_basin_side",
-    "in": "mechanical:block/foundry_basin_inside"
+    "in": "mechanical:block/banded_furnace_casing_top",
+    "lug": "mechanical:block/finery_hearth_rim"
   },
   "elements": [
     {
@@ -129,7 +130,7 @@
             16,
             2
           ],
-          "texture": "#in"
+          "texture": "#side"
         }
       }
     },
@@ -188,7 +189,7 @@
             16,
             16
           ],
-          "texture": "#in"
+          "texture": "#side"
         }
       }
     },
@@ -229,7 +230,7 @@
             2,
             14
           ],
-          "texture": "#in"
+          "texture": "#side"
         }
       }
     },
@@ -270,7 +271,143 @@
             16,
             14
           ],
-          "texture": "#in"
+          "texture": "#side"
+        }
+      }
+    },
+    {
+      "from": [
+        -1,
+        8,
+        6
+      ],
+      "to": [
+        0,
+        10,
+        10
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            15,
+            6,
+            16,
+            10
+          ],
+          "texture": "#lug"
+        },
+        "up": {
+          "uv": [
+            15,
+            6,
+            16,
+            10
+          ],
+          "texture": "#lug"
+        },
+        "north": {
+          "uv": [
+            0,
+            6,
+            1,
+            8
+          ],
+          "texture": "#lug"
+        },
+        "south": {
+          "uv": [
+            15,
+            6,
+            16,
+            8
+          ],
+          "texture": "#lug"
+        },
+        "east": {
+          "uv": [
+            6,
+            6,
+            10,
+            8
+          ],
+          "texture": "#lug"
+        },
+        "west": {
+          "uv": [
+            6,
+            6,
+            10,
+            8
+          ],
+          "texture": "#lug"
+        }
+      }
+    },
+    {
+      "from": [
+        16,
+        8,
+        6
+      ],
+      "to": [
+        17,
+        10,
+        10
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            6,
+            1,
+            10
+          ],
+          "texture": "#lug"
+        },
+        "up": {
+          "uv": [
+            0,
+            6,
+            1,
+            10
+          ],
+          "texture": "#lug"
+        },
+        "north": {
+          "uv": [
+            15,
+            6,
+            16,
+            8
+          ],
+          "texture": "#lug"
+        },
+        "south": {
+          "uv": [
+            0,
+            6,
+            1,
+            8
+          ],
+          "texture": "#lug"
+        },
+        "east": {
+          "uv": [
+            6,
+            6,
+            10,
+            8
+          ],
+          "texture": "#lug"
+        },
+        "west": {
+          "uv": [
+            6,
+            6,
+            10,
+            8
+          ],
+          "texture": "#lug"
         }
       }
     }

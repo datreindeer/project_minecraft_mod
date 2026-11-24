@@ -148,13 +148,13 @@ public final class HighFurnace {
     public static final DeferredItem<Item> FURNACE_SALAMANDER = ITEMS.registerSimpleItem("furnace_salamander", p -> p.stacksTo(1));
     public static final DeferredItem<Item> COKE = ITEMS.registerSimpleItem("coke");
     public static final DeferredBlock<CokeOvenBlock> COKE_OVEN = BLOCKS.registerBlock("coke_oven", CokeOvenBlock::new,
-            p -> p.mapColor(MapColor.QUARTZ).strength(3.0F, 9.0F).sound(SoundType.STONE).requiresCorrectToolForDrops()
+            p -> p.mapColor(MapColor.QUARTZ).strength(3.0F, 9.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().noOcclusion()
                     .lightLevel(s -> s.getValue(CokeOvenBlock.LIT) ? 10 : 0));
     public static final DeferredItem<BlockItem> COKE_OVEN_ITEM = ITEMS.registerSimpleBlockItem("coke_oven", COKE_OVEN);
     public static final Supplier<BlockEntityType<CokeOvenBlock.Entity>> COKE_OVEN_ENTITY = Mechanical.BLOCK_ENTITIES.register("coke_oven",
             () -> new BlockEntityType<>(CokeOvenBlock.Entity::new, HighFurnace.COKE_OVEN.get()));
     public static final DeferredBlock<Block> HOT_BLAST_STOVE = BLOCKS.registerSimpleBlock("hot_blast_stove",
-            p -> p.mapColor(MapColor.METAL).strength(3.5F, 9.0F).sound(SoundType.METAL).requiresCorrectToolForDrops());
+            p -> p.mapColor(MapColor.METAL).strength(3.5F, 9.0F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion());
     public static final DeferredItem<BlockItem> HOT_BLAST_STOVE_ITEM = ITEMS.registerSimpleBlockItem("hot_blast_stove", HOT_BLAST_STOVE);
     public static final DeferredItem<SteelLadleItem> STEEL_LADLE = ITEMS.registerItem("steel_ladle", SteelLadleItem::new, p -> p.stacksTo(1));
 

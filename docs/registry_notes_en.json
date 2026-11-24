@@ -2692,7 +2692,7 @@
   "slag_stone": {"text": "Slag stone, cast in a [[foundry_basin]] from 250 mB of slag (what floats on top in a High Furnace). 4 make [[slag_stone_bricks]]."},
   "cast_basalt": {"text": "Cast basalt: Basalt melted in a High Furnace at 1250° (250 mB) and cast in a [[foundry_basin]]."},
   "glass_batch": {"text": "Glass batch: 4 Sand + 1 Wood Ash → 4 (forest glass with potash). It melts in a High Furnace at **1400°** into 250 mB of glass that a [[foundry_basin]] casts into a Glass block."},
-  "sight_glass": {"text": "A sight glass: [[banded_furnace_casing]] + 2 Glass Panes. A steel-framed window that may sit anywhere in a High Furnace's wall above the bottom layer; the melt's layers show through it."},
+  "sight_glass": {"text": "A sight glass: [[banded_furnace_casing]] + 2 Glass Panes. An iron-framed window that may sit anywhere in a High Furnace's wall above the bottom layer; the melt's layers show through it, and the glass shows the fire inside: dark while the furnace is cold, then dull red, orange and yellow-white (it glows then)."},
   "loam": {"text": "Loam with straw: 2 Clay Balls + Sand + Wheat → 4. 4 Loam + a strickle board ([[strickle_board_bell]] or [[strickle_board_cauldron]]) make an unfired loam mold for a bell or a cauldron."},
   "strickle_board_bell": {"text": "A strickle board for a bell (2 planks + a stick). With 4 [[loam]] it makes an [[unfired_loam_mold_bell]]."},
   "strickle_board_cauldron": {"text": "A strickle board for a cauldron (2 planks + a stick). With 4 [[loam]] it makes an [[unfired_loam_mold_cauldron]]."},
@@ -2704,5 +2704,5 @@
   "coke": {"text": "Coke: 16 Coal baked in a [[coke_oven]] for 10 minutes give 12. It burns hotter in a [[firebox]]: 950° natural, a **1750°** ceiling, twice as long as Charcoal."},
   "coke_oven": {"text": "A coke oven (a beehive of [[silica_bricks]], `BBB` / `B B` / `BPB`). Right-click with Coal: at 16 it closes and bakes them without fuel for 10 minutes into 12 [[coke]]. An empty hand takes the coke out."},
   "hot_blast_stove": {"text": "A hot blast stove (`PBP` / `B B` / `PBP`: Steel Plate, Silica Bricks). Set beside a [[great_bellows]] that blows into a firebox: the furnace's target and ceiling rise by 100°, at most **1800°**."},
-  "steel_ladle": {"text": "A silica-lined steel ladle (2 Steel Plates, a Silica Brick, an Iron Tool Rod). It holds 1000 mB of any melt: right-click a [[refractory_trough]] to scoop, right-click a mold, flask, basin or trough to pour a whole cast."}
+  "steel_ladle": {"text": "A silica-lined steel ladle (2 Steel Plates, a Silica Brick, an Iron Tool Rod). It holds 1000 mB of any melt: right-click a [[refractory_trough]] to scoop, right-click a mold, flask, basin or trough to pour a whole cast. Holding melt, its bowl glows."}
 }

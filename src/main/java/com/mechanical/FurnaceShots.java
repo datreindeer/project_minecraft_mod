@@ -430,6 +430,17 @@ public final class FurnaceShots {
                     }
                 }));
                 case "!shot" -> then(1, () -> shot(p[1]));
+                case "!ladle" -> then(2, () -> server(() -> { // two Steel Ladles in frames on a brick post at (2, 0, -9): empty and full
+                    set(2, 0, -9, Blocks.BRICKS.defaultBlockState());
+                    set(2, 1, -9, Blocks.BRICKS.defaultBlockState());
+                    for (int y = 0; y <= 1; y++) {
+                        var frame = new net.minecraft.world.entity.decoration.ItemFrame(level(), rel(2, y, -10), Direction.NORTH);
+                        ItemStack ladle = new ItemStack(HighFurnace.STEEL_LADLE.get());
+                        if (y == 1) SteelLadleItem.set(ladle, Molten.STEEL, 800);
+                        frame.setItem(ladle);
+                        level().addFreshEntity(frame);
+                    }
+                }));
                 // the player out of frame but within 32 blocks, so block cracks, particles and sounds reach the client
                 case "!player" -> then(2, () -> server(() -> {
                     var pl = Minecraft.getInstance().getSingleplayerServer().getPlayerList().getPlayers().get(0);

@@ -311,10 +311,11 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
   härden; från 1300° blir varje tackjärn ett Wrought Iron Ingot på 20 s (bränner en Charcoal).
 - **Slag Stone** (basängen, 250 mB slagg) och **Slag Stone Bricks** (4 → 4). Slab/Stairs/Wall saknas än.
 - **Glas:** Glass Batch (4 Sand + Wood Ash → 4) smälter vid 1400° till 250 mB glas, Foundry Basin gjuter Glass.
-  **Sight Glass** (Casing + 2 Glass Pane) får sitta i väggarna ovanför nedersta lagret.
+  **Sight Glass** (Casing + 2 Glass Pane) får sitta i väggarna ovanför nedersta lagret; glaset visar elden därinne (mörkt, mörkrött, orange, gulvitt) på vilken höjd det än sitter.
 - **Basalt** (Basalt, Polished/Smooth Basalt) → 250 mB vid 1250° → Cast Basalt. **Obsidian** → 250 mB vid 1700° (kräver Coke).
 - **Loam Mold:** Loam (2 Clay Ball + Sand + Wheat → 4), Strickle Board (Bell/Cauldron), 4 Loam + board → obränd form,
   bränd 600° i kilnen. I en Foundry Basin: Bell = 1600 mB brons, Cauldron = 1400 mB tackjärn; formen slås sönder.
+  Formen står synlig i bassängen (en trappad kupol av bränd lera) och smältan syns bara i ingjutshålet överst.
   Great Kettle är inte byggd.
 - **Furnace Salamander:** bryts Fronten med smälta i lämnas hälften av varje lager i en salamander som smälter tillbaka
   vid ≥ 1200°.

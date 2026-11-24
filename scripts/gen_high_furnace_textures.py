@@ -1834,43 +1834,6 @@ def ladle():
 
 
 # ---------------------------------------------------------------- phase 3-7 blocks
-def finery_top(lit_frame=None):
-    img = Image.open(BLOCK / "bloomery_bricks.png").convert("RGBA")
-    for x in range(16):
-        for y in range(16):
-            inner = 3 <= x <= 12 and 3 <= y <= 12
-            if not inner:
-                if min(x, y, 15 - x, 15 - y) == 2:
-                    put(img, x, y, mix(get(img, x, y), SOOT, 0.5))  # sooted inner lip
-                continue
-            r = random.Random(x * 31 + y * 17).random()
-            dark = ramp([(12, 10, 10), (34, 30, 28), (62, 56, 52)], r)
-            if lit_frame is None:
-                c = dark if (x == 3 or y == 3) or r < 0.85 else (70, 30, 16)
-            else:
-                frng = random.Random(2410 + lit_frame * 100 + x * 16 + y)
-                t = 0.25 + 0.55 * math.sin(lit_frame / 8 * 6.283 + r * 6.283) ** 2 + frng.uniform(-0.1, 0.1)
-                c = mix(ramp(MOLTEN, t), dark, 0.2) if r < 0.75 and not (x == 3 or y == 3) else dark
-            put(img, x, y, c)
-    return img
-
-
-def finery_side():
-    img = Image.open(BLOCK / "bloomery_bricks.png").convert("RGBA")
-    rng = random.Random(2420)
-    for x in range(16):
-        for r, y in enumerate((6, 7)):
-            put(img, x, y, ramp(IRON, (0.62, 0.3)[r] + rng.uniform(-0.04, 0.04)))
-        put(img, x, 8, mix(get(img, x, 8), SOOT, 0.25))
-    for x in (3, 11):
-        put(img, x, 6, ramp(IRON, 1.0))
-        put(img, x + 1, 7, ramp(IRON, 0.08))
-    for (x, y) in disc(7.5, 11.5, 2.4):
-        d = math.hypot(x - 7.5, y - 11.5)
-        put(img, x, y, VOID if d < 1.3 else ramp(FIRED, 0.75 - (x + y - 19) * 0.08))
-    return img
-
-
 def slag_stone(seed):
     rng = random.Random(seed)
     a, b = tnoise(seed, 8), tnoise(seed + 1, 4)
@@ -1948,103 +1911,211 @@ def metal_block(pal, seed, dents=0):
     return img
 
 
-def sight_glass():
-    rng = random.Random(2601)
-    img = casing(2600)
-    bevel(img, 2, 1, 13, 14, STEEL, 0.4, rng, hi=0.14, lo=0.24)
-    bevel(img, 3, 2, 12, 13, STEEL, 0.52, rng, hi=0.16, lo=0.2)
-    for x, y in ((3, 2), (12, 2), (3, 13), (12, 13), (3, 7), (12, 8)):
-        put(img, x, y, STEEL[6])
+# ---------------------------------------------------------------- phase 6-7, round 2: vanilla-style, matching the furnace
+# Flat 16x16 pixel art in a few tones: the same sooty buff brick as the High Furnace (casing2), dark riveted iron
+# (IRONR) for the metal work, chunky glowing pixels for fire and melt. No noise gradients, no baked lighting beyond
+# a lit top-left edge.
+GLASS = {0: ((34, 32, 34), (70, 70, 78)), 1: ((96, 26, 14), (150, 52, 18)), 2: ((206, 96, 22), (246, 164, 52)),
+         3: ((252, 206, 104), (255, 246, 204))}
+EMBER = [(70, 22, 10), (168, 58, 14), (236, 130, 32), (255, 208, 96)]
+CHAR = [(22, 20, 19), (38, 34, 32), (58, 52, 48)]
+
+
+def iron_frame(img, x0, y0, x1, y1, bolts=True):
+    """A flat iron frame: dark outline, a lit top-left and a shaded bottom-right bar, a bolt in each corner."""
+    for x in range(x0, x1 + 1):
+        for y in range(y0, y1 + 1):
+            edge = min(x - x0, y - y0, x1 - x, y1 - y)
+            if edge == 0:
+                put(img, x, y, IRONR[0])
+            elif edge == 1:
+                lit = (x == x0 + 1 or y == y0 + 1) and not (x == x1 - 1 or y == y1 - 1)
+                put(img, x, y, IRONR[5] if lit else IRONR[3])
+    if bolts:
+        for x, y in ((x0 + 1, y0 + 1), (x1 - 1, y0 + 1), (x0 + 1, y1 - 1), (x1 - 1, y1 - 1)):
+            put(img, x, y, IRONR[6])
+
+
+def sight_glass(heat):
+    """The furnace brick with an iron-framed window; through the glass the inside's glow, dark when cold."""
+    img = casing2("base")
+    iron_frame(img, 2, 2, 13, 13)
+    dark, light = GLASS[heat]
     for x in range(4, 12):
-        for y in range(3, 13):
-            hl = (x - 4) + (y - 3)
-            if hl in (3, 4) or hl == 11:
-                img.putpixel((x, y), (214, 222, 228, 150))  # a highlight across the thick glass
-            else:
-                img.putpixel((x, y), (60, 58, 56, 70))
+        for y in range(4, 12):
+            put(img, x, y, dark)
+    for x, y in ((5, 6), (6, 5), (5, 7), (7, 5), (9, 10), (10, 9)):  # the glare across the thick glass
+        put(img, x, y, light)
+    if heat:
+        for x, y in ((8, 8), (7, 9), (9, 7), (6, 10)):  # flames moving inside
+            put(img, x, y, light)
     return img
 
 
-def coke_front(lit):
-    rng = random.Random(2701)
-    img = silica_bricks(2700)
+def riveted_iron(seed, seams=(7, 15), vseam=((8, 0, 7), (3, 8, 15))):
+    """Dark iron plating: plates of two tones, a dark lapped seam row with rivets above it, staggered butt seams,
+    a few rust pixels."""
+    rng = random.Random(seed)
+    img = Image.new("RGBA", (16, 16))
     for x in range(16):
         for y in range(16):
-            img.putpixel((x, y), mix(get(img, x, y), SOOT, 0.12 + (0.25 if 3 <= x <= 12 and y < 6 else 0)) + (255,))
-    arch = {(x, y) for x in range(16) for y in range(16) if 3 <= x <= 12 and (y >= 7 or math.hypot(x - 7.5, y - 7.5) <= 4.8)}
-    ring = {(x, y) for x in range(16) for y in range(16)
-            if (x, y) not in arch and 2 <= x <= 13 and (y >= 7 or math.hypot(x - 7.5, y - 7.5) <= 6.0)}
-    for (x, y) in sorted(ring):  # the arch's voussoirs: wedge bricks with radial joints
-        ang = math.atan2(y - 7.5, x - 7.5)
-        joint = int((ang + math.pi) / (math.pi / 6)) != int((ang + math.pi + 0.18) / (math.pi / 6))
-        put(img, x, y, ramp(JOINT, 0.3) if joint and y < 8 else ramp(SILICA, 0.62 + rng.uniform(-0.05, 0.05) - (0.15 if y < 6 else 0)))
-    for (x, y) in sorted(arch):  # the iron door
-        t = 0.42 + rng.uniform(-0.03, 0.03)
-        if (x, y - 1) not in arch or (x - 1, y) not in arch:
-            t += 0.2
-        if (x + 1, y) not in arch or (x, y + 1) not in arch:
-            t -= 0.2
-        if y in (8, 12):
-            t -= 0.12  # cross braces
-        put(img, x, y, ramp(CAST, t + 0.1))
-    for (x, y) in ((4, 8), (11, 8), (4, 12), (11, 12)):
-        put(img, x, y, ramp(CAST, 0.95))
-    for (x, y) in disc(7.5, 5.5, 1.1):  # the peephole
-        put(img, x, y, (255, 190, 70) if lit else VOID)
-    if lit:  # the door's edges glow where it does not seal
-        for (x, y) in sorted(arch):
-            if any((x + dx, y + dy) in ring for dx, dy in ((1, 0), (-1, 0), (0, -1))) and rng.random() < 0.5:
-                put(img, x, y, ramp(HEAT[2], 0.4 + rng.uniform(0, 0.4)))
-    return img
-
-
-def coke_dome():
-    img = silica_bricks(2710)
-    nz = tnoise(2712, 4)
-    for x in range(16):
-        for y in range(16):
-            img.putpixel((x, y), mix(get(img, x, y), SOOT, 0.15 + nz[y][x] * 0.35) + (255,))
+            put(img, x, y, IRONR[2] if (y // 8 + x // 8) % 2 else IRONR[3])
+    for y in seams:
+        for x in range(16):
+            put(img, x, y, IRONR[1])
+            if (x + y) % 3 == 0:  # a rivet: a bright head over a dark shadow pixel
+                put(img, x, y - 2, IRONR[5])
+                put(img, x, y - 1, IRONR[1])
+    for x, y0, y1 in vseam:
+        for y in range(y0, y1):
+            put(img, x, y, IRONR[1])
+    for _ in range(6):
+        x, y = rng.randrange(16), rng.randrange(16)
+        if get(img, x, y) in (IRONR[2], IRONR[3]):
+            put(img, x, y, RUST[1] if rng.random() < 0.6 else RUST[0])
     return img
 
 
 def stove_side(hatch=False):
-    rng = random.Random(2801)
-    img = Image.new("RGBA", (16, 16))
-    for x in range(16):  # cylinder shading across the block: lit left of the middle
-        for y in range(16):
-            put(img, x, y, ramp(STEEL, 0.42 + 0.08 * math.cos((x - 5) / 16 * 6.283) + rng.uniform(-0.02, 0.02)))
-    for x in range(16):  # plate courses: a lapped seam at row 0, rivets along it
-        put(img, x, 0, ramp(STEEL, 0.62))
-        put(img, x, 1, ramp(STEEL, 0.18))
-    for x in (1, 5, 9, 13):
-        put(img, x, 2, STEEL[6])
-        put(img, x + 1, 3, ramp(STEEL, 0.18))
-    for y in range(16):  # a vertical butt seam at x 15 with its rivet row
-        put(img, 15, y, ramp(STEEL, 0.15))
-        if y % 4 == 2:
-            put(img, 13, y, STEEL[5])
-            put(img, 14, (y + 1) % 16, ramp(STEEL, 0.15))
+    """The Hot Blast Stove's riveted iron shell; the hatch face carries a small bolted door."""
+    img = riveted_iron(2801)
     if hatch:
-        bevel(img, 4, 5, 11, 12, CAST, 0.5, rng, hi=0.2, lo=0.28)
-        sb = silica_bricks(2802)
+        iron_frame(img, 4, 3, 11, 12)
         for x in range(6, 10):
-            for y in range(7, 11):
-                put(img, x, y, mix(get(sb, x, y), SOOT, 0.2))
-        for x, y in ((5, 6), (10, 6), (5, 11), (10, 11)):
-            put(img, x, y, ramp(CAST, 0.95))
+            for y in range(5, 11):
+                put(img, x, y, IRONR[2])
+        for y in (6, 9):  # hinges and the latch
+            put(img, 5, y, IRONR[6])
+        put(img, 10, 8, IRONR[6])
     return img
 
 
 def stove_top():
-    img = plate(2810, STEEL, base=0.4, rivets=((2, 2), (12, 2), (2, 12), (12, 12)), mottle=0.1)
-    for (x, y) in disc(7.5, 7.5, 4.6):
-        d = math.hypot(x - 7.5, y - 7.5)
-        if d <= 2.2:
-            put(img, x, y, VOID)
-        elif d <= 3.6:
-            put(img, x, y, ramp(SILICA, 0.6 - (x + y - 15) * 0.05))
-        else:
-            put(img, x, y, ramp(STEEL, 0.2))
+    """An iron rim round a fire-brick checker (the stove's heat store) and the hot-air flue, glowing dull red."""
+    img = riveted_iron(2810, seams=(), vseam=())
+    iron_frame(img, 0, 0, 15, 15)
+    for x in range(3, 13):
+        for y in range(3, 13):
+            put(img, x, y, ARCH[3] if (x + y) % 2 else ARCH[1])  # the checker bricks' openings
+    for x in range(6, 10):
+        for y in range(6, 10):
+            put(img, x, y, (120, 32, 14) if 7 <= x <= 8 and 7 <= y <= 8 else (60, 20, 12))
+    return img
+
+
+def coke_front(lit):
+    """The beehive's front: furnace brick round an iron door with two slits, glowing when lit; only the lower half
+    (rows 8-15) is on the model's front."""
+    brick = casing2("base")
+    img = brick.copy()
+    iron_frame(img, 4, 8, 11, 15, bolts=False)
+    for x in range(5, 11):
+        for y in range(9, 15):
+            put(img, x, y, IRONR[3])
+    for x in (4, 11):  # the arch: the door's top corners stay brick
+        put(img, x, 8, get(brick, x, 8))
+    for x in range(6, 10):
+        for y in (10, 12):
+            put(img, x, y, (EMBER[2] if x in (7, 8) else EMBER[1]) if lit else VOID)
+    put(img, 9, 14, IRONR[6])
+    return img
+
+
+def coke_glow():
+    """Only the door's glowing slits (an emissive plane over the lit front)."""
+    img = Image.new("RGBA", (16, 16))
+    for x in range(6, 10):
+        for y in (10, 12):
+            put(img, x, y, EMBER[2] if x in (7, 8) else EMBER[1])
+    return img
+
+
+def coke_top(lit):
+    """The crown of the beehive: sooty top brick round the charging hole (dark, or glowing while it cokes)."""
+    img = casing2_top()
+    for x in range(5, 11):
+        for y in range(5, 11):
+            put(img, x, y, mix(get(img, x, y), SOOT, 0.45))
+    for x in range(6, 10):
+        for y in range(6, 10):
+            inner = 7 <= x <= 8 and 7 <= y <= 8
+            put(img, x, y, (EMBER[3] if inner else EMBER[2]) if lit else (VOID if inner else CHAR[0]))
+    return img
+
+
+def finery_side():
+    """Furnace brick with an iron band round the hearth's rim (rows 6-7) and the tuyere's port low down."""
+    img = casing2("base")
+    for x in range(16):
+        put(img, x, 6, IRONR[5] if x % 5 else IRONR[6])
+        put(img, x, 7, IRONR[2])
+    for x in range(6, 10):
+        for y in range(11, 15):
+            ring = x in (6, 9) or y in (11, 14)
+            put(img, x, y, IRONR[4] if ring else VOID)
+    return img
+
+
+def finery_rim():
+    """The top of the hearth's walls: an iron rim plate, bolted."""
+    img = Image.new("RGBA", (16, 16))
+    for x in range(16):
+        for y in range(16):
+            put(img, x, y, IRONR[3] if (x + y) % 7 else IRONR[2])
+    for x in range(1, 16, 5):
+        for y in range(1, 16, 5):
+            put(img, x, y, IRONR[5])
+            put(img, x, y + 1, IRONR[1])
+    return img
+
+
+def finery_top(lit_frame=None):
+    """The charcoal bed: chunky lumps of charcoal; lit, the lumps glow and flicker (4 frames)."""
+    rng = random.Random(2410)
+    img = Image.new("RGBA", (16, 16))
+    for x in range(16):
+        for y in range(16):
+            put(img, x, y, CHAR[0])
+    lumps = [(rng.randrange(16), rng.randrange(16), rng.randrange(3)) for _ in range(22)]
+    for i, (x, y, k) in enumerate(lumps):
+        for dx, dy in ((0, 0), (1, 0), (0, 1), (1, 1)):
+            if lit_frame is None:
+                c = CHAR[1 + (dx + dy + k) % 2]
+            else:
+                c = EMBER[min(3, max(0, k + (i + lit_frame) % 3 - (dx + dy) // 2))]
+            put(img, (x + dx) % 16, (y + dy) % 16, c)
+    return img
+
+
+def basin_side():
+    """The Foundry Basin's riveted iron: two bands with rivets, dark staves between."""
+    img = riveted_iron(3230, seams=(), vseam=((0, 0, 16), (15, 0, 16), (8, 4, 12)))
+    for x in range(16):
+        for y, c in ((1, IRONR[4]), (2, IRONR[1]), (12, IRONR[4]), (13, IRONR[1])):
+            put(img, x, y, c)
+    for x in (2, 6, 10, 14):
+        put(img, x, 1, IRONR[6])
+        put(img, x, 12, IRONR[6])
+    return img
+
+
+def loam_cope():
+    """The top of a Loam Mold sitting in the basin: fired loam round the pouring hole."""
+    img = loam_block(3602)
+    for x in range(6, 10):
+        for y in range(6, 10):
+            put(img, x, y, ramp(FIRED_LOAM, 0.15) if x in (6, 9) or y in (6, 9) else VOID)
+    return img
+
+
+def ladle_full():
+    """The Steel Ladle holding melt: its bowl's lining (as ladle() draws it) glowing white-hot orange, whatever the melt."""
+    img = ladle()
+    cx, cy, rx, ry = 5.2, 9.0, 4.4 - 1.1, 1.8 - 0.7
+    for x in range(16):
+        for y in range(16):
+            if ((x + 0.5 - cx) / rx) ** 2 + ((y + 0.5 - cy) / ry) ** 2 <= 1:
+                put(img, x, y, MOLTEN[3] if (x + y) % 3 else MOLTEN[2])
     return img
 
 
@@ -2208,12 +2279,7 @@ def batch2():
     for x in (2, 11):
         rivet(bs, x, 3)
         rivet(bs, x + 2, 12)
-    save(bs, BLOCK / "foundry_basin_side.png")
-    bi = silica_bricks(3240)
-    for x in range(16):
-        for y in range(16):
-            bi.putpixel((x, y), mix(get(bi, x, y), (90, 72, 56), 0.12 + y * 0.012) + (255,))
-    save(bi, BLOCK / "foundry_basin_inside.png")
+    save(basin_side(), BLOCK / "foundry_basin_side.png")
     side = plate(3250, CAST, base=0.55, mottle=0.2)
     for x in range(16):
         put(side, x, 0, ramp(CAST, 0.7))
@@ -2272,25 +2338,30 @@ def batch2():
     save(front, BLOCK / "pattern_bench_front.png")
     # ---- phase 6: finery, slag and basalt, sight glass, metal blocks
     save(finery_top(), BLOCK / "finery_hearth_top.png")
-    save(frames(8, finery_top), BLOCK / "finery_hearth_top_lit.png", {"frametime": 4, "interpolate": True})
+    save(frames(4, finery_top), BLOCK / "finery_hearth_top_lit.png", {"frametime": 6})
     save(finery_side(), BLOCK / "finery_hearth_side.png")
+    save(finery_rim(), BLOCK / "finery_hearth_rim.png")
     save(slag_stone(3400), BLOCK / "slag_stone.png")
     save(bricks8(slag_stone(3401), [(8, 10, 9), (18, 22, 20), (30, 34, 32)], 3402), BLOCK / "slag_stone_bricks.png")
     save(cast_basalt(3410), BLOCK / "cast_basalt.png")
     save(basalt_tiles(), BLOCK / "cast_basalt_tiles.png")
-    save(sight_glass(), BLOCK / "sight_glass.png")
+    for h in range(4):
+        save(sight_glass(h), BLOCK / f"sight_glass_{h}.png")
     save(metal_block(STEEL[:6], 3500), BLOCK / "steel_block.png")
     save(metal_block([(56, 32, 12), (96, 58, 22), (134, 88, 36), (164, 114, 50), (190, 140, 70), (212, 166, 96)], 3501), BLOCK / "bronze_block.png")
     save(metal_block(LEAD, 3502, dents=3), BLOCK / "lead_block.png")
     # ---- phase 7: coke oven, hot blast stove, loam molds
     save(coke_front(False), BLOCK / "coke_oven_front.png")
     save(coke_front(True), BLOCK / "coke_oven_front_lit.png")
-    save(coke_dome(), BLOCK / "coke_oven_dome.png")
+    save(coke_glow(), BLOCK / "coke_oven_glow.png")
+    save(coke_top(False), BLOCK / "coke_oven_top.png")
+    save(coke_top(True), BLOCK / "coke_oven_top_lit.png")
     save(stove_side(), BLOCK / "hot_blast_stove_side.png")
     save(stove_side(True), BLOCK / "hot_blast_stove_hatch.png")
     save(stove_top(), BLOCK / "hot_blast_stove_top.png")
     save(loam_block(3600, BELL_ROWS), BLOCK / "loam_mold_top.png")
     save(loam_block(3601), BLOCK / "loam_mold_side.png")
+    save(loam_cope(), BLOCK / "loam_mold_cope.png")
     # ---- items (the mod has no coal_dust / coked_coal texture yet: both come from the user's library)
     save(Image.open(LIB / "coal_dust.png").convert("RGBA"), ITEM / "coal_dust.png")
     coke = recolor_shape(Image.open(LIB / "tempered_coke.png").convert("RGBA"),
@@ -2352,6 +2423,7 @@ def batch2():
     put(sal, 7, 6, (140, 144, 150))
     save(outline(sal, (6, 6, 8)), ITEM / "furnace_salamander.png")
     save(ladle(), ITEM / "steel_ladle.png")
+    save(ladle_full(), ITEM / "steel_ladle_full.png")
 
 
 batch1()

@@ -555,6 +555,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
                     walls.add(at);
                     BlockState st = level.getBlockState(at.pos());
                     int heat = dy == 0 || dy == 1 || dy == layers - 1 ? s : 0; // the hearth, the hot course and the glowing throat
+                    if (st.is(HighFurnace.SIGHT_GLASS.get())) heat = s; // a window shows the fire inside at any height
                     if (st.is(HighFurnace.FIREBOX.get())) {
                         int i = shape.fireboxes().indexOf(w);
                         heat = i >= 0 && i < fs.size() && fs.get(i).burning() ? Math.max(1, s) : Math.max(0, s - 1);

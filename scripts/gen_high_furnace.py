@@ -562,13 +562,14 @@ model("foundry_table", TABLE, FT)
 w(A / "blockstates/foundry_table.json", {"variants": {"": {"model": B + "foundry_table"}}})
 item_def("foundry_table", B + "foundry_table")
 loot("foundry_table")
-# Foundry Basin: a deep riveted steel tub, silica lining inside (floor 3, rim 14)
-FB = {"particle": B + "foundry_basin_side", "side": B + "foundry_basin_side", "in": B + "foundry_basin_inside"}
+# Foundry Basin: a deep riveted iron tub lined with the furnace's brick (floor 3, rim 14), a lifting lug each side
+FB = {"particle": B + "foundry_basin_side", "side": B + "foundry_basin_side", "in": B + "banded_furnace_casing_top", "lug": B + "finery_hearth_rim"}
 BASIN = [box([0, 0, 0], [16, 3, 16], {"up": "#in", "down": "#side", "north": "#side", "south": "#side", "east": "#side", "west": "#side"}),
-         box([0, 3, 0], [16, 14, 2], {"north": "#side", "south": "#in", "east": "#side", "west": "#side", "up": "#in"}),
-         box([0, 3, 14], [16, 14, 16], {"south": "#side", "north": "#in", "east": "#side", "west": "#side", "up": "#in"}),
-         box([0, 3, 2], [2, 14, 14], {"west": "#side", "east": "#in", "up": "#in"}),
-         box([14, 3, 2], [16, 14, 14], {"east": "#side", "west": "#in", "up": "#in"})]
+         box([0, 3, 0], [16, 14, 2], {"north": "#side", "south": "#in", "east": "#side", "west": "#side", "up": "#side"}),
+         box([0, 3, 14], [16, 14, 16], {"south": "#side", "north": "#in", "east": "#side", "west": "#side", "up": "#side"}),
+         box([0, 3, 2], [2, 14, 14], {"west": "#side", "east": "#in", "up": "#side"}),
+         box([14, 3, 2], [16, 14, 14], {"east": "#side", "west": "#in", "up": "#side"}),
+         box([-1, 8, 6], [0, 10, 10], "#lug"), box([16, 8, 6], [17, 10, 10], "#lug")]
 model("foundry_basin", BASIN, FB)
 w(A / "blockstates/foundry_basin.json", {"variants": {"": {"model": B + "foundry_basin"}}})
 item_def("foundry_basin", B + "foundry_basin")
@@ -656,36 +657,59 @@ for shape in FLASK_SHAPES:
 merge(A / "lang/en_us.json", LANG4B)
 
 # ---------------- phases 5-7: Finery Hearth, Slag Stone Bricks, Sight Glass, loam, the Furnace Salamander, coke, Hot Blast
-FH = {"particle": B + "finery_hearth_side", "side": B + "finery_hearth_side", "top": B + "finery_hearth_top", "lit": B + "finery_hearth_top_lit"}
+FH = {"particle": B + "finery_hearth_side", "side": B + "finery_hearth_side", "top": B + "finery_hearth_top", "lit": B + "finery_hearth_top_lit",
+      "rim": B + "finery_hearth_rim"}
 def hearth(top):
     side4 = {"north": "#side", "south": "#side", "east": "#side", "west": "#side"}
     return [box([0, 0, 0], [16, 6, 16], {"up": top, "down": "#side", **side4}),             # the charcoal bed
-            box([0, 6, 0], [16, 10, 2], {**side4, "up": "#side"}), box([0, 6, 14], [16, 10, 16], {**side4, "up": "#side"}),
-            box([0, 6, 2], [2, 10, 14], {**side4, "up": "#side"}), box([14, 6, 2], [16, 10, 14], {**side4, "up": "#side"})]
+            box([0, 6, 0], [16, 10, 2], {**side4, "up": "#rim"}), box([0, 6, 14], [16, 10, 16], {**side4, "up": "#rim"}),  # walls, an iron rim on top
+            box([0, 6, 2], [2, 10, 14], {**side4, "up": "#rim"}), box([14, 6, 2], [16, 10, 14], {**side4, "up": "#rim"})]
 model("finery_hearth", hearth("#top"), FH)
 model("finery_hearth_lit", hearth("#lit") + [{"from": [2, 6.01, 2], "to": [14, 6.01, 14], "light_emission": 15, "shade": False,
       "faces": {"up": {"uv": [2, 2, 14, 14], "texture": "#lit"}}}], FH)
 w(A / "blockstates/finery_hearth.json", {"variants": {"lit=false": {"model": B + "finery_hearth"}, "lit=true": {"model": B + "finery_hearth_lit"}}})
 item_def("finery_hearth", B + "finery_hearth")
 loot("finery_hearth")
+w(A / "models/block/slag_stone_bricks.json", {"parent": "minecraft:block/cube_all", "textures": {"all": B + "slag_stone_bricks"}})
+# Hot Blast Stove: a round riveted iron tower (two crossed boxes, so it reads round, not a plain cube), a bolted hatch
+# on the north face; stacked, the stoves make one tall column
+HB = {"particle": B + "hot_blast_stove_side", "side": B + "hot_blast_stove_side", "hatch": B + "hot_blast_stove_hatch", "top": B + "hot_blast_stove_top"}
+model("hot_blast_stove", [box([2, 0, 1], [14, 16, 15], {"north": "#hatch", "south": "#side", "east": "#side", "west": "#side", "up": "#top", "down": "#top"}),
+                          box([1, 0, 2], [15, 16, 14], {"north": "#side", "south": "#side", "east": "#side", "west": "#side", "up": "#top", "down": "#top"}),
+                          box([5, 3, 0.5], [11, 13, 1], {"north": "#hatch", "east": "#side", "west": "#side", "up": "#side", "down": "#side"})], HB)
 for name in ("slag_stone_bricks", "hot_blast_stove"):
-    if name == "hot_blast_stove":
-        w(A / f"models/block/{name}.json", {"parent": "minecraft:block/cube_column", "textures": {"side": B + "hot_blast_stove_side", "end": B + "hot_blast_stove_top"}})
-    else:
-        w(A / f"models/block/{name}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": B + name}})
     w(A / f"blockstates/{name}.json", {"variants": {"": {"model": B + name}}})
     item_def(name, B + name)
     loot(name)
-# Sight Glass: a steel-framed window in the wall (translucent), its heat state ignored
-w(A / "models/block/sight_glass.json", {"parent": "minecraft:block/cube_all", "render_type": "minecraft:translucent", "textures": {"all": B + "sight_glass"}})
-w(A / "blockstates/sight_glass.json", {"variants": {f"heat={h}": {"model": B + "sight_glass"} for h in range(4)}})
-item_def("sight_glass", B + "sight_glass")
+# Sight Glass: the furnace's brick with an iron-framed window; the glass shows the inside's heat (dark, dull red,
+# orange, yellow-white) and glows once it is hot
+def window_glow(light):
+    """Fullbright planes over the window (4..12) on the four sides."""
+    return [
+        {"from": [4, 4, -0.01], "to": [12, 12, -0.01], "light_emission": light, "shade": False, "faces": {"north": {"uv": [4, 4, 12, 12], "texture": "#all", "cullface": "north"}}},
+        {"from": [4, 4, 16.01], "to": [12, 12, 16.01], "light_emission": light, "shade": False, "faces": {"south": {"uv": [4, 4, 12, 12], "texture": "#all", "cullface": "south"}}},
+        {"from": [-0.01, 4, 4], "to": [-0.01, 12, 12], "light_emission": light, "shade": False, "faces": {"west": {"uv": [4, 4, 12, 12], "texture": "#all", "cullface": "west"}}},
+        {"from": [16.01, 4, 4], "to": [16.01, 12, 12], "light_emission": light, "shade": False, "faces": {"east": {"uv": [4, 4, 12, 12], "texture": "#all", "cullface": "east"}}}]
+for h in range(4):
+    model(f"sight_glass_{h}", [cube({f: "#all" for f in FACES})] + (window_glow(4 + 3 * h) if h else []),
+          {"particle": B + f"sight_glass_{h}", "all": B + f"sight_glass_{h}"})
+w(A / "blockstates/sight_glass.json", {"variants": {f"heat={h}": {"model": B + f"sight_glass_{h}"} for h in range(4)}})
+item_def("sight_glass", B + "sight_glass_0")
 loot("sight_glass")
-# Coke Oven: a beehive of silica brick, its iron door to the north
-CO = {"particle": B + "coke_oven_dome", "dome": B + "coke_oven_dome", "front": B + "coke_oven_front", "front_lit": B + "coke_oven_front_lit"}
+# Coke Oven: a beehive of the furnace's brick in three steps, its iron door (two slits that glow while it cokes) to
+# the north, the charging hole on the crown
+CO = {"particle": B + "banded_furnace_casing", "dome": B + "banded_furnace_casing", "upper": B + "banded_furnace_casing_upper",
+      "front": B + "coke_oven_front", "front_lit": B + "coke_oven_front_lit", "glow": B + "coke_oven_glow",
+      "top": B + "coke_oven_top", "top_lit": B + "coke_oven_top_lit", "ring": B + "banded_furnace_casing_top"}
 for lit in (False, True):
-    faces = {"north": "#front_lit" if lit else "#front", "south": "#dome", "east": "#dome", "west": "#dome", "up": "#dome", "down": "#dome"}
-    model("coke_oven" + ("_lit" if lit else ""), [cube(faces)], CO)
+    els = [box([0, 0, 0], [16, 8, 16], {"north": "#front_lit" if lit else "#front", "south": "#dome", "east": "#dome", "west": "#dome", "up": "#ring", "down": "#dome"}),
+           box([1, 8, 1], [15, 11, 15], {"north": "#upper", "south": "#upper", "east": "#upper", "west": "#upper", "up": "#ring"}),
+           box([3, 11, 3], [13, 14, 13], {"north": "#upper", "south": "#upper", "east": "#upper", "west": "#upper", "up": "#ring"}),
+           box([5, 14, 5], [11, 15, 11], {"north": "#upper", "south": "#upper", "east": "#upper", "west": "#upper", "up": "#top_lit" if lit else "#top"})]
+    if lit:
+        els.append({"from": [5, 0, -0.01], "to": [11, 8, -0.01], "light_emission": 12, "shade": False,
+                    "faces": {"north": {"uv": [5, 8, 11, 16], "texture": "#glow"}}})
+    model("coke_oven" + ("_lit" if lit else ""), els, CO)
 w(A / "blockstates/coke_oven.json", {"variants": {f"facing={f},lit={str(l).lower()}": {"model": B + "coke_oven" + ("_lit" if l else ""), **({"y": y} if y else {})}
                                                   for f, y in ROT.items() for l in (False, True)}})
 item_def("coke_oven", B + "coke_oven")
@@ -694,6 +718,11 @@ for name in ("glass_batch", "loam", "strickle_board_bell", "strickle_board_cauld
              "loam_mold_bell", "loam_mold_cauldron", "furnace_salamander", "coke", "steel_ladle"):
     w(A / f"models/item/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + f"item/{name}"}})
     item_def(name, M + f"item/{name}")
+# a Steel Ladle holding melt (custom data set) shows it glowing in the bowl
+w(A / "models/item/steel_ladle_full.json", {"parent": "minecraft:item/generated", "textures": {"layer0": M + "item/steel_ladle_full"}})
+w(A / "items/steel_ladle.json", {"model": {"type": "minecraft:condition", "property": "minecraft:has_component", "component": "minecraft:custom_data",
+                                           "on_true": {"type": "minecraft:model", "model": M + "item/steel_ladle_full"},
+                                           "on_false": {"type": "minecraft:model", "model": M + "item/steel_ladle"}}})
 recipe("finery_hearth", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["F F", "FPF"],
        "key": {"F": M + "fire_brick", "P": M + "iron_plate"}, "result": {"id": M + "finery_hearth"}})
 recipe("slag_stone_bricks", {"type": "minecraft:crafting_shaped", "category": "building", "pattern": ["SS", "SS"],

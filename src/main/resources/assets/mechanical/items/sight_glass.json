@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mechanical:block/sight_glass"
+    "model": "mechanical:block/sight_glass_0"
   }
 }

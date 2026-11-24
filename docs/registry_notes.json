@@ -2690,7 +2690,7 @@
   "slag_stone": {"text": "Slaggsten, gjuten i en [[foundry_basin]] av 250 mB slagg (det som flyter överst i en High Furnace). 4 blir [[slag_stone_bricks]]."},
   "cast_basalt": {"text": "Gjuten basalt: Basalt smälts i en High Furnace vid 1250° (250 mB) och gjuts i en [[foundry_basin]]."},
   "glass_batch": {"text": "Glasmassa: 4 Sand + 1 Wood Ash → 4 (skogsglas med pottaska). Smälter i en High Furnace vid **1400°** till 250 mB glas som en [[foundry_basin]] gjuter till ett Glass-block."},
-  "sight_glass": {"text": "Siktglas: [[banded_furnace_casing]] + 2 Glass Pane. Ett stålramat fönster som får sitta var som helst i en High Furnace-vägg ovanför nedersta lagret; smältans lager syns genom det."},
+  "sight_glass": {"text": "Siktglas: [[banded_furnace_casing]] + 2 Glass Pane. Ett järnramat fönster som får sitta var som helst i en High Furnace-vägg ovanför nedersta lagret; smältans lager syns genom det, och glaset visar elden därinne: mörkt när ugnen är kall, sedan mörkrött, orange och gulvitt (då lyser det)."},
   "loam": {"text": "Lera med halm: 2 Clay Ball + Sand + Wheat → 4. 4 Loam + en schablon ([[strickle_board_bell]] eller [[strickle_board_cauldron]]) blir en obränd lerform för klocka eller kittel."},
   "strickle_board_bell": {"text": "Schablon för en klocka (2 plankor + stick). Med 4 [[loam]] blir den en [[unfired_loam_mold_bell]]."},
   "strickle_board_cauldron": {"text": "Schablon för en kittel (2 plankor + stick). Med 4 [[loam]] blir den en [[unfired_loam_mold_cauldron]]."},
@@ -2702,5 +2702,5 @@
   "coke": {"text": "Koks: 16 Coal bakas i en [[coke_oven]] i 10 min till 12. Brinner hetare i en [[firebox]]: 950° naturligt, tak **1750°**, dubbelt så länge som Charcoal."},
   "coke_oven": {"text": "Koksugn (bikupa av [[silica_bricks]], `BBB` / `B B` / `BPB`). Högerklicka med Coal: när den har 16 stängs den och bakar dem utan bränsle i 10 minuter till 12 [[coke]]. Tom hand tar ut koksen."},
   "hot_blast_stove": {"text": "Varmblästerapparat (`PBP` / `B B` / `PBP`: Steel Plate, Silica Bricks). Sätts intill en [[great_bellows]] som blåser in i en eldstad: ugnens mål och tak höjs med 100°, högst **1800°**."},
-  "steel_ladle": {"text": "Stålslev med silikatfoder (Steel Plate ×2, Silica Brick, Iron Tool Rod). Rymmer 1000 mB av vilken smälta som helst: högerklicka en [[refractory_trough]] för att ösa upp, högerklicka en form, flaska, bassäng eller ränna för att hälla en hel gjutning."}
+  "steel_ladle": {"text": "Stålslev med silikatfoder (Steel Plate ×2, Silica Brick, Iron Tool Rod). Rymmer 1000 mB av vilken smälta som helst: högerklicka en [[refractory_trough]] för att ösa upp, högerklicka en form, flaska, bassäng eller ränna för att hälla en hel gjutning. Med smälta i glöder det i sleven."}
 }
