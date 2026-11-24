@@ -50,6 +50,7 @@ public final class FelledLogTest {
         TEST_FUNCTIONS.register("felled_log_rest", () -> FelledLogTest::rest);
         TEST_FUNCTIONS.register("felled_log_slide", () -> FelledLogTest::slide);
         TEST_FUNCTIONS.register("felled_log_old_world", () -> FelledLogTest::oldWorld);
+        TEST_FUNCTIONS.register("felled_log_drag", () -> FelledLogTest::drag);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -67,6 +68,8 @@ public final class FelledLogTest {
                 new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_slide")), TestArea.of(env, 220, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log_old_world"),
                 new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_old_world")), TestArea.of(env, 100, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log_drag"),
+                new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_drag")), TestArea.of(env, 120, true)));
     }
 
     private static List<FelledLogEntity> logs(GameTestHelper h) {
@@ -135,6 +138,38 @@ public final class FelledLogTest {
                 h.assertTrue(p == null, "nothing of it in a slab: " + p);
                 l.discard();
             }
+            h.succeed();
+        });
+    }
+
+    /**
+     * The biggest log one player drags by an end (12 blocks) goes at a slow walk, not a crawl: he walks at least 1.2 m/s
+     * under it (sneaking is 1.3) and the log keeps up with him.
+     */
+    private static void drag(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        for (int x = 0; x <= 30; x++) for (int z = 0; z <= 16; z++) {
+            h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+            for (int y = 1; y <= 4; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+        }
+        FelledLogEntity log = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(16.5, 1, 8.5)), 90, FelledLogEntity.HAND_MAX, Blocks.OAK_LOG.defaultBlockState()); // crown towards -x
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        double[] start = new double[2];
+        h.runAfterDelay(10, () -> {
+            player.setPos(log.endPoint(true).add(0.8, 0, 0));
+            log.lift(level, player, 0);
+            h.assertTrue(log.rootLifted(), "lifted by the root end");
+            start[0] = log.endPoint(true).x;
+            start[1] = player.getX();
+        });
+        // he walks east away from it at his burdened walking pace (4.317 m/s at the default speed 0.1)
+        for (int t = 11; t <= 70; t++) h.runAfterDelay(t, () -> player.setPos(player.position().add(0.21585 * player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED) / 0.1, 0, 0)));
+        h.runAfterDelay(75, () -> {
+            double pace = player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED) / 0.1 * 4.317, walked = player.getX() - start[1], moved = log.endPoint(true).x - start[0];
+            h.assertTrue(pace >= 1.2, "a slow walk under the log, not a crawl (" + String.format("%.2f", pace) + " m/s)");
+            h.assertTrue(moved >= 3.0 && moved >= walked - 1.0, "the log keeps up with him: " + String.format("%.2f of %.2f", moved, walked) + " blocks in 3 s (a crawl was 0.2)");
+            log.putDown(player);
+            log.discard();
             h.succeed();
         });
     }

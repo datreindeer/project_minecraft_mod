@@ -60,7 +60,8 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
  * <li>Solid block by block for walking (EntityGetterMixin: {@link #collisionShape}); not for who lifts or pulls it. A
  * block being hewn or sawn shows the crack overlay (synced CRACK).</li>
  * <li>Lifting (up to {@link #HAND_MAX} blocks): an empty-hand right-click on an end lifts it; one lifter drags the other
- * end along, two carry it between them. Speed falls with {@link #liftLoad}; above 1 it only heaves along now and then.
+ * end along, two carry it between them. Speed falls with {@link #liftLoad}: a 2-block log goes at about 3 m/s, the biggest
+ * one a player drags alone (12 blocks) at about 1.4 m/s, sneaking pace.
  * Restrictions while lifting: {@link LogLifting}; poses: client/LogLiftClient.</li>
  * <li>Dragging (longer logs only): right-click near the root end with a Lead (or riding a horse: the horse pulls). The first pull draws the
  * logs into one straight log behind the root; then it trails after its pullers. Each player pulls {@link #PER_PULLER}
@@ -82,7 +83,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
     /** Weight one player lifts at full pace: a lifted end carries half the log, the end still on the ground drags a quarter. */
     public static final double LIFT = 2.5;
     /** Movement speed lost under a log: a lifter or puller moves at 1 / (1 + BURDEN * load) of their speed. */
-    static final double BURDEN = 0.8;
+    static final double BURDEN = 0.6;
     private static final Identifier WEIGHT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "log_weight");
     /** A lifted end is held this far from the player; the player stays within HOLD + LIFT_SLACK of it (drawn in if further). */
     static final double HOLD = 0.4, LIFT_SLACK = 0.25;
@@ -1395,7 +1396,8 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
      */
     private boolean carry(Level level) {
         double load = liftLoad();
-        double speed = CARRY_STEP * (load <= 1 ? 1 - 0.4 * load : 0.2 / (load * load)); // overloaded: a slow, even crawl
+        // overloaded: slower and slower, but never slower than the lifter's own burdened walk (it doesn't hold him back)
+        double speed = CARRY_STEP * (load <= 1 ? 1 - 0.4 * load : 0.6 / Math.sqrt(load));
         double across = speed * Math.min(1, NIMBLE / size());
         Entity rl = rootLifted() ? lifter(true) : null, tl = tailLifted() ? lifter(false) : null;
         Vec3 root = endPoint(true), tail = endPoint(false), axis = Vec3.directionFromRotation(0, getYRot()); // root to crown
