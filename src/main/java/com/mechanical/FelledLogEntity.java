@@ -497,6 +497,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         discard();
         boolean first = true;
         for (List<Integer> part : parts) {
+            part.sort(Comparator.comparingInt(i -> newCells.get(i).getZ())); // root (lowest z) first: the piece is straight()
             int minY = part.stream().mapToInt(i -> newCells.get(i).getY()).min().orElse(0);
             FelledLogEntity log = new FelledLogEntity(Mechanical.FELLED_LOG.get(), level);
             log.setYRot(getYRot());
@@ -993,6 +994,10 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         if (leadsToReturn > 0) {
             spawnAtLocation(level, new ItemStack(Items.LEAD, leadsToReturn));
             leadsToReturn = 0;
+        }
+        if (!straight()) { // saved before logs came down as straight lines (an old world): one straight log per row, resting by today's rule
+            rebuild(level, new ArrayList<>(cells), new ArrayList<>(states), new ArrayList<>(rolls), true);
+            return;
         }
         checkPullers(level);
         checkLifters();

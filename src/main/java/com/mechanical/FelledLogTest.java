@@ -49,6 +49,7 @@ public final class FelledLogTest {
         TEST_FUNCTIONS.register("felled_log", () -> FelledLogTest::test);
         TEST_FUNCTIONS.register("felled_log_rest", () -> FelledLogTest::rest);
         TEST_FUNCTIONS.register("felled_log_slide", () -> FelledLogTest::slide);
+        TEST_FUNCTIONS.register("felled_log_old_world", () -> FelledLogTest::oldWorld);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -64,6 +65,8 @@ public final class FelledLogTest {
                 new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_rest")), TestArea.of(env, 160, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log_slide"),
                 new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_slide")), TestArea.of(env, 220, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log_old_world"),
+                new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_old_world")), TestArea.of(env, 100, true)));
     }
 
     private static List<FelledLogEntity> logs(GameTestHelper h) {
@@ -95,6 +98,45 @@ public final class FelledLogTest {
                     }
         }
         return null;
+    }
+
+    /**
+     * A log saved in an old world, from before felled trees came down as straight logs: one entity in the tree's shape (a
+     * trunk listed crown first, a branch beside it). Loaded, it falls apart into straight logs, one per row, which rest by
+     * today's rule: on top of the slabs under them, not sunk into them as the old block-centre test let them.
+     */
+    private static void oldWorld(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) {
+            h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+            h.setBlock(new BlockPos(x, 1, z), Blocks.SMOOTH_STONE_SLAB);
+            for (int y = 2; y <= 8; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+        }
+        FelledLogEntity made = FelledLogEntity.spawnStraight(level, h.absoluteVec(new Vec3(8.5, 4, 4.5)), 0, 5, Blocks.OAK_LOG.defaultBlockState());
+        var out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess());
+        made.saveWithoutId(out);
+        made.discard();
+        net.minecraft.nbt.CompoundTag tag = out.buildResult();
+        tag.putIntArray("cells", new int[] {0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 0, 2, 1, 0, 2}); // the old shape: trunk crown first, a branch beside block 2
+        tag.remove("UUID");
+        FelledLogEntity old = new FelledLogEntity(Mechanical.FELLED_LOG.get(), level);
+        old.load(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), tag));
+        h.assertTrue(old.size() == 5 && !old.straight(), "loaded in its old shape");
+        level.addFreshEntity(old);
+        h.runAfterDelay(60, () -> {
+            List<FelledLogEntity> now = logs(h);
+            h.assertTrue(old.isRemoved() && now.size() == 2, "it fell apart into the trunk and the branch (" + now.size() + " logs)");
+            h.assertTrue(now.stream().allMatch(FelledLogEntity::straight) && now.stream().mapToInt(FelledLogEntity::size).sorted().boxed().toList().equals(List.of(1, 4)),
+                    "straight logs of 4 and 1, got " + now.stream().map(FelledLogEntity::size).toList());
+            double slabTop = h.absoluteVec(new Vec3(0, 1.5, 0)).y;
+            for (FelledLogEntity l : now) {
+                h.assertTrue(Math.abs(l.getY() - slabTop) < 0.01, "it rests on the slabs (y " + l.getY() + ", want " + slabTop + ")");
+                String p = pokes(level, l);
+                h.assertTrue(p == null, "nothing of it in a slab: " + p);
+                l.discard();
+            }
+            h.succeed();
+        });
     }
 
     /**
