@@ -3736,8 +3736,6 @@
   "block.mechanical.iron_ingot_mold": "Iron Ingot Mold",
   "item.mechanical.pig_iron_ingot": "Pig Iron Ingot",
   "message.mechanical.ingot_mold.molten": "Still molten: wait until it has set",
-  "mechanical.configuration.blendEdges": "Blend Block Edges",
-  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam",
   "key.mechanical.harness": "Grab / Release Cart or Wagon",
   "message.mechanical.grab_hint": "Press %s to grab",
   "hint.mechanical.grab": "Grab",
@@ -5577,5 +5575,7 @@
   "advancements.mechanical.folklore.wisp_lily_true.title": "Light Calls to Light",
   "advancements.mechanical.folklore.wisp_lily_true.description": "Follow a Will-o'-Wisp with a Will-o'-Wisp Lily in your hand: the lily answers its light, and it leads you true",
   "advancements.mechanical.folklore.moonwort_lock.title": "The Key-Herb",
-  "advancements.mechanical.folklore.moonwort_lock.description": "Hold Moonwort to an Iron Door or Iron Trapdoor: it springs open without redstone, and the herb is spent"
+  "advancements.mechanical.folklore.moonwort_lock.description": "Hold Moonwort to an Iron Door or Iron Trapdoor: it springs open without redstone, and the herb is spent",
+  "mechanical.configuration.blendEdges": "Blend Block Edges",
+  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam"
 }
