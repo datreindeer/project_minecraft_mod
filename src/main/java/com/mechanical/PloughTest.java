@@ -90,10 +90,10 @@ public final class PloughTest {
         plough.setHarness(horse);
         h.assertTrue(!plough.isShareDown(), "a placed plough has its share up");
 
-        // right-click while hitched lowers the share
+        // the grab key while hitched lowers the share
         Player player = h.makeMockPlayer(GameType.SURVIVAL);
-        plough.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
-        h.assertTrue(plough.isShareDown(), "right-click lowers the share");
+        plough.grab(player);
+        h.assertTrue(plough.isShareDown(), "the grab key lowers the share");
 
         draw(plough, horse, 20); // the share runs from z 2.4 to about 10.4
         for (int z = 4; z <= 9; z++) {
@@ -111,8 +111,8 @@ public final class PloughTest {
         h.assertTrue(Fertility.get(h.getBlockState(sown)) == 0 && h.getBlockState(sown.above()).is(Blocks.WHEAT), "a sown field is left alone");
 
         // share up: drawn on, nothing more is tilled
-        plough.interact(player, InteractionHand.MAIN_HAND, Vec3.ZERO);
-        h.assertTrue(!plough.isShareDown(), "right-click again raises the share");
+        plough.grab(player);
+        h.assertTrue(!plough.isShareDown(), "the grab key again raises the share");
         double from = plough.getZ();
         draw(plough, horse, 15);
         h.assertTrue(plough.getZ() - from > 4, "the plough followed the horse, moved " + (plough.getZ() - from));

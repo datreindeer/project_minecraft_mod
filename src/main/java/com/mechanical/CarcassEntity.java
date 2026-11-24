@@ -427,7 +427,7 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
         // a loaded body covers most of its cart: clicks meant for the cart (load another, harness) go through to it
         if (hand == InteractionHand.MAIN_HAND && getVehicle() instanceof TravoisEntity bed && (CarcassHauling.heavy(player) != null
                 || player.getMainHandItem().isEmpty() && !player.isShiftKeyDown() && !(stage() > 0 && Birds.isBird(animal))))
-            return bed.interact(player, hand, location);
+            return bed.interact(player, hand, location.add(position()).subtract(bed.position()));
         if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && (player.isShiftKeyDown() || slotOf(player) >= 0))
             return CarcassHauling.pickUpOrLetGo(player, this);
         if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && stage() > 0 && Birds.isBird(animal)) {

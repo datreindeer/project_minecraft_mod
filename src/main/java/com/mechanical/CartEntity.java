@@ -295,11 +295,41 @@ public class CartEntity extends TravoisEntity {
         return Mth.clamp((float) (Math.toDegrees(tipAngle) - SHAFT_ANGLE), -20.0F, 25.0F);
     }
 
-    /** Sneak + right-click with an empty hand: the goods box, or the whole mounted chest. */
+    @Override
+    protected boolean locked() {
+        return caravanHorse != null;
+    }
+
+    @Override
+    public java.util.List<Hint> hints(Player player) {
+        java.util.List<Hint> out = new java.util.ArrayList<>();
+        Entity puller = puller();
+        out.add(new Hint("harness", puller == null ? "grab" : puller == player ? "release" : "unhitch"));
+        out.add(new Hint("use", hasChest() ? "open_chest" : "open_storage"));
+        if (load() > 0 || carriedLog() != null) out.add(new Hint("sneak_use", "unload"));
+        out.add(new Hint("attack", "pick_up"));
+        return out;
+    }
+
+    /** Right-click with an empty hand: the goods box, or the whole mounted chest. */
+    @Override
+    protected InteractionResult plainUse(Player player) {
+        return openGoods(player);
+    }
+
+    /** Sneak + right-click with an empty hand: unloads the last log or body; an empty cart opens its goods as a plain click does. */
     @Override
     protected InteractionResult sneakUse(Player player) {
         InteractionResult logs = unloadLogUse(player);
         if (logs != null) return logs;
+        if (load() > 0) {
+            if (!level().isClientSide()) unloadLast();
+            return InteractionResult.SUCCESS;
+        }
+        return openGoods(player);
+    }
+
+    private InteractionResult openGoods(Player player) {
         if (!level().isClientSide()) {
             boolean chest = hasChest();
             player.openMenu(new SimpleMenuProvider((id, inventory, p) -> chest ? ChestMenu.sixRows(id, inventory, goods)

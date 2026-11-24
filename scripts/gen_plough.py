@@ -43,8 +43,8 @@ unlock("mouldboard_plough", M + "iron_plate", ["mouldboard_plough"])
 merge(A / "lang/en_us.json", {
     "item.mechanical.mouldboard_plough": "Mouldboard Plough",
     "entity.mechanical.mouldboard_plough": "Mouldboard Plough",
-    "message.mechanical.plough.needs_horse": "A plough needs a tamed horse: ride or lead one, then right-click it",
-    "message.mechanical.plough.hitched": "Hitched. Right-click the plough to lower the share",
+    "message.mechanical.plough.needs_horse": "A plough needs a tamed horse: ride or lead one, then press the grab key (H)",
+    "message.mechanical.plough.hitched": "Hitched. Press the grab key to lower the share",
     "message.mechanical.plough.unhitched": "Unhitched",
     "message.mechanical.plough.share_down": "Share down: it ploughs a 5-wide strip as it moves",
     "message.mechanical.plough.share_up": "Share up: it moves without ploughing",

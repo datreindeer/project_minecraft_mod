@@ -38,6 +38,7 @@ public class AnvilWheel extends Screen {
     private final Smithing.Pattern current;
     private final List<Smithing.Pattern> choices = new ArrayList<>();
     private final List<ItemStack> icons = new ArrayList<>();
+    private final List<Boolean> usable = new ArrayList<>();
     private int hover = -1;
 
     AnvilWheel(BlockPos pos, BronzeAnvilBlockEntity anvil) {
@@ -48,10 +49,13 @@ public class AnvilWheel extends Screen {
         boolean steel = metal.is(Smithing.HOT_STEEL_INGOT.get()) || metal.is(Smithing.STEEL_INGOT.get());
         // an empty anvil (or a cold ingot) shows the iron parts
         ItemStack sample = new ItemStack(steel ? Smithing.HOT_STEEL_INGOT.get() : Smithing.HOT_WROUGHT_IRON_INGOT.get());
+        ItemStack other = new ItemStack(steel ? Smithing.HOT_WROUGHT_IRON_INGOT.get() : Smithing.HOT_STEEL_INGOT.get());
+        // every pattern is listed so they can be found; the ones this metal can't make are dimmed and refuse a pick
         for (Smithing.Pattern p : Smithing.Pattern.values()) {
-            if (!p.allowedFor(metal)) continue;
             choices.add(p);
-            icons.add(p.result(sample));
+            ItemStack icon = p.result(sample);
+            icons.add(icon.isEmpty() ? p.result(other) : icon);
+            usable.add(p.allowedFor(metal));
         }
     }
 
@@ -83,6 +87,7 @@ public class AnvilWheel extends Screen {
             graphics.fill(x - h - 1, y - h - 1, x + h + 1, y + h + 1, i == hover ? TITLE : cur ? CURRENT : BORDER);
             graphics.fill(x - h, y - h, x + h, y + h, i == hover ? HOVER_FILL : PANEL);
             graphics.item(icons.get(i), x - 8, y - 8);
+            if (!usable.get(i)) graphics.fill(x - h, y - h, x + h, y + h, 0xB0101010);
         }
         // the middle: what the pointed (or current) pattern is and takes
         Smithing.Pattern shown = hover >= 0 ? choices.get(hover) : current;
@@ -97,7 +102,7 @@ public class AnvilWheel extends Screen {
     }
 
     private void pick() {
-        if (hover >= 0 && choices.get(hover) != current)
+        if (hover >= 0 && choices.get(hover) != current && usable.get(hover))
             ClientPacketDistributor.sendToServer(new Smithing.ChoosePattern(pos, choices.get(hover).ordinal()));
         onClose();
     }

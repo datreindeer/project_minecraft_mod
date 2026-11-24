@@ -136,7 +136,16 @@ public class PloughEntity extends TravoisEntity {
         return true;
     }
 
-    /** Hitched: lowers or raises the share. Else hitches the tamed horse you ride or lead. */
+    @Override
+    public java.util.List<Hint> hints(Player player) {
+        java.util.List<Hint> out = new java.util.ArrayList<>();
+        out.add(new Hint("harness", harness() != null ? "share" : "hitch_horse"));
+        if (harness() != null) out.add(new Hint("sneak_use", "unhitch"));
+        out.add(new Hint("attack", "pick_up"));
+        return out;
+    }
+
+    /** The grab key. Hitched: lowers or raises the share. Else hitches the tamed horse you ride or lead. */
     @Override
     protected void toggleHarness(Player player) {
         if (harness() != null) {

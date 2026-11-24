@@ -14,13 +14,13 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
 - **Järn, inte stål**: kommer tidigt i järnåldern.
 - **Två hästar i par vid en dragstång.** Med en häst kryper den fram när den är tom och står still när den är lastad.
   Spelare kan inte dra den.
-- **Modulärt flak med 4 platser.** Varje plats är tom eller har en modul:
-  - **tom**: 3 rum kadaver. Helt tomt flak = **12 rum** (4 stora / 6 medel / 12 små; kärran har 6).
+- **Modulärt flak: ett rutnät om 6 celler, 2 breda x 3 djupa** (cell = rad*2 + sida, 0 = främre vänster). Varje cell är tom eller har en modul:
+  - **tom**: 2 rum kadaver (stort djur 3 rum = 1,5 cell, medel 2, litet 1). Helt tomt flak = **12 rum** (4 stora / 6 medel / 12 små; kärran har 6).
   - **Chest**: 27 slots.
   - **Hay Bale**: foder till spannet på långa resor.
   - **säte**: en passagerare åker med.
-- Moduler sätts i genom att högerklicka en plats med blocket och tas ur med sneak + högerklick med tom hand
-  (som kärrans Chest idag).
+- Moduler sätts i genom att högerklicka vagnen med blocket: en Chest tar första lediga cellen framifrån (vänster, höger, sedan
+  raden bakom), Hay Bale och säte tar sista lediga cellen bakifrån. De tas ur genom att slå på dem.
 - **Uroxar drar inte** förrän de kan tämjas. Det är en egen uppgift som kommer senare.
 - **Trader Caravans behåller kärran** tills vidare.
 
@@ -39,15 +39,16 @@ En fyrhjulig järnvagn för järnåldern: kärrans storebror. Kärran ([CartEnti
   försvinner vid omladdning som kärrans sele.
 
 - **Ändrat (D1–D2):** inget ok som släpper. Andra hästen sätts exakt bredvid den första varje tick, vagnen dras upp bakom
-  spannet om den kommer för långt efter, och den släpper aldrig när den fastnar. Högerklick på vagnen spänner bara för (den
+  spannet om den kommer för långt efter, och den släpper aldrig när den fastnar. Greppnyckeln (H, titta på vagnen) spänner bara för (den
   ridna hästen leder alltid); smyg + högerklick på en spänd häst spänner från den. Spannet sparas med UUID (`lead_horse`,
   `partner_horse`). Ett par har ingen egen fartsänkning längre: lasten sänker farten och tömmer orken genom `HorseWork` (D3).
 
 ## 2. Modulerna (byggt)
-- 4 platser som synkas till klienten (renderaren ritar Chest, Hay Bale och säte på rätt plats).
-- Kadaverlast räknas per tom plats: `capacity() = 3 × tomma platser`. En kropp som inte får plats hindrar att en modul
+- 6 celler (2x3) som synkas till klienten (renderaren ritar Chest, Hay Bale och säte i sin cell).
+- Kadaverlast räknas per tom cell: `capacity() = 2 × tomma celler` (12 rum när allt är tomt). En kropp som inte får plats hindrar att en modul
   sätts i.
-- Chest: en `SimpleContainer` med 27 slots per plats. Sneak + högerklick på en kistplats öppnar just den.
+- Chest: en `SimpleContainer` med 27 slots per kista, upp till 6 kistor (162 slots). **Två kistor i samma rad (cell 2r och 2r+1) är en dubbelkista**: ritas som vaniljens dubbelkista (en sammanhängande kropp, ett lås i mitten mot bakgaveln, via vaniljens chest-modeller i `WagonRenderer`) och öppnas som en (smyg + högerklick, 54 slots, vänstra cellens kista först; `ChestMenu.sixRows` över en `CompoundContainer`). En ensam kista öppnar sina 27 slots. Skärmen stängs om vagnen försvinner, är mer än 8 block bort eller kistan tas ur. Sparfilen är oförändrad (`modules` har
+  2 bitar per cell, `hay` och `chestN` per cell; gamla vagnar med 4 platser läses som cell 0-3).
 - Hay Bale: hästarna äter av den när de är hungriga (kopplas till `Carting.HORSE_FEED`), och en bal räcker länge.
 - Säte: en passagerare (spelare eller tribesperson).
 - **Byggt:** modulerna synkas (2 bitar per plats). Hay Bale: 9 tuggor, en skadad häst i spannet äter en var 5:e s och

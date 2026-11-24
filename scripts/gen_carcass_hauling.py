@@ -169,7 +169,7 @@ merge(A / "lang/en_us.json", {f"item.mechanical.{k}": v for k, v in ITEMS.items(
     "message.mechanical.carcass.hung_spoiled": "Hung %s min: the meat has spoiled",
     "message.mechanical.hanging_rack.too_big": "Too big to hang. Butcher it where it lies",
     "message.mechanical.hanging_rack.occupied": "Something already hangs here",
-    "message.mechanical.travois.harnessed": "Harnessed. Right-click again to unharness",
+    "message.mechanical.travois.harnessed": "Harnessed. Press the grab key again to unharness",
     "message.mechanical.travois.already_pulling": "That one already pulls something: unhitch it first",
     "message.mechanical.travois.unharnessed": "Unharnessed",
     "message.mechanical.travois.full": "The travois is full",

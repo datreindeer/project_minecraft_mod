@@ -453,12 +453,12 @@ Plan: [wagon-plan.md](../wagon-plan.md).
 ### Spannet
 
 - **Spelare kan inte dra vagnen.** Den dras av tama, vuxna hästar (inte föl).
-- **Spänn för:** rid en tam häst eller led den i koppel (inom 10 block) till vagnen och högerklicka vagnen med tom hand:
+- **Spänn för:** rid en tam häst eller led den i koppel (inom 10 block) till vagnen, titta på vagnen och tryck på greppnyckeln (**H**, kan ändras):
   den låses i spannets **första plats**. Gör likadant med en andra häst: den hamnar bredvid. Rider och leder du båda på en
-  gång går båda in med ett klick. Den häst du rider tar alltid första platsen, så att du styr spannet. Kopplet tas av:
+  gång går båda in med ett tryck. Den häst du rider tar alltid första platsen, så att du styr spannet. Kopplet tas av:
   hästarna sitter **fast** i dragstången och inget kan slitas loss.
 - **Spänna från:** **smyg + högerklicka en spänd häst**. Tar du från den första hästen flyttar den andra upp till första
-  platsen. Ett vanligt högerklick på vagnen spänner inte längre från. Den andra hästen går i på den sida den stod på när
+  platsen. Greppnyckeln på ett fullt spann spänner inte från. Den andra hästen går i på den sida den stod på när
   den spändes för, och byter inte sida om ryttaren byter häst.
 - **Spannet är en enhet:** andra hästen står exakt bredvid den första (paret 1,45 block isär, mitten 2,8 block framför
   vagnen) och svänger med den, i samma steg. Dragstången sitter fast i framaxeln och går rakt bakåt längs hästarna;
@@ -478,22 +478,21 @@ Plan: [wagon-plan.md](../wagon-plan.md).
 - **Spannet sparas** när världen laddas om (hästarna med UUID). Vagnar sparade före den här ändringen laddas utan spann,
   som förut: spänn för igen.
 
-### Flaket: fyra platser
+### Flaket: sex celler
 
-Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har en modul:
+Bädden är ett rutnät om **6 celler**, 2 breda x 3 djupa (cell = rad*2 + sida, 0 = främre vänster). Varje cell är tom eller har en modul:
 
-| Plats | Vad den gör |
+| Cell | Vad den gör |
 |---|---|
-| tom | **3 rum** kroppar. Helt tomt flak = **12 rum**: 4 stora, 6 mellanstora eller 12 lätta (kärran 6). Jättar går aldrig. |
-| **Chest** | **27 platser**. Smyg + högerklicka den platsen för att öppna just den kistan. Fyra kistor = 108 platser. |
+| tom | **2 rum** kroppar (stort djur 3 rum = 1,5 cell, medel 2, litet 1). Helt tomt flak = **12 rum**: 4 stora, 6 mellanstora eller 12 lätta (kärran 6). Jättar går aldrig. |
+| **Chest** | **27 platser** per kista. Två kistor i samma rad ritas och öppnas som en **dubbelkista** (som i vanilla, 54 platser, vänstra kistan först); en ensam kista öppnar sina 27. Smyg + högerklicka en kista öppnar just den. Sex kistor = 162 platser. |
 | **Hay Bale** | **9 tuggor**. En skadad häst i spannet äter en tugga var 5:e sekund och läker 2 hälsa. Uppäten försvinner balen. |
-| **säte** | valfri trä-slab (taggen `#minecraft:wooden_slabs`). Högerklicka sätet med tom hand för att sitta (när du inte rider eller leder en tam häst som kan spännas för). Du kliver av vid sidan av flaket, bredvid sätet. Kommer tillbaka som en Oak Slab. |
+| **säte** | valfri trä-slab (taggen `#minecraft:wooden_slabs`). Högerklicka sätet med tom hand för att sitta (när du inte rider). Du kliver av vid sidan av flaket, bredvid sätet. Kommer tillbaka som en Oak Slab. |
 
 - **Tama djur:** som på kärran. Led kor, får, grisar eller höns i koppel och högerklicka vagnen med tom hand. De står
-  på de tomma platserna (höna/unge 1 rum, gris/får 2, ko 3; ett helt tomt flak tar till exempel fyra kor), och kopplet
+  på de tomma cellerna (höna/unge 1 rum, gris/får 2, ko 3; ett helt tomt flak tar till exempel fyra kor), och kopplet
   knyts i vagnen. Smyg + högerklicka ett djur för att leda av det.
-- **Sätt i en modul:** högerklicka en plats med blocket (Chest, Hay Bale eller trä-slab). Platsen måste vara ledig ("That
-  place on the bed is taken"), och lasten måste få plats på de tomma platser som blir kvar ("Unload a carcass first").
+- **Sätt i en modul:** högerklicka vagnen med blocket. En Chest tar första lediga cellen framifrån (främre vänster, främre höger, sedan raden bakom), Hay Bale och trä-slab tar sista lediga cellen bakifrån. Finns ingen ledig cell ("No free cell left on the bed"), eller får lasten inte plats i de tomma cellerna som blir kvar ("Unload a carcass first"), sätts den inte i. Med fyra kistor är sista raden fri: där får ett medelstort djur, en eller två Hay Bales eller ett eller två säten plats.
 - **Ta ur en modul:** slå på den. Kistan och allt innehåll faller ut; en påbörjad Hay Bale ger tillbaka sin återstående
   Wheat (en orörd ger en Hay Bale).
 - **Plocka upp vagnen:** slå på vagnen där det inte sitter någon modul. Allt faller ut: kroppar, moduler och kistornas innehåll.
@@ -503,9 +502,9 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 
 ### Släpvagn (Wheeled Cart bakom vagnen, v0.134.0)
 
-- **Koppla på:** ställ en Wheeled Cart bakom vagnen, högst **4 block** från mitten av vagnens bakgavel, och högerklicka
-  kärran med tom hand: den kopplas efter vagnen ("The cart is hitched behind the wagon"). Det går före att dra kärran själv.
-  Högerklicka kärran igen för att koppla loss ("The cart is unhitched from the wagon").
+- **Koppla på:** ställ en Wheeled Cart bakom vagnen, högst **4 block** från mitten av vagnens bakgavel, titta på
+  kärran och tryck på greppnyckeln (**H**, kan ändras): den kopplas efter vagnen ("The cart is hitched behind the wagon"). Det går före att dra kärran själv.
+  Tryck på greppnyckeln igen för att koppla loss ("The cart is unhitched from the wagon").
 - **En släpvagn per vagn** ("That wagon already tows a cart"). En kärra som dras av en häst eller spelare kopplas först
   loss av klicket; en kopplad kärra kan inte samtidigt dras av en häst eller spelare (ett fordon per dragare).
 - **Följer** vagnens bakgavel **2,3 block** bakom med skaklarna vilande på bakgaveln (skaklarnas spetsar når lite in över
@@ -540,8 +539,8 @@ Bädden har **4 platser** framifrån och bakåt. Varje plats är tom eller har e
 - **Iron Shod**: gör en Iron-Rimmed Wheel.
 - **Wagoner** (mål): bygg en Wagon.
 - **A Pair in the Yoke**: spänn för två hästar.
-- **Heavy Haul** (mål): 12 rum kroppar på en vagn med alla fyra platser tomma.
-- **Freight**: en Chest på alla fyra platserna.
+- **Heavy Haul** (mål): 12 rum kroppar på en vagn med alla sex celler tomma.
+- **Freight**: en Chest i alla sex cellerna (162 platser).
 - **Road Train**: koppla en Wheeled Cart efter vagnen.
 - **Timber Wagon** (mål): lasta en fälld stock på vagnen (efter *A Pair in the Yoke*).
 
@@ -563,9 +562,9 @@ gen_wagon.py), texturer: `scripts/gen_plough_textures.py`. Test: `PloughTest`.
 ### Så plöjer man
 
 - **Ställ ut plogen:** högerklicka marken med den. Billen är uppe när den ställs ut.
-- **Spänn för:** rid en tam, vuxen häst eller led en i koppel (inom 10 block) och högerklicka plogen med tom hand.
+- **Spänn för:** rid en tam, vuxen häst eller led en i koppel (inom 10 block) titta på plogen och tryck på greppnyckeln (**H**, kan ändras).
   Spelare kan inte dra den. Plogen följer 3 block bakom hästen, som kärran.
-- **Sänk/höj billen:** högerklicka plogen med tom hand när en häst är förspänd (går från hästryggen). Billen nere: plogen
+- **Sänk/höj billen:** tryck på greppnyckeln när en häst är förspänd (går från hästryggen). Billen nere: plogen
   tippar framåt och billen går ner i jorden. Billen uppe: den lyfts fri och plogen kan köras utan att plöja.
 - **Spänn från:** smyg + högerklicka plogen med tom hand (till fots). Billen åker upp.
 - **Plöjningen:** varje tick plogen rör sig med billen nere blir en **5 block bred** remsa tvärs över billen (2 block åt var

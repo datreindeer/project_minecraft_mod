@@ -927,8 +927,8 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
 
 **Travois** (släpsläde): recept `[Tool Rod][ ][Tool Rod]` / `[Cordage][Scraped Hide][Cordage]` / `[Tool Rod][ ][Tool Rod]`
 (låses upp med en Scraped Hide). Två långa stänger som korsas framtill och är surrade där, tre tvärslåar och en spänd hud.
-- Högerklicka på marken för att ställa ner den. **Högerklicka med tom hand** för att spänna dig för den (och igen för att
-  släppa). Den följer 2,4 block bakom dig, med bakändarna släpande på marken, och klättrar upp för steg (1 block).
+- Högerklicka på marken för att ställa ner den. Titta på den och tryck på **greppnyckeln (H, kan ändras)** för att spänna dig för den (och igen för att
+  släppa). En ruta bredvid hårkorset visar vilka tangenter som gäller. Den följer 2,4 block bakom dig, med bakändarna släpande på marken, och klättrar upp för steg (1 block).
 - **Följer marken:** släden har tyngdkraft (faller 0,08 block/tick², högst 1,5 block/tick), glider längs marken och tar
   sig upp för ettblockssteg. Stängerna lutar från bakändarna på marken upp mot **höften** på den som drar (halva
   kroppshöjden). Rörelsen räknas ut både på servern och i klienten (som för föremål på marken) och klienten jämkar in

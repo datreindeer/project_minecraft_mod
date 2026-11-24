@@ -17,6 +17,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
@@ -27,7 +28,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,26 +44,28 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Wagon: the Iron Age hauler (docs/wagon-plan.md). A long plank bed on four iron-rimmed wheels, the front axle swivelling
  * on a pole drawn by a <b>pair of tamed horses</b>; players can't pull it. One horse alone crawls with it empty and can't
- * move it loaded. The bed has {@link #SLOTS} places front to back, each empty ({@link #ROOM_PER_SLOT} room of carcasses:
- * all empty is 12 room, four large bodies) or holding a module: a Chest ({@link #CHEST_SIZE} slots), a Hay Bale (feeds
- * the team: heals the horses while they're hitched) or a seat (any wooden slab; a player rides along).
+ * move it loaded. The bed is a grid of {@link #SLOTS} cells, {@link #COLS} wide and {@link #ROWS} deep (cell = row * 2 + side,
+ * 0 = front left), each empty ({@link #ROOM_PER_SLOT} room of carcasses: all empty is 12 room, four large bodies) or
+ * holding a module: a Chest ({@link #CHEST_SIZE} slots), a Hay Bale (feeds the team: heals the horses while they're
+ * hitched) or a seat (any wooden slab; a player rides along).
  * <p>
- * Right-click a place with a Chest, Hay Bale or wooden slab to put the module there; punch a module to take it out (a
- * chest spills, a half-eaten bale gives back its wheat); punch the wagon where there is none to pick it up. Sneak +
- * right-click a chest place to open it, anywhere else to unload the last body (or the log). Right-click it while dragging a
- * felled log ({@link FelledLogEntity}, up to {@link FelledLogEntity#WAGON_MAX} blocks) to load it on an empty bed. Right-click with an empty hand while riding
- * or leading tamed horses to hitch them: the first takes the lead place, the second is yoked beside it. The team is fixed
+ * Right-click the wagon with a Chest to put it in the first free cell from the front, with a Hay Bale or wooden slab in the
+ * last free cell from the back; punch a module to take it out (a chest spills, a half-eaten bale gives back its wheat);
+ * punch the wagon where there is none to pick it up. Two chests in a row (cells 2r and 2r+1) are one double chest, drawn
+ * and opened as vanilla's: right-click a chest to open it (a pair opens the 54 slots, left cell first); sneak + right-click
+ * unloads the last body (or the log). Right-click it while dragging a
+ * felled log ({@link FelledLogEntity}, up to {@link FelledLogEntity#WAGON_MAX} blocks) to load it on an empty bed. Press the grab key (default H, {@link #grab}) while riding
+ * or leading tamed horses to hitch them (again to unhitch): the first takes the lead place, the second is yoked beside it. The team is fixed
  * (living-world-plan D1-D2): the second horse keeps exactly beside the first, the wagon rigidly behind them, nothing
- * snaps; sneak + right-click a hitched horse to take it out ({@link #release}). Both are saved by UUID. On a seat place,
- * with no horses about, you sit down.
+ * snaps; sneak + right-click a hitched horse to take it out ({@link #release}). Both are saved by UUID. Right-click a seat to sit down.
  */
 public class WagonEntity extends TravoisEntity {
-    public static final int SLOTS = 4, ROOM_PER_SLOT = 3, CAPACITY = SLOTS * ROOM_PER_SLOT, CHEST_SIZE = 27;
+    public static final int COLS = 2, ROWS = 3, SLOTS = COLS * ROWS, ROOM_PER_SLOT = 2, CAPACITY = SLOTS * ROOM_PER_SLOT, CHEST_SIZE = 27;
     public static final int EMPTY = 0, CHEST = 1, HAY = 2, SEAT = 3;
     /** Hay Bale: bites (one wheat each, 9 to a bale), each healing a horse 2 health, one bite per horse every 5 s at most. */
     static final int HAY_BITES = 9, FEED_INTERVAL = 100;
     static final float BITE_HEAL = 2.0F;
-    /** The four modules, 2 bits each, place 0 (front) in the lowest bits. Synced (renderer). */
+    /** The six modules, 2 bits each, cell 0 (front left) in the lowest bits. Synced (renderer). */
     private static final EntityDataAccessor<Integer> MODULES = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
     /** Entity id of the second horse, yoked beside the lead horse ({@link #harness}), -1 if none. Synced (pole, pull point). */
     private static final EntityDataAccessor<Integer> PARTNER = SynchedEntityData.defineId(WagonEntity.class, EntityDataSerializers.INT);
@@ -83,11 +88,11 @@ public class WagonEntity extends TravoisEntity {
     public static final double FRONT_AXLE = 1.0, POLE = LEAD - FRONT_AXLE;
     static final float MAX_STEER = 55.0F;
     /** The bed's rear end behind the centre: a towed cart's shafts rest there ({@link #towPoint}). */
-    public static final double REAR = SLOTS * 0.75 / 2;
+    public static final double REAR = ROWS * 1.0 / 2;
     /** A trailer (Wheeled Cart) weighs on the team by its fullness times this (its 6 room against the wagon's 12). */
     static final double TRAILER_WEIGHT = CartEntity.CAPACITY / (double) CAPACITY;
-    /** Bed floor top, wheel radius (WagonModel), place depth along the bed, seat top above the floor (blocks). */
-    public static final double BED = 14 / 16.0, WHEEL_RADIUS = 8 / 16.0, SLOT_DEPTH = 0.75, SEAT_TOP = 6 / 16.0;
+    /** Bed floor top, wheel radius (WagonModel), row depth along the bed, cell width, seat top above the floor (blocks). */
+    public static final double BED = 14 / 16.0, WHEEL_RADIUS = 8 / 16.0, ROW_DEPTH = 1.0, CELL_WIDTH = 0.75, SEAT_TOP = 6 / 16.0;
     /** One horse: share of the gap the wagon closes (empty), and the horse's speed lost (empty). Loaded, neither moves. */
     static final double CRAWL = 0.3, CRAWL_SLOW = 0.75;
     /** Search range for led horses to hitch. */
@@ -107,10 +112,12 @@ public class WagonEntity extends TravoisEntity {
     public WagonEntity(EntityType<? extends WagonEntity> type, Level level) {
         super(type, level);
         for (int i = 0; i < SLOTS; i++) {
+            int cell = i;
             chests[i] = new SimpleContainer(CHEST_SIZE) {
+                /** An open chest screen closes when the wagon is gone or far, or this chest is taken out. */
                 @Override
                 public boolean stillValid(Player player) {
-                    return isAlive() && player.distanceTo(WagonEntity.this) < 8;
+                    return isAlive() && player.distanceTo(WagonEntity.this) < 8 && module(cell) == CHEST;
                 }
             };
         }
@@ -142,15 +149,21 @@ public class WagonEntity extends TravoisEntity {
         return n;
     }
 
-    /** Distance of place {@code slot}'s centre ahead of the wagon's centre (place 0 at the front). */
+    /** Distance of cell {@code slot}'s centre ahead of the wagon's centre (row 0 at the front). */
     public static double slotAlong(int slot) {
-        return (SLOTS / 2.0 - 0.5 - slot) * SLOT_DEPTH;
+        return (ROWS / 2.0 - 0.5 - slot / COLS) * ROW_DEPTH;
     }
 
-    /** The place at {@code local} (a point relative to the wagon's position), by how far along the bed it is. */
+    /** Distance of cell {@code slot}'s centre to the right of the wagon's centre (the left cell is even). */
+    public static double slotSide(int slot) {
+        return (slot % COLS == 0 ? -0.5 : 0.5) * CELL_WIDTH;
+    }
+
+    /** The cell at {@code local} (a point relative to the wagon's position): its row by how far along the bed, its side by left or right. */
     private int slotAt(Vec3 local) {
-        double along = local.dot(Vec3.directionFromRotation(0, getYRot()));
-        return Mth.clamp((int) Math.floor((SLOTS / 2.0 * SLOT_DEPTH - along) / SLOT_DEPTH), 0, SLOTS - 1);
+        double along = local.dot(Vec3.directionFromRotation(0, getYRot())), side = local.dot(Vec3.directionFromRotation(0, getYRot() + 90));
+        int row = Mth.clamp((int) Math.floor((ROWS / 2.0 * ROW_DEPTH - along) / ROW_DEPTH), 0, ROWS - 1);
+        return row * COLS + (side < 0 ? 0 : 1);
     }
 
     /** The module {@code stack} puts in, or EMPTY. */
@@ -205,12 +218,22 @@ public class WagonEntity extends TravoisEntity {
         return Math.min(1, towed + Math.max(load() / (double) CAPACITY, slots == 0 ? 0 : filled / (double) slots));
     }
 
-    private void placeModule(Player player, int slot, int module, ItemStack held) {
+    /** Chests fill the first free cell from the front, hay and seats from the back; -1 if the bed has none. */
+    private int freeCell(int module) {
+        for (int n = 0; n < SLOTS; n++) {
+            int i = module == CHEST ? n : SLOTS - 1 - n;
+            if (module(i) == EMPTY) return i;
+        }
+        return -1;
+    }
+
+    private void placeModule(Player player, int module, ItemStack held) {
         if (carriedLog() != null) {
             player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.log_first"));
             return;
         }
-        if (module(slot) != EMPTY) {
+        int slot = freeCell(module);
+        if (slot < 0) {
             player.sendOverlayMessage(Component.translatable("message.mechanical.wagon.place_taken"));
             return;
         }
@@ -230,7 +253,7 @@ public class WagonEntity extends TravoisEntity {
     private void removeModule(ServerLevel level, int slot) {
         int module = module(slot);
         if (module == EMPTY) return;
-        Vec3 at = position().add(Vec3.directionFromRotation(0, getYRot()).scale(slotAlong(slot))).add(0, BED + 0.3, 0);
+        Vec3 at = position().add(Vec3.directionFromRotation(0, getYRot()).scale(slotAlong(slot))).add(Vec3.directionFromRotation(0, getYRot() + 90).scale(slotSide(slot))).add(0, BED + 0.3, 0);
         if (module == CHEST) {
             for (ItemStack s : chests[slot].removeAllItems()) Containers.dropItemStack(level, at.x, at.y, at.z, s);
             Containers.dropItemStack(level, at.x, at.y, at.z, new ItemStack(Items.CHEST));
@@ -246,8 +269,8 @@ public class WagonEntity extends TravoisEntity {
         playSound(SoundEvents.WOOD_BREAK, 1.0F, 1.0F);
     }
 
-    /** The place {@code player} is looking at on the wagon, or -1. */
-    private int slotLookedAt(Player player) {
+    /** The cell {@code player} is looking at on the wagon, or -1. */
+    public int slotLookedAt(Player player) {
         Vec3 eye = player.getEyePosition(), end = eye.add(player.getViewVector(1.0F).scale(8));
         AABB box = getBoundingBox().inflate(getPickRadius());
         return box.clip(eye, end).map(hit -> slotAt(hit.subtract(position()))).orElse(-1);
@@ -259,9 +282,26 @@ public class WagonEntity extends TravoisEntity {
         return 0.5F;
     }
 
-    /** Place {@code slot}'s chest (WagonTest). */
+    /** Cell {@code slot}'s chest (WagonTest). */
     SimpleContainer chest(int slot) {
         return chests[slot];
+    }
+
+    /** The chest in {@code cell} is one half of a double chest: the other cell of its row holds a chest too. */
+    boolean paired(int cell) {
+        return module(cell) == CHEST && module(cell ^ 1) == CHEST;
+    }
+
+    /** The screen of the chest in {@code cell}: 27 slots, or a double chest's 54 with the left cell's chest first (vanilla's sixRows). */
+    AbstractContainerMenu chestMenu(int id, Inventory inventory, int cell) {
+        if (!paired(cell)) return ChestMenu.threeRows(id, inventory, chests[cell]);
+        int row = cell / COLS * COLS;
+        return ChestMenu.sixRows(id, inventory, new CompoundContainer(chests[row], chests[row + 1]));
+    }
+
+    private void openChest(ServerPlayer player, int cell) {
+        player.openMenu(new SimpleMenuProvider((id, inventory, p) -> chestMenu(id, inventory, cell), getDisplayName()));
+        playSound(SoundEvents.CHEST_OPEN, 0.5F, 1.1F);
     }
 
     // ---- the team
@@ -602,19 +642,14 @@ public class WagonEntity extends TravoisEntity {
         if (justClickedLog(player)) return InteractionResult.SUCCESS;
         int slot = slotAt(location), module = moduleFor(held);
         if (module != EMPTY && CarcassHauling.heavy(player) == null) {
-            if (!level().isClientSide()) placeModule(player, slot, module, held);
+            if (!level().isClientSide()) placeModule(player, module, held);
             return InteractionResult.SUCCESS;
         }
-        if (held.isEmpty() && player.isShiftKeyDown() && module(slot) == CHEST) {
-            if (!level().isClientSide()) {
-                SimpleContainer chest = chests[slot];
-                player.openMenu(new SimpleMenuProvider((id, inventory, p) -> ChestMenu.threeRows(id, inventory, chest), getDisplayName()));
-                playSound(SoundEvents.CHEST_OPEN, 0.5F, 1.1F);
-            }
+        if (held.isEmpty() && !player.isShiftKeyDown() && module(slot) == CHEST) {
+            if (player instanceof ServerPlayer sp) openChest(sp, slot);
             return InteractionResult.SUCCESS;
         }
-        if (held.isEmpty() && !player.isShiftKeyDown() && module(slot) == SEAT && !player.isPassenger()
-                && candidates(player, harness(), partner()).isEmpty()) {
+        if (held.isEmpty() && !player.isShiftKeyDown() && module(slot) == SEAT && !player.isPassenger()) {
             if (!level().isClientSide()) player.startRiding(this);
             return InteractionResult.SUCCESS;
         }
@@ -633,6 +668,23 @@ public class WagonEntity extends TravoisEntity {
     }
 
     @Override
+    protected boolean locked() {
+        return caravan;
+    }
+
+    @Override
+    public List<Hint> hints(Player player) {
+        List<Hint> out = new ArrayList<>();
+        int cell = slotLookedAt(player), module = cell < 0 ? EMPTY : module(cell);
+        out.add(new Hint("harness", harness() != null ? "unhitch_horses" : "hitch_horses"));
+        if (module == CHEST) out.add(new Hint("use", paired(cell) ? "open_double_chest" : "open_chest"));
+        if (module == SEAT && !player.isPassenger()) out.add(new Hint("use", "sit"));
+        if (load() > 0 || carriedLog() != null) out.add(new Hint("sneak_use", "unload"));
+        out.add(new Hint("attack", module != EMPTY ? "remove_module" : "pick_up"));
+        return out;
+    }
+
+    @Override
     protected boolean carriesLivestock() {
         return true;
     }
@@ -643,7 +695,8 @@ public class WagonEntity extends TravoisEntity {
         Vec3 dir = Vec3.directionFromRotation(0, getYRot()), right = Vec3.directionFromRotation(0, getYRot() + 90);
         List<Integer> seats = slotsWith(SEAT);
         double along = seats.isEmpty() ? 0 : slotAlong(seats.getFirst());
-        for (double side : new double[] {1.5, -1.5}) {
+        double first = !seats.isEmpty() && seats.getFirst() % COLS == 1 ? 1.5 : -1.5; // off the seat's own side first
+        for (double side : new double[] {first, -first}) {
             Vec3 at = position().add(dir.scale(along)).add(right.scale(side));
             for (double up : new double[] {0, 1}) {
                 Vec3 p = at.add(0, up, 0);
@@ -681,15 +734,15 @@ public class WagonEntity extends TravoisEntity {
     }
 
     /**
-     * Bodies lie crosswise in the empty places, front to back in loading order; seated players sit in the seat places in
-     * order. A body's middle is mapped from its place in the row of rooms ({@link #rowOffset}) to the empty places.
+     * Bodies lie in the empty cells, front to back in loading order; seated players sit in the seat cells in
+     * order. A body's middle is mapped from its place in the row of rooms ({@link #rowOffset}) to the empty cells.
      */
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
         if (passenger instanceof FelledLogEntity log) {
             // drawn at LOG_SCALE: two side by side on the floor, the third on top between them; root ends at the front board
             int n = carriedLogs().indexOf(log);
-            double s = LOG_SCALE, along = SLOTS * SLOT_DEPTH / 2 - 0.125 - log.size() * s / 2.0;
+            double s = LOG_SCALE, along = ROWS * ROW_DEPTH / 2 - 0.125 - log.size() * s / 2.0;
             double side = n == 0 ? -s / 2 : n == 1 ? s / 2 : 0, up = n >= 2 ? s : 0;
             Vec3 at = onBed(along, side, BED + up, 0, 0);
             moveFunction.accept(passenger, at.x, at.y, at.z);
@@ -697,17 +750,29 @@ public class WagonEntity extends TravoisEntity {
             return;
         }
         if (!(passenger instanceof Player)) { // bodies and livestock
-            List<Integer> empty = slotsWith(EMPTY);
-            if (empty.isEmpty()) return;
             double room = rowOffset(passenger, 1.0) + load() / 2.0; // the body's middle, in rooms from the front
-            int i = Mth.clamp((int) Math.floor(room / ROOM_PER_SLOT), 0, empty.size() - 1);
-            double along = slotAlong(empty.get(i)) - (room - i * ROOM_PER_SLOT - ROOM_PER_SLOT / 2.0) * SLOT_DEPTH / ROOM_PER_SLOT;
-            Vec3 at = onBed(along, 0, BED, 0, 0);
+            // the free cells row by row, 2 room each: a whole free row takes bodies crosswise, a half row lengthwise in its cell
+            double start = 0, along = 0, side = 0;
+            boolean crosswise = false, found = false;
+            for (int row = 0; row < ROWS && !found; row++) {
+                List<Integer> free = new ArrayList<>();
+                for (int c = 0; c < COLS; c++) if (module(row * COLS + c) == EMPTY) free.add(row * COLS + c);
+                if (free.isEmpty()) continue;
+                double rooms = ROOM_PER_SLOT * free.size();
+                crosswise = free.size() == COLS;
+                along = slotAlong(row * COLS) + (0.5 - Mth.clamp((room - start) / rooms, 0, 1)) * ROW_DEPTH;
+                side = crosswise ? 0 : slotSide(free.getFirst());
+                found = room < start + rooms;
+                start += rooms;
+            }
+            if (start == 0) return;
+            Vec3 at = onBed(along, side, BED, 0, 0);
             moveFunction.accept(passenger, at.x, at.y, at.z);
-            passenger.setYRot(getYRot() + 90.0F);
+            float yaw = getYRot() + (crosswise ? 90.0F : 0.0F);
+            passenger.setYRot(yaw);
             if (passenger instanceof LivingEntity animal) {
-                animal.setYBodyRot(getYRot() + 90.0F);
-                animal.setYHeadRot(getYRot() + 90.0F);
+                animal.setYBodyRot(yaw);
+                animal.setYHeadRot(yaw);
             }
             return;
         }
@@ -718,9 +783,8 @@ public class WagonEntity extends TravoisEntity {
             if (e instanceof Player) n++;
         }
         if (n >= seats.size()) return;
-        double along = slotAlong(seats.get(n));
         Vec3 offset = passenger.getVehicleAttachmentPoint(this);
-        Vec3 at = onBed(along, 0, BED + SEAT_TOP, 0, 0);
+        Vec3 at = onBed(slotAlong(seats.get(n)), slotSide(seats.get(n)), BED + SEAT_TOP, 0, 0);
         moveFunction.accept(passenger, at.x - offset.x, at.y - offset.y, at.z - offset.z);
     }
 

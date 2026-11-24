@@ -716,8 +716,75 @@ public class TravoisEntity extends Entity {
             }
         }
         if (player.isShiftKeyDown()) return sneakUse(player);
-        if (!level().isClientSide()) toggleHarness(player);
+        InteractionResult use = plainUse(player);
+        if (use != null) return use;
+        // an empty-hand click grabs nothing any more: the grab key does (grabKey)
+        if (!level().isClientSide()) player.sendOverlayMessage(Component.translatable("message.mechanical.grab_hint", Component.keybind("key.mechanical.harness")));
         return InteractionResult.SUCCESS;
+    }
+
+    /** Right-click with an empty hand (not sneaking), when nothing else took the click: opens its storage, or null for the grab hint. */
+    protected InteractionResult plainUse(Player player) {
+        return null;
+    }
+
+    // ---- the grab key (client.HarnessClient, HarnessPayload): harness or hitch, release
+
+    /** A caravan's cart or wagon: its guards own it, players may not touch it. */
+    protected boolean locked() {
+        return false;
+    }
+
+    /** Server: the grab key was pressed on this: what an empty-hand click did before (hitching, harnessing, releasing). */
+    public void grab(Player player) {
+        if (locked()) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.cart.caravan"));
+            return;
+        }
+        toggleHarness(player);
+    }
+
+    /** The travois, cart, plough or wagon {@code player} is looking at within reach (not through a wall), or null. */
+    public static TravoisEntity lookedAt(Player player) {
+        Vec3 eye = player.getEyePosition(), end = eye.add(player.getViewVector(1.0F).scale(player.entityInteractionRange()));
+        double best = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getLocation().distanceToSqr(eye);
+        TravoisEntity found = null;
+        for (TravoisEntity e : player.level().getEntitiesOfClass(TravoisEntity.class, new net.minecraft.world.phys.AABB(eye, end).inflate(2), Entity::isAlive)) {
+            var hit = e.getBoundingBox().inflate(e.getPickRadius()).clip(eye, end);
+            if (hit.isPresent() && hit.get().distanceToSqr(eye) < best) {
+                best = hit.get().distanceToSqr(eye);
+                found = e;
+            }
+        }
+        return found;
+    }
+
+    /** What the grab key is for: the one {@code player} looks at, else the one they are harnessed to (it lets go). */
+    public static TravoisEntity grabTarget(Player player) {
+        TravoisEntity looked = lookedAt(player);
+        if (looked != null) return looked;
+        for (TravoisEntity t : player.level().getEntitiesOfClass(TravoisEntity.class, player.getBoundingBox().inflate(10), t -> t.harnessId() == player.getId()))
+            return t;
+        return null;
+    }
+
+    /** Server: the grab key. */
+    public static void grabKey(Player player) {
+        if (player.isSpectator() || !player.isAlive() || player.isPassenger()) return;
+        TravoisEntity target = grabTarget(player);
+        if (target != null) target.grab(player);
+    }
+
+    /** One line of the hint box: the key kind (harness, use, sneak_use, attack) and the action's lang key suffix (hint.mechanical.*). */
+    public record Hint(String key, String action) {}
+
+    /** The actions that apply to {@code player} aiming at this right now (client.HarnessClient draws them). */
+    public java.util.List<Hint> hints(Player player) {
+        java.util.List<Hint> out = new java.util.ArrayList<>();
+        out.add(new Hint("harness", harnessId() == player.getId() ? "release" : "grab"));
+        if (load() > 0 || carriedLog() != null) out.add(new Hint("sneak_use", "unload"));
+        out.add(new Hint("attack", "pick_up"));
+        return out;
     }
 
     /** Sneak + right-click with an empty hand: unloads the last body. */

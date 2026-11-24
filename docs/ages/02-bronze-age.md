@@ -1305,8 +1305,8 @@ fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. S
 - **Kostar mat** när du drar själv, per block du går: **0,01 utmattning tom, upp till 0,08 full** (en vagn med kista: efter
   hur många av kistans platser som är fyllda). 300 block med full vagn kostar ~24, ungefär tre klubbor. Drar en häst
   eller onager betalar du inget.
-- **Häst:** högerklicka på vagnen när du **rider** en tam häst, eller när du **leder** en tam häst i koppel (inom 10
-  block): hästen spänns för och vagnen följer **2,0 block** bakom den. Hästen saktas inte ner. Högerklicka igen, eller
+- **Häst:** titta på kärran och tryck på greppnyckeln (**H**, kan ändras) när du **rider** en tam häst, eller när du **leder** en tam häst i koppel (inom 10
+  block): hästen spänns för och vagnen följer **2,0 block** bakom den. Hästen saktas inte ner. Tryck igen, eller
   **smyg + högerklicka hästen**, för att spänna från. Skaklarna är fasta: backar hästen skjuts vagnen bakåt. En spänd häst
   som ingen rider eller leder **står still** (den strövar inte iväg med vagnen). Hästen (eller vagnen den dras efter)
   **sparas** med kärran och hittas igen när världen laddas om. Föl kan inte dra. En tämjd onager (Tame Onager) drar på samma sätt.
@@ -1322,14 +1322,14 @@ fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. S
   ko 3**, i samma 6 platser som kropparna. Kopplet knyts fast i vagnen och håller dem kvar; klipps eller brister det
   hoppar djuret av. **Ta av ett djur:** smyg + högerklicka på det med tom hand, så leder du det i kopplet igen.
   Travoisen tar inga levande djur. Advancement **Market Day**. Test: `mechanical:livestock_cart` (WagonTest).
-- **Förråd:** **smyg + högerklicka på vagnen** med tom hand öppnar **18 platser** (2 rader), som en kista. Sparas med
+- **Förråd:** **högerklicka på vagnen** med tom hand öppnar **18 platser** (2 rader), som en kista. Sparas med
   vagnen.
 - **Kärra med kista (storage cart):** högerklicka en **tom** vagn med en vanlig **Chest** så monteras kistan på flaket
-  (syns på vagnen). Smyg + högerklicka öppnar då **54 platser** (6 rader; förrådets 18 ingår). Kistan tar hela flaket:
+  (syns på vagnen). Högerklicka öppnar då **54 platser** (6 rader; förrådets 18 ingår). Kistan tar hela flaket:
   inga kroppar ("The chest takes up the whole bed"). Ligger det kroppar på vagnen måste de av först. Kistan går inte att
   ta av; slå sönder vagnen så faller vagnen, kistan och allt innehåll ut. Hästen eller onagern drar den som vanligt.
 - Rovdjur: den som drar en lastad vagn (spelare eller häst) blir bytet, som med travoisen.
-- **Släpvagn bakom en Wagon (järnåldern):** ställ kärran nära bakom en Wagon och högerklicka den med tom hand, så kopplas
+- **Släpvagn bakom en Wagon (järnåldern):** ställ kärran nära bakom en Wagon och tryck på greppnyckeln (**H**) med blicken på den, så kopplas
   den efter vagnen. Se *Släpvagn* under Vagnen i 03-iron-age.md.
 - **Rörelse som travoisen** (se *Bära hem bytet* i 01-stone-age.md): tyngdkraft, ettblockssteg, jämn rörelse i klienten.
   Fastnar vagnen håller den emot dig (eller hästen) vid dragavståndet + 1 block; drar du bort från den i 3 sekunder, eller
