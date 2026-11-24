@@ -832,6 +832,61 @@ def mustard(stage, tall=False):
     return img
 
 
+RAPE_Y = ("c89a08", "f0c814", "fce03a", "fff492")   # oilseed rape's hard lemon yellow, warmer than mustard
+POD_G = ("4e6a2a", "6e8c3a", "94ae52")                 # green siliques
+POD_R = ("6e5a26", "9a8238", "c4ac5a", "e2d08a")       # ripe straw-brown siliques
+
+
+def rapeseed(stage):
+    """Oilseed rape (tamed from the Wild Turnip, Herbs.domesticate): waxy blue-green lobed leaves; tall branching stems
+    crowned with dense lemon-yellow heads (the yellow fields of spring); ripe, the stems straw-coloured and bristling with
+    slim pods angled up, the last flowers at the very tips."""
+    img = new()
+    r = rand("rapeseed")
+    pal = G_BLUE
+    if stage == 0:
+        sprouts(img, "coty", (3, 8, 13), pal)
+        return img
+    if stage == 1:   # a low rosette of broad lobed leaves, three plants
+        for x, h in ((4, 6), (11, 7)):
+            leaf(img, (x, 15), (x - 3, 15 - h + 2), 3, pal, shape="spoon", rib=True, dim=-1, bend=-0.5)
+            leaf(img, (x, 15), (x + 3, 15 - h + 2), 3, pal, shape="spoon", rib=True, dim=-1, bend=0.5)
+            lobed(img, (x, 15), (x + (1 if x < 8 else -1), 15 - h), 3, pal, r)
+        return img
+    ripe = stage == 3
+    stem = ("8a8a40", "a8a454", "c4bc6c") if ripe else STEM_G
+    for x in (4, 11):   # the old rosette leaves at the foot, yellowing once ripe
+        lobed(img, (x, 15), (x - 3, 12), 3, G_OLD if ripe else pal, r, bend=-1, dim=-1)
+        lobed(img, (x, 15), (x + 3, 12), 3, G_OLD if ripe else pal, r, bend=1, dim=-1)
+    heads = ((2, -1, 4), (6, 0, 1), (9, 1, 2), (13, 1, 5))
+    for x, lean, top in heads:
+        pts = curve(img, (x + (1 if x < 8 else -1), 15), (x + lean, top + 2), lean * 0.6, ramp(stem))
+        for k in (len(pts) // 2, len(pts) * 2 // 3):   # a small leaf clasping the stem
+            sx, sy = pts[k]
+            side = 1 if (k + x) % 2 else -1
+            put(img, sx + side, sy, (G_OLD if ripe else pal)[2]); put(img, sx + side, sy - 1, (G_OLD if ripe else pal)[3])
+        tx, ty = pts[-1]
+        if not ripe:   # a dense domed head: open flowers round the edge, tight green-yellow buds on top
+            for dx, dy, k in ((-1, 0, 2), (0, 0, 2), (1, 0, 1), (-2, 1, 1), (-1, 1, 3), (0, 1, 2), (1, 1, 1), (2, 1, 0),
+                              (-1, 2, 1), (0, 2, 2), (1, 2, 0), (0, -1, 3), (-1, -1, 2), (1, -1, 2)):
+                if dy < 2 or r.random() < 0.8:
+                    put(img, tx + dx, ty + dy, RAPE_Y[k])
+            put(img, tx, ty - 2, "c8cc5a")   # the buds still closed at the top
+            for i in range(3, 7, 2):   # the first young pods below the head
+                side = -1 if (i // 2) % 2 else 1
+                put(img, tx + side, ty + i, POD_G[1]); put(img, tx + 2 * side, ty + i - 1, POD_G[2])
+        else:   # siliques up the whole upper stem, a last flower or two at the tip
+            put(img, tx, ty, RAPE_Y[2]); put(img, tx - 1, ty, RAPE_Y[1])
+            if x in (6, 13):
+                put(img, tx, ty - 1, RAPE_Y[3])
+            for i in range(1, min(9, len(pts) - 2), 2):
+                sx, sy = pts[-1 - i]
+                side = -1 if (i // 2) % 2 else 1
+                put(img, sx + side, sy - 1, POD_R[2 if side < 0 else 1])
+                put(img, sx + 2 * side, sy - 2, POD_R[3 if side < 0 else 2])
+    return img
+
+
 def ginger(stage):
     img = new()
     r = rand("ginger")
@@ -1543,6 +1598,9 @@ def item(name):
                     if r2.random() < 0.3:
                         put(img, x + side * k, y - k, P_BLUEG[3])
         flat_umbel(img, 11, 2, 5, YEL, r2, stem="6a9472")
+    elif name == "rapeseed":   # heap of tiny round blue-black seeds with a dull sheen
+        grain_heap(img, 7.5, 14, 13, 7, ("0c0a0e", "2a2430", "4a4252", "6e6478", "a69cb2"), "round2", r,
+                   loose=((2, 14), (12, 13), (14, 15)))
     elif name == "mustard_seeds":   # heap of small yellow-brown round seeds
         grain_heap(img, 7.5, 14, 13, 7, ("3a240c", "7a4c18", "b07c28", "d8a840", "f4d47a"), "round2", r,
                    loose=((1, 14), (13, 13), (14, 15)))
@@ -1754,6 +1812,7 @@ CROPS = {
     "wild_turnip": lambda s: turnip(s, True), "turnip": turnip,
     "wild_lettuce": lambda s: lettuce(s, True), "lettuce": lettuce,
     "broad_bean": broad_bean, "dill": dill, "mustard": mustard, "ginger": ginger, "saffron": saffron, "rice": rice,
+    "rapeseed": rapeseed,
 }
 WILD_PLANTS = ["wild_garlic", "wild_onion", "wild_cabbage", "wild_leek", "wild_parsnip", "wild_celery", "wild_turnip",
                "wild_lettuce"]
@@ -1764,7 +1823,7 @@ ITEMS = ["wild_garlic", "garlic", "wild_onion", "onion", "wild_cabbage", "cabbag
          "dill_seeds", "dill", "mustard_seeds", "thyme", "marjoram", "yarrow_leaves", "chamomile_flowers", "mint_leaves",
          "sorrel_leaves", "sage_leaves", "rosemary", "bog_myrtle_leaves", "meadowsweet_flowers", "hop_cones",
          "black_pepper", "cinnamon_bark", "ginger_root", "saffron_corm", "saffron", "rice", "sesame_seeds",
-         "dried_dates", "dried_figs", "tea_leaves"]
+         "dried_dates", "dried_figs", "tea_leaves", "rapeseed"]
 
 
 def build():

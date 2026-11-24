@@ -23,6 +23,10 @@
     "mechanical:cider",
     "mechanical:ale",
     "mechanical:pickled_vegetables",
-    "mechanical:fine_flour"
+    "mechanical:fine_flour",
+    "mechanical:olive_oil",
+    "mechanical:rapeseed_oil",
+    "mechanical:pickled_olives",
+    "mechanical:bitter_orange_marmalade"
   ]
 }

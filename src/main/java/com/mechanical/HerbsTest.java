@@ -37,6 +37,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * Kitchen Pepper from the caravan's spices in eight clicks, turning the pestle; the Steel Pan fries Peppered Steak over a
  * lit fire; cider, ale (hops or bog myrtle) and roast with herbs are found; pies bake in the kiln; the knife set beats a
  * steel knife.
+ * Test "flora_uses" (flora3): the Cheese Press presses olive and rapeseed oil, the skillet fries with oil or lard,
+ * olives pickle in the barrel, bitter orange marmalade needs the kettle, Frost Lily Tea the clay pot; the Wild Turnip
+ * tames into both Turnip and Rapeseed; ale makes you Tipsy, a step more per drink, capped; a Wild Apple sapling grafts
+ * into an Apple sapling at its stage and Apple leaves give apples; a Bitter Orange sapling won't grow in a cool biome;
+ * Moonwort's lock-springing opens an iron door and an iron trapdoor; the Fern Flower Charm sits in the Charm slot.
  */
 @EventBusSubscriber(modid = MODID)
 public final class HerbsTest {
@@ -47,7 +52,10 @@ public final class HerbsTest {
     static {
         TEST_FUNCTIONS.register("herbs", () -> HerbsTest::test);
         TEST_FUNCTIONS.register("kitchen", () -> HerbsTest::kitchen);
+        TEST_FUNCTIONS.register("flora_uses", () -> HerbsTest::floraUses);
     }
+    private static final ResourceKey<Consumer<GameTestHelper>> FLORA_USES = ResourceKey.create(Registries.TEST_FUNCTION,
+            Identifier.fromNamespaceAndPath(MODID, "flora_uses"));
 
     public static void init(IEventBus modEventBus) {
         TEST_FUNCTIONS.register(modEventBus);
@@ -58,6 +66,7 @@ public final class HerbsTest {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "herbs"), new TestEnvironmentDefinition.AllOf(List.of()));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "herbs"), new FunctionGameTestInstance(TEST, TestArea.of(env, 200, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "kitchen"), new FunctionGameTestInstance(KITCHEN, TestArea.of(env, 200, true)));
+        event.registerTest(Identifier.fromNamespaceAndPath(MODID, "flora_uses"), new FunctionGameTestInstance(FLORA_USES, TestArea.of(env, 200, true)));
     }
 
     private static void kitchen(GameTestHelper h) {
@@ -139,6 +148,96 @@ public final class HerbsTest {
         }
         h.assertTrue(Kitchen.STEEL_KNIFE_SET.get().yieldMultiplier() > Smithing.STEEL_KNIFE.get().yieldMultiplier()
                 && of(Kitchen.STEEL_KNIFE_SET.get()).is(Watercraft.KNIVES), "the knife set gets more from a carcass than a steel knife, and is a knife");
+        h.succeed();
+    }
+
+    private static void floraUses(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        Item olives = Trees.FRUITS.get("olive").get(), rapeseed = Herbs.ITEMS_BY_NAME.get("rapeseed").get();
+
+        // ---- oils from the press, frying with them, pickled olives, marmalade, Frost Lily Tea ----
+        Kitchen.Match oil = Kitchen.match(Kitchen.Tool.PRESS, 2, List.of(of(olives), of(olives), of(olives), of(olives)));
+        h.assertTrue(oil != null && oil.dish().result().get() == Kitchen.OLIVE_OIL.get() && oil.count() == 1, "four olives press into Olive Oil: " + oil);
+        Kitchen.Match rape = Kitchen.match(Kitchen.Tool.PRESS, 2, List.of(of(rapeseed), of(rapeseed), of(rapeseed), of(rapeseed)));
+        h.assertTrue(rape != null && rape.dish().result().get() == Kitchen.RAPESEED_OIL.get(), "four rapeseed press into Rapeseed Oil: " + rape);
+        for (Item fat : List.of(Kitchen.OLIVE_OIL.get(), Kitchen.RAPESEED_OIL.get(), com.mechanical.wildlife.Wildlife.LARD.get())) {
+            Kitchen.Match fish = Kitchen.match(Kitchen.Tool.PAN, 2, List.of(of(Items.COD), of(fat), of(Items.SALMON)));
+            h.assertTrue(fish != null && fish.dish().result().get() == Kitchen.FRIED_FISH.get() && fish.count() == 2, "two fish fry in " + fat + ": " + fish);
+        }
+        h.assertTrue(Kitchen.match(Kitchen.Tool.PAN, 1, List.of(of(Items.COD), of(Kitchen.OLIVE_OIL.get()), of(Items.SALMON))) == null,
+                "frying fish wants the iron skillet, not the bronze griddle");
+        Kitchen.Match roots = Kitchen.match(Kitchen.Tool.PAN, 2, List.of(of(Items.POTATO), of(Herbs.ITEMS_BY_NAME.get("turnip").get()),
+                of(Kitchen.RAPESEED_OIL.get()), of(Herbs.ITEMS_BY_NAME.get("onion").get())));
+        h.assertTrue(roots != null && roots.dish().result().get() == Kitchen.FRIED_ROOTS.get(), "roots and onion fry in oil: " + roots);
+        Kitchen.Match pickled = Kitchen.match(Kitchen.Tool.BARREL, 2, List.of(of(olives), of(IronOres.SALT.get()), of(olives), of(olives)));
+        h.assertTrue(pickled != null && pickled.dish().result().get() == Kitchen.PICKLED_OLIVES.get(), "olives pickle in brine: " + pickled);
+        Item orange = Trees.FRUITS.get("bitter_orange").get();
+        List<ItemStack> marmalade = List.of(of(orange), of(orange), of(orange), of(Items.HONEY_BOTTLE));
+        h.assertTrue(Kitchen.match(Kitchen.Tool.POT, 0, marmalade) == null, "the clay pot can't make marmalade");
+        Kitchen.Match m = Kitchen.match(Kitchen.Tool.POT, 1, marmalade);
+        h.assertTrue(m != null && m.dish().result().get() == Kitchen.BITTER_ORANGE_MARMALADE.get(), "the kettle boils bitter orange marmalade: " + m);
+        Kitchen.Match tea = Kitchen.match(Kitchen.Tool.POT, 0, List.of(of(Flora.FROST_LILY.get())));
+        h.assertTrue(tea != null && tea.dish().result().get() == Kitchen.FROST_LILY_TEA.get() && tea.count() == 2, "a Frost Lily brews two bowls of tea: " + tea);
+
+        // ---- the Wild Turnip tames into Turnip and Rapeseed ----
+        int turnips = 0, seeds = 0;
+        for (int i = 0; i < 400; i++) {
+            Item t = Herbs.tamedFrom(Herbs.WILD_CROPS.get("turnip").get(), level.getRandom().nextBoolean());
+            if (t == Herbs.ITEMS_BY_NAME.get("turnip").get()) turnips++;
+            if (t == rapeseed) seeds++;
+        }
+        h.assertTrue(turnips > 120 && seeds > 120 && turnips + seeds == 400, "the wild turnip tames into both: " + turnips + " turnips, " + seeds + " rapeseed");
+        h.assertTrue(Herbs.tamedFrom(Herbs.WILD_CROPS.get("onion").get(), true) == Herbs.ITEMS_BY_NAME.get("onion").get(), "only the turnip has an oil-seed sister");
+        h.assertTrue(Farming.climate(Herbs.CROPS.get("rapeseed").get()) != null, "rapeseed follows the farming rules");
+
+        // ---- Tipsy: a step stronger per drink, capped ----
+        var player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        Kitchen.drinkAlcohol(player);
+        h.assertTrue(player.getEffect(Kitchen.TIPSY).getAmplifier() == 0, "one ale: Tipsy I");
+        Kitchen.drinkAlcohol(player);
+        Kitchen.drinkAlcohol(player);
+        h.assertTrue(player.getEffect(Kitchen.TIPSY).getAmplifier() == Kitchen.TIPSY_SWAY_FROM, "the third in a row: the view starts to sway");
+        for (int i = 0; i < 5; i++) Kitchen.drinkAlcohol(player);
+        h.assertTrue(player.getEffect(Kitchen.TIPSY).getAmplifier() == Kitchen.TIPSY_MAX && player.getEffect(Kitchen.TIPSY).getDuration() == Kitchen.TIPSY_TICKS,
+                "it never gets worse than IV, and lasts two minutes from the last drink");
+
+        // ---- grafting: a Wild Apple sapling becomes an Apple sapling at its stage; Apple leaves give apples ----
+        h.setBlock(new BlockPos(2, 0, 2), Blocks.GRASS_BLOCK);
+        BlockPos sap = new BlockPos(2, 1, 2);
+        h.setBlock(sap, Trees.WOODS.get("wild_apple").sapling().get().defaultBlockState().setValue(net.minecraft.world.level.block.SaplingBlock.STAGE, 1));
+        Trees.graftApple(level, h.absolutePos(sap), h.getBlockState(sap));
+        h.assertTrue(h.getBlockState(sap).is(Trees.APPLE_SAPLING.get()) && h.getBlockState(sap).getValue(net.minecraft.world.level.block.SaplingBlock.STAGE) == 1,
+                "the grafted sapling is an Apple sapling, as far grown as before");
+        BlockPos leaves = new BlockPos(4, 2, 4);
+        h.setBlock(leaves, Trees.APPLE_LEAVES.get().defaultBlockState().setValue(FruitLeavesBlock.STAGE, FruitLeavesBlock.RIPE)
+                .setValue(net.minecraft.world.level.block.LeavesBlock.PERSISTENT, true));
+        ItemStack picked = ((FruitLeavesBlock) Trees.APPLE_LEAVES.get()).pick(level, h.absolutePos(leaves), h.getBlockState(leaves));
+        h.assertTrue(picked.is(Items.APPLE), "ripe Apple leaves give apples, not crab apples: " + picked);
+
+        // ---- citrus wants warmth: in this test world's biome a Bitter Orange sapling stays a sapling ----
+        BlockPos citrus = new BlockPos(7, 1, 2);
+        h.setBlock(citrus.below(), Blocks.GRASS_BLOCK);
+        var orangeSapling = Trees.WOODS.get("bitter_orange").sapling().get();
+        h.setBlock(citrus, orangeSapling.defaultBlockState().setValue(net.minecraft.world.level.block.SaplingBlock.STAGE, 1));
+        boolean warm = Trees.warmEnoughForCitrus(level, h.absolutePos(citrus));
+        for (int i = 0; i < 3 && h.getBlockState(citrus).is(orangeSapling); i++)
+            orangeSapling.advanceTree(level, h.absolutePos(citrus), h.getBlockState(citrus), level.getRandom());
+        h.assertTrue(warm != h.getBlockState(citrus).is(orangeSapling), "a bitter orange sapling grows in a warm biome and only there (warm here: " + warm + ")");
+
+        // ---- Moonwort springs iron doors and trapdoors ----
+        BlockPos door = new BlockPos(10, 1, 6);
+        h.setBlock(door.below(), Blocks.STONE);
+        h.setBlock(door, Blocks.IRON_DOOR.defaultBlockState());
+        h.setBlock(door.above(), Blocks.IRON_DOOR.defaultBlockState().setValue(net.minecraft.world.level.block.DoorBlock.HALF,
+                net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER));
+        h.assertTrue(Flora.springLock(level, h.absolutePos(door), h.getBlockState(door), player)
+                && h.getBlockState(door).getValue(net.minecraft.world.level.block.DoorBlock.OPEN), "moonwort opens the iron door");
+        BlockPos trap = new BlockPos(12, 1, 6);
+        h.setBlock(trap, Blocks.IRON_TRAPDOOR.defaultBlockState());
+        h.assertTrue(Flora.springLock(level, h.absolutePos(trap), h.getBlockState(trap), player)
+                && h.getBlockState(trap).getValue(net.minecraft.world.level.block.TrapDoorBlock.OPEN), "and the iron trapdoor");
+        h.assertFalse(Flora.springLock(level, h.absolutePos(door.below()), h.getBlockState(door.below()), player), "but not a stone");
+        h.assertTrue(of(Flora.FERN_FLOWER_CHARM.get()).is(com.mechanical.equipment.Accessory.CHARM.tag), "the Fern Flower Charm is worn in the Charm slot");
         h.succeed();
     }
 

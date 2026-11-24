@@ -2490,6 +2490,13 @@ Advancements **Fruit of the Trees** och **A Taste of Every Tree** (Food & Farmin
 | Wild Plum (plommon) | Hazel Meadow, Chalk Downs, ibland slätter och Limestone Karst | vit blom / mogna / mogna / kal | Wild Plums (2 hunger, torkas) |
 | Olive | Marble Gorge, sällsynt på savannplatån | blad / blommor / gröna oliver / svarta, mogna | Olives (1 hunger, bittra) |
 | Date Palm (dadelpalm, plantan tar rot i sand) | ökenoaser och Gypsum Flats vid vatten, mycket sällsynt annars | blom / omogna / mogna / mogna | Dates (3 hunger, torkas) |
+| Bitter Orange (pomerans, vintergrön, flora3) | sällsynt: Marble Gorge, vid vatten på savannen | vit blom / gröna / orange / orange | Bitter Oranges (1 hunger, beska; håller 10 dagar). **Plantan växer bara i varmt land** (biomens temperatur ≥ 0,95: savann, öken, Marble Gorge, djungel); den östra karavanen säljer plantor. Advancement **Oranges in the South** |
+
+**Ympat äpple (flora3):** en **Apple Scion** (bönder nivå 4: 2 för 8 Copper Coin) ympas på en planterad Wild Apple Sapling:
+högerklicka plantan med kvisten och **en kniv i andra handen**. Den blir en **Apple Sapling** (samma tillväxt) som växer till ett
+äppelträd på vildapelns stam, med fylligare krona och riktiga **äpplen** (rosavit blom / omogna / röda / kal). En kniv på ett
+vuxet äppelträds löv skär av en ny kvist (lövet följer med). Plantor från äppelträdets löv är vilda igen. Äpplen går i cider och
+äppelpaj som vildäpplen. Advancement **Grafted**.
 
 **Yew Arils:** Yew-löv ger ibland (8 %) Yew Arils. Fruktköttet är sött men fröet dödligt: äter man dem hela blir man
 förgiftad (Poison II 7 s, Nausea).
@@ -2528,6 +2535,15 @@ växten kan växa där; annars är slabben kvar. Fungerar också på vanligt gr�
 - **Moonwort** (fas 3, sällsynt, Limestone Karst): låsgräset, folktrons nyckelört, en liten ormbunke vars sporax **lyser
   silver bara på fullmånenätter** (ljus 5). Plockad i blom: sig själv, annars ingenting. Advancement **Key Under the Full
   Moon** (Folklore).
+
+**Vad de magiska blommorna är till för (flora3, små gåvor, ingen stor fördel):**
+- **Fern Flower Charm** (Fern Flower + Twine): bärs i **Charm**-platsen, **+1 Luck** (lite bättre loot och fångst). *Luck on a String*.
+- **Frost Lily Tea** (en Frost Lily i Clay Cooking Pot → 2 skålar): **Frost Ward** i 10 minuter, kylan biter mycket mindre (+0,5
+  isolering, som en halv pälsdräkt). *Warm from Within*.
+- **Will-o'-Wisp Lily** i handen när man följer ett irrbloss: liljans ljus svarar och irrblosset **leder rätt**, till en Bog Grave
+  och aldrig vilse. Liljan går åt. *Light Calls to Light*.
+- **Moonwort** mot en Iron Door eller Iron Trapdoor: låset **springer upp** (eller igen) utan redstone, och örten går åt.
+  *The Key-Herb*.
 
 **Fler blommor (fas 2):**
 

@@ -486,6 +486,36 @@
         {
           "if_true": {
             "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:bitter_orange_log"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_bitter_orange_log",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "mechanical:bitter_orange_wood"
+          },
+          "then": {
+            "type": "minecraft:copy_properties",
+            "source": {
+              "id": "mechanical:stripped_bitter_orange_wood",
+              "properties": {
+                "axis": "y"
+              }
+            }
+          }
+        },
+        {
+          "if_true": {
+            "type": "minecraft:matching_blocks",
             "blocks": "minecraft:oak_wood"
           },
           "then": {

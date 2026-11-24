@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:iron_age/pressed_oil",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:fried_fish"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:fried_roots"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:fried_fish"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.fried_in_oil.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.fried_in_oil.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

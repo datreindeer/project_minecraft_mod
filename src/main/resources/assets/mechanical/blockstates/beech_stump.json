@@ -219,6 +219,14 @@
       "apply": {
         "model": "mechanical:block/date_palm_upright_log"
       }
+    },
+    {
+      "when": {
+        "log": "26"
+      },
+      "apply": {
+        "model": "mechanical:block/bitter_orange_upright_log"
+      }
     }
   ]
 }

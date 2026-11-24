@@ -1,0 +1,37 @@
+{
+  "parent": "mechanical:iron_age/brewer",
+  "criteria": {
+    "effect": {
+      "trigger": "minecraft:effects_changed",
+      "conditions": {
+        "effects": {
+          "mechanical:tipsy": {
+            "amplifier": {
+              "min": 2
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "effect"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:cider"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.tipsy.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.tipsy.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

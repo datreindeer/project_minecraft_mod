@@ -1664,8 +1664,71 @@ def fern_parts():
     return out
 
 
+def ball(img, cx, cy, r, pal, seed, dimples=True):
+    """A round fruit lit from the upper left: pal = highlight, light, body, shade, dark rim; a pitted peel (dimples)."""
+    import math
+    import random
+    rnd = random.Random(seed)
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x + 0.5 - cx, y + 0.5 - cy
+            d = math.hypot(dx, dy) / r
+            if d > 1:
+                continue
+            t = 0.55 * d + 0.35 * (dx + dy) / (2 * r) + 0.25
+            k = 0 if t < 0.16 else 1 if t < 0.36 else 2 if t < 0.66 else 3 if d < 0.88 else 4
+            if dimples and 1 < k < 4 and rnd.random() < 0.08:
+                k += 1  # the pits of the peel
+            img.putpixel((x, y), hexc(pal[k]))
+
+
+def bitter_oranges():
+    """Two bitter oranges, the back one half hidden, a glossy leaf and a stalk on the front one."""
+    img = Image.new("RGBA", (16, 16))
+    ORANGE = ("ffd070", "f8a028", "e8800c", "b85a06", "6e3004")
+    ball(img, 10.8, 7.6, 3.9, ORANGE, 11)
+    ball(img, 6.0, 10.6, 4.6, ORANGE, 12)
+    for x, y, c in ((5, 6, "5a4426"), (6, 5, "5a4426"), (6, 6, "8a6a3a"),  # the stalk end
+                    (7, 4, "2a5a22"), (8, 3, "3e7a2e"), (9, 3, "5a9a3e"), (8, 4, "3e7a2e"), (9, 4, "2a5a22"), (10, 2, "8ac464"),
+                    (10, 3, "5a9a3e"), (11, 2, "3e7a2e"), (7, 5, "1e4018"), (4, 8, "fff0b0"), (9, 5, "ffe8a0")):  # leaf, glints
+        img.putpixel((x, y), hexc(c))
+    return img
+
+
+def fern_flower_charm():
+    """A blooming Fern Flower bound to a loop of twine: the gold five-petalled flower glowing over two curled fronds."""
+    import math
+    img = Image.new("RGBA", (16, 16))
+    C, c = hexc("c4a46c"), hexc("8a6c40")
+    for k in range(40):  # the loop of twine, lit at the top left
+        a = k / 40 * 2 * math.pi
+        x, y = 8 + 3.4 * math.cos(a), 3.6 + 2.6 * math.sin(a)
+        img.putpixel((int(round(x)), int(round(y))), C if math.sin(a) < 0.2 and math.cos(a) < 0.6 else c)
+    for x, y in ((7, 6), (8, 6), (8, 7)):
+        img.putpixel((x, y), c)  # the knot
+    img.putpixel((7, 7), C)
+    G, g, d = hexc("8ccc5c"), hexc("5f9a3f"), hexc("2e5a22")
+    for side in (-1, 1):  # two little fronds curling out under the flower
+        for i in range(6):
+            x, y = 8 + side * (1 + i * 0.9), 14 - 0.4 * i - (0.4 * (i - 3) ** 2 if i > 3 else 0)  # the tips curl up
+            img.putpixel((int(round(x)), int(round(y))), g if i < 4 else d)
+            if i % 2 == 1:
+                img.putpixel((int(round(x)), int(round(y)) - 1), G)
+                img.putpixel((int(round(x)), int(round(y)) + 1), d)
+    PET = {"w": "fffbe0", "y": "ffe27a", "o": "f2b830", "a": "c8861a", "k": "8a5a10"}
+    flower = ["..y.y..", ".yoyoy.", "yowwwoy", ".ywwwy.", "yowwwoa", ".aoyoa.", "..a.a.."]
+    for j, row in enumerate(flower):
+        for i, ch in enumerate(row):
+            if ch != ".":
+                img.putpixel((5 + i, 8 + j), hexc(PET[ch]))
+    img.putpixel((8, 10), hexc("ffffff"))  # the heart, brightest
+    return img
+
+
 def build():
     out = fern_parts()
+    out["item/bitter_oranges.png"] = bitter_oranges()
+    out["item/fern_flower_charm.png"] = fern_flower_charm()
     for name, f in FLOWERS.items():
         out[f"block/{name}.png"] = grid(f["bloom"], f["pal"])
         out[f"block/{name}_leaves.png"] = grid(f["leaves"], f["pal"]) if "leaves" in f else grid(f["bloom"], f["pal"], f["remap"])

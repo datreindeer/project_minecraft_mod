@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "B ",
+    "BB"
+  ],
+  "key": {
+    "B": "mechanical:bitter_orange_bark"
+  },
+  "result": {
+    "id": "mechanical:bitter_orange_bark_roof",
+    "count": 4
+  }
+}

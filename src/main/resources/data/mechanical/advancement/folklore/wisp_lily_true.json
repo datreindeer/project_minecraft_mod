@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:folklore/will_o_wisp_lily",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:will_o_wisp_lily"
+    },
+    "title": {
+      "translate": "advancements.mechanical.folklore.wisp_lily_true.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.folklore.wisp_lily_true.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

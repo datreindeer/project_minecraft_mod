@@ -4,7 +4,11 @@
   "ingredients": [
     "mechanical:flour",
     "mechanical:flour",
-    "mechanical:lard",
+    [
+      "mechanical:lard",
+      "mechanical:olive_oil",
+      "mechanical:rapeseed_oil"
+    ],
     "mechanical:bird_cherries",
     "mechanical:bird_cherries",
     "mechanical:bird_cherries"

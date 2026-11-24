@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/sauerkraut",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pickled_olives"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:pickled_olives"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.pickled_olives.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.pickled_olives.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

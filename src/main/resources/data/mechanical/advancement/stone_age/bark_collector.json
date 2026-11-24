@@ -250,6 +250,16 @@
           }
         ]
       }
+    },
+    "has_25": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bitter_orange_bark"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -327,6 +337,9 @@
     ],
     [
       "has_24"
+    ],
+    [
+      "has_25"
     ]
   ],
   "display": {

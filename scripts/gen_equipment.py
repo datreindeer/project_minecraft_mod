@@ -38,7 +38,7 @@ SLOTS = {
     "back": [M + "leather_satchel", M + "steel_frame_pack"],
     "ring": [M + "gold_ring"],
     "hip": [M + "quiver", M + "leather_pouch"],
-    "charm": [M + "bone_charm"],  # the Elkwight's Bone Charm (gen_elkwight.py)
+    "charm": [M + "bone_charm", M + "fern_flower_charm"],  # the Elkwight's Bone Charm (gen_elkwight.py), the Fern Flower Charm (gen_flora.py)
 }
 for slot, items in SLOTS.items():
     w(D / f"mechanical/tags/item/equipment/{slot}.json", {"values": items})

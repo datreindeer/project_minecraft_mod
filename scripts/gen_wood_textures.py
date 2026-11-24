@@ -469,6 +469,12 @@ SPECIES.update({
         leaf=dict(D=(38, 60, 42), S=(58, 84, 56), M=(82, 110, 72), L=(110, 138, 92), H=(150, 170, 120), r=(128, 126, 74)),
         bark=[(52, 36, 24), (76, 54, 34), (100, 72, 46), (124, 92, 60), (148, 114, 76), (172, 138, 96)],
         metal=((44, 44, 46), (128, 128, 132))),
+    "bitter_orange": dict(  # pale lemony fine-grained wood, smooth grey-green bark with thorns, dark glossy evergreen leaves
+        wood=[(176, 152, 96), (189, 165, 106), (201, 177, 116), (212, 189, 127), (222, 200, 138), (231, 211, 150), (240, 222, 164)],
+        stripped_base="stripped_birch_log", stripped_range=(1.5, 6.4),
+        leaf=dict(D=(14, 40, 20), S=(24, 62, 28), M=(38, 88, 38), L=(62, 120, 50), H=(150, 196, 104)),
+        bark=[(52, 56, 44), (74, 80, 62), (96, 102, 80), (116, 122, 98), (136, 142, 116), (158, 164, 138)],
+        metal=((40, 40, 42), (120, 120, 124))),
 })
 
 def dashes(img, seed, n, cols, min_d=5):
@@ -538,6 +544,24 @@ def bark_date_palm(p):
             put(img, x, y, c)
     return img
 
+def bark_bitter_orange(p):
+    """smooth grey-green citrus bark: soft mottling, fine pale streaks running down the stem (broken, wavering), a few
+    lichen-green flecks and short pale thorns, each with a shadow under it"""
+    b = p["bark"]; img = smooth_bark("bitter_orange", b, 0.12, 0.88); r = random.Random("orange_streak")
+    for x0 in (1, 5, 9, 13):
+        ph, y = r.uniform(0, 6.28), 0
+        while y < 16:
+            n = r.randint(3, 7)
+            for k in range(n):
+                yy = (y + k) % 16; x = x0 + round(0.6 * math.sin(ph + yy * 0.5))
+                put(img, x, yy, mix(img.getpixel((x % 16, yy)), b[5], 0.5))
+                put(img, x + 1, yy, mix(img.getpixel(((x + 1) % 16, yy)), b[0], 0.3))
+            y += n + r.randint(1, 3)
+    scatter(img, "orange_lichen", 4, {1: (118, 136, 92), 2: (96, 112, 76)}, [[(0, 0, 1), (1, 0, 2)], [(0, 0, 1), (0, 1, 2), (1, 1, 2)]], 5)
+    return scatter(img, "orange_thorn", 3, {1: (196, 190, 150), 2: (148, 146, 112), 3: (40, 40, 32)},
+                   [[(0, 0, 2), (1, 0, 1), (0, 1, 3), (1, 1, 3)], [(0, 0, 2), (-1, 0, 1), (0, 1, 3), (-1, 1, 3)]], 7)
+
+BARK.update({"bitter_orange": bark_bitter_orange})
 BARK.update({"rowan": bark_rowan, "bird_cherry": bark_bird_cherry, "wild_apple": bark_wild_apple,
              "plum": bark_plum, "olive": bark_olive, "date_palm": bark_date_palm})
 
@@ -574,7 +598,7 @@ def fibres(img, seed, vertical):
 
 # fruit-tree leaves: a vanilla leaf structure remapped like the others
 LEAF_BASE.update({"rowan": "acacia_leaves", "bird_cherry": "oak_leaves", "wild_apple": "azalea_leaves",
-                  "plum": "oak_leaves", "olive": "pale_oak_leaves"})
+                  "plum": "oak_leaves", "olive": "pale_oak_leaves", "bitter_orange": "azalea_leaves", "apple": "azalea_leaves"})
 
 # per tree: one small fruit sprite (same letters in every stage) and the stage palettes (1 blossom, 2 unripe, 3 ripe).
 # Each stage comes in three variants (<w>_leaves_ripe, _ripe_2, _ripe_3; the blockstate picks one per block and turns
@@ -630,6 +654,26 @@ FRUIT = {
                 2: dict(h=(196, 210, 116), O=(126, 146, 52)),
                 3: dict(h=(150, 118, 162), O=(52, 30, 58))}),
 }
+# bitter orange: a round orange with a dimpled lit shoulder (h) and a shadowed underside; blossom: waxy white stars
+FRUIT["bitter_orange"] = dict(sprite=[
+    ".s.",
+    "hOO",
+    "OOd",
+    ".d."],
+    bloom=[".W.", "WyP", ".P."],
+    stages={1: dict(W=(255, 255, 250), P=(226, 228, 214), y=(240, 206, 90)),
+            2: dict(h=(140, 190, 76), O=(76, 132, 40), d=(44, 88, 28)),
+            3: dict(h=(255, 210, 100), O=(240, 128, 18), d=(176, 70, 8))})
+# the grafted apple: bigger, redder apples than the wild crab, the same pink-white blossom
+FRUIT["apple"] = dict(sprite=[
+    ".s.",
+    "hAA",
+    "AAa",
+    ".a."],
+    bloom=[".W.", "WyP", ".P."],
+    stages={1: dict(W=(252, 244, 246), P=(238, 186, 204), y=(216, 196, 88)),
+            2: dict(h=(206, 232, 130), A=(150, 196, 70), a=(92, 132, 42)),
+            3: dict(h=(255, 170, 140), A=(212, 40, 32), a=(128, 20, 18))})
 TWIG = (86, 62, 44)
 # per variant: clusters (x, y, sprites in the cluster); a cluster's second sprite sits beside and a bit below the first
 FRUIT_VARIANTS = [[(2, 2, 2), (10, 9, 1)], [(9, 3, 1), (3, 11, 2)], [(6, 7, 1)]]
@@ -754,7 +798,9 @@ LEAF_SPRITES.update({
     "wild_apple": [[".LL.", "LHMS", "LMMS", ".SS."], ["LL.", "LMS", ".S."]],
     "plum": [[".L.", "LHS", ".S."], ["LM", "MS"]],
     "olive": [["HL.", ".MS"], [".L", "HM", "S."], ["LL", ".S"]],                   # narrow silvery lances
+    "bitter_orange": [[".L.", "LHM", "MMS", ".S."], ["LH", "MS"], [".L.", "LHS", ".S."]],  # glossy ovals
 })
+LEAF_SPRITES["apple"] = LEAF_SPRITES["wild_apple"]
 SAPLINGS.update({
     "rowan": ([(7, 10, 4, 7, 2), (8, 8, 11, 5, 2)], [(0, 1, 5), (0, 9, 3), (1, 5, 0), (1, 2, 1), (1, 10, 0), (0, 5, 3)], 2, 12),
     "bird_cherry": ([(7, 10, 3, 7, 1), (8, 8, 12, 5, 1), (7, 6, 5, 3, 1)],
@@ -763,6 +809,8 @@ SAPLINGS.update({
                    [(0, 0, 4), (0, 10, 3), (1, 5, 0), (1, 2, 8), (1, 11, 7)], 3, 12),
     "plum": ([(7, 10, 4, 7, 1), (8, 8, 11, 5, 1), (7, 6, 6, 3, 1)],
              [(0, 2, 5), (0, 10, 3), (1, 5, 1), (0, 7, 2), (1, 11, 6), (1, 3, 8)], 3, 12),
+    "bitter_orange": ([(7, 10, 4, 7, 1), (8, 9, 11, 6, 1), (7, 6, 6, 3, 1)],
+                      [(0, 2, 5), (0, 10, 3), (1, 5, 1), (2, 7, 2), (1, 11, 7), (0, 3, 8), (2, 9, 9)], 3, 12),
     "olive": ([(7, 11, 4, 8, 3), (4, 8, 3, 5, 3), (8, 9, 11, 6, 3), (11, 6, 12, 3, 3)],
               [(0, 1, 4), (1, 2, 6), (2, 3, 2), (0, 11, 2), (1, 12, 4), (2, 10, 1), (0, 6, 4), (1, 8, 4), (2, 5, 1)], 6, 13),
 })
@@ -784,6 +832,7 @@ def palm_sapling(p):
     return img
 
 SAPLING_FN = {"date_palm": lambda name, p: palm_sapling(p)}
+SAPLINGS["apple"] = SAPLINGS["wild_apple"]
 
 WEAVE = ["llcc", "llcc", "ccll", "ccll"]
 def weave(w, h): return ["".join(WEAVE[y % 4][x % 4] for x in range(w)) for y in range(h)]
@@ -812,6 +861,11 @@ DOORS.update({
                     "ppdpppdppdpp", "ppdpppdppdpp", "ppdpppdppdpp", "ppdpppdppdpp", "ppdpppdppdpp"],
                    ("ppdpppdppdp", "ppdpppdppdp"),
                    ["ppdpppdppdpp"] * 3 + ["kkkkkkkkkkkk"] + ["ppdpppdppdpp"] * 6 + ["kkkkkkkkkkkk", "ppdpppdppdpp"]),
+    # bitter orange: southern door, an arched window behind an iron grille, studded boards below
+    "bitter_orange": _door([P12, "pppp....pppp", "ppp.k..k.ppp", "pp..k..k..pp", "pp.kkkkkk.pp", "pp..k..k..pp", "pp..k..k..pp",
+                            "pp44444444pp", P12, "pkppkppkppkp", P12, "ppdppdppdppd"],
+                           ("ppdppdppdpp", "pkppkppkppk"),
+                           ["ppdppdppdppd"] * 3 + ["pkppkppkppkp"] + ["ppdppdppdppd"] * 4 + ["pkppkppkppkp"] + ["ppdppdppdppd"] * 3),
     # date palm: frame of palm wood with woven fibre panels
     "date_palm": _door([P12, "pp........pp", "pp........pp", "pp........pp", "pp44444444pp"] + ["pp" + r + "pp" for r in weave(8, 6)]
                        + [P12],
@@ -826,6 +880,8 @@ TRAPDOORS.update({
     "plum": [P12] + ["pp.pp..pp.pp"] * 10 + [P12],
     "olive": ["ppdpppdppdpp"] * 2 + ["kkkkkkkkkkkk"] + ["ppdpppdppdpp"] * 6 + ["kkkkkkkkkkkk"] + ["ppdpppdppdpp"] * 2,
     "date_palm": ["p" + r + "p" for r in weave(10, 12)],
+    "bitter_orange": [P12, "pkppkppkppkp", "ppp......ppp", "pp.k.kk.k.pp", "pp.k.kk.k.pp", "ppkkkkkkkkpp", "pp.k.kk.k.pp",
+                      "pp.k.kk.k.pp", "ppp......ppp", "pkppkppkppkp", P12, P12],
 })
 ITEM_DOORS.update({
     "rowan": _item_door(["pppppp", "p.pp.p", "p.pp.p", "p.pp.p", "p4pp4p", "pppppp"], ["pdppdp", "444444", "pdppdp", "pdppdp", "444444"]),
@@ -834,6 +890,7 @@ ITEM_DOORS.update({
     "plum": _item_door(["pppppp", "p.p.p.", "p.p.p.", "p.p.p.", "pppppp", "444444"], ["5llll2"] * 4 + ["322222"]),
     "olive": _item_door(["pdp..p", "pdpppp", "kkkkkk", "pdpdpd", "pdpdpd", "pdpdpd"], ["pdpdpd", "kkkkkk", "pdpdpd", "pdpdpd", "pdpdpd"]),
     "date_palm": _item_door(["p....p", "p....p", "p4444p", "pllccp", "pccllp", "pllccp"], ["5" + r + "2" for r in weave(4, 4)] + ["322222"]),
+    "bitter_orange": _item_door(["pp..pp", "p.kk.p", "pkkkkp", "p.kk.p", "pppppp", "pkpkpk"], ["pdpdpd", "pkpkpk", "pdpdpd", "pdpdpd", "pkpkpk"]),
 })
 
 # ------------------------------------------------------------------ tree extras: beechnuts, roasted beechnuts, pine resin
@@ -850,12 +907,20 @@ RESIN = ["................", "................", "......oo........", ".....oaao.
          "....oabyba......", "...oabyybao.....", "...oabbbbbao....", "..oaabbbbbao....", "..oaabbbbbbao...",
          "..oaaabbbbbao...", "...oaaaabbao....", "....oaaaaao.....", ".....ooooo......", "................", "................"]
 
+SCION = ["................", "................", "...........gG...", "..........gLGg..", "..........LGg...", ".........bg.....",
+         "........bk......", ".......bk.gG....", "......bk.gLGg...", ".....bk...Gg....", "....bk..........", "...bk...........",
+         "..bk............", ".ck.............", ".c..............", "................"]
+
 def extras():
     raw = dict(d=(70, 40, 22), m=(132, 84, 44), l=(178, 124, 70), h=(214, 168, 112))
     roast = dict(d=(42, 24, 14), m=(98, 58, 28), l=(140, 90, 46), h=(186, 136, 80))
     save(item_sprite(NUTS, raw), "item/beechnuts.png")
     save(item_sprite(NUTS, roast), "item/roasted_beechnuts.png")
     save(item_sprite(RESIN, dict(o=(116, 58, 12), a=(186, 112, 22), b=(228, 162, 44), y=(255, 228, 140))), "item/pine_resin.png")
+    # apple scion: a slim twig cut slanting at the foot (pale wood showing), leaf buds breaking along it
+    a = SPECIES["wild_apple"]
+    save(item_sprite(SCION, dict(b=a["bark"][4], k=a["bark"][1], c=(226, 206, 160), g=(70, 112, 46), G=(116, 160, 70), L=(170, 206, 110))),
+         "item/apple_scion.png")
 
 # ------------------------------------------------------------------ assemble
 _rims = {}
@@ -893,6 +958,12 @@ for name, p in SPECIES.items():
     save(paint(bottom_rows, p, planks), f"block/{name}_door_bottom.png")
     save(trapdoor(name, p, planks), f"block/{name}_trapdoor.png")
     save(item_door(name, p, planks), f"item/{name}_door.png")
+# the grafted apple (Trees.APPLE_LEAVES / APPLE_SAPLING): wild apple wood, fresher leaves, red apples, a raffia graft tie on the sapling
+apple = dict(SPECIES["wild_apple"], leaf=dict(D=(34, 66, 26), S=(50, 90, 34), M=(70, 118, 46), L=(96, 146, 60), H=(140, 180, 90)))
+for key, img in fruit_leaves("apple", apple).items(): save(img, f"block/apple_leaves{key}.png")
+img = sapling("apple", apple)
+for x, y, c in ((7, 11, (222, 196, 120)), (8, 11, (176, 150, 92)), (7, 12, (196, 170, 104))): put(img, x, y, c)
+save(img, "block/apple_sapling.png")
 extras()
 
 if prev:

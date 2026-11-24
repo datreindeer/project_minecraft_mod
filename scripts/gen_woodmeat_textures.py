@@ -28,7 +28,7 @@ JAR = sorted(glob.glob(str(ROOT / "build/moddev/artifacts/minecraft-patched-*-me
 assert JAR, "no merged minecraft jar (run a gradle build first)"
 _jar = zipfile.ZipFile(JAR[0])
 WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
-         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm"]
+         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]
 
 
 def h(x, y, salt):

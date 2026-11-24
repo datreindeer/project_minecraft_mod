@@ -103,6 +103,12 @@
       "age": 1
     },
     {
+      "item": "mechanical:bitter_orange_sapling",
+      "price": 30,
+      "stock": 2,
+      "age": 2
+    },
+    {
       "item": "mechanical:saffron",
       "price": 40,
       "count": 2,

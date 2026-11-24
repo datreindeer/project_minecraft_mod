@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:bitter_orange_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bitter_orange_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:bitter_orange_planks",
+      "mechanical:bitter_orange_wood",
+      "mechanical:stripped_bitter_orange_wood",
+      "mechanical:bitter_orange_slab",
+      "mechanical:bitter_orange_stairs",
+      "mechanical:bitter_orange_fence",
+      "mechanical:bitter_orange_fence_gate",
+      "mechanical:bitter_orange_door",
+      "mechanical:bitter_orange_trapdoor",
+      "mechanical:bitter_orange_button",
+      "mechanical:bitter_orange_pressure_plate"
+    ]
+  }
+}

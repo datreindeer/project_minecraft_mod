@@ -1171,11 +1171,13 @@
      "iron_skillet",
      "fermenting_barrel",
      "cheese_press",
-     "salt_pan"
+     "salt_pan",
+     "olive_oil",
+     "apple_scion"
     ],
     "text": {
-     "sv": "[[iron_cauldron]] hänger i en [[tripod]] över en Fire Pit och kokar för hela stammen ([[cabbage_soup]]). [[iron_skillet]] steker [[sausage]], [[fermenting_barrel]] gör [[sauerkraut]], [[cheese_press]] gör [[cheese]], och en [[salt_pan]] vid havet ger salt.",
-     "en": "The [[iron_cauldron]] hangs in a [[tripod]] over a Fire Pit and cooks for the whole tribe ([[cabbage_soup]]). The [[iron_skillet]] fries [[sausage]], the [[fermenting_barrel]] makes [[sauerkraut]], the [[cheese_press]] makes [[cheese]], and a [[salt_pan]] by the sea gives salt."
+     "sv": "[[iron_cauldron]] hänger i en [[tripod]] över en Fire Pit och kokar för hela stammen ([[cabbage_soup]]). [[iron_skillet]] steker [[sausage]], [[fermenting_barrel]] gör [[sauerkraut]], [[cheese_press]] gör [[cheese]] och pressar [[olive_oil]] av oliver och [[rapeseed_oil]] av raps (tämjd ur vild rova) att steka [[fried_fish]] i, och en [[salt_pan]] vid havet ger salt. Öl och cider gör en **Tipsy**. Byns bonde säljer [[apple_scion]] att ympa på en vildapelplanta (kniv i andra handen): ett äppelträd med riktiga äpplen.",
+     "en": "The [[iron_cauldron]] hangs in a [[tripod]] over a Fire Pit and cooks for the whole tribe ([[cabbage_soup]]). The [[iron_skillet]] fries [[sausage]], the [[fermenting_barrel]] makes [[sauerkraut]], the [[cheese_press]] makes [[cheese]] and presses [[olive_oil]] from olives and [[rapeseed_oil]] from rapeseed (tamed from the wild turnip) to fry [[fried_fish]] in, and a [[salt_pan]] by the sea gives salt. Ale and cider make you **Tipsy**. The village farmer sells [[apple_scion]]s to graft onto a wild apple sapling (a knife in the other hand): an apple tree with real apples."
     }
    },
    {

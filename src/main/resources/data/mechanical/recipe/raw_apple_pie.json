@@ -4,10 +4,23 @@
   "ingredients": [
     "mechanical:flour",
     "mechanical:flour",
-    "mechanical:lard",
-    "mechanical:crab_apple",
-    "mechanical:crab_apple",
-    "mechanical:crab_apple"
+    [
+      "mechanical:lard",
+      "mechanical:olive_oil",
+      "mechanical:rapeseed_oil"
+    ],
+    [
+      "mechanical:crab_apple",
+      "minecraft:apple"
+    ],
+    [
+      "mechanical:crab_apple",
+      "minecraft:apple"
+    ],
+    [
+      "mechanical:crab_apple",
+      "minecraft:apple"
+    ]
   ],
   "result": {
     "id": "mechanical:raw_apple_pie"

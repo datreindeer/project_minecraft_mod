@@ -187,6 +187,7 @@ BOUGHT = {  # crop base: (crop name, seed item, seed name, ripe pools)
     "ginger": ("Ginger", "ginger_root", "Ginger Root", [(S + "ginger_root", 1, 3)]),
     "saffron": ("Saffron Crocus", "saffron_corm", "Saffron Crocus Corm", [(S + "saffron", 1, 1), (S + "saffron_corm", 1, 2)]),
     "rice": ("Rice", "rice", "Rice", [(S + "rice", 2, 3)]),
+    "rapeseed": ("Rapeseed", "rapeseed", "Rapeseed", [(S + "rapeseed", 2, 4)]),  # not bought: tamed from the Wild Turnip (Herbs.domesticate)
 }
 for base, (en, seed, seed_en, pools) in BOUGHT.items():
     crop_assets(base, en)
@@ -239,7 +240,7 @@ for item, en in EAST.items():
 # ---------------------------------------------------------------- villagers: the goods that came with farming (coins only)
 TRADES = {2: [("barley_grain", 4, 3), ("onion", 3, 4), ("garlic", 3, 4), ("dill_seeds", 4, 3), ("mustard_seeds", 4, 3)],
           3: [("cabbage", 2, 5), ("broad_beans", 4, 5)],
-          4: [("wild_apple_sapling", 1, 6)]}  # the plan's Apple Saplings: the Wild Apple tree (gen_trees); no grafted apple yet
+          4: [("wild_apple_sapling", 1, 6), ("apple_scion", 2, 8)]}  # the plan's grafted apples: a wild sapling and scions to graft on it
 for level, goods in TRADES.items():
     for item, count, copper in goods:
         w(D / f"mechanical/villager_trade/farmer/{level}/{item}.json", {"wants": {"id": S + "copper_coin", "count": copper},
@@ -336,8 +337,9 @@ PIES = {"apple": ("Apple Pie", S + "crab_apple"), "plum": ("Plum Pie", S + "wild
 for f, (en, fruit) in PIES.items():
     STEEL_DISHES[f"{f}_pie"] = en
     STEEL_DISHES[f"raw_{f}_pie"] = "Raw " + en
-    # the fruit of the fruit trees, flour and lard; baked in the Clay Kiln (KilnBlockEntity.RECIPES)
-    shapeless(f"raw_{f}_pie", [S + "flour", S + "flour", S + "lard", fruit, fruit, fruit], S + f"raw_{f}_pie")
+    # the fruit of the fruit trees, flour and lard (or a pressed oil); baked in the Clay Kiln (KilnBlockEntity.RECIPES)
+    fruit = [fruit, M + "apple"] if f == "apple" else fruit
+    shapeless(f"raw_{f}_pie", [S + "flour", S + "flour", [S + "lard", S + "olive_oil", S + "rapeseed_oil"], fruit, fruit, fruit], S + f"raw_{f}_pie")
 for item, en in STEEL_DISHES.items():
     lang[f"item.mechanical.{item}"] = en
 for block, en in {"steel_pan": "Steel Pan", "mortar_and_pestle": "Mortar and Pestle", "sieve": "Sieve"}.items():
@@ -357,6 +359,17 @@ tag(MIT / "perishes_1_day.json", *(S + i for i in ["saffron_rice", "spiced_pilaf
 tag(MIT / "perishes_3_days.json", *(S + i for i in ["roast_with_herbs", "sea_buckthorn_juice"] + [f"{f}_pie" for f in PIES]))
 tag(MIT / "perishes_10_days.json", S + "gingerbread")
 tag(MIT / "perishes_30_days.json", *(S + i for i in ("cider", "ale", "pickled_vegetables", "fine_flour")))
+
+# ---------------------------------------------------------------- flora3: oils, frying, marmalade, Frost Lily Tea, Tipsy
+FLORA3 = {"olive_oil": "Olive Oil", "rapeseed_oil": "Rapeseed Oil", "fried_fish": "Fried Fish", "fried_roots": "Fried Roots",
+          "pickled_olives": "Pickled Olives", "bitter_orange_marmalade": "Bitter Orange Marmalade", "frost_lily_tea": "Frost Lily Tea"}
+for item, en in FLORA3.items():
+    lang[f"item.mechanical.{item}"] = en
+lang["effect.mechanical.tipsy"] = "Tipsy"
+lang["effect.mechanical.frost_ward"] = "Frost Ward"
+tag(MIT / "compostable.json", S + "rapeseed")
+tag(MIT / "perishes_1_day.json", S + "fried_fish", S + "fried_roots", S + "frost_lily_tea")
+tag(MIT / "perishes_30_days.json", S + "olive_oil", S + "rapeseed_oil", S + "pickled_olives", S + "bitter_orange_marmalade")
 
 # ---------------------------------------------------------------- lang: messages, trades
 lang.update({

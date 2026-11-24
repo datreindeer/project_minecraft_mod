@@ -43,9 +43,11 @@ public class WildFlowerBlock extends VegetationBlock {
             return (seasons >> season & 1) != 0 && (!night || dark) && (!fullMoon || full);
         }
 
+        /** Blooming now at pos. The moon phase is a positional attribute in 26.3 (asking it without a position crashes the
+         *  server), and only the full-moon kinds ask at all. */
         public boolean now(Level level, net.minecraft.core.BlockPos pos) {
             return at(Calendar.season(level.getOverworldClockTime()), level.isDarkOutside(),
-                    level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, pos) == MoonPhase.FULL_MOON);
+                    !fullMoon || level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, pos) == MoonPhase.FULL_MOON);
         }
     }
 

@@ -26,7 +26,37 @@
       "conditions": {
         "items": [
           {
+            "items": "mechanical:olive_oil"
+          }
+        ]
+      }
+    },
+    "has_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rapeseed_oil"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
             "items": "mechanical:crab_apple"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:apple"
           }
         ]
       }
@@ -43,6 +73,9 @@
       "has_0",
       "has_1",
       "has_2",
+      "has_3",
+      "has_4",
+      "has_5",
       "has_the_recipe"
     ]
   ],

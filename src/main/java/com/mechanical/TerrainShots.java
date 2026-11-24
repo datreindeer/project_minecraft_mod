@@ -30,7 +30,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
  * "TerrainShots" (created with that seed if missing); line 3: file prefix; then one camera spot per line:
  * {@code name camX camZ targetX targetZ height [pitch]}, the camera {@code height} blocks above the ground (tree tops
  * count) at camX/camZ, or at y N for {@code =N}, looking at the ground at the target (or at the given pitch). Noon, clear
- * sky, no clouds or HUD, render distance 24; waits for the terrain to render, writes {@code <prefix>_<name>.png} and
+ * sky, no clouds or HUD, render distance 24; a line {@code cmd <command>} runs a command first (to stage a scene); waits for the terrain to render, writes {@code <prefix>_<name>.png} and
  * {@code <prefix>_result.txt} and quits. Does nothing without the flag file.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
@@ -117,6 +117,14 @@ public final class TerrainShots {
                     return;
                 }
                 String[] s = spots.get(spot);
+                if (s[0].equals("cmd")) { // "cmd <command>": run a command (stage a scene) before the next spot
+                    String c = String.join(" ", java.util.Arrays.copyOfRange(s, 1, s.length));
+                    server.execute(() -> cmd(c));
+                    result.add("cmd " + c);
+                    spot++;
+                    ticks = 0;
+                    return;
+                }
                 if (ticks == 1) server.execute(() -> {
                     ServerPlayer p = server.getPlayerList().getPlayers().get(0);
                     ServerLevel level = p.level();

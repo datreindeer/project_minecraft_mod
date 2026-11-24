@@ -29,6 +29,7 @@
     "mechanical:mustard_crop",
     "mechanical:ginger_crop",
     "mechanical:saffron_crop",
-    "mechanical:rice_crop"
+    "mechanical:rice_crop",
+    "mechanical:rapeseed_crop"
   ]
 }
