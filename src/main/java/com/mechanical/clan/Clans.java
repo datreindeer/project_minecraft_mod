@@ -96,6 +96,22 @@ public final class Clans extends SavedData {
             this.lastSeenDay = lastSeenDay;
         }
 
+        public UUID id() {
+            return id;
+        }
+
+        public String name() {
+            return name;
+        }
+
+        public int rank() {
+            return rank;
+        }
+
+        public long lastSeenDay() {
+            return lastSeenDay;
+        }
+
         static final Codec<Member> CODEC = RecordCodecBuilder.create(i -> i.group(
                 UUIDUtil.CODEC.fieldOf("id").forGetter(m -> m.id), Codec.STRING.fieldOf("name").forGetter(m -> m.name),
                 Codec.INT.fieldOf("rank").forGetter(m -> m.rank), Codec.LONG.fieldOf("joined").forGetter(m -> m.joinedDay),
@@ -194,6 +210,18 @@ public final class Clans extends SavedData {
             return colour;
         }
 
+        public Optional<GlobalPos> pit() {
+            return pit;
+        }
+
+        public Map<String, Integer> reputation() {
+            return java.util.Collections.unmodifiableMap(reputation);
+        }
+
+        public UUID id() {
+            return id;
+        }
+
         /** The chunks the tribe holds, packed ({@link ChunkPos#pack}), in its pit's dimension. Read only. */
         public Set<Long> territory() {
             return java.util.Collections.unmodifiableSet(territory);
@@ -273,12 +301,23 @@ public final class Clans extends SavedData {
 
     /** For game tests outside this package: a tribe of these players (the first leads); run the result to remove it again. */
     public static Runnable testTribe(MinecraftServer server, UUID... players) {
+        return testTribeAt(server, null, players);
+    }
+
+    /** Like {@link #testTribe} with a Fire Pit position (may be null): the tribe gets its 5x5 territory around it. */
+    public static Runnable testTribeAt(MinecraftServer server, GlobalPos pit, UUID... players) {
         Clans data = get(server);
         List<Member> members = new ArrayList<>();
         for (int i = 0; i < players.length; i++) members.add(new Member(players[i], "p" + i, i == 0 ? LEADER : MEMBER, 0, 0));
-        Clan c = new Clan(UUID.randomUUID(), "test", Optional.empty(), members, List.of(), Optional.empty(), Optional.empty());
+        Clan c = new Clan(UUID.randomUUID(), "test", Optional.ofNullable(pit), members, List.of(), Optional.empty(), Optional.empty());
         data.clans.add(c);
+        if (pit != null) data.recomputeTerritory(server, c);
         return () -> data.clans.remove(c);
+    }
+
+    /** All tribes, read only (the dashboard). */
+    public List<Clan> all() {
+        return java.util.Collections.unmodifiableList(clans);
     }
 
     public Clan clanOf(UUID player) {
