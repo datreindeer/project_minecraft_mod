@@ -1,1 +1,87 @@
-ok
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Server dashboard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3c2 6 9 9 9 17a9 9 0 0 1-18 0c0-5 3-7 4-11 1 3 2 4 4 5-1-4 0-8 1-11z' fill='%23e2683c'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg class="flame" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3c2 6 9 9 9 17a9 9 0 0 1-18 0c0-5 3-7 4-11 1 3 2 4 4 5-1-4 0-8 1-11z"/><path class="core" d="M16 15c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 2-5 0 1 1 2 2 2 0-2 0-3 0-5z"/></svg>
+    <h1><span id="mod-name">Jackt – Ages of Man</span> <span id="mod-version" class="version"></span></h1>
+  </div>
+  <nav class="tabs" aria-label="Sections">
+    <a href="#overview" data-tab="overview">Overview</a>
+    <a href="#players" data-tab="players">Players</a>
+    <a href="#tribes" data-tab="tribes">Tribes</a>
+    <a href="#map" data-tab="map">Map</a>
+  </nav>
+  <p class="live" id="live" role="status"><span class="dot"></span><span id="live-text">Connecting</span></p>
+</header>
+
+<div class="strip" id="strip" aria-label="Server at a glance"></div>
+
+<main>
+  <section id="overview" class="tab" aria-labelledby="overview-h">
+    <h2 id="overview-h" class="sr">Overview</h2>
+    <div class="overview">
+      <article class="card year">
+        <svg id="wheel" viewBox="-120 -120 240 240" role="img" aria-label="The year"></svg>
+        <div class="year-text">
+          <p class="date" id="date">—</p>
+          <p class="sub" id="date-sub"></p>
+        </div>
+      </article>
+      <div class="stats" id="stats"></div>
+      <article class="card spark">
+        <header><h3>Ticks per second</h3><span class="note" id="tps-note"></span></header>
+        <svg id="tps-spark" preserveAspectRatio="none" viewBox="0 0 300 70"></svg>
+        <p class="axis"><span>An hour ago</span><span>Now</span></p>
+      </article>
+      <article class="card spark">
+        <header><h3>Players online</h3><span class="note" id="pl-note"></span></header>
+        <svg id="pl-spark" preserveAspectRatio="none" viewBox="0 0 300 70"></svg>
+        <p class="axis"><span>An hour ago</span><span>Now</span></p>
+      </article>
+    </div>
+  </section>
+
+  <section id="players" class="tab" aria-labelledby="players-h">
+    <h2 id="players-h" class="tab-title">Players</h2>
+    <div class="table-wrap">
+      <table class="players">
+        <thead><tr><th>Name</th><th>Tribe</th><th>Position</th><th>Health</th><th>Food</th><th class="num">Ping</th><th>Last seen</th></tr></thead>
+        <tbody id="player-rows"></tbody>
+      </table>
+    </div>
+    <p class="empty" id="players-empty" hidden>Nobody here yet. Players show up when they log in or join a tribe.</p>
+  </section>
+
+  <section id="tribes" class="tab" aria-labelledby="tribes-h">
+    <h2 id="tribes-h" class="tab-title">Tribes</h2>
+    <div class="tribes" id="tribe-cards"></div>
+    <p class="empty" id="tribes-empty" hidden>No tribes yet. A tribe shows up here once a player founds one at a Fire Pit.</p>
+  </section>
+
+  <section id="map" class="tab" aria-label="Map">
+    <div class="map-wrap">
+      <canvas id="map-canvas" tabindex="0" aria-label="World map. Drag to move, scroll to zoom."></canvas>
+      <div class="legend" id="legend" hidden></div>
+      <div class="readout" id="readout"><span id="ro-pos">Point at the map</span><span id="ro-land"></span></div>
+      <div class="zoom">
+        <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+        <span id="zoom-level">1×</span>
+        <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
+        <button type="button" id="zoom-fit" aria-label="Show all tribes" title="Show all tribes">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
