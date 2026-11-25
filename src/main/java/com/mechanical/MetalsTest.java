@@ -208,7 +208,8 @@ public final class MetalsTest {
         ServerLevel level = h.getLevel();
         // nuggets: the trough's remainder and the nugget mold's 18 are each metal's own, each remelts into 22 mB of it, 9 <-> 1 ingot
         Object[][] nuggets = {{Molten.TIN, Mechanical.TIN_NUGGET.get(), Mechanical.TIN_INGOT.get()}, {Molten.LEAD, IronOres.LEAD_NUGGET.get(), IronOres.LEAD_INGOT.get()},
-                {Molten.BRONZE, Bronze.BRONZE_NUGGET.get(), Bronze.BRONZE_INGOT.get()}, {Molten.SILVER, IronOres.SILVER_NUGGET.get(), IronOres.SILVER_INGOT.get()}};
+                {Molten.BRONZE, Bronze.BRONZE_NUGGET.get(), Bronze.BRONZE_INGOT.get()}, {Molten.SILVER, IronOres.SILVER_NUGGET.get(), IronOres.SILVER_INGOT.get()},
+                {Molten.ELECTRUM, IronOres.ELECTRUM_NUGGET.get(), IronOres.ELECTRUM_INGOT.get()}};
         for (Object[] row : nuggets) {
             Molten m = (Molten) row[0];
             Item nugget = (Item) row[1], ingot = (Item) row[2];
@@ -238,7 +239,8 @@ public final class MetalsTest {
         // blocks: 9 ingots <-> 1 block, the basin casts it from 1800 mB, it remelts into 1800 mB, a stone pickaxe mines it
         Object[][] blocks = {{Molten.SILVER, HighFurnace.SILVER_BLOCK_ITEM.get()}, {Molten.PIG_IRON, HighFurnace.PIG_IRON_BLOCK_ITEM.get()},
                 {Molten.WROUGHT_IRON, HighFurnace.WROUGHT_IRON_BLOCK_ITEM.get()}, {Molten.TIN, Mechanical.TIN_BLOCK_ITEM.get()},
-                {Molten.LEAD, HighFurnace.LEAD_BLOCK_ITEM.get()}, {Molten.STEEL, HighFurnace.STEEL_BLOCK_ITEM.get()}};
+                {Molten.LEAD, HighFurnace.LEAD_BLOCK_ITEM.get()}, {Molten.STEEL, HighFurnace.STEEL_BLOCK_ITEM.get()},
+                {Molten.ELECTRUM, HighFurnace.ELECTRUM_BLOCK_ITEM.get()}};
         for (Object[] row : blocks) {
             Molten m = (Molten) row[0];
             Item block = (Item) row[1];

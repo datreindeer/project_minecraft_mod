@@ -1407,6 +1407,23 @@
      "sv": "Led metallen från pipen i [[refractory_trough]] (nedför, delas lika vid en T, stoppas av en [[trough_gate]]; hett järn spräcker lerrännor och fryser om rännan är för lång). En tackbädd av [[casting_sand]] tar en hel tappning; en [[molding_flask]] med trämönster från [[pattern_bench]] gjuter färdiga huvuden och järnformarna; en [[foundry_basin]] gjuter block, och med en lerform en klocka. Färska tackjärn till smidesjärn i en [[finery_hearth]]. Med koks från en [[coke_oven]] och en [[hot_blast_stove]] når ugnen 1800°.",
      "en": "Lead the metal from the spout through [[refractory_trough]]s (downhill, shared at a T, stopped by a [[trough_gate]]; hot iron cracks clay channels and freezes if the line is too long). A pig bed of [[casting_sand]] takes a whole tapping; a [[molding_flask]] with wooden patterns from the [[pattern_bench]] casts finished heads and the iron molds; a [[foundry_basin]] casts blocks, and with a loam mold a bell. Fine pig iron into wrought iron in a [[finery_hearth]]. With coke from a [[coke_oven]] and a [[hot_blast_stove]] the furnace reaches 1800°."
     }
+   },
+   {
+    "title": {
+     "sv": "Electrum och magma",
+     "en": "Electrum and magma"
+    },
+    "items": [
+     "electrum_ingot",
+     "electrum_ring",
+     "electrum_necklace",
+     "electrum_block",
+     "crushed_magma"
+    ],
+    "text": {
+     "sv": "Kasta [[silver_ingot]] och Raw Gold i en High Furnace vid **1100°**: de blandar sig 1:1 till [[electrum_ingot]]. Smycken i electrum ger tre fjärdedelar av guldets gembonus. Ett **Magma Block** (ruinerade portaler, havsbotten) värmer dig och är en 600° värme som aldrig tar slut under Baking Stone, Clay Kiln och Smelting Furnace; krossat till [[crushed_magma]] tänder det High Furnace utan att misslyckas och går i eldfast lera och silikategel. **Nether och End är stängda tills vidare.**",
+     "en": "Throw [[silver_ingot]]s and Raw Gold into a High Furnace at **1100°**: they mix 1:1 into [[electrum_ingot]]. Electrum jewellery gives three quarters of gold's gem bonus. A **Magma Block** (ruined portals, the sea floor) warms you and is a 600° heat that never runs out under a Baking Stone, Clay Kiln or Smelting Furnace; crushed into [[crushed_magma]] it lights a High Furnace without fail and goes into Fire Clay and Silica Bricks. **The Nether and the End are closed for now.**"
+    }
    }
   ]
  }

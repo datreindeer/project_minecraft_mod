@@ -29,7 +29,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 /**
- * What lies on a {@link JewelryTableBlock}. Steel Casting Table: slot 0 the Gold or Silver Ingots waiting (one metal at a
+ * What lies on a {@link JewelryTableBlock}. Steel Casting Table: slot 0 the Gold, Silver or Electrum Ingots waiting (one metal at a
  * time), slot 1 the cast pieces; {@link #mode} the mould (0: two Ring Blanks, 1: a Chain); with a Clay Kiln at the metal's
  * melting heat (gold 1100°, silver lower) or more beside it one ingot
  * melts and sets every {@link Jewelry#CAST_TICKS}. Jeweler's Bench: slot 0 the blank, slot 1 the cut gem; a chisel on it
@@ -55,24 +55,27 @@ public class JewelryTableBlockEntity extends BlockEntity {
         return mode;
     }
 
-    /** The ingots the table casts: Gold, or Silver (gold while it is empty). */
-    private boolean silver() {
-        return items.get(0).is(IronOres.SILVER_INGOT.get());
+    /** The ingot on the table decides the metal it casts: Gold (also while empty), Silver or Electrum. */
+    private Molten metal() {
+        ItemStack in = items.get(0);
+        return in.is(IronOres.SILVER_INGOT.get()) ? Molten.SILVER : in.is(IronOres.ELECTRUM_INGOT.get()) ? Molten.ELECTRUM : Molten.GOLD;
     }
 
     /** What one ingot casts into in the current mould: two Ring Blanks or a Chain, of the metal on the table. */
     public ItemStack castResult() {
-        if (silver()) return mode == 0 ? new ItemStack(Jewelry.SILVER_RING_BLANK.get(), 2) : new ItemStack(Jewelry.SILVER_CHAIN.get());
+        Molten metal = metal();
+        if (metal == Molten.SILVER) return mode == 0 ? new ItemStack(Jewelry.SILVER_RING_BLANK.get(), 2) : new ItemStack(Jewelry.SILVER_CHAIN.get());
+        if (metal == Molten.ELECTRUM) return mode == 0 ? new ItemStack(Jewelry.ELECTRUM_RING_BLANK.get(), 2) : new ItemStack(Jewelry.ELECTRUM_CHAIN.get());
         return mode == 0 ? new ItemStack(Jewelry.GOLD_RING_BLANK.get(), 2) : new ItemStack(Jewelry.GOLD_CHAIN.get());
     }
 
-    /** The kiln heat the ingots on the table need to melt: silver's or gold's. */
+    /** The kiln heat the ingots on the table need to melt: their metal's melting point. */
     public int castTemp() {
-        return silver() ? IronOres.CUPEL_TEMP : IronOres.GOLD_TEMP;
+        return metal().melt;
     }
 
     boolean accepts(ItemStack stack) {
-        if (casting()) return stack.is(Items.GOLD_INGOT) || stack.is(IronOres.SILVER_INGOT.get());
+        if (casting()) return stack.is(Items.GOLD_INGOT) || stack.is(IronOres.SILVER_INGOT.get()) || stack.is(IronOres.ELECTRUM_INGOT.get());
         return Jewelry.jewelFor(stack) != null || Jewelry.gemOf(stack) != null || stack.getItem() instanceof BronzeTools.ChiselItem;
     }
 

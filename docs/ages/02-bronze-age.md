@@ -1805,3 +1805,17 @@ och räknas som sten för husets värme (inte som torv- och halmtaken). Advancem
   (2 Silver Coin) (järn) och sällsynt Saffron;
   köper ädelstenar, Jujubes, Sea Buckthorn Berries och ametist. Ginger, Saffron och Rice kan sås i varmt klimat.
 - Advancements (Bronze Age): *Griddle*, *Proper Dishes* och *Every Last Drop* (efter *Kettle*). *Paste and Jam* (efter *Marmalade*): kvittenpasta eller körsbärssylt. Wilderness: *The Spice Road*.
+
+## Magma Block (byggt 2026-11-25)
+
+Fås från ruinerade portaler och havsbotten (kontrollerat i en genererad värld).
+
+- **Värme:** upp till +8 kroppsgrader intill, räckvidd 5 block (campfire +10), värmer aldrig över behaglig nivå (12),
+  väggar ger upp till halva till (som för en eld). Hjälper mot vinter, snö och djupets kyla. Flera block staplas inte.
+- **Snö:** ingen ny snö och ingen kvarliggande snö/is inom 2 block åt sidan och upp till 2 block ovanför.
+- **Under Baking Stone:** bakar utan eld, i halv fart.
+- **Under Clay Kiln** (blocket under eldstaden) och **mitt under golvet i en Smelting Furnace:** håller 600° för alltid,
+  utan Fire Drill och utan att bränna bränsle. Bälgen kräver riktig eld. Räcker till tegel, keramik, bröd, pajer och
+  träkol; inte till koppar, brons, guld eller fire brick (i Smelting Furnace smälter bara tenn, men den är förvärmd).
+- **Crushed Magma:** se 04-steel-age.md, avsnitt 7.
+- Advancements **Captive Heat** och **Cinder Grit** (Bronze Age-fliken).

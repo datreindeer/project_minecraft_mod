@@ -150,8 +150,9 @@ public class HighFurnaceWallBlock extends Block {
         @Override
         protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
             if (!state.is(HighFurnace.FIREBOX.get())) return InteractionResult.TRY_WITH_EMPTY_HAND;
+            boolean magma = stack.is(Magma.CRUSHED_MAGMA.get());
             boolean fuel = HighFurnaceBlockEntity.fuelOf(stack) != null, drill = stack.getItem() instanceof FireDrillItem, flint = stack.is(Items.FLINT_AND_STEEL) || stack.getItem() instanceof FlintAndSteelItem;
-            if (!fuel && !drill && !flint) return InteractionResult.TRY_WITH_EMPTY_HAND;
+            if (!fuel && !drill && !flint && !magma) return InteractionResult.TRY_WITH_EMPTY_HAND;
             if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
             HighFurnaceBlockEntity furnace = HighFurnaceBlockEntity.find(server, pos);
             if (furnace == null || !furnace.isFirebox(pos)) {
@@ -167,6 +168,16 @@ public class HighFurnaceWallBlock extends Block {
                 }
                 if (!player.getAbilities().instabuild) stack.shrink(taken);
                 server.playSound(null, pos, SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 0.6F, 0.7F);
+                return InteractionResult.SUCCESS;
+            }
+            // a handful of Crushed Magma lights it without fail, and is used up
+            if (magma) {
+                if (!furnace.hasUnlit()) return InteractionResult.SUCCESS; // all burning: keep it
+                furnace.light();
+                stack.consume(1, player);
+                server.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, 0.7F);
+                server.sendParticles(ParticleTypes.LAVA, pos.getX() + 0.5, pos.getY() + 0.6, pos.getZ() + 0.5, 6, 0.4, 0.2, 0.4, 0);
+                if (player instanceof net.minecraft.server.level.ServerPlayer sp) FirePit.award(sp, "steel_age/magma_lighting");
                 return InteractionResult.SUCCESS;
             }
             // a Fire Drill catches about as often as on a kiln without tinder; Flint and Steel every time

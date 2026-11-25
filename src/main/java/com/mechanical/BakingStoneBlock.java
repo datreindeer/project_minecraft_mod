@@ -27,7 +27,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * A flat stone next to (or on) a burning campfire. Put Dough on it: after {@link #BAKE_TICKS} of fire it is Bread; left
- * {@link #BURN_TICKS} longer it burns. Empty hand takes it off. No fire: the dough waits.
+ * {@link #BURN_TICKS} longer it burns. Empty hand takes it off. No fire: the dough waits. A Magma Block under it will do
+ * for a fire, at half the speed ({@link #slowness}).
  */
 public class BakingStoneBlock extends Block {
     public enum Contents implements StringRepresentable {
@@ -68,13 +69,23 @@ public class BakingStoneBlock extends Block {
         return false;
     }
 
+    /** How many times longer a step takes: 1 by a fire, 2 on nothing but a Magma Block (weaker than any fire). */
+    public static int slowness(Level level, BlockPos pos) {
+        return !nearFire(level, pos) && Magma.under(level, pos) ? 2 : 1;
+    }
+
+    /** A fire beside or under it, or a Magma Block under it. */
+    public static boolean heated(Level level, BlockPos pos) {
+        return nearFire(level, pos) || Magma.under(level, pos);
+    }
+
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!stack.is(Farming.DOUGH.get()) || state.getValue(CONTENTS) != Contents.EMPTY) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (level instanceof ServerLevel server) {
             stack.consume(1, player);
             server.setBlock(pos, state.setValue(CONTENTS, Contents.DOUGH), Block.UPDATE_ALL);
-            server.scheduleTick(pos, this, BAKE_TICKS);
+            server.scheduleTick(pos, this, BAKE_TICKS * slowness(server, pos));
             server.playSound(null, pos, SoundEvents.MUD_PLACE, SoundSource.BLOCKS, 0.6F, 1.2F);
         }
         return InteractionResult.SUCCESS;
@@ -100,18 +111,18 @@ public class BakingStoneBlock extends Block {
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         Contents c = state.getValue(CONTENTS);
         if (c != Contents.DOUGH && c != Contents.BREAD) return;
-        if (!nearFire(level, pos)) {
+        if (!heated(level, pos)) {
             level.scheduleTick(pos, this, NO_FIRE_RETRY); // shortcut: baking progress isn't kept while the fire is out
             return;
         }
         level.setBlock(pos, state.setValue(CONTENTS, c == Contents.DOUGH ? Contents.BREAD : Contents.BURNT), Block.UPDATE_ALL);
-        if (c == Contents.DOUGH) level.scheduleTick(pos, this, BURN_TICKS);
+        if (c == Contents.DOUGH) level.scheduleTick(pos, this, BURN_TICKS * slowness(level, pos));
         level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.3F, 1.6F);
     }
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (state.getValue(CONTENTS) != Contents.EMPTY && random.nextInt(3) == 0 && nearFire(level, pos)) {
+        if (state.getValue(CONTENTS) != Contents.EMPTY && random.nextInt(3) == 0 && heated(level, pos)) {
             level.addParticle(state.getValue(CONTENTS) == Contents.BURNT ? ParticleTypes.SMOKE : ParticleTypes.WHITE_SMOKE,
                     pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.4, pos.getY() + 0.2, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.4, 0, 0.02, 0);
         }

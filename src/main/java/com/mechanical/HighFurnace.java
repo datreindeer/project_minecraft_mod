@@ -124,10 +124,11 @@ public final class HighFurnace {
     public static final int PATTERN_USES = 128;
     // metal blocks the basin casts (vanilla has Copper and Gold; Tin's is in Mechanical); 9 ingots craft one too (gen_metals.py)
     public static final DeferredBlock<Block> BRONZE_BLOCK = metalBlock("bronze_block"), STEEL_BLOCK = metalBlock("steel_block"), LEAD_BLOCK = metalBlock("lead_block"),
-            SILVER_BLOCK = metalBlock("silver_block"), PIG_IRON_BLOCK = metalBlock("pig_iron_block"), WROUGHT_IRON_BLOCK = metalBlock("wrought_iron_block");
+            SILVER_BLOCK = metalBlock("silver_block"), ELECTRUM_BLOCK = metalBlock("electrum_block"), PIG_IRON_BLOCK = metalBlock("pig_iron_block"), WROUGHT_IRON_BLOCK = metalBlock("wrought_iron_block");
     public static final DeferredItem<BlockItem> BRONZE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("bronze_block", BRONZE_BLOCK),
             STEEL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("steel_block", STEEL_BLOCK), LEAD_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("lead_block", LEAD_BLOCK),
             SILVER_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("silver_block", SILVER_BLOCK),
+            ELECTRUM_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("electrum_block", ELECTRUM_BLOCK),
             PIG_IRON_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("pig_iron_block", PIG_IRON_BLOCK),
             WROUGHT_IRON_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("wrought_iron_block", WROUGHT_IRON_BLOCK);
 

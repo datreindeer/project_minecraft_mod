@@ -39,7 +39,7 @@ import org.jspecify.annotations.Nullable;
  * capacity, and only what mixes), Charcoal / Coal into the fuel (up to {@link #FUEL_MAX}); anything else is thrown back
  * off the chute.</li>
  * <li>Heat: the kiln's model ({@link KilnBlockEntity#heatStep}, charcoal's 800° natural, 1300° with bellows,
- * {@link KilnBlockEntity#PUMP}° per pump). Lit with a Fire Drill; burns its fuel while lit; goes out when it runs out.</li>
+ * {@link KilnBlockEntity#PUMP}° per pump). A Magma Block under the middle of the floor holds {@link Magma#HEAT}°. Lit with a Fire Drill; burns its fuel while lit; goes out when it runs out.</li>
  * <li>Melting: one quarter unit per {@link #QUARTER_TICKS} at the melting point, faster when hotter ({@link KilnBlockEntity#speed}).</li>
  * <li>Tapping: open, hot enough, and with a settled melt, the tap fills an empty Clay Mold right in front of the spout
  * after a moment, or pours into the Clay Channel there and the metal runs through the network ({@link ChannelFlow}).
@@ -276,7 +276,10 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
             if (burn > 0) burn = Math.max(0, burn - Temperature.fireDrain(level, worldPosition, level.getRandom()));
         }
         BlockPos top = chute().above();
-        temp = Math.min(KilnBlockEntity.heatStep(temperature(), lit, maxTemp, ambient, level.isRainingAt(top), level.getGameTime() < heldUntil),
+        // a Magma Block under the middle of the floor keeps it at Magma.HEAT without fire or fuel (no copper or bronze melts)
+        boolean magma = formed && Magma.under(level, shaft());
+        int natural = !lit ? Magma.HEAT : magma ? Math.max(maxTemp, Magma.HEAT) : maxTemp;
+        temp = Math.min(KilnBlockEntity.heatStep(temperature(), lit || magma, natural, ambient, level.isRainingAt(top), level.getGameTime() < heldUntil),
                 KilnBlockEntity.CEILING);
 
         int need = melt.meltTemp();

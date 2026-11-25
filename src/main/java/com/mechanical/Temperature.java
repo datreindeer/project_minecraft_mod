@@ -31,7 +31,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
  * Body temperature, 0 (freezing) .. 20 (warm), 12 is comfortable. It drifts towards a target set by the biome, the time
- * of day, rain/water, altitude and nearby burning fires; leather armour and fur (also a worn cloak) insulate against the cold,
+ * of day, rain/water, altitude, nearby burning fires and Magma Blocks (up to comfortable); leather armour and fur (also a worn cloak) insulate against the cold,
  * and so does a house: walls and roof round you ({@link #shelter}; turf, thatch and daub best, wood next, stone least), which also keeps a fire's heat in. Cold makes you
  * hungry; very cold freezes you (vanilla frost overlay and freeze damage). Shown by a bar above the hunger bar.
  * <p>
@@ -223,6 +223,8 @@ public final class Temperature {
         float shelter = shelter(level, BlockPos.containing(player.getEyePosition()));
         // walls round a fire keep its heat in: up to half as much again in a tight house
         if (fire != null) t += FIRE_WARMTH * 0.5F * shelter * (float) Math.max(0, 1 - Math.sqrt(Vec3.atCenterOf(fire).distanceToSqr(player.position())) / FIRE_RANGE);
+        // a Magma Block takes the chill off, but never warms you past comfortable; walls keep its heat in like a fire's
+        if (t < COMFORT) t = Math.min(COMFORT, t + Magma.warmth(level, pos) * (1 + 0.5F * shelter));
         if (t < COMFORT) {
             float insulation = shelter * SHELTER_MAX;
             for (ItemStack worn : wornForWarmth(player)) insulation += insulation(worn);

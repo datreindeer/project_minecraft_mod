@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:bronze_age/magma_heat",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:crushed_magma"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:crushed_magma"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.crushed_magma.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.crushed_magma.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -179,6 +179,7 @@ public class KilnBlock extends Block implements EntityBlock {
             player.openMenu(kiln);
             if (state.getValue(CRACKS) >= CRACKED) player.sendOverlayMessage(Component.translatable("message.mechanical.kiln.cracked"));
             else if (state.getValue(FIRING) < FIRED) player.sendOverlayMessage(Component.translatable("message.mechanical.kiln.unfired"));
+            else if (Magma.under(level, kiln.getBlockPos())) player.sendOverlayMessage(Component.translatable("message.mechanical.magma.heats", Magma.HEAT));
         }
         return InteractionResult.SUCCESS;
     }

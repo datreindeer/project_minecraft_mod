@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:steel_age/electrum",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:electrum_ring"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:electrum_necklace"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:electrum_ring"
+    },
+    "title": {
+      "translate": "advancements.mechanical.steel_age.electrum_jeweler.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.steel_age.electrum_jeweler.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

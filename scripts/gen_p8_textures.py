@@ -7,7 +7,7 @@ Items (transparent, outlined, lit from the top left):
 - gold_ring_blank / gold_chain: matte cast gold
 - gold_ring / gold_necklace: polished gold with an EMPTY socket; gold_ring_gem / gold_necklace_gem hold only the
   greyscale gem (tinted in game) and line up exactly with that socket
-- silver_*: the same four pieces (and gem layers) in polished, cool silver
+- silver_*, electrum_*: the same four pieces (and gem layers) in polished, cool silver and pale electrum
 Blocks (opaque): steel_casting_table_top/_side, jewelers_bench_top/_side
 Run: python scripts/gen_p8_textures.py
 """
@@ -28,6 +28,8 @@ STEEL_MIX = {"k": "2b3038", "c": "6d7887", "b": "94a0b0", "a": "c3ccd8"}
 GOLD = {"O": "4a2c06", "D": "7a4a0a", "M": "b07a12", "L": "e0a91c", "H": "f8d248", "W": "fff3a8"}
 # polished silver (v0.211.0): cool white-grey, a touch of blue in the shade so it never reads as steel or iron; W the polish
 SILVER = {"O": "262a31", "D": "59616c", "M": "8e97a1", "L": "bcc4cc", "H": "e1e6eb", "W": "ffffff"}
+# electrum: paler and cooler than gold, a straw-white metal with an olive shade, so the three metals read apart
+ELECTRUM = {"O": "3c3410", "D": "75682a", "M": "a89a48", "L": "d6c76c", "H": "f2e79c", "W": "fffce0"}
 # greyscale gem (tinted in game): w highlight -> z shade
 GEM = {"w": "ffffff", "x": "dcdcdc", "y": "b4b4b4", "z": "8c8c8c"}
 
@@ -337,6 +339,12 @@ if __name__ == "__main__":
         "item/silver_ring_gem": draw(RING, GEM),
         "item/silver_necklace": draw(NECKLACE, SILVER),
         "item/silver_necklace_gem": draw(NECKLACE, GEM),
+        "item/electrum_ring_blank": draw(RING_BLANK, ELECTRUM),
+        "item/electrum_chain": gold_chain(ELECTRUM),
+        "item/electrum_ring": draw(RING, ELECTRUM),
+        "item/electrum_ring_gem": draw(RING, GEM),
+        "item/electrum_necklace": draw(NECKLACE, ELECTRUM),
+        "item/electrum_necklace_gem": draw(NECKLACE, GEM),
         "block/steel_casting_table_top": casting_top(),
         "block/steel_casting_table_side": casting_side(),
         "block/jewelers_bench_top": bench_top(),
@@ -351,7 +359,7 @@ if __name__ == "__main__":
         assert img.size == (16, 16), rel
         a = [img.getpixel((x, y))[3] for x in range(16) for y in range(16)]
         assert all(v == 255 for v in a) if rel.startswith("block/") else (0 in a and 255 in a), rel
-    for base in ("gold_ring", "gold_necklace", "silver_ring", "silver_necklace"):
+    for base in ("gold_ring", "gold_necklace", "silver_ring", "silver_necklace", "electrum_ring", "electrum_necklace"):
         b, g = loaded[f"item/{base}"], loaded[f"item/{base}_gem"]
         gem = [(x, y) for x in range(16) for y in range(16) if g.getpixel((x, y))[3]]
         assert gem and all(b.getpixel(p)[3] == 0 for p in gem), base

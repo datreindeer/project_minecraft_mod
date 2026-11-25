@@ -7,6 +7,7 @@
     "mechanical:bronze_block",
     "mechanical:steel_block",
     "mechanical:wrought_iron_block",
-    "mechanical:pig_iron_block"
+    "mechanical:pig_iron_block",
+    "mechanical:electrum_block"
   ]
 }
