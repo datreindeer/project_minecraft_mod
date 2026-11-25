@@ -4,7 +4,9 @@ import static com.mechanical.Mechanical.MODID;
 
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -23,13 +25,15 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** Game test for the admin dashboard's JSON (every status key, a tribe's chunks and colour) and that an occupied port is a warning, not a crash. */
+/** Game test for the admin dashboard's JSON (every status key, a tribe's chunks and colour), that an occupied port is a warning, not a crash, and the map tiles' colours, queue cap and tile names. */
 @EventBusSubscriber(modid = MODID)
 public final class DashboardTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
@@ -72,7 +76,7 @@ public final class DashboardTest {
             remove.run();
         }
 
-        try (ServerSocket busy = new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
+        try (ServerSocket busy = new ServerSocket(0, 1, InetAddress.getByAddress(new byte[] {127, 0, 0, 1}))) {
             Dashboard.bind(busy.getLocalPort()); // must only warn
             check(h, !Dashboard.isRunning(), "an occupied port leaves the dashboard off");
         } catch (java.io.IOException e) {
@@ -82,6 +86,31 @@ public final class DashboardTest {
         }
         check(h, Dashboard.allowedHost("127.0.0.1:8100", 8100) && Dashboard.allowedHost("localhost:8100", 8100) && Dashboard.allowedHost("[::1]:8100", 8100), "loopback hosts pass");
         check(h, !Dashboard.allowedHost("evil.example:8100", 8100) && !Dashboard.allowedHost(null, 8100) && !Dashboard.allowedHost("127.0.0.1:9999", 8100), "other hosts are refused");
+        Set<Long> queue = new LinkedHashSet<>();
+        for (int i = 0; i < 100; i++) queue.add((long) i);
+        queue.add(0L);
+        check(h, queue.size() == 100, "a chunk queued twice is in the queue once");
+        check(h, MapTiles.drain(queue, MapTiles.PER_TICK).size() == MapTiles.PER_TICK && queue.size() == 100 - MapTiles.PER_TICK, "one tick reads only PER_TICK chunks");
+        check(h, Dashboard.TILE.matcher("/tiles/-3.12.png").matches() && !Dashboard.TILE.matcher("/tiles/../x.png").matches()
+                && !Dashboard.TILE.matcher("/tiles/1.2.png/x").matches() && !Dashboard.TILE.matcher("/tiles/1e3.2.png").matches(), "tile names are two signed integers only");
+        mapColours(h);
         h.succeed();
+    }
+
+    /** A flat grass patch draws grass at normal brightness; water 3 deep draws darker than water 1 deep. */
+    private static void mapColours(GameTestHelper h) {
+        for (int x = 2; x <= 6; x++) for (int z = 2; z <= 6; z++) h.setBlock(x, 1, z, Blocks.GRASS_BLOCK);
+        h.setBlock(10, 0, 4, Blocks.STONE);
+        for (int y = 1; y <= 3; y++) h.setBlock(10, y, 4, Blocks.WATER);
+        h.setBlock(12, 2, 4, Blocks.STONE);
+        h.setBlock(12, 3, 4, Blocks.WATER);
+        BlockPos grass = h.absolutePos(new BlockPos(4, 1, 4)), deep = h.absolutePos(new BlockPos(10, 3, 4)), shallow = h.absolutePos(new BlockPos(12, 3, 4));
+        check(h, colourAt(h, grass) == Blocks.GRASS_BLOCK.defaultBlockState().getMapColor(h.getLevel(), grass).calculateARGBColor(MapColor.Brightness.NORMAL), "flat grass is the grass map colour");
+        check(h, colourAt(h, deep) == MapColor.WATER.calculateARGBColor(MapColor.Brightness.NORMAL), "water 3 deep is the normal water colour");
+        check(h, colourAt(h, shallow) == MapColor.WATER.calculateARGBColor(MapColor.Brightness.HIGH), "water 1 deep is the bright water colour");
+    }
+
+    private static int colourAt(GameTestHelper h, BlockPos pos) {
+        return MapTiles.colours(h.getLevel().getChunkAt(pos))[(pos.getZ() & 15) * 16 + (pos.getX() & 15)];
     }
 }
