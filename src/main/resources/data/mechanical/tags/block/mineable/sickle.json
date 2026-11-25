@@ -58,6 +58,9 @@
     "mechanical:wild_emmer",
     "mechanical:wild_barley",
     "mechanical:wild_oats",
-    "mechanical:wild_rice"
+    "mechanical:wild_rice",
+    "mechanical:maize_crop",
+    "mechanical:wild_maize_crop",
+    "mechanical:wild_maize_plant"
   ]
 }

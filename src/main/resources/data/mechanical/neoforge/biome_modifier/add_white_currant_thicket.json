@@ -1,0 +1,15 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:deciduous_forest",
+    "mechanical:reed_delta",
+    "mechanical:willow_fen",
+    "minecraft:cherry_grove",
+    "minecraft:dark_forest",
+    "minecraft:flower_forest",
+    "minecraft:forest",
+    "minecraft:meadow"
+  ],
+  "features": "mechanical:white_currant_thicket",
+  "step": "vegetal_decoration"
+}

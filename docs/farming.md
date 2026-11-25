@@ -389,6 +389,29 @@ Hållbarhet: blad (Lettuce, Sorrel, Mint, Wild Cabbage) 2 dagar, kål/purjo/sell
 rötter är källarvara (`cellar_produce`). **Barley** har nu en källa: byns Farmer säljer Barley Grain (nivå 2, koppar).
 Test: `HerbsTest` (400 skördar av mogen Wild Onion: ~25 % ger en Onion).
 
+## Majs (byggt v0.211.0, flora 4)
+
+Samma mönster som Wild Carrot → Carrot (`Maize.java`, `MaizeCropBlock`; data `scripts/gen_flora.py`, texturer
+`scripts/gen_vines_textures.py`).
+
+- **Wild Maize Plant** (teosinte): ett buskigt gräs med många tunna strån och små hårda ax, i **Savanna, Savanna Plateau,
+  Windswept Savanna, Sparse Jungle** (1/10 per chunk, 6 försök). Ger **Teosinte** (kniv/skära 1–2, för hand 50 %).
+- **Teosinte** sås på farmland som den vilda grödan (`wild_maize_crop`); mogen 1–2 Teosinte och **25 % (35 % på god jord i
+  bästa värme) Maize Kernels** (`Herbs.tamedFrom`). Teosinte är inte mat.
+- **Maize Kernels** sås som **Maize** (`maize_crop`): **två block hög**. Från ålder 4 växer en övre halva som visar samma ålder;
+  utan plats ovanför stannar den på ålder 3. Bryts någon halva går hela plantan (den nedre halvans loot faller). Bara den nedre
+  halvan räknas som planta (kråkor, frost); en kråka som tar ett steg av en hög planta tar ner toppen.
+  Mogen: **1–3 Corn Cob**. Utseende: grodd, ung, knähög, sedan hög stjälk med leder och böjda bladremsor, vippan (tassel)
+  överst, kolvar i gröna hyllen med silkestofs, mogen torr och halmgul med uppspruckna hyllen och gula kärnor.
+- **Klimat:** växer 11–26, bäst 15–21, frost dödar under 4; vår 0.7, sommar 1.3, höst 0.8, vinter 0. Behöver sommarvärme.
+- **Corn Cob** (2 hunger, håller 10 dagar): rostas på Campfire eller Fire Pit till **Roasted Corn** (6 hunger, 3 dagar), eller
+  skalas i craftingrutan till **3 Maize Kernels**. Maize Kernels är säd (`mechanical:grains`): mals i Quern till Flour, går i
+  Porridge och Seed Bag.
+- Advancements (Food & Farming): **Wild Maize**, **Corn on the Cob**, **Roasted Corn**.
+
+Melon och Pumpkin fick inga nya vilda sorter: vanillas vilda pumpor och meloner finns redan och följer reglerna ovan (se
+docs/flora-and-food-plan.md, "Flora 4").
+
 ## Teknik
 
 - `Farming.java` (registrering, växtregler i `CropGrowEvent`, skörd i `BlockDropsEvent`, kråkor, fältinfo),

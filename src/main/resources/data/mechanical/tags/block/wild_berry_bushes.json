@@ -16,6 +16,9 @@
     "mechanical:barberry",
     "mechanical:caper",
     "mechanical:red_currant",
-    "mechanical:black_currant"
+    "mechanical:black_currant",
+    "mechanical:white_currant",
+    "mechanical:gooseberry",
+    "mechanical:cranberry"
   ]
 }

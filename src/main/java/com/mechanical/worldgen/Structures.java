@@ -41,6 +41,7 @@ public final class Structures {
         FEATURE_TYPES.register("glacial_erratic", Boulder.ERRATIC::codec);
         // berry thickets (scripts/gen_flora.py)
         for (ThicketFeature f : ThicketFeature.ALL) FEATURE_TYPES.register(f.kind + "_thicket", f::codec);
+        FEATURE_TYPES.register("grape_vine", () -> GrapeVineFeature.CODEC); // flora 4: wild grapes on trunks and rock
         // wild grain stands and scattered plants (scripts/gen_wildgrain.py)
         for (WildGrainFeature f : WildGrainFeature.ALL) FEATURE_TYPES.register(f.id(), f::codec);
         FEATURE_TYPES.register("mossy_boulder", Boulder.MOSSY::codec);

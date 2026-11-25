@@ -702,6 +702,7 @@ hunger, håller 30 dagar). Advancements: *Brewer*, *Fruit Pie*, *Sunday Roast*.
 - **Stekt i olja** (Iron Skillet, olja **eller Lard**): **Fried Fish** (2 råa fiskar + fett → 2 à 7), **Fried Roots** (2 potatis,
   rovor eller palsternackor + fett + lök → 2 à 7). Fruktpajerna kan göras med olja i stället för ister. *First Pressing*, *Fried in Oil*.
 - **Pickled Olives** (Fermenting Barrel: 3 Olives + Salt → 3, håller 30 dagar): råa är de beska. *Olives in Brine*.
-- **Tipsy** (Ale och Cider): varje drick inom 2 minuter höjer effekten ett steg (högst IV) och tiden börjar om. Varm i magen (+0,1
+- **Tipsy** (Ale, Cider och Wine): varje drick inom 2 minuter höjer effekten ett steg (högst IV) och tiden börjar om. Varm i magen (+0,1
   isolering mot kyla). Från tredje i rad lutar världen sakta lite åt sidorna (en grad eller två), mycket mjukare än Nausea; inget
   annat. Cider går också av ympade äpplen. *One More Round*.
+- **Wine** (flora 4): Fermenting Barrel, 4 Grapes (från vild Grape Vine) → 2 Wine (3 hunger). Ger Tipsy som Ale och Cider. *Vintner*.

@@ -187,11 +187,13 @@
      "fly_agaric",
      "roasted_mushrooms",
      "bark_basket",
-     "hazelnuts"
+     "hazelnuts",
+     "grapes",
+     "grape_vine"
     ],
     "text": {
-     "sv": "Bärbuskar växer i fläckar efter biom: [[raspberries]] och [[blueberries]] i skog, [[lingonberries]] i taiga, [[wild_strawberries]] på slätten med flera. **Högerklicka en mogen buske** för 1–3 bär; den mognar igen på ~12 minuter.\n\nSvamp växer i fält i skuggan: [[chanterelle]], [[porcini]], [[morel]], [[puffball]] och fler. **Undvik [[fly_agaric]]**, den är giftig. Svamp släpper alltid med kniv, bara hälften av gångerna utan. På en Campfire blir den [[roasted_mushrooms]] (4 hunger).\n\nEn [[bark_basket]] (Bark + Cordage) rymmer frukt, bär och hudar, och **i en stängd korg åldras maten bara en tredjedel så fort**.",
-     "en": "Berry bushes grow in patches by biome: [[raspberries]] and [[blueberries]] in forests, [[lingonberries]] in taiga, [[wild_strawberries]] on plains and more. **Right-click a ripe bush** for 1–3 berries; it ripens again in ~12 minutes.\n\nMushrooms grow in shady fields: [[chanterelle]], [[porcini]], [[morel]], [[puffball]] and more. **Avoid the [[fly_agaric]]**, it is poisonous. Mushrooms always drop with a knife, only half the time without. On a Campfire they become [[roasted_mushrooms]] (4 hunger).\n\nA [[bark_basket]] (Bark + Cordage) holds fruit, berries and hides, and **food in a closed basket ages at only a third of the normal rate**."
+     "sv": "Bärbuskar växer i fläckar efter biom: [[raspberries]] och [[blueberries]] i skog, [[lingonberries]] i taiga, [[wild_strawberries]] på slätten med flera. **Högerklicka en mogen buske** för 1–3 bär; den mognar igen på ~12 minuter.\n\nSvamp växer i fält i skuggan: [[chanterelle]], [[porcini]], [[morel]], [[puffball]] och fler. **Undvik [[fly_agaric]]**, den är giftig. Svamp släpper alltid med kniv, bara hälften av gångerna utan. På en Campfire blir den [[roasted_mushrooms]] (4 hunger).\n\nEn [[bark_basket]] (Bark + Cordage) rymmer frukt, bär och hudar, och **i en stängd korg åldras maten bara en tredjedel så fort**.\n\nI varm skog klättrar vild [[grape_vine]] på stammar och klippor: mogna [[grapes]] på hösten. Torkade på Drying Rack blir de [[raisins]], som håller en månad.",
+     "en": "Berry bushes grow in patches by biome: [[raspberries]] and [[blueberries]] in forests, [[lingonberries]] in taiga, [[wild_strawberries]] on plains and more. **Right-click a ripe bush** for 1–3 berries; it ripens again in ~12 minutes.\n\nMushrooms grow in shady fields: [[chanterelle]], [[porcini]], [[morel]], [[puffball]] and more. **Avoid the [[fly_agaric]]**, it is poisonous. Mushrooms always drop with a knife, only half the time without. On a Campfire they become [[roasted_mushrooms]] (4 hunger).\n\nA [[bark_basket]] (Bark + Cordage) holds fruit, berries and hides, and **food in a closed basket ages at only a third of the normal rate**.\n\nIn warm woods wild [[grape_vine]] climbs trunks and rocks: ripe [[grapes]] in autumn. Dried on a Drying Rack they become [[raisins]], which keep a month."
     }
    },
    {
@@ -480,11 +482,14 @@
      "wild_onion",
      "onion",
      "wild_thyme",
-     "clay_cooking_pot"
+     "clay_cooking_pot",
+     "teosinte",
+     "maize_kernels",
+     "corn_cob"
     ],
     "text": {
-     "sv": "Vilda grönsaker (t.ex. [[wild_onion_plant]], [[wild_garlic_plant]]) växer i sina klimat. Gräv upp dem med kniv och så den vilda grönsaken på farmland: en mogen vild gröda ger ibland (25 %) den odlade sortens utsäde, som [[onion]]. Örter som [[wild_thyme]] klipps med kniv och växer igen.\n\nBränn en [[unfired_clay_cooking_pot]] i [[kiln]] och ställ [[clay_cooking_pot]] i glöden på en Campfire: vatten och ingredienser blir [[nettle_soup]], [[root_pottage]], [[berry_mash]] eller [[herbal_tea]].",
-     "en": "Wild vegetables (e.g. [[wild_onion_plant]], [[wild_garlic_plant]]) grow in their climates. Dig them up with a knife and sow the wild vegetable on farmland: a ripe wild crop sometimes (25 %) gives the seed of the tame kind, like [[onion]]. Herbs like [[wild_thyme]] are cut with a knife and grow back.\n\nFire an [[unfired_clay_cooking_pot]] in the [[kiln]] and set the [[clay_cooking_pot]] in the embers of a Campfire: water and ingredients make [[nettle_soup]], [[root_pottage]], [[berry_mash]] or [[herbal_tea]]."
+     "sv": "Vilda grönsaker (t.ex. [[wild_onion_plant]], [[wild_garlic_plant]]) växer i sina klimat. Gräv upp dem med kniv och så den vilda grönsaken på farmland: en mogen vild gröda ger ibland (25 %) den odlade sortens utsäde, som [[onion]]. Örter som [[wild_thyme]] klipps med kniv och växer igen.\n\nBränn en [[unfired_clay_cooking_pot]] i [[kiln]] och ställ [[clay_cooking_pot]] i glöden på en Campfire: vatten och ingredienser blir [[nettle_soup]], [[root_pottage]], [[berry_mash]] eller [[herbal_tea]].\n\nPå savannen växer [[wild_maize_plant]] (teosinte). Så [[teosinte]] på farmland: ibland ger den [[maize_kernels]], som växer till två block hög [[maize_crop]] med [[corn_cob]] att rosta eller mala.",
+     "en": "Wild vegetables (e.g. [[wild_onion_plant]], [[wild_garlic_plant]]) grow in their climates. Dig them up with a knife and sow the wild vegetable on farmland: a ripe wild crop sometimes (25 %) gives the seed of the tame kind, like [[onion]]. Herbs like [[wild_thyme]] are cut with a knife and grow back.\n\nFire an [[unfired_clay_cooking_pot]] in the [[kiln]] and set the [[clay_cooking_pot]] in the embers of a Campfire: water and ingredients make [[nettle_soup]], [[root_pottage]], [[berry_mash]] or [[herbal_tea]].\n\nOn the savanna grows the [[wild_maize_plant]] (teosinte). Sow [[teosinte]] on farmland: sometimes it gives [[maize_kernels]], which grow into two-block tall [[maize_crop]] with [[corn_cob]] to roast or grind."
     }
    }
   ]

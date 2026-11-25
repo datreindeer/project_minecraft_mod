@@ -61,6 +61,15 @@
     "mechanical:red_currants",
     "mechanical:black_currants",
     "mechanical:cooked_rowan_berries",
-    "mechanical:cooked_elderberries"
+    "mechanical:cooked_elderberries",
+    "mechanical:white_currants",
+    "mechanical:gooseberries",
+    "mechanical:cranberries",
+    "mechanical:corn_cob",
+    "mechanical:roasted_corn",
+    "mechanical:maize_kernels",
+    "mechanical:teosinte",
+    "mechanical:grapes",
+    "mechanical:raisins"
   ]
 }

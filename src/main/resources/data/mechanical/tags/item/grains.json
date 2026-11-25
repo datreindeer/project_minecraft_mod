@@ -5,6 +5,7 @@
     "mechanical:einkorn_grain",
     "mechanical:emmer_grain",
     "mechanical:oat_grain",
-    "mechanical:rice"
+    "mechanical:rice",
+    "mechanical:maize_kernels"
   ]
 }

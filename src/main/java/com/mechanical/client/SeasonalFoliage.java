@@ -77,7 +77,9 @@ public final class SeasonalFoliage {
             "mechanical:foxglove", "mechanical:yellow_adonis", "mechanical:bog_asphodel", "mechanical:marsh_marigold", "mechanical:wood_anemone",
             "mechanical:bluebells", "mechanical:purple_saxifrage", "mechanical:purple_loosestrife", "mechanical:spiny_thrift", "mechanical:cats_foot",
             "mechanical:rosehip", "mechanical:crowberry", "mechanical:bearberry", "mechanical:barberry", "mechanical:caper",
-            "mechanical:red_currant", "mechanical:black_currant");
+            "mechanical:red_currant", "mechanical:black_currant",
+            // flora 4 (berries): the new thickets, the grape vine, teosinte
+            "mechanical:white_currant", "mechanical:gooseberry", "mechanical:cranberry", "mechanical:grape_vine", "mechanical:wild_maize_plant");
     /** Untinted leaves that get a grey, tinted autumn model (poplars are autumn-coloured already). */
     static final Set<String> AUTUMN_MODEL = Set.of("minecraft:cherry", "mechanical:aspen", "mechanical:alder", "mechanical:beech",
             "mechanical:linden", "mechanical:willow", "mechanical:ash", "mechanical:hazel");

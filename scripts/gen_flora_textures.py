@@ -906,6 +906,22 @@ THICKETS.update({
         flower=["d8a8b0", "a87884", "e8e0a0"], unripe=["4a7a2a", "78aa44", "c0e090"], ripe=["08080c", "1e1c28", "4c5470"],
         clump=(2.4, 3.4), stretch=(1.0, 1.0), coverage=0.76, style="maple", soft=True, fruit="currant", bunches=5, seed=113,
         dim_glint=True),
+    # flora 4 (berries)
+    "white_currant": dict(  # the red currant's lobed leaves, a touch paler; strings of pale gold see-through currants
+        leaf=["b6e488", "80c054", "5e9c40", "427830", "2a5220"], bark=["4e3c2a", "6e563c", "907654"],
+        flower=["e0e290", "b4ba5a", "f4f4c0"], unripe=["6a9a3a", "9ccc5a", "dcf4b0"], ripe=["b49a52", "eedc9c", "fffbea"],
+        clump=(2.4, 3.4), stretch=(1.0, 1.0), coverage=0.76, style="maple", soft=True, fruit="currant", bunches=5, seed=127),
+    "gooseberry": dict(  # thorny arching twigs, small lobed leaves in tufts, single fat veined berries hanging one by one
+        leaf=["a6d47a", "70ac4c", "52903a", "386c2a", "24481c"], bark=["4a3a2a", "6e5a40", "a49272"],
+        flower=["8a3a32", "c47a58", "dcd890"], unripe=["4e7a26", "7eae40", "c4e488"], ripe=["6a8a24", "b8d25a", "f0f8b4"],
+        vein="8aa834", clump=(1.6, 2.4), stretch=(1.0, 1.0), coverage=0.72, style="maple", soft=True, fruit="goose", bunches=5,
+        seed=139, thorny=True),
+    "cranberry": dict(  # bog mat: tiny leathery oval leaves on thread-thin red runners over the moss, glossy crimson berries
+        leaf=["8cbc6a", "5a8e44", "3e7032", "2a5224", "1a3418"], bark=["5a1e1a", "8a2e24", "b0483a"],
+        flower=["fac0d0", "dc6c8c", "8a2a4a"], unripe=["a8484e", "dc9c96", "f6dcd0"], ripe=["6a0816", "c81830", "ff9aa8"],
+        winter=["b0645a", "8c4634", "6c3428", "4c241e", "2e1612"],  # the leaves go bronze-red in winter, berries kept
+        clump=(1.0, 1.5), stretch=(1.0, 1.0), coverage=0.74, style="oval", trail=3, soft=True,
+        low=True, evergreen=True, fruit="bear", bunches=6, nmax=2, seed=151),
 })
 
 def despeckle(px):
@@ -1050,6 +1066,19 @@ def draw_fruit(px, p, spots, stage):
                     berry2(px, tx + ox, ty + oy, col)
                     if p.get("dim_glint") and stage == 3 and (si + i) % 3:  # most black currants without a glint
                         put(px, tx + ox, ty + oy, col[1])
+        elif f == "goose":  # one fat berry hanging from the twig tip on a short stalk, a pale vein down its middle
+            put(px, tx, ty + 1, p["bark"][2])
+            if stage == 1:  # a small nodding bell, red-brown with a pale rim
+                put(px, tx, ty + 2, col[1])
+                put(px, tx, ty + 3, col[0])
+                put(px, tx + 1, ty + 3, col[2])
+            elif stage == 2:  # still small and hard
+                berry2(px, tx, ty + 2, col)
+            else:
+                v = p["vein"]
+                for oy, row in enumerate(((1, 2, 1), (1, v, 0), (0, v, 0))):
+                    for ox, c in enumerate(row):
+                        put(px, tx - 1 + ox, ty + 2 + oy, c if isinstance(c, str) else col[c])
 
 
 def thorny_twigs(p, seed, count=6):
@@ -1096,7 +1125,8 @@ def blossom_twigs(p, bare, seed):
 
 
 SPRIG_LEAF = {"blackthorn": "small", "sea_buckthorn": "narrow", "jujube": "large", "rosehip": "medium", "crowberry": "needle",
-              "bearberry": "small", "barberry": "small", "caper": "medium", "red_currant": "large", "black_currant": "large"}
+              "bearberry": "small", "barberry": "small", "caper": "medium", "red_currant": "large", "black_currant": "large",
+              "white_currant": "large", "gooseberry": "medium", "cranberry": "small"}
 
 
 def sprig_images(name, p):
@@ -1352,6 +1382,48 @@ _CURRANTS = [  # two strings of currants hanging from a leafy twig
     "................",
 ]
 ITEMS.update({
+    "white_currants": dict(pal={"A": "fffcee", "B": "f0e2a4", "C": "c8b06a", "D": "8a7438", "s": "6e563c", "g": "80c054",
+                                "G": "b6e488"}, rows=_CURRANTS),
+    "gooseberries": dict(pal={"A": "f4fac4", "B": "c4dc66", "C": "92b03a", "D": "5e7a22", "v": "e2eea0", "s": "6e5a40", "g": "70ac4c",
+                              "G": "a6d47a", "t": "a49272"},
+                         rows=[
+                             "................",
+                             ".........gG.....",
+                             "........gGgg....",
+                             "..t....s.gg.....",
+                             "...s..s.........",
+                             "....ss..........",
+                             "....s....s......",
+                             "...s.....s......",
+                             "..ABBC..ABBC....",
+                             ".ABvBCCABvBCC...",
+                             ".BBvBCCBBvBCC...",
+                             ".BBvCCDBBvCCD...",
+                             ".CBvCDDCBvCDD...",
+                             "..CCDD..CCDD....",
+                             "................",
+                             "................",
+                         ]),
+    "cranberries": dict(pal={"A": "ffb0bc", "B": "d81c34", "C": "9c0e22", "D": "5e0614", "g": "5a8e44", "G": "8cbc6a",
+                             "d": "2a5224", "s": "8a2e24"},
+                        rows=[
+                            "................",
+                            "................",
+                            "...........Gg...",
+                            "..........GgGd..",
+                            ".........s.gd...",
+                            "...gG...s.......",
+                            "..gGgd.s........",
+                            "....ABBs..ABB...",
+                            "...ABBBC.ABBBC..",
+                            "...BBBBC.BBBBC..",
+                            "...CBBCD.CBBCD..",
+                            "..ABBCDABB.DD...",
+                            ".ABBBCABBBC.....",
+                            ".BBBBCBBBBC.....",
+                            ".CBBCDCBBCD.....",
+                            "..CDD..CDD......",
+                        ]),
     "rosehips": dict(pal={"A": "ffa088", "B": "e03a20", "C": "a81a10", "D": "6a0c08", "k": "3a2418", "s": "5a7a34", "g": "4f7a38"},
                      rows=[
                          "................",

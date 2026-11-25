@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:corn_cob"
+  ],
+  "result": {
+    "id": "mechanical:maize_kernels",
+    "count": 3
+  }
+}

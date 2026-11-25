@@ -2710,5 +2710,22 @@
   "bronze_nugget": {"text": "A bronze nugget. 9 ↔ 1 [[bronze_ingot]]; Poor Bronze nuggets make a Poor Bronze ingot and back (the mark stays, they don't mix). What is left under an ingot from a [[refractory_trough]] / [[sand_runner]], 18 from an [[iron_nugget_mold]], 22 mB in a High Furnace (poor ones as Poor Bronze). The crucible and the Smelting Furnace don't take them: make an ingot first.", "category": "materials"},
   "silver_block": {"text": "A block of silver: 9 [[silver_ingot]]s (and back), or cast in a [[foundry_basin]] from 1800 mB of silver. Melts into 1800 mB in a High Furnace."},
   "pig_iron_block": {"text": "A block of pig iron: 9 [[pig_iron_ingot]]s (and back), or cast in a [[foundry_basin]] from 1800 mB of pig iron. Melts into 1800 mB in a High Furnace."},
-  "wrought_iron_block": {"text": "A block of wrought iron: 9 [[wrought_iron_ingot]]s (and back), or cast in a [[foundry_basin]] from 1800 mB of wrought iron. Melts into 1800 mB in a High Furnace."}
+  "wrought_iron_block": {"text": "A block of wrought iron: 9 [[wrought_iron_ingot]]s (and back), or cast in a [[foundry_basin]] from 1800 mB of wrought iron. Melts into 1800 mB in a High Furnace."},
+  "white_currant": {"text": "White currant, a thornless **thicket bush** of damp woods and fens (Willow Fen, Reed Delta, swamps). Pale see-through golden strings in autumn, bare in winter. Grows into thickets like [[red_currant]]. Broken: 1–2 sticks and Plant Fibre."},
+  "white_currants": {"text": "White currants from a ripe [[white_currant]]. 1 hunger. Dry on a Drying Rack, fit in a [[bark_basket]], keep 2 days."},
+  "gooseberry": {"text": "Gooseberry, a **thorny** thicket bush of woodland and woodland edges (biome temperature 0.4–0.8). Small red bell flowers, then big veined berries one by one. The thorns slow you and prick unless you sneak. Broken: sticks and Plant Fibre."},
+  "gooseberries": {"text": "Gooseberries from a ripe [[gooseberry]]. 2 hunger. Dry on a Drying Rack, Bark Basket, keep 2 days."},
+  "cranberry": {"text": "Cranberry, a low **evergreen mat** found only in the Peat Bog. Pink flowers, blushing unripe berries, glossy dark red berries in autumn that stay through winter; the leaves turn bronze-red in the cold."},
+  "cranberries": {"text": "Cranberries from a ripe [[cranberry]], pickable in winter too. 1 hunger. Dry on a Drying Rack, Bark Basket, keep 2 days."},
+  "grape_vine": {"text": "Wild grape vine that **climbs** walls, cliffs and tree trunks like vanilla's vine, but slowly, only in the growing season and in warm biomes (0.5–2.0). Spring flowers, summer green clusters, ripe purple clusters among gold and red leaves in autumn, bare canes in winter. Right-click ripe: 1–3 [[grapes]]. Broken with a knife or shears it drops itself (plant it on your own wall). Climbable."},
+  "grapes": {"text": "Grapes from a ripe [[grape_vine]]. 2 hunger, keep 3 days. 8 on a Drying Rack become [[raisins]]; 4 in a Fermenting Barrel become [[wine]]."},
+  "raisins": {"text": "Raisins: 8 [[grapes]] dried on a Drying Rack (300 s in sun and wind). 2 hunger, keep 30 days."},
+  "wine": {"text": "Wine: 4 [[grapes]] in a Fermenting Barrel (Iron Age) make 2. 3 hunger and **Tipsy**, a step stronger per drink in a row, like Cider and Ale."},
+  "wild_maize_plant": {"text": "Teosinte, the wild ancestor of maize: a bushy grass with small hard ears on the savanna (Savanna, Savanna Plateau, Windswept Savanna, Sparse Jungle). Gives [[teosinte]] (knife/sickle 1–2, by hand 50%)."},
+  "teosinte": {"text": "Teosinte's hard ears. Not food: sow them on farmland as the wild crop; a ripe one sometimes gives [[maize_kernels]] (25%, 35% on good soil in the right warmth)."},
+  "wild_maize_crop": {"text": "Teosinte grown on farmland. Ripe: 1–2 [[teosinte]] and sometimes [[maize_kernels]]. Same climate as [[maize_crop]]."},
+  "maize_kernels": {"text": "Maize kernels: sown on farmland as [[maize_crop]], and count as grain: ground in a Quern into Flour, used in Porridge and Seed Bags. From tamed [[teosinte]] or shelled [[corn_cob]] (1 cob → 3)."},
+  "maize_crop": {"text": "Maize, a **two-block tall** crop: from age 4 it grows an upper half (it waits if there's no room). Grows at 11–26° (best 15–21), frost below 4, mostly in summer. Ripe: 1–3 [[corn_cob]]. Breaking either half takes the whole plant."},
+  "corn_cob": {"text": "Corn cob from ripe [[maize_crop]]. 2 hunger, keeps 10 days. Roast on a Campfire or Fire Pit into [[roasted_corn]], or shell in the crafting grid into 3 [[maize_kernels]]."},
+  "roasted_corn": {"text": "Roasted corn cob (Campfire or Fire Pit, 20 s). 6 hunger, keeps 3 days."}
 }

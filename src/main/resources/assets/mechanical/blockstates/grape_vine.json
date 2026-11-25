@@ -1,0 +1,269 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "north": "true",
+        "age": "0",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage0",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "east": "true",
+        "age": "0",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage0",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "age": "0",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage0",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true",
+        "age": "0",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "true",
+        "age": "0",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_up_stage0"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "age": "1",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage1",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "east": "true",
+        "age": "1",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "age": "1",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true",
+        "age": "1",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "true",
+        "age": "1",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_up_stage1"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "age": "2",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage2",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "east": "true",
+        "age": "2",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "age": "2",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true",
+        "age": "2",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "true",
+        "age": "2",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_up_stage2"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "age": "3",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage3",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "east": "true",
+        "age": "3",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "age": "3",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true",
+        "age": "3",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_stage3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "true",
+        "age": "3",
+        "leafless": "false"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_up_stage3"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "leafless": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_bare",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "east": "true",
+        "leafless": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_bare",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "leafless": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_bare",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true",
+        "leafless": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_bare",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "true",
+        "leafless": "true"
+      },
+      "apply": {
+        "model": "mechanical:block/grape_vine_up_bare"
+      }
+    }
+  ]
+}

@@ -2458,8 +2458,22 @@ Barberry har taggar. Advancement **Hedgerow and Heath** (Food & Farming).
 | Caper Bush (kapris), låg (även sand) | 1,0–1,6, 0–0,3 | Marble Gorge | blad / **knoppar att plocka** / vita blommor / blad | Capers |
 | Red Currant (rött vinbär) | 0,6–0,8, 0,8–1,0 | Willow Fen, Reed Delta, fuktig lövskog, träsk | blommor / omogna / mogna klasar / kal | Red Currants |
 | Black Currant (svart vinbär) | 0,25–0,6, 0,8–1,0 | Peat Bog, Willow Fen, taiga, ängar | blommor / omogna / mogna klasar / kal | Black Currants |
+| White Currant (vitt vinbär) | 0,5–0,75, 0,75–1,0 | fuktig lövskog, Willow Fen, Reed Delta, träsk | blommor / omogna / bleka genomskinliga klasar / kal | White Currants |
+| Gooseberry (krusbär), taggar | 0,4–0,8, 0,4–0,8 | lövskog, skogsbryn, ängar, Hazel Meadow, Chalk Downs | röda klockblommor / små hårda / stora ådrade bär / kal | Gooseberries (2 hunger) |
+| Cranberry (tranbär), låg, vintergrön | Peat Bog | Peat Bog | rosa blommor / rodnande / mörkröda bär / bär kvar, bronsröda blad | Cranberries |
 
 Alla bär: 1 hunger, torkas på Drying Rack, Bark Basket, håller 2 dagar.
+
+**Vildvin och majs (flora 4).** **Grape Vine** klättrar på stammar och klippor i varm skog (biomtemp 0,5–2,0) och sprider sig
+som vanillas vine men långsamt och bara under växtsäsongen. Vår blad och blommor, sommar gröna klasar, höst mogna blåa klasar
+bland gula och röda löv, vinter kala rankor. Högerklicka mogen: 1–3 **Grapes** (2 hunger, håller 3 dagar). Bryt den med kniv
+eller sax för att få en ranka att sätta på egen vägg; den går att klättra i. **Raisins:** 8 Grapes på Drying Rack (300 s) →
+8 Raisins (2 hunger, 30 dagar). Wine görs i järnålderns Fermenting Barrel. *Wild Grapes*, *Sun-Dried*.
+**Wild Maize Plant** (teosinte) på savannen ger **Teosinte**; sådd på farmland tämjs den ibland till **Maize Kernels**, som
+växer till två block hög **Maize** med **Corn Cobs** (2 hunger). Corn Cob rostas på Campfire/Fire Pit till **Roasted Corn**
+(6 hunger) eller skalas till 3 Maize Kernels (utsäde och säd: Porridge, Quern). Se `docs/farming.md` "Majs". *Wild Maize*,
+*Corn on the Cob*, *Roasted Corn*. Blueberry är det svenska blåbäret (ingen separat Bilberry); vanillas melon och pumpa är
+kvar som de är (inga nya vilda sorter).
 
 **De gamla bärbuskarna följer klimatet (fas 2).** Raspberry, Blueberry, Lingonberry, Wild Strawberry, Elderberry,
 Cloudberry och Blackberry växer nu där biomens temperatur och fukt passar (listorna räknas ut av `gen_flora.py`) i stället

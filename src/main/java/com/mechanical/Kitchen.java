@@ -194,7 +194,7 @@ public final class Kitchen {
 
     @SubscribeEvent
     static void onDrink(LivingEntityUseItemEvent.Finish event) {
-        if (!event.getEntity().level().isClientSide() && (event.getItem().is(CIDER.get()) || event.getItem().is(ALE.get()))) drinkAlcohol(event.getEntity());
+        if (!event.getEntity().level().isClientSide() && (event.getItem().is(CIDER.get()) || event.getItem().is(ALE.get()) || event.getItem().is(Vineyard.WINE.get()))) drinkAlcohol(event.getEntity());
     }
 
     // ---- recipes ----
@@ -279,6 +279,9 @@ public final class Kitchen {
                     PICKLED_OLIVES, 3),
             new Dish("roast_with_herbs", Tool.PAN, 2, List.of(MEAT, MEAT, HERB, HERB), ROAST_WITH_HERBS, 2),
             new Dish("cider", Tool.BARREL, 2, List.of(APPLE, APPLE, APPLE, APPLE), CIDER, 3),
+            // wine: wild grapes (flora 4, Vineyard)
+            new Dish("wine", Tool.BARREL, 2, List.of(of("mechanical:grapes"), of("mechanical:grapes"), of("mechanical:grapes"), of("mechanical:grapes")),
+                    Vineyard.WINE, 2),
             // ale: barley bittered with hops, or with bog myrtle as the old gale ale was
             new Dish("ale", Tool.BARREL, 2, List.of(of("mechanical:barley_grain"), of("mechanical:barley_grain"), of("mechanical:barley_grain"),
                     of("mechanical:hop_cones", "mechanical:bog_myrtle_leaves")), ALE, 3),
