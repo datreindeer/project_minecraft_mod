@@ -7,6 +7,8 @@ const cap = s => s ? s[0].toUpperCase() + s.slice(1) : "";
 const fmt = (n, d = 0) => n == null || isNaN(n) ? "—" : Number(n).toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
 /** Assigns HTML only when it changed, so the 2 s refresh keeps keyboard focus and hover on unchanged rows and cards. */
 const setHTML = (el, html) => { if (el._html !== html) { el._html = html; el.innerHTML = html; } };
+/** Tribe colours go into CSS and canvas styles: accept only #rrggbb, anything else becomes ash. */
+const colour = c => /^#[0-9a-f]{6}$/i.test(c) ? c : "#a8997f";
 const OVERWORLD = "minecraft:overworld";
 const SEASONS = ["spring", "summer", "autumn", "winter"];
 const MONTHS = ["thaw", "sowing", "blossom", "midsun", "haymonth", "reaping", "leaffall", "hunting", "frostfall", "deepwinter", "wolfmoon", "snowmelt"];
@@ -32,7 +34,8 @@ function openMap() {
 
 /* ---------- polling ---------- */
 async function get(path) {
-  const r = await fetch(path, { cache: "no-store" });
+  // A hung request must fail (and reach poll's catch/finally), or polling would stop for good.
+  const r = await fetch(path, { cache: "no-store", signal: AbortSignal.timeout(5000) });
   if (!r.ok) throw new Error(path + " " + r.status);
   return r.json();
 }
@@ -45,6 +48,7 @@ async function poll() {
     data.players = Array.isArray(players) ? players : [];
     data.tribes = Array.isArray(tribes) ? tribes : [];
     data.map = mapData && typeof mapData === "object" ? mapData : {};
+    for (const t of [...data.tribes, ...(data.map.tribes || [])]) t.colour = colour(t.colour);
     if (data.status.tps != null) {
       const now = Date.now();
       history.push({ t: now, tps: data.status.tps, online: data.status.online });
@@ -195,11 +199,12 @@ function meter(kind, v, max) {
 function renderPlayers() {
   const rows = [...data.players].sort((a, b) => (b.online - a.online) || a.name.localeCompare(b.name));
   $("players-empty").hidden = rows.length > 0;
+  const focused = document.activeElement?.closest?.("#player-rows tr")?.dataset.uuid; // rows change most polls (position, ping): keep focus by player
   setHTML($("player-rows"), rows.map(p => {
     const t = p.tribe ? tribeByName(p.tribe) : null;
     const onMap = p.online && p.dim === OVERWORLD;
     const dim = p.online && p.dim !== OVERWORLD ? `<span class="dim-tag">${esc(cap((p.dim || "").replace(/^minecraft:/, "").replace(/_/g, " ")))}</span>` : "";
-    return `<tr class="${onMap ? "go" : ""} ${p.online ? "" : "away"}" ${onMap ? `tabindex="0" data-x="${p.x}" data-z="${p.z}" title="Show on the map"` : ""}>
+    return `<tr data-uuid="${esc(p.uuid)}" class="${onMap ? "go" : ""} ${p.online ? "" : "away"}" ${onMap ? `tabindex="0" data-x="${p.x}" data-z="${p.z}" title="Show on the map"` : ""}>
       <td><span class="who"><span class="pip ${p.online ? "on" : ""}" aria-label="${p.online ? "online" : "offline"}"></span>${esc(p.name)}</span></td>
       <td>${p.tribe ? `<span class="swatch" style="background:${esc(t ? t.colour : "#a8997f")}"></span>${esc(p.tribe)}` : `<span class="dim">No tribe</span>`}</td>
       <td>${p.online ? `${fmt(p.x)}, ${fmt(p.y)}, ${fmt(p.z)}${dim}` : "—"}</td>
@@ -208,6 +213,7 @@ function renderPlayers() {
       <td class="num">${p.online ? fmt(p.ping) + " ms" : "—"}</td>
       <td>${p.online ? "Now" : p.lastSeenDay != null ? "Day " + fmt(p.lastSeenDay) : "—"}</td></tr>`;
   }).join(""));
+  if (focused) [...$("player-rows").rows].find(r => r.dataset.uuid === focused && r.tabIndex >= 0)?.focus({ preventScroll: true });
 }
 
 function goPlayer(el) {
