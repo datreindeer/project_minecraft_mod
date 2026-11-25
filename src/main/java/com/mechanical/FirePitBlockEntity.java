@@ -179,10 +179,11 @@ public class FirePitBlockEntity extends BlockEntity {
         if (state.getValue(FirePitBlock.LIT)) {
             int fuel = state.getValue(FirePitBlock.FUEL);
             // a big pit sends up a column twice as thick and wide whether grated or not; a small one with a grate burns clean
-            float chance = big ? 0.8F + 0.1F * fuel : (0.3F + 0.1F * fuel) * (state.getValue(FirePitBlock.GRATE) ? FirePit.GRATE_SMOKE : 1);
+            // a thin wisp, not a solid pillar: ~1 puff/tick big, ~0.4 small (vanilla signal campfire ~0.3)
+            float chance = big ? 0.35F + 0.1F * fuel : (0.2F + 0.07F * fuel) * (state.getValue(FirePitBlock.GRATE) ? FirePit.GRATE_SMOKE : 1);
             if (r.nextFloat() < chance) {
                 // signal smoke lives ~300 ticks and barely slows: 0.16-0.22/tick climbs ~50-60 blocks, seen from far off
-                for (int i = 0; i < (big ? 7 + r.nextInt(5) : 3 + r.nextInt(3)); i++) {
+                for (int i = 0; i < (big ? 2 + r.nextInt(2) : 1 + r.nextInt(2)); i++) {
                     level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, cx + (r.nextDouble() - 0.5) * 1.1 * half, cy + 0.6 + r.nextDouble() * 1.4 * half,
                             cz + (r.nextDouble() - 0.5) * 1.1 * half, 0, (big ? 0.2 : 0.16) + r.nextDouble() * 0.06, 0);
                 }
