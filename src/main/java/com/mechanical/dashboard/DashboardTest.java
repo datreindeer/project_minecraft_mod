@@ -111,6 +111,13 @@ public final class DashboardTest {
         MapTiles.queueLoaded(h.getLevel(), loaded);
         BlockPos here = h.absolutePos(BlockPos.ZERO);
         check(h, loaded.contains(ChunkPos.pack(here.getX() >> 4, here.getZ() >> 4)), "the map's start queues chunks that are already loaded");
+        // the non-ticking border round force-loaded chunks counts too, or it stays a blank ring on the map
+        for (int dx = -6; dx <= 6; dx++)
+            for (int dz = -6; dz <= 6; dz++) {
+                int cx = (here.getX() >> 4) + dx, cz = (here.getZ() >> 4) + dz;
+                if (h.getLevel().getChunkSource().getChunkNow(cx, cz) != null)
+                    check(h, loaded.contains(ChunkPos.pack(cx, cz)), "loaded chunk " + cx + "," + cz + " is queued at start");
+            }
         outlines(h);
         mapColours(h);
         failingWritesStayBounded(h);

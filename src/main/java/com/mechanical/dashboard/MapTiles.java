@@ -93,9 +93,21 @@ public final class MapTiles {
         }
     }
 
-    /** Queues every chunk the level already holds in full. */
+    /**
+     * Queues every chunk the level already holds in full. forEachReadyToSendChunk only walks ticking chunks, so the
+     * non-ticking border round them (two chunks wide round a force-loaded tribe pit) is picked up via getChunkNow.
+     */
     static void queueLoaded(ServerLevel level, Set<Long> queue) {
-        level.getChunkSource().chunkMap.forEachReadyToSendChunk(c -> queue.add(ChunkPos.pack(c.getPos().x(), c.getPos().z())));
+        Set<Long> ticking = new java.util.HashSet<>();
+        level.getChunkSource().chunkMap.forEachReadyToSendChunk(c -> ticking.add(ChunkPos.pack(c.getPos().x(), c.getPos().z())));
+        queue.addAll(ticking);
+        for (long k : ticking)
+            for (int dx = -2; dx <= 2; dx++)
+                for (int dz = -2; dz <= 2; dz++) {
+                    int x = ChunkPos.getX(k) + dx, z = ChunkPos.getZ(k) + dz;
+                    long n = ChunkPos.pack(x, z);
+                    if (!queue.contains(n) && level.getChunkSource().getChunkNow(x, z) != null) queue.add(n);
+                }
     }
 
     /** Writes every changed region (waiting at most 10 s), then ends the worker; chunks still queued are drawn next time they load. */
