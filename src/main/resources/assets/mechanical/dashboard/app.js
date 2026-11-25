@@ -5,6 +5,8 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : "";
 const fmt = (n, d = 0) => n == null || isNaN(n) ? "—" : Number(n).toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
+/** Assigns HTML only when it changed, so the 2 s refresh keeps keyboard focus and hover on unchanged rows and cards. */
+const setHTML = (el, html) => { if (el._html !== html) { el._html = html; el.innerHTML = html; } };
 const OVERWORLD = "minecraft:overworld";
 const SEASONS = ["spring", "summer", "autumn", "winter"];
 const MONTHS = ["thaw", "sowing", "blossom", "midsun", "haymonth", "reaping", "leaffall", "hunting", "frostfall", "deepwinter", "wolfmoon", "snowmelt"];
@@ -52,6 +54,8 @@ async function poll() {
     render();
   } catch (e) {
     setLive(false, "No answer from the server");
+  } finally {
+    setTimeout(poll, 2000); // next poll only after this one ends, so a slow server never gets overlapping rounds
   }
 }
 
@@ -84,7 +88,7 @@ function renderHeader() {
     ["Memory", `<b>${gb(s.memUsedMb)}/${gb(s.memMaxMb)} GB</b>`],
     ["Day", `<b>${fmt(s.day)} ${esc(cap(s.season))}</b>`],
   ];
-  $("strip").innerHTML = parts.map(([k, v]) => `<span>${k}${v}</span>`).join("");
+  setHTML($("strip"), parts.map(([k, v]) => `<span>${k}${v}</span>`).join(""));
 }
 
 /* ---------- overview ---------- */
@@ -107,8 +111,8 @@ function renderOverview() {
     { label: "World age", value: s.worldAge ? esc(cap(s.worldAge)) + " Age" : "—", hint: "The furthest any tribe has come" },
     { label: "Uptime", value: uptime(s.uptimeSec), hint: "Since the server started" },
   ];
-  $("stats").innerHTML = tiles.map(t => `<article class="card stat"><p class="label">${t.label}</p><p class="value ${t.cls || ""}">${t.value}</p>` +
-    (t.bar != null ? `<div class="bar"><i style="width:${t.bar.toFixed(1)}%"></i></div>` : t.hint ? `<p class="hint">${t.hint}</p>` : "") + `</article>`).join("");
+  setHTML($("stats"), tiles.map(t => `<article class="card stat"><p class="label">${t.label}</p><p class="value ${t.cls || ""}">${t.value}</p>` +
+    (t.bar != null ? `<div class="bar"><i style="width:${t.bar.toFixed(1)}%"></i></div>` : t.hint ? `<p class="hint">${t.hint}</p>` : "") + `</article>`).join(""));
 
   const mi = MONTHS.indexOf(s.month);
   if (mi >= 0 && s.dayOfMonth) {
@@ -159,7 +163,7 @@ function drawWheel(doy, s) {
     out += `<text class="wheel-centre" text-anchor="middle" y="6">${esc(s.dayOfMonth)}</text>`;
     out += `<text class="wheel-centre-sub" text-anchor="middle" y="26">${esc(cap(s.month))}</text>`;
   }
-  $("wheel").innerHTML = out;
+  setHTML($("wheel"), out);
   $("wheel").setAttribute("aria-label", doy == null ? "The year" : `Day ${doy + 1} of 360, ${s.season}`);
 }
 
@@ -177,7 +181,7 @@ function spark(svg, key, top, colour, ref) {
     out += `<path d="M${pts[0].split(",")[0]},${H - pad} L${pts.join(" L")} L${pts[pts.length - 1].split(",")[0]},${H - pad}Z" fill="url(#g-${key})"/>`;
     out += `<polyline points="${pts.join(" ")}" fill="none" stroke="${colour}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`;
   }
-  svg.innerHTML = out;
+  setHTML(svg, out);
 }
 
 /* ---------- players ---------- */
@@ -191,7 +195,7 @@ function meter(kind, v, max) {
 function renderPlayers() {
   const rows = [...data.players].sort((a, b) => (b.online - a.online) || a.name.localeCompare(b.name));
   $("players-empty").hidden = rows.length > 0;
-  $("player-rows").innerHTML = rows.map(p => {
+  setHTML($("player-rows"), rows.map(p => {
     const t = p.tribe ? tribeByName(p.tribe) : null;
     const onMap = p.online && p.dim === OVERWORLD;
     const dim = p.online && p.dim !== OVERWORLD ? `<span class="dim-tag">${esc(cap((p.dim || "").replace(/^minecraft:/, "").replace(/_/g, " ")))}</span>` : "";
@@ -203,7 +207,7 @@ function renderPlayers() {
       <td>${p.online ? meter("food", p.food, 20) : "—"}</td>
       <td class="num">${p.online ? fmt(p.ping) + " ms" : "—"}</td>
       <td>${p.online ? "Now" : p.lastSeenDay != null ? "Day " + fmt(p.lastSeenDay) : "—"}</td></tr>`;
-  }).join("");
+  }).join(""));
 }
 
 function goPlayer(el) {
@@ -219,7 +223,7 @@ $("player-rows").addEventListener("keydown", e => { if (e.key === "Enter" || e.k
 function renderTribes() {
   const tribes = data.tribes;
   $("tribes-empty").hidden = tribes.length > 0;
-  $("tribe-cards").innerHTML = tribes.map(t => {
+  setHTML($("tribe-cards"), tribes.map(t => {
     const online = t.members.filter(m => m.online).length;
     const pit = t.pit ? `${fmt(t.pit.x)}, ${fmt(t.pit.y)}, ${fmt(t.pit.z)}` + (t.pit.dim !== OVERWORLD ? ` <span class="dim-tag">${esc(t.pit.dim)}</span>` : "") : "None yet";
     const rep = Object.entries(t.reputation || {});
@@ -235,7 +239,7 @@ function renderTribes() {
       ${rep.length ? `<p class="rep">Standing with ${rep.map(([k, v]) => `<b>${esc(k)}</b> <span class="${v > 0 ? "pos" : v < 0 ? "neg" : ""}">${v > 0 ? "+" : ""}${fmt(v)}</span>`).join(", ")}</p>` : ""}
       <p class="show">Show on map</p>
     </article>`;
-  }).join("");
+  }).join(""));
 }
 
 function goTribe(el) {
@@ -251,12 +255,13 @@ $("tribe-cards").addEventListener("keydown", e => { if (e.key === "Enter" || e.k
 const map = (() => {
   const canvas = $("map-canvas"), ctx = canvas.getContext("2d");
   const hit = document.createElement("canvas").getContext("2d"); // identity transform, for point-in-territory tests in block space
-  const REGION = 512, MIN = .25, MAX = 8, RELOAD = 10e3, RETRY = 30e3;
+  const REGION = 512, MIN = .25, MAX = 8, RELOAD = 10e3, RETRY = 30e3, FORGET = 180e3;
   const HALO = "rgba(18, 13, 9, .9)";
   let w = 0, h = 0, dpr = 1;
   let cx = 0, cz = 0, s = 1, target = 1, anchor = null; // centre block, pixels per block, zoom goal, {sx, sy, bx, bz}
   let mapData = {}, paths = new Map(), touched = false, dirty = false, mouse = null;
-  const tiles = new Map(); // url -> {img, at, missingAt, loading}
+  const tiles = new Map(); // url -> {img, at, missingAt, loading, used}
+  let sans = "";
 
   function resize() {
     const r = canvas.getBoundingClientRect();
@@ -336,6 +341,7 @@ const map = (() => {
     const url = `/tiles/${rx}.${rz}.png`, now = Date.now();
     let t = tiles.get(url);
     if (!t) tiles.set(url, t = { img: null, at: 0, missingAt: 0, loading: false });
+    t.used = now;
     const stale = t.img ? now - t.at > RELOAD : t.missingAt ? now - t.missingAt > RETRY : true;
     if (stale && !t.loading) {
       t.loading = true;
@@ -349,6 +355,7 @@ const map = (() => {
 
   function frame() {
     dirty = false;
+    if (!$("map").classList.contains("open")) return; // hidden tab: no drawing, no tile fetches (showTab redraws on open)
     // Smooth zoom: ease toward the goal in log space, keeping the block under the cursor still.
     if (Math.abs(Math.log(target / s)) > .002) {
       s = Math.exp(Math.log(s) + (Math.log(target) - Math.log(s)) * .28);
@@ -374,6 +381,9 @@ const map = (() => {
         const X0 = Math.round(x0), Y0 = Math.round(y0); // whole pixels so neighbouring tiles meet without seams
         ctx.drawImage(img, X0, Y0, Math.round(x1) - X0, Math.round(y1) - Y0);
       }
+
+    const now = Date.now();
+    for (const [url, t] of tiles) if (now - t.used > FORGET && !t.loading) tiles.delete(url); // regions not in view for 3 min, 404s too
 
     grid(bx0, bz0, bx1, bz1);
     territories();
@@ -489,7 +499,7 @@ const map = (() => {
       ctx.beginPath(); ctx.arc(x, y, 6.5, 0, Math.PI * 2);
       ctx.fillStyle = c; ctx.fill();
       ctx.lineWidth = 2.5; ctx.strokeStyle = HALO; ctx.stroke();
-      halo(p.name, x + 12, y - 12, "600 13px " + getComputedStyle(document.body).fontFamily, "#ece2cf");
+      halo(p.name, x + 12, y - 12, "600 13px " + (sans ||= getComputedStyle(document.body).fontFamily), "#ece2cf");
     }
   }
 
@@ -521,16 +531,16 @@ const map = (() => {
     const [bx, bz] = toBlock(mouse[0], mouse[1]).map(Math.floor);
     $("ro-pos").textContent = `X ${bx}   Z ${bz}`;
     const t = tribeAt(bx + .5, bz + .5);
-    $("ro-land").innerHTML = t ? `<span class="swatch" style="background:${esc(t.colour)}"></span><b>${esc(t.name)}</b>` : "Unclaimed";
+    setHTML($("ro-land"), t ? `<span class="swatch" style="background:${esc(t.colour)}"></span><b>${esc(t.name)}</b>` : "Unclaimed");
   }
 
   function renderLegend() {
     const list = mapData.tribes || [];
     $("legend").hidden = !list.length;
-    $("legend").innerHTML = list.map(t => {
+    setHTML($("legend"), list.map(t => {
       const n = (data.tribes.find(d => d.id === t.id) || {}).chunks;
       return `<button type="button" data-id="${esc(t.id)}"><span class="swatch" style="background:${esc(t.colour)}"></span>${esc(t.name)}<span class="count">${n == null ? "" : fmt(n) + " ch"}</span></button>`;
-    }).join("");
+    }).join(""));
   }
   $("legend").addEventListener("click", e => { const b = e.target.closest("button"); if (b) fitTribe(b.dataset.id); });
 
@@ -555,7 +565,7 @@ const map = (() => {
   const end = () => { drag = null; canvas.classList.remove("drag"); };
   canvas.addEventListener("pointerup", end);
   canvas.addEventListener("pointercancel", end);
-  canvas.addEventListener("pointerleave", () => { if (!drag) { mouse = null; $("ro-pos").textContent = "Point at the map"; $("ro-land").textContent = ""; } });
+  canvas.addEventListener("pointerleave", () => { if (!drag) { mouse = null; $("ro-pos").textContent = "Point at the map"; setHTML($("ro-land"), ""); } });
 
   function zoomBy(f, sx, sy) {
     touched = true;
@@ -586,4 +596,3 @@ const map = (() => {
 
 showTab();
 poll();
-setInterval(poll, 2000);
