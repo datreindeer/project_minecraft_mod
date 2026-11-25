@@ -24,6 +24,8 @@ def ingredients(recipe):
     out = []
     for r in raw:
         for one in r if isinstance(r, list) else [r]:
+            while isinstance(one, dict):  # a NeoForge ingredient (components, difference): the item it is made of
+                one = one.get("items", one.get("base"))
             if isinstance(one, str) and one not in out:
                 out.append(one)
     return out

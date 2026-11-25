@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "III",
+    "III",
+    "III"
+  ],
+  "key": {
+    "I": "mechanical:wrought_iron_ingot"
+  },
+  "result": {
+    "id": "mechanical:wrought_iron_block"
+  }
+}

@@ -302,7 +302,8 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
 - **Iron Plate Mold** (400 mB → Bronze/Iron/Steel Plate; Poor Bronze ger Bronze Plate märkt Poor) och **Iron Nugget Mold** (400 mB → 18 nuggets), spricker aldrig.
   **Iron Ingot Mold** gjuts nu i flaska (plåtreceptet borttaget).
 - **Foundry Table**: det som står på bordet stelnar på halva tiden (förenkling: formen står på bordet, bordet håller den inte).
-- **Foundry Basin**: block av 1800 mB metall (Copper/Gold/Lead/Tin/Bronze/Steel Block; Poor Bronze gjuter inget block) eller 250 mB slagg/basalt/glas/obsidian;
+- **Foundry Basin**: block av 1800 mB metall (Copper/Gold/Lead/Tin/Bronze/Steel Block, sedan v0.209.0 även **Silver, Pig Iron och Wrought Iron Block**; Poor Bronze gjuter inget block) eller 250 mB slagg/basalt/glas/obsidian;
+  varje metallblock görs också av 9 tackor och blir 9 tackor igen (docs/metals.md, avsnitt 15);
   fyllnaden stiger, stelnar på 10 s per 1000 mB.
 - Test `foundry_casting`. Inte gjort: Anvil i flaska (väntar på användaren), Steel Block kräver inte 1650°.
 

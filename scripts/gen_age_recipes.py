@@ -29,6 +29,10 @@ RECIPES = [
     ("fermented_spider_eye", "brewing", "only used for brewing", "Iron"),
     ("copper_ingot", "misc", "copper blocks in trial chambers (stone pickaxe) -> 9 ingots each, skips smelting", "Bronze"),
     ("copper_ingot_from_waxed_copper_block", "misc", "as above, waxed copper blocks", "Bronze"),
+    # a furnace found in a village smelted ore straight into ingots past the crucible (docs/metals.md, 17); gold and iron
+    # are taken away in gen_iron_ores.py / gen_bloomery.py, tin's own recipes are gone
+    *[(f"copper_ingot_from_{k}_{o}", "misc", "copper ore is crushed and melted in a crucible or High Furnace, not a furnace", "never")
+      for k in ("smelting", "blasting") for o in ("raw_copper", "copper_ore", "deepslate_copper_ore")],
     # decided with the user (borderline cases)
     ("bundle", "tools", "replaced by the mod's Leather Pouch (Cordage over Leather, 2x2, worn at the hip)", "never"),
     # paper, book and writable_book are back in the Bronze Age: scripts/gen_writing.py

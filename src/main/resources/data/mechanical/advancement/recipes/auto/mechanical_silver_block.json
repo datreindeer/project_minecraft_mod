@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:silver_nugget"
+            "items": "mechanical:silver_ingot"
           }
         ]
       }
@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "mechanical:silver_ingot"
+        "recipes": "mechanical:silver_block"
       }
     }
   },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "mechanical:silver_ingot"
+      "mechanical:silver_block"
     ]
   }
 }

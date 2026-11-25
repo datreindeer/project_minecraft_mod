@@ -233,10 +233,11 @@ public final class Molten implements Comparable<Molten> {
         return ingot != null && s.is(item(ingot)) && Bronze.isPoor(s) == poor;
     }
 
-    /** mB one of these items melts into in a High Furnace (0: it doesn't melt into this). */
+    /** mB one of these items melts into in a High Furnace (0: it doesn't melt into this). A piece marked poor (ingot,
+     * nugget) is Poor Bronze's, an unmarked one Bronze's. */
     public int melts(ItemStack s) {
         Integer mb = melts.get(BuiltInRegistries.ITEM.getKey(s.getItem()));
-        if (mb == null || ingot != null && s.is(item(ingot)) && Bronze.isPoor(s) != poor) return 0;
+        if (mb == null || Bronze.isPoor(s) != poor) return 0;
         return mb;
     }
 

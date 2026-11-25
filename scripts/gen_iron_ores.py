@@ -120,9 +120,7 @@ def shapeless(name, ingredients, result, count=1, category="misc"):
 
 # a bone-ash cupel: the lead soaks into it in the kiln and leaves a bead of silver
 shapeless("leaded_cupel", [M + "lead_ingot", V + "bone_meal"], M + "leaded_cupel")
-recipe("silver_ingot", {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["NNN", "NNN", "NNN"],
-                        "key": {"N": M + "silver_nugget"}, "result": {"id": M + "silver_ingot"}})
-shapeless("silver_nugget", [M + "silver_ingot"], M + "silver_nugget", 9)
+# Silver Nugget <-> Silver Ingot (and Silver Block): scripts/gen_metals.py, as every metal in the table
 shapeless("salted_meat", ["#mechanical:smokable_meat", M + "salt"], M + "salted_meat")
 shapeless("salted_fish", ["#mechanical:smokable_fish", M + "salt"], M + "salted_fish")
 shapeless("leather_from_salt", [M + "scraped_hide", M + "salt"], V + "leather")

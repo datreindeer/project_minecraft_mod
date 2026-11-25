@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NNN",
+    "NNN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "mechanical:bronze_nugget",
+      "subtracted": {
+        "neoforge:ingredient_type": "neoforge:components",
+        "items": "mechanical:bronze_nugget",
+        "components": {
+          "mechanical:poor_bronze": {}
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "mechanical:bronze_ingot"
+  }
+}

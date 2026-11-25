@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#c:ingots/tin"
+            "items": "mechanical:tin_ingot"
           }
         ]
       }

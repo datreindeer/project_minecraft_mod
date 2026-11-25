@@ -6,7 +6,8 @@ engelska. Avsnitt 1–10 är granskningen som den såg ut i v0.207.0; avsnitt 11
 
 **Sedan v0.208.0 finns allt detta på ett ställe:** tabellen i `scripts/gen_metals.py` (avsnitt 12). Avsnitt 13 listar
 vad som ändrades, avsnitt 14 hur man lägger till en metall. Där avsnitt 1–10 pekar på `switch`-satser och dubbletter är
-de borta; talen står kvar som de var om inte avsnitt 13 säger annat.
+de borta; talen står kvar som de var om inte avsnitt 13 säger annat. Avsnitt 15 (v0.209.0): nuggets och block för alla
+metaller, vanilla-ugnens malmrecept borta, en palett per metall.
 
 Sökvägar: `java/` = `src/main/java/com/mechanical/`, `res/` = `src/main/resources/`.
 
@@ -145,7 +146,7 @@ också gjutas i järnformarna.
 Copper, Silver och Gold Ingot präglas kallt på Bronze Anvil: 4 slag → 4 mynt. 1 Silver Coin = 10 Copper, 1 Gold = 10
 Silver. Tackorna står hårdkodade i `Coins.minted` (`java/Coins.java:36-37`).
 
-## 9. Tackor, nuggets och block
+## 9. Tackor, nuggets och block (v0.207.0; sedan v0.209.0 har alla en nugget och ett block, se avsnitt 15)
 
 | Metall | Ingot | Nugget | Block |
 |---|---|---|---|
@@ -242,15 +243,15 @@ Tabellen nedan skrivs av `gen_metals.py` (ändra inte för hand):
 | Smälta | Smälter | Verklig | Densitet | Färg | Ingot / Nugget / Block | Ugnar |
 |---|---|---|---|---|---|---|
 | Gold | 1100° | 1064° | 19,3 | `FFC21E` | gold_ingot / gold_nugget / gold_block | HF, Clay Kiln 1100° (Raw Gold, 9 Gold Nugget) |
-| Lead | 330° | 327° | 11,34 | `8C93A8` | lead_ingot / – / lead_block | HF, Clay Kiln 800° (Raw Galena) |
-| Silver | 1000° | 962° | 10,49 | `F4F6FF` | silver_ingot / silver_nugget / – | HF, Clay Kiln 1000° (Leaded Cupel) |
+| Lead | 330° | 327° | 11,34 | `8C93A8` | lead_ingot / lead_nugget / lead_block | HF, Clay Kiln 800° (Raw Galena) |
+| Silver | 1000° | 962° | 10,49 | `F4F6FF` | silver_ingot / silver_nugget / silver_block | HF, Clay Kiln 1000° (Leaded Cupel) |
 | Copper | 1085° | 1085° | 8,96 | `FF7A2A` | copper_ingot / copper_nugget / copper_block | Crucible, Smelting Furnace, HF |
-| Bronze | 950° | ≈950° (10 % tenn) | 8,8 | `FFB13B` | bronze_ingot / – / bronze_block | Crucible, Smelting Furnace, HF |
-| Poor Bronze | 950° | 900–1000° | 8,8 | `E09A44` | bronze_ingot / – / – | Crucible, Smelting Furnace, HF |
+| Bronze | 950° | ≈950° (10 % tenn) | 8,8 | `FFB13B` | bronze_ingot / bronze_nugget / bronze_block | Crucible, Smelting Furnace, HF |
+| Poor Bronze | 950° | 900–1000° | 8,8 | `E09A44` | bronze_ingot / bronze_nugget / – | Crucible, Smelting Furnace, HF |
 | Steel | 1500° | 1425–1540° | 7,85 | `FFCE4A` | steel_ingot / iron_nugget / steel_block | HF, Bloomery 1000° (cementering) |
-| Wrought Iron | 1550° | ≈1510–1540° | 7,75 | `FFC040` | wrought_iron_ingot / iron_nugget / – | HF, Bloomery 1350° (bloom), Finery Hearth 1300° |
-| Tin | 232° | 232° | 7,29 | `E8ECF2` | tin_ingot / – / tin_block | Crucible, Smelting Furnace, HF |
-| Pig Iron | 1200° | 1150–1200° | 7,1 | `FFA33A` | pig_iron_ingot / iron_nugget / – | HF |
+| Wrought Iron | 1550° | ≈1510–1540° | 7,75 | `FFC040` | wrought_iron_ingot / iron_nugget / wrought_iron_block | HF, Bloomery 1350° (bloom), Finery Hearth 1300° |
+| Tin | 232° | 232° | 7,29 | `E8ECF2` | tin_ingot / tin_nugget / tin_block | Crucible, Smelting Furnace, HF |
+| Pig Iron | 1200° | 1150–1200° | 7,1 | `FFA33A` | pig_iron_ingot / iron_nugget / pig_iron_block | HF |
 | Basalt | 1250° | 1100–1250° | 2,9 | `C0402A` | block: cast_basalt | HF |
 | Glass | 1400° | ≈1000–1400° | 2,5 | `B8F0A0` | block: glass | HF |
 | Obsidian | 1700° | ≈1000–1200° (spelvärde: toppvärme) | 2,4 | `6A2AA8` | block: obsidian | HF |
@@ -277,8 +278,8 @@ Legering: 1 pig_iron + 2 wrought_iron → 3 steel vid 1500°.
 | 10 | Smelting Furnace tar Tin Ingot | 2 enheter (8 quarters), som Copper Ingot |
 | 16 | `02-bronze-age.md`: Poor Bronze-spjut/svärd | 161 → 322 |
 
-Kvar (inte ändrat): 11 (saknade nuggets/block, kräver nya föremål med texturer), 17 (vanilla-ugnens tennrecept), 18
-(texturpaletter), 19 (smältpunkter avrundade till spelsteg). Zink och mässing läggs inte till nu: användarens plan har dem
+Kvar efter v0.208.0: 11 (saknade nuggets/block), 17 (vanilla-ugnens tennrecept) och 18 (texturpaletter), gjorda i
+v0.209.0 (avsnitt 15); 19 (smältpunkter avrundade till spelsteg) ändras inte. Zink och mässing läggs inte till nu: användarens plan har dem
 i ångåldern (`03-iron-age.md:347`, `04-steel-age.md:16`), så de prövas med en testmetall (avsnitt 14).
 
 ## 14. Så lägger du till en metall
@@ -302,9 +303,11 @@ Exempel: **Zinc** och **Brass** (2 Copper + 1 Zinc), när ångåldern kommer.
    ```
 
 2. Kör kedjan (`gen_metals.py` går direkt efter `gen_data.py`).
-3. **Föremålen:** tabellen gör inga föremål. Finns tackan/blocket inte redan (vanilla eller moddets), registrera dem som
-   de andra (`ITEMS.registerSimpleItem("zinc_ingot")` i åldersklassen), med textur (åldersgeneratorns `*_textures.py`),
-   modell och namn (åldersgeneratorn), registry-noter, advancement och åldersdokument.
+3. **Föremålen:** registrera tackan, nuggeten och blocket i Java som de andra (`ITEMS.registerSimpleItem("zinc_ingot")`,
+   `HighFurnace.metalBlock("zinc_block")`). Resten kommer ur raden: `gen_metals.py` skriver modell, item-fil, loot,
+   namn (om det saknas: "Zinc Ingot", "Zinc Nugget", "Block of Zinc"), pickaxe- och stenhackstaggar och 9 ↔ 1-recepten,
+   och `python scripts/gen_metal_textures.py` ritar nugget, tacka och block i en palett ur `solid=` (körs för hand, som
+   andra texturskript). Kvar för hand: registry-noter, ev. advancement och åldersdokument.
 4. **Klart, utan mer kod:** High Furnace smälter malmen, tackan, nuggeten och blocket (200/22/1800 mB) vid 420°, lägger
    Zinc mellan Tin och Pig Iron och Brass mellan Poor Bronze och Steel, blandar 2:1 till Brass vid 950°, häller i Pouring
    Spout och rännor, gjuter tackor, nuggets, plåt (Iron Ingot/Nugget/Plate Mold, Pig Mold), block (Foundry Basin), knackas
@@ -320,3 +323,52 @@ Brass (gjorda av vanilla-föremål) genom samma inläsare och visar smältning, 
 sparning per id och att en borttagen metall bara faller ur en sparning. `metals_table` kontrollerar hela den riktiga
 tabellen: att varje föremål finns, densitetsordningen, smältpunkt per ugn, legeringsförhållandena, gjutning i varje
 formtyp, mynten, fixarna ovan och att gamla sparningar laddas.
+
+## 15. Ändrat i v0.209.0: nuggets, block, vanilla-ugnen, paletter
+
+**Nya föremål** (avsnitt 11, punkt 11): Tin Nugget, Lead Nugget, Bronze Nugget; Silver Block, Pig Iron Block, Wrought Iron
+Block. Nu har varje metall en tacka, en nugget och ett block:
+
+| Metall | Ingot | Nugget | Block |
+|---|---|---|---|
+| Copper | vanilla | vanilla | vanilla |
+| Tin | `tin_ingot` | `tin_nugget` (ny) | `tin_block` |
+| Bronze / Poor Bronze | `bronze_ingot` (Poor = komponent) | `bronze_nugget` (ny, Poor = komponent) | `bronze_block` (bara god brons) |
+| Lead | `lead_ingot` | `lead_nugget` (ny) | `lead_block` |
+| Silver | `silver_ingot` | `silver_nugget` | `silver_block` (ny) |
+| Gold | vanilla | vanilla | vanilla |
+| Pig Iron | `pig_iron_ingot` | Iron Nugget (delad) | `pig_iron_block` (ny) |
+| Wrought Iron | `wrought_iron_ingot` | Iron Nugget (delad) | `wrought_iron_block` (ny) |
+| Steel | `steel_ingot` | Iron Nugget (delad) | `steel_block` |
+
+Allt följer ur tabellen (`nugget=`, `block=` i `METALS`), utan ny kod i ugnarna:
+
+- **Recept 9 ↔ 1** för varje egen (mechanical:) nugget och block, skrivna av `gen_metals.py`: 9 nuggets → tacka, tacka →
+  9 nuggets, 9 tackor → block, block → 9 tackor. **Poor Bronze behåller märket**: 9 Poor-korn → Poor-tacka och tillbaka
+  (NeoForge-ingredienserna `components` och `difference`); goda och Poor-korn blandas inte; Poor-tackor gör inget block
+  (fix 7). Vanillas föremål behåller vanillas recept: Iron Nugget, Copper Nugget; Gold Nugget görs fortfarande inte till en
+  tacka på bänken (smälts i Clay Kiln).
+- **Smälter om:** varje nugget 22 mB, varje block 1800 mB i High Furnace. En Poor-märkt nugget smälter som Poor Bronze
+  (`Molten.melts`: märket avgör för alla delade föremål, inte bara tackan).
+- **Degeln och Smelting Furnace tar inga nuggets:** de räknar i enheter (100 mB) och quarters (25 mB). En nugget är 22 mB;
+  1 quarter per nugget vore en vinstslinga (tacka = 8 quarters → 9 nuggets = 9 quarters), 0 förlorar metall. Gör en tacka
+  av 9 korn först; tackan tas som förut (degeln bara legeringstackor, se 10).
+- **Gjuts:** Iron Nugget Mold ger 18 av metallens egen nugget (tenn, bly, brons nu också); tråg och Sand Runner knackar ut
+  resten under en tacka som metallens nuggets (förut förlorad för tenn, bly och brons). Foundry Basin gjuter Silver, Pig
+  Iron och Wrought Iron Block (1800 mB).
+- **Bryts:** alla moddets metallblock står i `mineable/pickaxe` och `needs_stone_tool` (som vanillas järnblock).
+
+**Vanilla-ugnen** (punkt 17): en Furnace eller Blast Furnace hittad i en by smälte Tin Ore (silk touch) och Raw Copper /
+Copper Ore rakt till tackor, förbi degeln. Tennets egna recept är borttagna och kopparns är avstängda
+(`gen_age_recipes.py`, "never"). Guld (`gen_iron_ores.py`) och järn (`gen_bloomery.py`) var redan avstängda; bly och
+silver har inga ugnsrecept. Kvar: vanillas `iron_nugget/gold_nugget/copper_nugget_from_smelting` (smälter ned
+verktyg/rustning till nuggets) får vara, det ger tillbaka metall man redan haft.
+
+**En palett per metall** (punkt 18): `scripts/gen_metal_textures.py` ritar nugget, tacka och block för varje metall med
+`solid=` (metallens kalla färg) ur en ramp som växer ur den färgen: mörkare och lite kallare under, ljusare och blekare
+över. Former: vanillas Iron Nugget, bibliotekets `workshop/_ingot.png` (Pig Iron: `_crude_ingot.png` med bränd sand,
+Wrought Iron med slaggfibrer), vanillas Iron Block (Lead med bucklor). Blocket läses på samma ljusskala som vanillas järntacka,
+så det blir ljusare och mjukare än tackan, som vanillas. De gamla per-skript-texturerna för dessa föremål är borttagna ur
+`gen_iron_ores_textures.py`, `gen_bronze_textures.py`, `gen_bloomery_textures.py` och `gen_high_furnace_textures.py`.
+
+Beviset: game testen `metals_items` (`java/MetalsTest.java`).

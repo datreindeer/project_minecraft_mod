@@ -80,12 +80,7 @@ for p in veins:
 deep.save(TEX / "block/deepslate_galena_ore.png")
 
 recolour(lib("workshop/silver/raw_silver_ore.png"), GALENA).save(TEX / "item/raw_galena.png")
-recolour(lib("workshop/silver/silver_ingot.png"), LEAD).save(TEX / "item/lead_ingot.png")
-lib("workshop/silver/silver_ingot.png").save(TEX / "item/silver_ingot.png")
-ingot = lib("workshop/silver/silver_ingot.png")
-shades = sorted({ingot.getpixel((x, y))[:3] for y in range(16) for x in range(16) if ingot.getpixel((x, y))[3]}, key=sum)
-SILVER = [shades[round(i * (len(shades) - 1) / 4)] for i in range(5)]  # the ingot's own shades, so nugget and ingot match
-recolour(vanilla("item/iron_nugget"), SILVER).save(TEX / "item/silver_nugget.png")
+# Lead Ingot, Silver Ingot and Silver Nugget: scripts/gen_metal_textures.py (one palette per metal, from the metal table)
 recolour(lib("flux_dust.png"), FLUX).save(TEX / "item/flux.png")
 recolour(lib("workshop/silver/silver_dust2.png"), SALT).save(TEX / "item/salt.png")
 recolour(vanilla("block/stone"), LIMESTONE).save(TEX / "block/limestone.png")

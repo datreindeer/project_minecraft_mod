@@ -1,6 +1,12 @@
 {
   "values": [
     "mechanical:tin_ore",
-    "mechanical:tin_block"
+    "mechanical:tin_block",
+    "mechanical:lead_block",
+    "mechanical:silver_block",
+    "mechanical:bronze_block",
+    "mechanical:steel_block",
+    "mechanical:wrought_iron_block",
+    "mechanical:pig_iron_block"
   ]
 }

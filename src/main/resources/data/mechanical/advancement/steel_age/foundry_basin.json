@@ -36,6 +36,36 @@
       "conditions": {
         "items": [
           {
+            "items": "mechanical:silver_block"
+          }
+        ]
+      }
+    },
+    "has_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pig_iron_block"
+          }
+        ]
+      }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wrought_iron_block"
+          }
+        ]
+      }
+    },
+    "has_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
             "items": "mechanical:slag_stone"
           }
         ]
@@ -47,7 +77,10 @@
       "has_0",
       "has_1",
       "has_2",
-      "has_3"
+      "has_3",
+      "has_4",
+      "has_5",
+      "has_6"
     ]
   ],
   "display": {

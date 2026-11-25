@@ -1638,7 +1638,7 @@ TABS["steel_age"][1].extend([
     ("never_cracks", "molding_flask", "iron_ingot_mold", G, "Never Cracks",
      "Cast an Iron Ingot Mold from pig iron in a Molding Flask: 4 ingots of any metal per pour, and it never cracks", has("iron_ingot_mold")),
     ("foundry_basin", "pour", "foundry_basin", T, "Cast in Bulk",
-     "Pour a whole block into a Foundry Basin: 1800 mB of metal, or 250 mB of slag", has("bronze_block", "steel_block", "lead_block", "slag_stone")),
+     "Pour a whole block into a Foundry Basin: 1800 mB of metal, or 250 mB of slag", has("bronze_block", "steel_block", "lead_block", "silver_block", "pig_iron_block", "wrought_iron_block", "slag_stone")),
     ("walloon_forge", "white_heat", "finery_hearth", G, "Walloon Forge",
      "Build a Finery Hearth and blow it with a Great Bellows: Pig Iron Ingots and Charcoal at 1300° are fined into Wrought Iron Ingots", by_code()),
     ("glassmaker", "white_heat", "minecraft:glass", T, "Glassmaker",

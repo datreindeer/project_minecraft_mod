@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:wrought_iron_block"
+  ],
+  "result": {
+    "id": "mechanical:wrought_iron_ingot",
+    "count": 9
+  }
+}

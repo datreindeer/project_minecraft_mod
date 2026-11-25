@@ -57,6 +57,8 @@ public final class Bronze {
             ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MODID, "bronze")));
 
     public static final DeferredItem<Item> BRONZE_INGOT = ITEMS.registerSimpleItem("bronze_ingot");
+    /** Poor Bronze nuggets are these, marked {@link #POOR}. */
+    public static final DeferredItem<Item> BRONZE_NUGGET = ITEMS.registerSimpleItem("bronze_nugget");
 
     // --- molds for the new shapes (see Casting for the others) ---
     public static final DeferredItem<Item> UNFIRED_CLAY_SAW_BLADE_MOLD = ITEMS.registerSimpleItem("unfired_clay_saw_blade_mold");

@@ -88,6 +88,7 @@ public final class IronOres {
 
     public static final DeferredItem<Item> RAW_GALENA = ITEMS.registerSimpleItem("raw_galena");
     public static final DeferredItem<Item> LEAD_INGOT = ITEMS.registerSimpleItem("lead_ingot");
+    public static final DeferredItem<Item> LEAD_NUGGET = ITEMS.registerSimpleItem("lead_nugget");
     /** Lead Ingot pressed into a bone-ash cupel (crafted with Bone Meal); fired at {@link #CUPEL_TEMP}° it leaves a Silver Nugget. */
     public static final DeferredItem<Item> LEADED_CUPEL = ITEMS.registerSimpleItem("leaded_cupel");
     public static final DeferredItem<Item> SILVER_NUGGET = ITEMS.registerSimpleItem("silver_nugget");

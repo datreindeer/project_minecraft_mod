@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "neoforge:ingredient_type": "neoforge:components",
+      "items": "mechanical:bronze_ingot",
+      "components": {
+        "mechanical:poor_bronze": {}
+      }
+    }
+  ],
+  "result": {
+    "id": "mechanical:bronze_nugget",
+    "count": 9,
+    "components": {
+      "mechanical:poor_bronze": {}
+    }
+  }
+}

@@ -3175,6 +3175,7 @@ Hela genomgången av vanilla-recepten (spärrat, lämnat med flit, osäkert) fin
 | Cartography Table | Paper + Planks (kartor och kompass kommer senare) | Järnåldern |
 | Fermented Spider Eye | Används bara till bryggning | Järnåldern |
 | Copper Ingot från Block of Copper (även vaxad) | Kopparblock i Trial Chambers bryts med stenhacka → 9 tackor var | Bronsåldern |
+| Copper Ingot ur Raw Copper / Copper Ore i Furnace eller Blast Furnace, Tin Ingot ur Tin Ore | En ugn hittad i en by smälte malm rakt till tackor förbi degeln (docs/metals.md, 17). Guld och järn var redan borttagna | Aldrig (degel, Smelting Furnace, High Furnace) |
 | Bundle (alla färger) | Leather + String; ersatt av **Leather Pouch** (Cordage över Leather) | Aldrig |
 | Paper, Book, Writable Book, Bookshelf, Chiseled Bookshelf, Lectern | Skrift kommer med papyrus | Bronsåldern |
 | Concrete Powder (alla färger) | Betong hör till en senare ålder | Järnåldern |
@@ -3189,8 +3190,7 @@ och Weighted Pressure Plates (guld/järn) ur all struktur-, fiske- och mob-loot.
 
 ## Öppna frågor / att göra
 
-- **Tin Ore / Tin Ingot / Block of Tin** finns sedan tidigare. Tin Ingot kan inte smältas fram nu (Furnace borttagen) och
-  hör till bronsåldern.
+- **Tin Ore / Tin Ingot / Block of Tin** hör till bronsåldern (degeln). Vanilla-ugnen smälter inte Tin Ore (v0.209.0).
 - Såg för planks.
 - Flera texturer är tillfälliga (Fire Drill, Crucible, stenhuvuden, Firewood, Crude-verktyg, Clay Kiln-sot, meat scraps,
   hides, Wool Thread, Flint Spear, Tool Station, Drying Rack).

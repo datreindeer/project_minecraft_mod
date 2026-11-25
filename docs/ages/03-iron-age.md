@@ -246,6 +246,8 @@ Alla fyra hör till järnåldern. Kod: `IronOres` (block, items, gametest `iron_
 | **Leaded Cupel** | Lead Ingot + Bone Meal (formlöst): en kupell av benaska med blyet i. |
 | **Silver Nugget** | Leaded Cupel i **Clay Kiln vid 1000°** (Charcoal + Bellows), 30 s → 1 Silver Nugget. **Kupellering**: blyet sugs upp av benaskan och går åt. |
 | **Silver Ingot** | 9 Silver Nugget (3×3), och tillbaka till 9. |
+| **Lead Nugget** | 9 ↔ 1 Lead Ingot; rest under en tacka ur tråg, 18 ur Iron Nugget Mold, 22 mB i High Furnace (v0.209.0). |
+| **Silver Block** | 9 Silver Ingot ↔ 1 block, eller gjutet i Foundry Basin (1800 mB) (v0.209.0). |
 
 Ett block Galena ger alltså ett bly *eller* en niondels silvertacka: blyet sparas till ång- och elåldern eller offras
 för silver. Inte i Bloomery (den kod-delen lämnades orörd).

@@ -24,9 +24,11 @@
       "melts": {
         "mechanical:raw_galena": 300,
         "mechanical:lead_ingot": 200,
+        "mechanical:lead_nugget": 22,
         "mechanical:lead_block": 1800
       },
       "ingot": "mechanical:lead_ingot",
+      "nugget": "mechanical:lead_nugget",
       "block": "mechanical:lead_block"
     },
     {
@@ -36,10 +38,12 @@
       "color": "F4F6FF",
       "melts": {
         "mechanical:silver_ingot": 200,
-        "mechanical:silver_nugget": 22
+        "mechanical:silver_nugget": 22,
+        "mechanical:silver_block": 1800
       },
       "ingot": "mechanical:silver_ingot",
       "nugget": "mechanical:silver_nugget",
+      "block": "mechanical:silver_block",
       "coin": "mechanical:silver_coin"
     },
     {
@@ -81,9 +85,11 @@
       "color": "FFB13B",
       "melts": {
         "mechanical:bronze_ingot": 200,
+        "mechanical:bronze_nugget": 22,
         "mechanical:bronze_block": 1800
       },
       "ingot": "mechanical:bronze_ingot",
+      "nugget": "mechanical:bronze_nugget",
       "block": "mechanical:bronze_block",
       "plate": "mechanical:bronze_plate",
       "casts": {
@@ -117,9 +123,11 @@
       "density": 8.8,
       "color": "E09A44",
       "melts": {
-        "mechanical:bronze_ingot": 200
+        "mechanical:bronze_ingot": 200,
+        "mechanical:bronze_nugget": 22
       },
       "ingot": "mechanical:bronze_ingot",
+      "nugget": "mechanical:bronze_nugget",
       "plate": "mechanical:bronze_plate",
       "casts": {
         "ingot": "mechanical:bronze_ingot",
@@ -168,10 +176,12 @@
       "density": 7.75,
       "color": "FFC040",
       "melts": {
-        "mechanical:wrought_iron_ingot": 200
+        "mechanical:wrought_iron_ingot": 200,
+        "mechanical:wrought_iron_block": 1800
       },
       "ingot": "mechanical:wrought_iron_ingot",
       "nugget": "minecraft:iron_nugget",
+      "block": "mechanical:wrought_iron_block",
       "plate": "mechanical:iron_plate"
     },
     {
@@ -183,9 +193,11 @@
         "mechanical:crushed_tin_ore": 200,
         "mechanical:tin_concentrate": 400,
         "mechanical:tin_ingot": 200,
+        "mechanical:tin_nugget": 22,
         "mechanical:tin_block": 1800
       },
       "ingot": "mechanical:tin_ingot",
+      "nugget": "mechanical:tin_nugget",
       "block": "mechanical:tin_block",
       "crucible": {
         "mechanical:crushed_tin_ore": 1,
@@ -199,10 +211,12 @@
       "color": "FFA33A",
       "melts": {
         "mechanical:pig_iron_ingot": 200,
-        "minecraft:iron_nugget": 22
+        "minecraft:iron_nugget": 22,
+        "mechanical:pig_iron_block": 1800
       },
       "ingot": "mechanical:pig_iron_ingot",
       "nugget": "minecraft:iron_nugget",
+      "block": "mechanical:pig_iron_block",
       "flask": {
         "ingot_mold": "mechanical:iron_ingot_mold",
         "plate_mold": "mechanical:iron_plate_mold",

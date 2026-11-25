@@ -31,7 +31,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * The Foundry Basin (docs/steel-furnace-plan.md section 6): a deep riveted steel tub lined with silica. Empty, it casts
- * a whole block: {@link Molten#BLOCK} mB of a metal (Copper, Gold, Lead, Bronze, Steel Block) or {@link #STONE} of slag,
+ * a whole block: {@link Molten#BLOCK} mB of any metal with a block in the metal table (Copper, Gold, Tin, Lead, Silver, Bronze, Steel,
+ * Pig Iron, Wrought Iron) or {@link #STONE} of slag,
  * basalt, glass or obsidian (Slag Stone, Cast Basalt, Glass, Obsidian). The fill is seen rising; it sets in 10 s per
  * 1000 mB, and an empty hand takes the block out. (Loam Molds for bells and great kettles come with phase 6.)
  */

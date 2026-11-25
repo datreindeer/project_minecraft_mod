@@ -194,8 +194,7 @@ pieces["plate"] = recolor(Image.open(LIB / "bronze_plate.png").convert("RGBA"), 
 # (added after the older pieces so their rough-cast seeds stay the same)
 pieces["sword_blade"] = only(tools["sword"], connected(sword_metal, (14, 0)))
 pieces["spear_head"] = only(spear_icon, spear_metal)
-ingot = recolor(Image.open(LIB / "bronze_ingot.png").convert("RGBA"), BRONZE)
-save(ingot, ITEM / "bronze_ingot.png")
+# Bronze Ingot (and Nugget, Block): scripts/gen_metal_textures.py, from the metal table
 
 for i, (name, img) in enumerate(pieces.items()):
     save(img, ITEM / f"bronze_{name}.png")

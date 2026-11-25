@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "III",
+    "III",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "mechanical:bronze_ingot",
+      "subtracted": {
+        "neoforge:ingredient_type": "neoforge:components",
+        "items": "mechanical:bronze_ingot",
+        "components": {
+          "mechanical:poor_bronze": {}
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "mechanical:bronze_block"
+  }
+}

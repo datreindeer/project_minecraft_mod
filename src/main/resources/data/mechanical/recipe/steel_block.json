@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "III",
+    "III",
+    "III"
+  ],
+  "key": {
+    "I": "mechanical:steel_ingot"
+  },
+  "result": {
+    "id": "mechanical:steel_block"
+  }
+}

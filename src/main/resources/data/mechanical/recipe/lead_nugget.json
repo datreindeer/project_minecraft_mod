@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:lead_ingot"
+  ],
+  "result": {
+    "id": "mechanical:lead_nugget",
+    "count": 9
+  }
+}

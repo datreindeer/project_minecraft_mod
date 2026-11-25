@@ -577,7 +577,8 @@ def pocket_mold(name, xs, zs, top):
 pocket_mold("iron_plate_mold", [(2.5, 13.5)], [(2.5, 13.5)], "iron_plate_mold_top")
 pocket_mold("iron_nugget_mold", [(2.5, 5.5), (6.5, 9.5), (10.5, 13.5)], [(2.5, 5.5), (6.5, 9.5), (10.5, 13.5)], "iron_nugget_mold_top")
 
-for name in ("casting_sand", "burnt_casting_sand", "bronze_block", "steel_block", "lead_block", "slag_stone", "cast_basalt"):
+# (Bronze, Steel and Lead Blocks: scripts/gen_metals.py, as every metal block in the table)
+for name in ("casting_sand", "burnt_casting_sand", "slag_stone", "cast_basalt"):
     w(A / f"models/block/{name}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": B + name}})
     w(A / f"blockstates/{name}.json", {"variants": {"": {"model": B + name}}})
     item_def(name, B + name)
@@ -710,7 +711,7 @@ recipe("pattern_bench", {"type": "minecraft:crafting_shaped", "category": "misc"
        "key": {"P": "#minecraft:planks", "L": "#minecraft:logs", "C": M + "bronze_chisel"}, "result": {"id": M + "pattern_bench"}})
 tag_add(D / "minecraft/tags/block/mineable/shovel.json", M + "casting_sand", M + "burnt_casting_sand", M + "sand_runner", M + "pig_mold")
 tag_add(D / "minecraft/tags/block/mineable/pickaxe.json", M + "iron_plate_mold", M + "iron_nugget_mold", M + "foundry_table", M + "foundry_basin",
-        M + "molding_flask", M + "bronze_block", M + "steel_block", M + "lead_block", M + "slag_stone", M + "cast_basalt")
+        M + "molding_flask", M + "slag_stone", M + "cast_basalt")
 tag_add(D / "minecraft/tags/block/mineable/axe.json", M + "pattern_bench")
 LANG4B = {"item.mechanical.coal_dust": "Coal Dust", "block.mechanical.casting_sand": "Casting Sand", "block.mechanical.burnt_casting_sand": "Burnt Casting Sand",
           "block.mechanical.sand_runner": "Sand Runner", "block.mechanical.pig_mold": "Pig Mold", "item.mechanical.pig_pattern": "Pig Pattern",
@@ -718,7 +719,6 @@ LANG4B = {"item.mechanical.coal_dust": "Coal Dust", "block.mechanical.casting_sa
           "block.mechanical.pattern_bench": "Pattern Bench", "container.mechanical.pattern_bench": "Pattern Bench",
           "block.mechanical.iron_plate_mold": "Iron Plate Mold", "block.mechanical.iron_nugget_mold": "Iron Nugget Mold",
           "item.mechanical.cast_iron_gear": "Cast Iron Gear", "item.mechanical.cast_iron_pot": "Cast Iron Pot",
-          "block.mechanical.bronze_block": "Block of Bronze", "block.mechanical.steel_block": "Block of Steel", "block.mechanical.lead_block": "Block of Lead",
           "block.mechanical.slag_stone": "Slag Stone", "block.mechanical.cast_basalt": "Cast Basalt",
           "message.mechanical.molding_flask.sand": "Ram it with 4 Casting Sand",
           "message.mechanical.molding_flask.empty": "Empty frame: ram it with 4 Casting Sand",

@@ -18,6 +18,16 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.BlockItem;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -31,6 +41,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * each furnace that takes it (Clay Kiln crucible, Smelting Furnace, High Furnace) and the furnace can reach it; the alloy
  * ratios (crucible 9-11.5 % / 8-15 % tin, High Furnace 9:1 and 1:2); what each metal casts in every clay mold shape, iron
  * mold, the Foundry Basin and the Molding Flask; coins; the 0.208.0 fixes; old saves (pool, salamander, smelter) load.</li>
+ * <li>{@code metals_items}: every metal's nugget and block (Tin, Lead and Bronze Nuggets; Silver, Pig Iron and Wrought
+ * Iron Blocks): 9 &lt;-&gt; 1 crafting (Poor Bronze keeps its mark, makes no block), casting (nugget mold, basin), remelting
+ * (22 / 1800 mB), the trough's knock-out remainder, and no vanilla furnace smelts tin, copper, gold or iron ore.</li>
  * <li>{@code metals_new_metal}: a metal added by one table entry (a test-only Zinc and Brass, made of vanilla items) melts,
  * layers, alloys, casts and saves through the same code, and is gone again after.</li>
  * </ul>
@@ -38,10 +51,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class MetalsTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"metals_table", "metals_new_metal"};
+    private static final String[] TESTS = {"metals_table", "metals_items", "metals_new_metal"};
 
     static {
         TEST_FUNCTIONS.register("metals_table", () -> MetalsTest::table);
+        TEST_FUNCTIONS.register("metals_items", () -> MetalsTest::items);
         TEST_FUNCTIONS.register("metals_new_metal", () -> MetalsTest::newMetal);
     }
 
@@ -129,7 +143,7 @@ public final class MetalsTest {
             h.assertTrue(nuggets == null || nuggets.getCount() == 18, m + ": 18 nuggets");
         }
         h.assertTrue(IngotMoldBlock.Kind.NUGGET.result(Molten.COPPER).is(Items.COPPER_NUGGET) && IngotMoldBlock.Kind.NUGGET.result(Molten.STEEL).is(Items.IRON_NUGGET)
-                && IngotMoldBlock.Kind.NUGGET.result(Molten.LEAD) == null, "nuggets: copper's, iron's for steel, none of lead");
+                && IngotMoldBlock.Kind.NUGGET.result(Molten.LEAD).is(IronOres.LEAD_NUGGET.get()), "nuggets: copper's, iron's for steel, lead's own");
         ItemStack poorPlate = IngotMoldBlock.Kind.PLATE.result(Molten.POOR_BRONZE);
         h.assertTrue(poorPlate != null && poorPlate.is(Bronze.BRONZE_PLATE.get()) && Bronze.isPoor(poorPlate), "poor bronze casts a poor Bronze Plate (fix 8)");
         h.assertTrue(IngotMoldBlock.Kind.PLATE.result(Molten.STEEL).is(Smithing.STEEL_PLATE.get()) && IngotMoldBlock.Kind.PLATE.result(Molten.GOLD) == null, "steel plate, no gold plate");
@@ -170,6 +184,94 @@ public final class MetalsTest {
         h.assertTrue(f.charge(Metal.COPPER) == 4 && f.pool(Metal.COPPER) == 8, "a smelter saved with these 4 metals loads");
         f.load(new int[] {4, 0, 8000, 0}); // a save with fewer metals than now: what it has loads
         h.assertTrue(f.charge(Metal.COPPER) == 4 && f.pool(Metal.COPPER) == 8 && f.charge(Metal.BRONZE) == 0, "a shorter smelter save loads what it has");
+        h.succeed();
+    }
+
+    private static ItemStack craft(ServerLevel level, int w, ItemStack... items) {
+        CraftingInput in = CraftingInput.of(w, items.length / w, List.of(items));
+        return level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, in, level).map(r -> r.value().assemble(in)).orElse(ItemStack.EMPTY);
+    }
+
+    private static ItemStack[] nine(ItemStack s) {
+        ItemStack[] out = new ItemStack[9];
+        java.util.Arrays.fill(out, s);
+        return out;
+    }
+
+    private static ItemStack poor(Item item) {
+        ItemStack s = new ItemStack(item);
+        Bronze.markPoor(s);
+        return s;
+    }
+
+    private static void items(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        // nuggets: the trough's remainder and the nugget mold's 18 are each metal's own, each remelts into 22 mB of it, 9 <-> 1 ingot
+        Object[][] nuggets = {{Molten.TIN, Mechanical.TIN_NUGGET.get(), Mechanical.TIN_INGOT.get()}, {Molten.LEAD, IronOres.LEAD_NUGGET.get(), IronOres.LEAD_INGOT.get()},
+                {Molten.BRONZE, Bronze.BRONZE_NUGGET.get(), Bronze.BRONZE_INGOT.get()}, {Molten.SILVER, IronOres.SILVER_NUGGET.get(), IronOres.SILVER_INGOT.get()}};
+        for (Object[] row : nuggets) {
+            Molten m = (Molten) row[0];
+            Item nugget = (Item) row[1], ingot = (Item) row[2];
+            ItemStack cast = IngotMoldBlock.Kind.NUGGET.result(m);
+            h.assertTrue(HighFurnaceMelting.nugget(m).is(nugget) && cast.is(nugget) && cast.getCount() == 18, m + ": its nugget, 18 from the nugget mold");
+            HighFurnaceMelting.Melt melt = HighFurnaceMelting.of(new ItemStack(nugget));
+            h.assertTrue(melt != null && melt.molten() == m && melt.mb() == Molten.NUGGET, m + ": a nugget melts into 22 mB");
+            ItemStack one = craft(level, 3, nine(new ItemStack(nugget))), back = craft(level, 1, new ItemStack(ingot));
+            h.assertTrue(one.is(ingot) && one.getCount() == 1 && !Bronze.isPoor(one) && back.is(nugget) && back.getCount() == 9, m + ": 9 nuggets <-> 1 ingot");
+            h.assertTrue(FurnaceMelt.quarters(new ItemStack(nugget)) == null && Casting.oreUnits(new ItemStack(nugget)) == null,
+                    m + ": no nugget in the Smelting Furnace or crucible (22 mB is under a quarter)");
+        }
+        // poor bronze: its nuggets are marked, remelt as poor bronze, and craft only with each other, keeping the mark
+        ItemStack poorNugget = HighFurnaceMelting.nugget(Molten.POOR_BRONZE);
+        h.assertTrue(poorNugget.is(Bronze.BRONZE_NUGGET.get()) && Bronze.isPoor(poorNugget) && HighFurnaceMelting.of(poorNugget).molten() == Molten.POOR_BRONZE
+                && HighFurnaceMelting.of(new ItemStack(Bronze.BRONZE_NUGGET.get())).molten() == Molten.BRONZE, "a poor nugget is marked and melts as poor bronze");
+        ItemStack poorIngot = craft(level, 3, nine(poor(Bronze.BRONZE_NUGGET.get()))), poorBack = craft(level, 1, poor(Bronze.BRONZE_INGOT.get()));
+        h.assertTrue(poorIngot.is(Bronze.BRONZE_INGOT.get()) && Bronze.isPoor(poorIngot) && poorBack.getCount() == 9 && Bronze.isPoor(poorBack),
+                "9 poor nuggets -> a poor ingot -> 9 poor nuggets");
+        ItemStack[] mixed = nine(new ItemStack(Bronze.BRONZE_NUGGET.get()));
+        mixed[4] = poor(Bronze.BRONZE_NUGGET.get());
+        h.assertTrue(craft(level, 3, mixed).isEmpty(), "poor and good nuggets don't mix into one ingot");
+        h.assertTrue(craft(level, 3, nine(poor(Bronze.BRONZE_INGOT.get()))).isEmpty()
+                && craft(level, 3, nine(new ItemStack(Bronze.BRONZE_INGOT.get()))).is(HighFurnace.BRONZE_BLOCK_ITEM.get()), "poor ingots make no block, good ones do");
+        h.assertTrue(craft(level, 3, nine(new ItemStack(Items.GOLD_NUGGET))).isEmpty(), "gold nuggets still melt into an ingot in the kiln, not crafted");
+
+        // blocks: 9 ingots <-> 1 block, the basin casts it from 1800 mB, it remelts into 1800 mB, a stone pickaxe mines it
+        Object[][] blocks = {{Molten.SILVER, HighFurnace.SILVER_BLOCK_ITEM.get()}, {Molten.PIG_IRON, HighFurnace.PIG_IRON_BLOCK_ITEM.get()},
+                {Molten.WROUGHT_IRON, HighFurnace.WROUGHT_IRON_BLOCK_ITEM.get()}, {Molten.TIN, Mechanical.TIN_BLOCK_ITEM.get()},
+                {Molten.LEAD, HighFurnace.LEAD_BLOCK_ITEM.get()}, {Molten.STEEL, HighFurnace.STEEL_BLOCK_ITEM.get()}};
+        for (Object[] row : blocks) {
+            Molten m = (Molten) row[0];
+            Item block = (Item) row[1];
+            HighFurnaceMelting.Melt melt = HighFurnaceMelting.of(new ItemStack(block));
+            h.assertTrue(FoundryBasinBlock.block(m) == block && FoundryBasinBlock.cast(m) == Molten.BLOCK && melt.molten() == m && melt.mb() == Molten.BLOCK,
+                    m + ": the basin casts its block from 1800 mB, which remelts into 1800 mB");
+            ItemStack made = craft(level, 3, nine(m.ingot())), back = craft(level, 1, new ItemStack(block));
+            h.assertTrue(made.is(block) && back.getCount() == 9 && m.isIngot(back), m + ": 9 ingots <-> 1 block");
+            BlockState state = ((BlockItem) block).getBlock().defaultBlockState();
+            h.assertTrue(state.is(BlockTags.MINEABLE_WITH_PICKAXE) && state.is(BlockTags.NEEDS_STONE_TOOL), m + ": a stone pickaxe mines its block");
+        }
+
+        // the trough knocks out what is under an ingot as the metal's own nuggets: 199 mB bronze -> 9, 180 lead -> 8, 21 tin -> none
+        BlockPos pos = h.absolutePos(new BlockPos(2, 1, 2));
+        for (Object[] row : new Object[][] {{Molten.BRONZE, 199, 9}, {Molten.LEAD, 180, 8}, {Molten.TIN, 21, 0}}) {
+            Molten m = (Molten) row[0];
+            level.setBlock(pos, HighFurnace.REFRACTORY_TROUGH.get().defaultBlockState(), 3);
+            TroughBlockEntity t = (TroughBlockEntity) level.getBlockEntity(pos);
+            t.add(m, (int) row[1], 0, m.melt, level.getGameTime(), null);
+            RefractoryTroughBlock.knockOut(level, pos, t);
+            Item nugget = m.nugget().getItem();
+            int count = level.getEntitiesOfClass(ItemEntity.class, new AABB(pos).inflate(2), e -> e.getItem().is(nugget)).stream().mapToInt(e -> e.getItem().getCount()).sum();
+            h.assertTrue(count == (int) row[2], m + ": " + row[1] + " mB knocks out " + row[2] + " nuggets, not " + count);
+            level.getEntitiesOfClass(ItemEntity.class, new AABB(pos).inflate(2)).forEach(ItemEntity::discard);
+        }
+
+        // no vanilla furnace smelts ore into metal past the mod's furnaces (docs/metals.md, 17)
+        for (ItemStack ore : new ItemStack[] {new ItemStack(Mechanical.TIN_ORE_ITEM.get()), new ItemStack(Items.RAW_COPPER), new ItemStack(Items.COPPER_ORE),
+                new ItemStack(Items.DEEPSLATE_COPPER_ORE), new ItemStack(Items.RAW_GOLD), new ItemStack(Items.GOLD_ORE), new ItemStack(Items.RAW_IRON), new ItemStack(Items.IRON_ORE)}) {
+            SingleRecipeInput in = new SingleRecipeInput(ore);
+            h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.SMELTING, in, level).isEmpty() && level.recipeAccess().getRecipeFor(RecipeType.BLASTING, in, level).isEmpty(),
+                    "no furnace recipe smelts " + ore);
+        }
         h.succeed();
     }
 

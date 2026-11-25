@@ -164,13 +164,7 @@ for f in range(4):
         hot.putpixel((x, y + 16 * f), c + (255,))
 save(hot, ITEM / "hot_iron_bloom.png", frames=6)
 
-# Wrought Iron Ingot: the library steel ingot in dull grey iron with a fibrous streak
-ingot = recolor(Image.open(LIB / "steel_ingot.png").convert("RGBA"), IRON[1:])
-rng = random.Random(504)
-for p in px(ingot):
-    if p[1] % 3 == 0 and rng.random() < 0.3 and lum(ingot.getpixel(p)) > 70:
-        ingot.putpixel(p, mix(ingot.getpixel(p)[:3], SLAG[2], 0.4) + (255,))
-items["wrought_iron_ingot"] = ingot
+# Wrought Iron Ingot (and Block): scripts/gen_metal_textures.py, from the metal table
 
 # Slag: glassy black-green lumps with bubbles and a glint
 rng = random.Random(505)

@@ -2347,9 +2347,7 @@ def batch2():
     save(basalt_tiles(), BLOCK / "cast_basalt_tiles.png")
     for h in range(4):
         save(sight_glass(h), BLOCK / f"sight_glass_{h}.png")
-    save(metal_block(STEEL[:6], 3500), BLOCK / "steel_block.png")
-    save(metal_block([(56, 32, 12), (96, 58, 22), (134, 88, 36), (164, 114, 50), (190, 140, 70), (212, 166, 96)], 3501), BLOCK / "bronze_block.png")
-    save(metal_block(LEAD, 3502, dents=3), BLOCK / "lead_block.png")
+    # Steel, Bronze and Lead Blocks: scripts/gen_metal_textures.py (one palette per metal, from the metal table)
     # ---- phase 7: coke oven, hot blast stove, loam molds
     save(coke_front(False), BLOCK / "coke_oven_front.png")
     save(coke_front(True), BLOCK / "coke_oven_front_lit.png")
@@ -2397,13 +2395,7 @@ def batch2():
         elif r < 0.17:
             gb.putpixel(p, (126, 196, 150, 255))  # green glints of cullet
     save(gb, ITEM / "glass_batch.png")
-    pig_i = recolor_shape(Image.open(LIB / "crude_steel_ingot.png").convert("RGBA"),
-                          [(22, 22, 24), (42, 42, 46), (64, 64, 68), (88, 86, 88), (116, 112, 110)], 3910)
-    rng = random.Random(3911)
-    for p in px(pig_i):
-        if rng.random() < 0.14 and lum(get(pig_i, *p)) > 40:
-            pig_i.putpixel(p, mix(get(pig_i, *p), (120, 104, 82), 0.5) + (255,))  # sand burnt onto the skin
-    save(pig_i, ITEM / "pig_iron_ingot.png")
+    # Pig Iron Ingot (and Block): scripts/gen_metal_textures.py, from the metal table
     save(outline(shade_mask(GEAR_MASK, CAST, 3920, base=0.5, hi=0.3, lo=0.3), (6, 6, 8)), ITEM / "cast_iron_gear.png")
     pot = shade_mask(grid_mask(POT_ROWS), CAST, 3930, base=0.45, hi=0.3, lo=0.3)
     for x in range(4, 12):

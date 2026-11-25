@@ -45,6 +45,7 @@ Sinew, Tool Station och Leatherworking Bench.
 | Mold Bench | Block | Station där alla lerformar och Unfired Crucible formas av Clay Balls (från stenåldern) |
 | Clay Molds (7 sorter) | Items | Gjutformar, formade i Mold Bench och brända i kilnen. Kan gå sönder efter några gjutningar |
 | Crude Copper / Crude Tin Ingot, Copper Ingot, Bronze Ingot | Items | Användarens texturer finns (workshop/) |
+| Tin Nugget, Bronze Nugget | Items | 9 ↔ 1 tacka (Poor Bronze-korn blir en Poor Bronze-tacka och tvärtom). Resten under en tacka när tenn/brons knackas ur ett tråg, 18 ur Iron Nugget Mold, 22 mB i High Furnace. Degeln och Smelting Furnace tar inte korn (22 mB är mindre än en quarter): gör en tacka först (v0.209.0, docs/metals.md avsnitt 15) |
 | Copper Bloom, Bronze Dust, Bronze Plate | Items | Mellanprodukter (texturer finns) |
 | Copper- och Bronze-verktyg | Verktyg | Yxa, hacka, spade, hacka (hoe), kniv, spjut, svärd, såg |
 | Bronze Helmet, Bronze Greaves | Rustning | Gjuts, slipas, Armor Station. Ingen bröstplåt eller boots |
