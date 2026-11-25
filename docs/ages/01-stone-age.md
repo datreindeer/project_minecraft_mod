@@ -3440,3 +3440,15 @@ kitteln, men bara krukans rätter går i) och man öser upp med Bowl. Smyg-höge
 | **Herb-Roasted Fish** | hel fisk + en köksört (crafting: Herb-Stuffed Fish) på Campfire 30 s | 7 hunger |
 
 Dubbla ingredienser ger dubbla rätten. Advancements (Stone Age): *Pot in the Embers* (efter *Clay Kiln*) → *Pottage*, *Fish with Herbs*.
+
+## Nether och End: stängda tills vidare (2026-11-25)
+
+Config `netherAndEndClosed = true` i `config/mechanical-local.toml` (false öppnar igen).
+
+- Ingen resa dit: portaler ger inget mål (ingen ny portal eller End-plattform byggs på andra sidan) och all annan resa
+  dit stoppas (även kommandon som `/execute in minecraft:the_nether run tp`).
+- Nether-portaler tänds inte utanför Nether; Eye of Ender går inte i End Portal Frame (att kasta ögat fungerar).
+- **Vägen hem är öppen:** i Nether kan portaler tändas och användas, End-utgången fungerar och respawn är oförändrad.
+- Går inte att få så länge: Blaze Rod (och därmed bryggning), Nether Quartz, Glowstone, Nether Wart, Netherite, Magma
+  Cream, Soul Sand/Soil, Ghast Tear, Crimson/Warped-trä (modens Sawn Crimson/Warped Planks), Chorus, Shulker, Elytra,
+  drakägget. Moden har inga egna advancements eller andra recept som kräver Nether/End.

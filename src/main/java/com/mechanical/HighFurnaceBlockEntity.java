@@ -263,7 +263,12 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         return shape != null && fireList().stream().anyMatch(f -> f.burn > 0 || f.fuel > 0);
     }
 
-    /** Fire Drill or Flint and Steel on a Firebox: every Firebox with fuel catches. */
+    /** Is there a fuelled Firebox that isn't burning (so lighting it does something)? */
+    public boolean hasUnlit() {
+        return shape != null && fireList().stream().anyMatch(f -> !f.lit && (f.burn > 0 || f.fuel > 0));
+    }
+
+    /** Fire Drill, Flint and Steel or Crushed Magma on a Firebox: every Firebox with fuel catches. */
     public void light() {
         for (Fire f : fireList()) if (f.burn > 0 || f.fuel > 0) f.lit = true;
         setChanged();

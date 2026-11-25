@@ -49,6 +49,7 @@ public final class Molten implements Comparable<Molten> {
     // the melts the code names (everything else is only in the table)
     public static final Molten GOLD = get("gold"), LEAD = get("lead"), SILVER = get("silver"), COPPER = get("copper"), BRONZE = get("bronze"),
             POOR_BRONZE = get("poor_bronze"), STEEL = get("steel"), WROUGHT_IRON = get("wrought_iron"), TIN = get("tin"), PIG_IRON = get("pig_iron"),
+            ELECTRUM = get("electrum"),
             BASALT = get("basalt"), GLASS = get("glass"), OBSIDIAN = get("obsidian"), SLAG = get("slag");
 
     public final String id;

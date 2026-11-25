@@ -65,6 +65,7 @@
     "GameTestInfoMixin",
     "GameTestRunnerMixin",
     "MinecraftServerStatusMixin",
-    "ClientboundStatusResponsePacketMixin"
+    "ClientboundStatusResponsePacketMixin",
+    "PortalProcessorMixin"
   ]
 }

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mechanical:item/electrum_necklace",
+    "layer1": "mechanical:item/electrum_necklace_gem"
+  }
+}

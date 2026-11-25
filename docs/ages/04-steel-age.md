@@ -353,3 +353,16 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
   (challenge). Test `finery_hearth`, `high_furnace_glass_bell`, `high_furnace_salamander`, `high_furnace_coke`.
 - Inte gjort: Glass Pane i form, Anvil och Steel Block-kravet 1650°, Great Kettle, Hot Blast-bonus på brinntid,
   slaggsten-slab/stairs/wall, brännskador i formar och bassänger.
+
+## 7. Electrum och Crushed Magma (byggt 2026-11-25)
+
+- **Electrum** (High Furnace): Gold 1 : Silver 1 vid 1100°. Blandas av sig självt när båda ligger i gropen; överskottet
+  av den ena stannar som ren metall (rent guld och silver gjuts som förut när bara den ena ligger i). Densitet 14,9
+  (mellan guld och bly). **Electrum Ingot / Nugget**, **Block of Electrum** (9 ↔ 1, gjutkokill, Foundry Basin). Inga
+  mynt, inga verktyg. Advancement **Pale Gold**.
+- **Smycken:** Electrum Ingot på Steel Casting Table (ugn 1100°) → 2 **Electrum Ring Blank** eller 1 **Electrum Chain**;
+  på Jeweler's Bench → **Electrum Ring** / **Electrum Necklace**: 3/4 av guldets gembonus (silver 1/2, guld 1).
+  Advancement **White Gold**.
+- **Crushed Magma** (1 Magma Block på Stone Anvil → 4): tänder en bränslad High Furnace-eldstad varje gång (en går åt).
+  Nya recept: 2 Clay Ball + 2 Crushed Magma → 4 Fire Clay; 2 Crushed Quartzite + Fire Clay + Crushed Magma → 4 Unfired
+  Silica Brick. Advancement **Born of Fire**.

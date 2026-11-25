@@ -115,8 +115,13 @@ public final class Jewelry {
     public static final DeferredItem<Item> SILVER_CHAIN = ITEMS.registerSimpleItem("silver_chain");
     public static final DeferredItem<Item> SILVER_RING = ITEMS.registerSimpleItem("silver_ring", p -> p.stacksTo(1));
     public static final DeferredItem<Item> SILVER_NECKLACE = ITEMS.registerSimpleItem("silver_necklace", p -> p.stacksTo(1));
+    /** The same in electrum: between silver and gold. */
+    public static final DeferredItem<Item> ELECTRUM_RING_BLANK = ITEMS.registerSimpleItem("electrum_ring_blank");
+    public static final DeferredItem<Item> ELECTRUM_CHAIN = ITEMS.registerSimpleItem("electrum_chain");
+    public static final DeferredItem<Item> ELECTRUM_RING = ITEMS.registerSimpleItem("electrum_ring", p -> p.stacksTo(1));
+    public static final DeferredItem<Item> ELECTRUM_NECKLACE = ITEMS.registerSimpleItem("electrum_necklace", p -> p.stacksTo(1));
     /** A gem set in silver gives this share of what it gives in gold (the user's choice: same effects, weaker). */
-    public static final double SILVER_STRENGTH = 0.5;
+    public static final double SILVER_STRENGTH = 0.5, ELECTRUM_STRENGTH = 0.75;
     /** Ticks a Gold Ingot takes to melt and set on a Steel Casting Table beside a hot kiln. */
     public static final int CAST_TICKS = 200, TABLE_MAX_INGOTS = 8;
 
@@ -163,11 +168,14 @@ public final class Jewelry {
         if (blank.is(GOLD_CHAIN.get())) return GOLD_NECKLACE.get();
         if (blank.is(SILVER_RING_BLANK.get())) return SILVER_RING.get();
         if (blank.is(SILVER_CHAIN.get())) return SILVER_NECKLACE.get();
+        if (blank.is(ELECTRUM_RING_BLANK.get())) return ELECTRUM_RING.get();
+        if (blank.is(ELECTRUM_CHAIN.get())) return ELECTRUM_NECKLACE.get();
         return null;
     }
 
-    /** How much of a gem's bonus this piece gives: all in gold, {@link #SILVER_STRENGTH} in silver. */
+    /** How much of a gem's bonus this piece gives: all in gold, {@link #ELECTRUM_STRENGTH} in electrum, {@link #SILVER_STRENGTH} in silver. */
     public static double strength(Item piece) {
+        if (piece == ELECTRUM_RING.get() || piece == ELECTRUM_NECKLACE.get()) return ELECTRUM_STRENGTH;
         return piece == SILVER_RING.get() || piece == SILVER_NECKLACE.get() ? SILVER_STRENGTH : 1.0;
     }
 
