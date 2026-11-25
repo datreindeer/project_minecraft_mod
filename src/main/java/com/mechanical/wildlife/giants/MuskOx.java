@@ -62,10 +62,11 @@ public class MuskOx extends WildAnimal {
 
     /** The whole herd nearby closes ranks against {@code from}. */
     void alarmHerd(LivingEntity from) {
-        if (from instanceof MuskOx || from instanceof Player p && (p.isCreative() || p.isSpectator())) return;
+        if (from instanceof MuskOx || from instanceof Player p && (p.isCreative() || p.isSpectator() || isTamed())) return;
         long until = level().getGameTime() + ALARM_TICKS;
         boolean fresh = !isAlarmed();
         for (MuskOx ox : level().getEntitiesOfClass(MuskOx.class, getBoundingBox().inflate(HERD))) {
+            if (from instanceof Player p && (ox.isTamed() || ox != this && ox.calmAround(p))) continue;
             ox.threat = from;
             ox.alarmUntil = until;
             ox.setTarget(from); // keeps AnimalFear from sending it running while it stands its ground
@@ -91,7 +92,7 @@ public class MuskOx extends WildAnimal {
         if (threat != null) calmDown();
         if (isDozing()) return;
         Player p = level().getNearestPlayer(this, NOTICE);
-        if (p != null && !p.isCreative() && !p.isSpectator() && distanceTo(p) < (p.isShiftKeyDown() ? NOTICE_SNEAKING : NOTICE) && hasLineOfSight(p)) {
+        if (p != null && !p.isCreative() && !p.isSpectator() && !isTamed() && !calmAround(p) && distanceTo(p) < (p.isShiftKeyDown() ? NOTICE_SNEAKING : NOTICE) && hasLineOfSight(p)) {
             alarmHerd(p);
             return;
         }

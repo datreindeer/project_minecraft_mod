@@ -39,15 +39,16 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Feeding Trough (D6): a plank trough for livestock ({@link Husbandry}). A water bucket (or a clay or bronze one) fills it
  * with {@link FeedingTroughBlockEntity#WATER_CAP} drinks; fodder (wheat, carrots, seeds, hay ...) goes in by the stack, an
  * empty hand takes the fodder back out. Troughs side by side join into one long trough: the rims between them go, and
- * filling, eating and drinking use the whole row ({@link #group}). The blockstate shows the water level and whether there is
- * fodder; the contents live in the block entity. 10 px high, so sheep, cows and pigs can't step onto it.
+ * filling, eating and drinking use the whole row ({@link #group}). The row shares one pool of water, spread evenly over its
+ * troughs ({@link #level}), so every blockstate shows the same water level and the same "has fodder"; the contents live in
+ * the block entities. 10 px high, so sheep, cows and pigs can't step onto it.
  */
 public class FeedingTroughBlock extends Block implements EntityBlock {
     public static final BooleanProperty NORTH = PipeBlock.NORTH, EAST = PipeBlock.EAST, SOUTH = PipeBlock.SOUTH, WEST = PipeBlock.WEST;
     public static final IntegerProperty WATER = IntegerProperty.create("water", 0, 3);
     public static final BooleanProperty FOOD = BooleanProperty.create("food");
-    /** At most this many troughs make one. */
-    static final int MAX_GROUP = 16;
+    /** At most this many troughs make one. shortcut: a longer row pools in parts, raise it if anyone builds one. */
+    static final int MAX_GROUP = 64;
     private static final VoxelShape SHAPE = box(0, 0, 0, 16, 10, 16);
 
     public FeedingTroughBlock(Properties properties) {
@@ -76,8 +77,17 @@ public class FeedingTroughBlock extends Block implements EntityBlock {
     @Override
     protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction direction,
             BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-        if (direction.getAxis().isHorizontal()) return state.setValue(side(direction), neighbourState.getBlock() instanceof FeedingTroughBlock);
+        if (direction.getAxis().isHorizontal()) {
+            ticks.scheduleTick(pos, this, 1);
+            return state.setValue(side(direction), neighbourState.getBlock() instanceof FeedingTroughBlock);
+        }
         return super.updateShape(state, level, ticks, pos, direction, neighbourPos, neighbourState, random);
+    }
+
+    /** A neighbour changed (a trough joined or broke off) or the row was just loaded: even the water out again. */
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        level(level, pos);
     }
 
     @Override
@@ -87,11 +97,16 @@ public class FeedingTroughBlock extends Block implements EntityBlock {
 
     /** The connected troughs (this one first), up to {@link #MAX_GROUP}. */
     public static List<FeedingTroughBlockEntity> group(Level level, BlockPos start) {
+        return group(level, start, null);
+    }
+
+    /** As {@link #group(Level, BlockPos)}, but not through {@code without} (a trough being broken). */
+    static List<FeedingTroughBlockEntity> group(Level level, BlockPos start, BlockPos without) {
         List<FeedingTroughBlockEntity> out = new ArrayList<>();
         Set<BlockPos> seen = new HashSet<>();
+        if (without != null) seen.add(without);
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
-        queue.add(start);
-        seen.add(start);
+        if (seen.add(start)) queue.add(start);
         while (!queue.isEmpty() && out.size() < MAX_GROUP) {
             BlockPos p = queue.poll();
             if (!(level.getBlockEntity(p) instanceof FeedingTroughBlockEntity t)) continue;
@@ -104,15 +119,37 @@ public class FeedingTroughBlock extends Block implements EntityBlock {
         return out;
     }
 
-    /** Fills the first trough of the group that isn't full; false if all are. */
-    public static boolean fillWater(Level level, BlockPos pos) {
-        for (FeedingTroughBlockEntity t : group(level, pos)) {
-            if (t.water() < FeedingTroughBlockEntity.WATER_CAP) {
-                t.setWater(FeedingTroughBlockEntity.WATER_CAP);
-                return true;
-            }
+    /** Drinks of water in the whole row. */
+    public static int water(Level level, BlockPos pos) {
+        return group(level, pos).stream().mapToInt(FeedingTroughBlockEntity::water).sum();
+    }
+
+    /** Spreads the row's water evenly over its troughs and shows the same level, and the same fodder, in all of them. */
+    static void level(Level level, BlockPos pos) {
+        List<FeedingTroughBlockEntity> row = group(level, pos);
+        if (row.isEmpty()) return;
+        int n = row.size(), total = row.stream().mapToInt(FeedingTroughBlockEntity::water).sum();
+        int each = (total + n - 1) / n, shown = each == 0 ? 0 : 1 + (each - 1) * 3 / FeedingTroughBlockEntity.WATER_CAP;
+        boolean food = row.stream().anyMatch(t -> !t.food().isEmpty());
+        for (int i = 0; i < n; i++) {
+            FeedingTroughBlockEntity t = row.get(i);
+            t.store(total / n + (i < total % n ? 1 : 0));
+            BlockState s = t.getBlockState(), now = s.setValue(WATER, shown).setValue(FOOD, food);
+            if (now != s) level.setBlock(t.getBlockPos(), now, Block.UPDATE_CLIENTS);
         }
-        return false;
+    }
+
+    /** One bucket: {@link FeedingTroughBlockEntity#WATER_CAP} drinks into the row's pool; false if it is full. */
+    public static boolean fillWater(Level level, BlockPos pos) {
+        int left = FeedingTroughBlockEntity.WATER_CAP;
+        for (FeedingTroughBlockEntity t : group(level, pos)) {
+            int n = Math.min(left, FeedingTroughBlockEntity.WATER_CAP - t.water());
+            t.store(t.water() + n);
+            left -= n;
+        }
+        if (left == FeedingTroughBlockEntity.WATER_CAP) return false;
+        level(level, pos);
+        return true;
     }
 
     /** Puts as much of {@code stack} as fits into the group (shrinks it); returns how much went in. */
@@ -175,7 +212,8 @@ public class FeedingTroughBlock extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!(level.getBlockEntity(pos) instanceof FeedingTroughBlockEntity t) || t.food().isEmpty()) return InteractionResult.PASS;
+        FeedingTroughBlockEntity t = group(level, pos).stream().filter(b -> !b.food().isEmpty()).findFirst().orElse(null); // this one first
+        if (t == null) return InteractionResult.PASS;
         if (!level.isClientSide()) player.getInventory().placeItemBackInInventory(t.takeFood(t.food().getCount()), net.minecraft.util.Prediction.SERVER_ONLY);
         return InteractionResult.SUCCESS;
     }

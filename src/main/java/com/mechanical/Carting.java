@@ -33,8 +33,6 @@ import net.neoforged.neoforge.registries.DeferredItem;
 public final class Carting {
     /** Hand feed for wild and tame horses: grain, sheaves, wheat, hay, apples, carrots. */
     public static final TagKey<Item> HORSE_FEED = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "horse_feed"));
-    /** Puts a tamed adult horse in the mood: sheaves and hay bales (vanilla's golden food too). */
-    public static final TagKey<Item> HORSE_BREEDING_FEED = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "horse_breeding_feed"));
     /** Who wears the Hide Saddle Blanket (only the tamed wild horse has a model for it). */
     public static final TagKey<EntityType<?>> WEARS_HIDE_BLANKET = TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MODID, "wears_hide_saddle_blanket"));
 

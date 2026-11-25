@@ -1,0 +1,258 @@
+{
+  "parent": "mechanical:stone_age/feeding_trough",
+  "criteria": {
+    "wild_boar": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:wild_boar"
+          }
+        }
+      }
+    },
+    "mouflon": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:mouflon"
+          }
+        }
+      }
+    },
+    "ibex": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:ibex"
+          }
+        }
+      }
+    },
+    "chamois": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:chamois"
+          }
+        }
+      }
+    },
+    "bighorn_sheep": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:bighorn_sheep"
+          }
+        }
+      }
+    },
+    "aurochs": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:aurochs"
+          }
+        }
+      }
+    },
+    "steppe_bison": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:steppe_bison"
+          }
+        }
+      }
+    },
+    "water_buffalo": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:water_buffalo"
+          }
+        }
+      }
+    },
+    "musk_ox": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:musk_ox"
+          }
+        }
+      }
+    },
+    "roe_deer": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:roe_deer"
+          }
+        }
+      }
+    },
+    "red_deer": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:red_deer"
+          }
+        }
+      }
+    },
+    "giant_deer": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:giant_deer"
+          }
+        }
+      }
+    },
+    "reindeer": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:reindeer"
+          }
+        }
+      }
+    },
+    "moose": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:moose"
+          }
+        }
+      }
+    },
+    "gazelle": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:gazelle"
+          }
+        }
+      }
+    },
+    "saiga": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:saiga"
+          }
+        }
+      }
+    },
+    "hare": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:hare"
+          }
+        }
+      }
+    },
+    "desert_hare": {
+      "trigger": "minecraft:tame_animal",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "mechanical:desert_hare"
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "wild_boar",
+      "mouflon",
+      "ibex",
+      "chamois",
+      "bighorn_sheep",
+      "aurochs",
+      "steppe_bison",
+      "water_buffalo",
+      "musk_ox",
+      "roe_deer",
+      "red_deer",
+      "giant_deer",
+      "reindeer",
+      "moose",
+      "gazelle",
+      "saiga",
+      "hare",
+      "desert_hare"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "minecraft:wheat"
+    },
+    "title": {
+      "translate": "advancements.mechanical.stone_age.tame_game.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.stone_age.tame_game.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

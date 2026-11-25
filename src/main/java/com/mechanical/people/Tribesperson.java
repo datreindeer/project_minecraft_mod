@@ -502,7 +502,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     /** Wild game a hunter may take: the mod's wild animals (not bears) and wild rabbits; never pets, leashed or village animals. */
     static boolean isPrey(LivingEntity e) {
-        if (e.isBaby() || ((Animal) e).isLeashed()) return false;
+        if (e.isBaby() || ((Animal) e).isLeashed() || e instanceof com.mechanical.wildlife.WildAnimal w && w.isTamed()) return false;
         return e instanceof com.mechanical.wildlife.WildAnimal && !(e instanceof com.mechanical.wildlife.BrownBear)
                 || e instanceof Rabbit rabbit && !rabbit.isPersistenceRequired();
     }

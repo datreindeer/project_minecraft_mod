@@ -1369,9 +1369,9 @@ sig på bakbenen.
 - **Hide Saddle Blanket:** läggs i sadelplatsen (smyg + högerklicka på hästen, eller högerklicka med filten): full fart
   och fulla hopp. Syns som en sydd hudfilt med en gjord av rep över ryggen. Tas av i hästens inventory. Bara den tama hästen
   kan bära den.
-- **Avel:** mata två tama, vuxna hästar med **Sheaf eller Hay Bale** (tagg `mechanical:horse_breeding_feed`; vanillas
-  guldmat fungerar också). Fölet blir en **tam** häst, ägd av den som matade. Med en vanilla-häst eller åsna gäller
-  vanillas regler (fölet blir en vanilla-häst eller mula). Annat foder läker 2 hälsa och får föl att växa.
+- **Avel:** sker av sig själv: två nöjda, helt friska tama hästar vid ett Feeding Trough med vatten och foder (se
+  stenåldern, *Naturlig avel*). Fölet blir en **tam** häst med samma ägare som stoet. Mat ur handen startar aldrig avel;
+  foder läker 2 hälsa och får föl att växa. Onagrer och kameler avlar på samma sätt.
 - Släpper Manure som andra hästar. Flyr inte (tam).
 - **Inventory (egen skärm):** smyg + högerklicka (eller E när du rider) öppnar hästens skärm: sadelplats och rustningsplats
   till vänster, sedan vänster satchel, hästen och höger satchel. (Vanillas hästskärm har bara plats för 5 kolumner.)

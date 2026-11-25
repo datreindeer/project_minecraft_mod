@@ -48,6 +48,7 @@ public final class AnimalFear {
         if (entity instanceof com.mechanical.wildlife.Predator p && !p.fearsPlayers()) return false; // hunting at night
         if (entity instanceof com.mechanical.wildlife.GiantDeer) return false; // fights, hides and flees by its own goal
         if (!(entity instanceof Animal animal) || entity.getType().builtInRegistryHolder().is(DOMESTIC)) return false;
+        if (animal instanceof com.mechanical.wildlife.WildAnimal wild && wild.isTamed()) return false;
         if (animal instanceof TamableAnimal tame && tame.isTame()) return false;
         if (animal instanceof AbstractHorse horse && horse.isTamed()) return false;
         return !animal.isLeashed();
@@ -120,7 +121,7 @@ public final class AnimalFear {
         private Player noticedPlayer() {
             Player nearest = mob.level().getNearestPlayer(mob, NOTICE_SPRINT * 1.5);
             if (nearest == null || nearest.isCreative() || nearest.isSpectator()) return null;
-            if (mob instanceof com.mechanical.wildlife.WildHorse horse && horse.calmAround(nearest)) return null; // being tamed
+            if (mob instanceof com.mechanical.wildlife.WildAnimal tame && tame.calmAround(nearest)) return null; // being tamed
             double dist = mob.distanceTo(nearest);
             double skittish = mob instanceof com.mechanical.wildlife.WildAnimal wild ? wild.fearMultiplier() : 1.0;
             if (dist > AncientOak.noticeRange(nearest, noticeRange(nearest) * skittish)) return null;

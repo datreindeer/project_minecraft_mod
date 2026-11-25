@@ -1,0 +1,12 @@
+{
+  "values": [
+    "#mechanical:taming_feed/boar",
+    "#mechanical:taming_feed/cattle",
+    "#mechanical:taming_feed/sheep",
+    "#mechanical:taming_feed/deer",
+    "#mechanical:taming_feed/reindeer",
+    "#mechanical:taming_feed/moose",
+    "#mechanical:taming_feed/antelope",
+    "#mechanical:taming_feed/hare"
+  ]
+}

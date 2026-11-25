@@ -4,14 +4,20 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -31,11 +37,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 
 /**
- * Base for the mod's wild animals (forest wildlife). They don't breed, roam in loose herds, graze now and then, and
+ * Base for the mod's wild animals (forest wildlife). Wild ones don't breed, roam in loose herds, graze now and then, and
  * use the shared fear/panic behaviour from {@link com.mechanical.AnimalFear} (added to every animal on join).
  * Subclasses set attributes, sounds, texture and any special behaviour.
+ * <p>The species in {@link Taming} can be tamed: crouch with their favourite food (they don't shy from that,
+ * {@link #calmAround}) and feed them by hand until they are tame; once they half trust you, you may stand. A tamed one
+ * no longer flees or turns on people, follows its food, and is livestock ({@link com.mechanical.Husbandry}): it needs food
+ * and water and breeds by itself when content. Hurting a wild one costs all its trust.
  */
 public abstract class WildAnimal extends Animal {
     /** Grazing: counts down while the head is lowered; synced for the head-down animation. */
@@ -74,6 +86,9 @@ public abstract class WildAnimal extends Animal {
             return this == AVOIDS || this == POOR;
         }
     }
+
+    private static final EntityDataAccessor<Boolean> TAMED = SynchedEntityData.defineId(WildAnimal.class, EntityDataSerializers.BOOLEAN);
+    private int tameTrust, tameCooldown;
 
     protected WildAnimal(EntityType<? extends WildAnimal> type, Level level) {
         super(type, level);
@@ -165,12 +180,20 @@ public abstract class WildAnimal extends Animal {
         super.defineSynchedData(builder);
         builder.define(GRAZE, 0);
         builder.define(DOZING, false);
+        builder.define(TAMED, false);
     }
 
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
         if (waterHabit().landAnimal()) goalSelector.addGoal(1, new ShoreGoal(this));
+        goalSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.BreedGoal(this, 1.0));
+        goalSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.TemptGoal(this, 1.1, this::isFood, false) {
+            @Override
+            public boolean canUse() {
+                return isTamed() && super.canUse();
+            }
+        });
         goalSelector.addGoal(3, new DozeGoal(this));
         goalSelector.addGoal(4, new FollowParentGoal(this, 1.1));
         goalSelector.addGoal(5, new FollowHerdGoal(this));
@@ -190,6 +213,7 @@ public abstract class WildAnimal extends Animal {
     public void aiStep() {
         int t = entityData.get(GRAZE);
         if (t > 0) entityData.set(GRAZE, t - 1);
+        if (tameCooldown > 0) tameCooldown--;
         if (isDozing() && !level().isClientSide()) wakeIfDisturbed();
         if (!level().isClientSide() && (tickCount + getId()) % 100 == 0) winterPace();
         super.aiStep();
@@ -230,8 +254,8 @@ public abstract class WildAnimal extends Animal {
             entityData.set(DOZING, false);
             return;
         }
-        Player near = level().getNearestPlayer(this, WAKE_RANGE);
-        if (near != null && !near.isSpectator() && !near.isCreative()
+        Player near = isTamed() ? null : level().getNearestPlayer(this, WAKE_RANGE);
+        if (near != null && !near.isSpectator() && !near.isCreative() && !calmAround(near)
                 && (!near.isShiftKeyDown() || distanceTo(near) < WAKE_RANGE_SNEAKING)) {
             entityData.set(DOZING, false);
             onWoken(near);
@@ -248,21 +272,132 @@ public abstract class WildAnimal extends Animal {
         com.mechanical.AnimalFear.panic(this, near.position());
     }
 
-    // ---- wild: no breeding (tame and farm animals don't mate in winter either, see WinterAnimals) ----
+    // ---- taming; only the tamed breed (and nobody in winter, see WinterAnimals) ----
+
+    public boolean isTamed() {
+        return entityData.get(TAMED);
+    }
+
+    /** Feedings so far. */
+    public int tameTrust() {
+        return tameTrust;
+    }
+
+    private boolean holdsFavourite(Player player) {
+        Taming.Diet diet = Taming.diet(getType());
+        return diet != null && (player.getMainHandItem().is(diet.food()) || player.getOffhandItem().is(diet.food()));
+    }
+
+    /** Not shy of this player: crouching with its favourite food, or half won over and he isn't running. */
+    public boolean calmAround(Player player) {
+        Taming.Diet diet = Taming.diet(getType());
+        return diet != null && (player.isCrouching() && holdsFavourite(player) || tameTrust * 2 >= diet.feeds() && !player.isSprinting());
+    }
+
+    /** The one choke point for turning on people: never when tamed, nor on a calm player who hasn't hurt it. */
+    @Override
+    public void setTarget(LivingEntity target) {
+        if (target instanceof Player p && (isTamed() || p != getLastHurtByMob() && calmAround(p))) return;
+        super.setTarget(target);
+    }
+
+    @Override
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        Taming.Diet diet = Taming.diet(getType());
+        // never down to vanilla's feeding for these: a tamed one's meals are Husbandry's business, and none breeds by hand
+        if (diet == null || isTamed() || !stack.is(diet.food())) return super.mobInteract(player, hand);
+        if (level().isClientSide()) return InteractionResult.SUCCESS;
+        tameFeed(player, stack, diet);
+        return InteractionResult.SUCCESS_SERVER;
+    }
+
+    /** Server: one hand-feeding of a wild one. Standing up before it half trusts you, it bolts. */
+    public void tameFeed(Player player, ItemStack stack, Taming.Diet diet) {
+        if (!player.isCrouching() && tameTrust * 2 < diet.feeds()) {
+            com.mechanical.AnimalFear.panic(this, player.position());
+            player.sendOverlayMessage(Component.translatable("message.mechanical.taming.shies", getDisplayName()));
+            return;
+        }
+        if (tameCooldown > 0) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.taming.chewing", getDisplayName()));
+            return;
+        }
+        stack.consume(1, player);
+        com.mechanical.Blood.stanch(this, (ServerLevel) level());
+        tameCooldown = Taming.FEED_COOLDOWN;
+        tameTrust++;
+        wake();
+        setTarget(null);
+        getNavigation().stop();
+        startGrazing();
+        playSound(SoundEvents.GENERIC_EAT.value(), 0.8F, 0.9F);
+        boolean done = tameTrust >= diet.feeds();
+        ((ServerLevel) level()).sendParticles(done ? ParticleTypes.HEART : ParticleTypes.HAPPY_VILLAGER,
+                getX(), getY() + getBbHeight() + 0.2, getZ(), done ? 7 : 4, getBbWidth() / 2, 0.2, getBbWidth() / 2, 0);
+        if (!done) {
+            player.sendOverlayMessage(Component.translatable("message.mechanical.taming.trust", getDisplayName(), tameTrust, diet.feeds()));
+            return;
+        }
+        setTamed();
+        // the "tame a wild animal" advancements listen for this
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) net.minecraft.advancements.triggers.CriteriaTriggers.TAME_ANIMAL.trigger(sp, this);
+        player.sendOverlayMessage(Component.translatable("message.mechanical.taming.tamed", getDisplayName()));
+    }
+
+    /** Tame from now on: it stays for good and fights no one. */
+    public void setTamed() {
+        entityData.set(TAMED, true);
+        setPersistenceRequired();
+        setTarget(null);
+        setAggressive(false);
+    }
+
+    /** Head down to eat or drink (tamed ones at the trough or on the grass). */
+    public void showEating() {
+        wake();
+        startGrazing();
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float damage) {
+        if (source.getEntity() instanceof Player && !isTamed()) tameTrust = 0;
+        return super.hurtServer(level, source, damage);
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        if (isTamed()) output.putBoolean("tamed", true);
+        if (tameTrust > 0) output.putInt("tame_trust", tameTrust);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        entityData.set(TAMED, input.getBooleanOr("tamed", false));
+        tameTrust = input.getIntOr("tame_trust", 0);
+    }
 
     @Override
     public boolean isFood(ItemStack stack) {
-        return false;
+        Taming.Diet diet = Taming.diet(getType());
+        return diet != null && stack.is(diet.food());
     }
 
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-        return null;
+        if (!isTamed() || !(getType().create(level, EntitySpawnReason.BREEDING) instanceof WildAnimal young)) return null;
+        // rolls the sex, for the species that have two looks
+        young.finalizeSpawn(level, level.getCurrentDifficultyAt(blockPosition()), EntitySpawnReason.BREEDING, null);
+        young.setTamed();
+        return young;
     }
 
     @Override
     public boolean canMate(Animal partner) {
-        return false;
+        return partner != this && partner.getType() == getType() && partner instanceof WildAnimal other && isTamed() && other.isTamed()
+                && isInLove() && other.isInLove();
     }
 
     /** Keeps loosely together: walks back towards the nearest of its kind when it strays too far. */
@@ -279,7 +414,7 @@ public abstract class WildAnimal extends Animal {
         @Override
         public boolean canUse() {
             if (mob.getRandom().nextInt(40) != 0) return false;
-            List<? extends WildAnimal> herd = mob.level().getEntitiesOfClass(mob.getClass(), mob.getBoundingBox().inflate(SEARCH), o -> o != mob);
+            List<? extends WildAnimal> herd = mob.level().getEntitiesOfClass(mob.getClass(), mob.getBoundingBox().inflate(SEARCH), o -> o != mob && o.isTamed() == mob.isTamed());
             other = herd.stream().min((a, b) -> Double.compare(a.distanceToSqr(mob), b.distanceToSqr(mob))).orElse(null);
             return other != null && mob.distanceTo(other) > STRAY;
         }

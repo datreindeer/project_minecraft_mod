@@ -318,7 +318,16 @@ TABS = {
          stood_on("trodden_path", {"persistent": "false"})),
         ("feeding_trough", "root", "feeding_trough", T, "Fed and Watered",
          "Craft a Feeding Trough (5 Planks) and fill it with a water bucket or fodder. Penned animals with no grass to graze "
-         "or no water get tired and won't breed. Troughs side by side join into one", by_code()),
+         "or no water get tired and won't breed. Troughs side by side join into one and share their water", by_code()),
+        ("tame_game", "feeding_trough", "minecraft:wheat", G, "Won Over",
+         "Crouch with its favourite food and feed a Wild Boar, Mouflon, Aurochs, deer, Moose, Hare or another farm-friendly "
+         "wild animal until it is tame. Click one with an empty hand to see what it likes",
+         {s: tamed(s)["tamed"] for s in ("wild_boar", "mouflon", "ibex", "chamois", "bighorn_sheep", "aurochs", "steppe_bison",
+                                         "water_buffalo", "musk_ox", "roe_deer", "red_deer", "giant_deer", "reindeer", "moose",
+                                         "gazelle", "saiga", "hare", "desert_hare")}),
+        ("born_in_the_pen", "feeding_trough", "minecraft:hay_block", G, "Born in the Pen",
+         "Keep two grown animals of a kind content, with water and their food in a Feeding Trough within 12 blocks, and "
+         "they have young by themselves (not in winter). Be near when one is born", by_code()),
     ]),
     "wilderness": ("minecraft:gui/advancements/backgrounds/adventure", [
         ("root", None, "flint_knife", T, "Wilderness & Hunting",

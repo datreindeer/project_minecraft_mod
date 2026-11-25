@@ -4,6 +4,9 @@ Writes the multipart blockstate (floor; a rim on each side that has no trough ne
 water; a layer of fodder), the models (vanilla spruce planks, water and hay textures, so no textures of its own), the item
 model, loot, recipe ([Planks][ ][Planks] / [Planks][Planks][Planks]), lang and the axe tag.
 
+Also taming (wildlife/Taming.java): the favourite-food item tags (taming_feed/<group>, and taming_feed with all of them,
+what a trough also takes) and the taming and husbandry messages.
+
 Generator order: after gen_dirt_slab.py, before gen_block_items.py, gen_unlocks.py, gen_advancements.py and
 gen_loot_format.py. Run: python scripts/gen_husbandry.py
 """
@@ -61,7 +64,49 @@ if M + "feeding_trough" not in tag["values"]:
     tag["values"].append(M + "feeding_trough")
 w(tag_path, tag)
 
+SHEAVES = [M + f"{g}_sheaf" for g in ("barley", "einkorn", "emmer", "oat")]
+FEEDS = {
+    "boar": ["minecraft:carrot", "minecraft:potato", "minecraft:beetroot", "minecraft:apple", M + "wild_carrot",
+             M + "turnip", M + "hazelnuts", M + "beechnuts", M + "chestnuts", M + "walnuts"],
+    "cattle": ["minecraft:wheat", "minecraft:hay_block", *SHEAVES],
+    "sheep": ["minecraft:wheat", M + "barley_grain", M + "oat_grain", M + "einkorn_grain", M + "emmer_grain"],
+    "deer": ["minecraft:apple", M + "crab_apple", M + "pears", M + "chestnuts"],
+    "reindeer": ["minecraft:brown_mushroom", "minecraft:red_mushroom", "minecraft:glow_lichen"],
+    "moose": [M + "willow_bark", M + "turnip", "minecraft:apple"],
+    "antelope": ["minecraft:wheat", *SHEAVES],
+    "hare": ["minecraft:carrot", M + "wild_carrot", "minecraft:dandelion"],
+}
+for name, values in FEEDS.items():
+    w(D / f"mechanical/tags/item/taming_feed/{name}.json", {"values": values})
+w(D / "mechanical/tags/item/taming_feed.json", {"values": [f"#{M}taming_feed/{name}" for name in FEEDS]})
+
+MESSAGES = {
+    "taming.shies": "The %s shies away. Crouch while you win it over",
+    "taming.chewing": "The %s is still chewing",
+    "taming.trust": "The %s takes it (%s/%s)",
+    "taming.tamed": "The %s is tame",
+    "husbandry.wild": "%s (wild) likes: %s. Crouch and feed it (%s/%s)",
+    "husbandry.tame": "%s (tame): %s",
+    "husbandry.kept": "%s: %s",
+    "husbandry.content": "content, will have young",
+    "husbandry.no_partner": "content, but no ready partner near",
+    "husbandry.starved": "tired, needs food",
+    "husbandry.parched": "tired, needs water",
+    "husbandry.starved_and_parched": "tired, needs food and water",
+    "husbandry.young": "too young to breed",
+    "husbandry.no_water": "wants water in a Feeding Trough nearby",
+    "husbandry.no_food": "wants food it likes in a Feeding Trough nearby",
+    "husbandry.hungry": "hungry",
+    "husbandry.thirsty": "thirsty",
+    "husbandry.winter": "content, no young in winter",
+    "husbandry.resting": "content, resting",
+    "husbandry.hurt": "hurt, no young until it heals",
+    "husbandry.crowded": "too crowded for young",
+}
+
 lang_path = A / "lang/en_us.json"
 lang = json.loads(lang_path.read_text(encoding="utf-8"))
 lang["block.mechanical.feeding_trough"] = "Feeding Trough"
+for key, text in MESSAGES.items():
+    lang["message.mechanical." + key] = text
 lang_path.write_text(json.dumps(lang, indent=2) + "\n", encoding="utf-8")

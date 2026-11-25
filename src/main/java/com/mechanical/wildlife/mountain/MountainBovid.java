@@ -98,7 +98,7 @@ public abstract class MountainBovid extends WildAnimal {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide()) climbing = climbs() && horizontalCollision && againstRock();
+        if (!level().isClientSide()) climbing = climbs() && !isTamed() && horizontalCollision && againstRock();
     }
 
     @Override
@@ -133,9 +133,9 @@ public abstract class MountainBovid extends WildAnimal {
         }
 
         private Vec3 findThreat() {
-            if (mob.isDozing() || mob.isLeashed()) return null;
+            if (mob.isDozing() || mob.isLeashed() || mob.isTamed()) return null;
             Player p = mob.level().getNearestPlayer(mob, 24);
-            if (p == null || p.isCreative() || p.isSpectator()) return null;
+            if (p == null || p.isCreative() || p.isSpectator() || mob.calmAround(p)) return null;
             if (AnimalFear.isPanicking(mob)) return p.position();
             double range = (p.isCrouching() ? 4 : p.isSprinting() ? 16 : 10) * mob.fearMultiplier();
             double d = mob.distanceTo(p);

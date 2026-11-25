@@ -340,6 +340,7 @@ public class GiantDeer extends WildAnimal {
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
         bossEvent.setProgress(getHealth() / getMaxHealth());
+        bossEvent.setVisible(!isTamed());
     }
 
     @Override
@@ -381,7 +382,7 @@ public class GiantDeer extends WildAnimal {
         public boolean canUse() {
             if (deer.isBroken() || deer.isDozing() || deer.getTarget() != null || (deer.tickCount + deer.getId()) % 10 != 0) return false;
             Player p = deer.level().getNearestPlayer(deer, SIGHT);
-            if (p == null || !fair(p) || deer.distanceTo(p) > (p.isShiftKeyDown() ? SIGHT_SNEAKING : SIGHT) || !deer.hasLineOfSight(p)) return false;
+            if (p == null || !fair(p) || deer.isTamed() || deer.calmAround(p) || deer.distanceTo(p) > (p.isShiftKeyDown() ? SIGHT_SNEAKING : SIGHT) || !deer.hasLineOfSight(p)) return false;
             targetMob = p;
             return true;
         }
@@ -437,6 +438,7 @@ public class GiantDeer extends WildAnimal {
         }
 
         private net.minecraft.world.entity.LivingEntity threat() {
+            if (deer.isTamed()) return null;
             if (deer.isBroken()) {
                 var a = deer.lastAttacker;
                 if (a != null && fair(a) && a.distanceTo(deer) < SIGHT) return a;
