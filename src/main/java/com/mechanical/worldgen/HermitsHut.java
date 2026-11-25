@@ -5,9 +5,12 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.BedBlock;
@@ -21,7 +24,9 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /** A log hut with a thatched (hay) roof deep in the woods, home to one hermit: a leatherworker with his cauldron. */
-final class HermitsHut extends StoneAgeFeature {
+public final class HermitsHut extends StoneAgeFeature {
+    /** On the hermit: the middle of his hut's floor (BlockPos.asLong), for "now entering" (clan.Lands). */
+    private static final String HOME = "mechanical_hermit_hut";
     static final MapCodec<HermitsHut> CODEC = MapCodec.unit(HermitsHut::new);
 
     @Override
@@ -67,7 +72,37 @@ final class HermitsHut extends StoneAgeFeature {
         spawn(level, random, EntityTypes.VILLAGER, c, hermit -> {
             hermit.setVillagerData(hermit.getVillagerData().withProfession(level.registryAccess(), VillagerProfession.LEATHERWORKER));
             hermit.setVillagerXp(1); // keeps the profession even if the cauldron is never claimed
+            hermit.getPersistentData().putLong(HOME, c.asLong());
         });
+        return true;
+    }
+
+    /**
+     * Where {@code v}'s hut stands, or null if he is no hermit. Hermits from worlds made before they were marked are known
+     * by the hut round them, and marked when found.
+     * shortcut: a hut has a name only while its hermit lives near it; save hut positions in the level if that is missed.
+     */
+    public static BlockPos home(Villager v) {
+        var marked = v.getPersistentData().getLong(HOME);
+        if (marked.isPresent()) return BlockPos.of(marked.get());
+        if (!v.getVillagerData().profession().is(VillagerProfession.LEATHERWORKER)) return null;
+        BlockPos at = v.blockPosition();
+        for (BlockPos c : BlockPos.betweenClosed(at.offset(-6, -2, -6), at.offset(6, 2, 6))) {
+            if (!isHut(v.level(), c)) continue;
+            v.getPersistentData().putLong(HOME, c.asLong());
+            return c.immutable();
+        }
+        return null;
+    }
+
+    /** The hut's own shape round floor middle {@code c}: a 7x7 hay eave under a hay cap, on four upright log corners. */
+    private static boolean isHut(Level level, BlockPos c) {
+        if (!level.getBlockState(c.above(4)).is(Blocks.HAY_BLOCK)) return false;
+        for (int dx : new int[] {-1, 1})
+            for (int dz : new int[] {-1, 1}) {
+                if (!level.getBlockState(c.offset(3 * dx, 3, 3 * dz)).is(Blocks.HAY_BLOCK)) return false;
+                if (!level.getBlockState(c.offset(2 * dx, 1, 2 * dz)).is(BlockTags.LOGS)) return false;
+            }
         return true;
     }
 }

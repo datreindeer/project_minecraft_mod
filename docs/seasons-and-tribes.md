@@ -77,7 +77,8 @@
   för NPC-stammar, "Home" på den egna stammens mark och inget mer på en annan spelarstams. Mark: en spelarstams territorium (se *Stammens mark* nedan: 5x5 chunks runt Fire Pit:en, för en stor Fire Pit även dess biome), en NPC-by innanför palissaden (radie 23 från mitten),
   och ett NPC-läger runt elden dess folk kallar hem (palissadens radie + 2, minst 10 block; gäller även bosättningar).
   Servern kollar var 10:e tick och skickar `Lands.Entered` en gång per inträde (inte igen förrän man gått ut eller in på
-  annan mark). Första gången på en annan stams mark ger framsteget **Their Land** (wilderness). Kod: `clan/Lands`,
+  annan mark). Första gången på en annan stams mark ger framsteget **Their Land** (wilderness). Vanliga byar och Hermit's Hut visar
+  också titeln, med eget namn ("You are now entering Oakford", "... Wren's Hut"). Kod: `clan/Lands`,
   `client/clan/LandTitle`.
 - **Tab-listan** (spelarlistan) ersätter vanilla och syns bara medan Tab hålls nere, så den tar stor plats: upp till 88 %
   av skärmbredden (en ensam kolumn högst 420 GUI-pixlar), rader på 14 px med 12 px ansikten, rankord bredvid namnet,

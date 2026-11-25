@@ -60,6 +60,14 @@ tree_feature("pine", trunk("minecraft:forking_trunk_placer", 10, 3, 2),
 tree_feature("yew", trunk("minecraft:dark_oak_trunk_placer", 4, 2, 1),
              {"type": "minecraft:dark_oak_foliage_placer", "radius": 0, "offset": 0},
              {"type": "minecraft:three_layers_feature_size", "upper_size": 2})
+# acacia (vanilla's feature overridden, so worldgen and saplings both get it): umbrella thorn, forked or leaning limbs
+# under thin flat crowns at different heights (TreeShapes)
+w(D / "minecraft/worldgen/feature/acacia.json", {"type": "minecraft:tree", "below_trunk_provider": "minecraft:soil_beneath_tree",
+    "decorators": [], "ignore_vines": True, "minimum_size": {"type": "minecraft:two_layers_feature_size", "upper_size": 2},
+    "trunk_placer": trunk("mechanical:umbrella_trunk_placer", 7, 2),
+    "foliage_placer": {"type": "mechanical:umbrella_foliage_placer", "radius": 4, "offset": 0},
+    "foliage_provider": {"id": "minecraft:acacia_leaves", "properties": {"distance": "7", "persistent": "false", "waterlogged": "false"}},
+    "trunk_provider": {"id": "minecraft:acacia_log", "properties": {"axis": "y"}}})
 
 # ---- fruit trees (Trees.FRUIT_KINDS, leaves FruitLeavesBlock; docs/flora-and-food-plan.md section 4) ----
 uniform = lambda lo, hi: {"type": "minecraft:uniform", "min_inclusive": lo, "max_inclusive": hi}

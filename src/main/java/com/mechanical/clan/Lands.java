@@ -5,8 +5,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.mechanical.Mechanical;
+import com.mechanical.dashboard.Villages;
 import com.mechanical.people.Tribe;
 import com.mechanical.people.Tribesperson;
+import com.mechanical.worldgen.HermitsHut;
 import com.mechanical.worldgen.TribeVillageStructure;
 
 import net.minecraft.core.BlockPos;
@@ -27,20 +29,23 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Whose land a player stands on: a player tribe's territory (Clans.owner: 5x5 chunks round its Fire Pit, more for a big one), a tribe
- * village inside its palisade, or an NPC camp round the fire its people call home. On stepping into one the server
+ * village inside its palisade, an NPC camp round the fire its people call home, a vanilla village or a Hermit's Hut (both
+ * with a generated name). On stepping into one the server
  * sends an {@link Entered} once (client.clan.LandTitle shows "You are now entering X's land").
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Lands {
-    public static final int HOME = 0, CLAN = 1, TRIBE = 2;
+    public static final int HOME = 0, CLAN = 1, TRIBE = 2, VILLAGE = 3, HERMIT = 4;
+    /** A vanilla village reaches this far past its houses and streets, a Hermit's Hut this far from its middle. */
+    static final int VILLAGE_MARGIN = 8, HUT_LAND = 12;
     /** A camp without a wall still reaches this far from its fire. */
     public static final int CAMP_LAND = 10;
     static final int CHECK_TICKS = 10;
 
-    /** {@code key} tells lands apart ("clan:id", "tribe:id"); {@code name} a tribe name or an NPC tribe's id; {@code colour} a DyeColor id. */
+    /** {@code key} tells lands apart ("clan:id", "tribe:id"); {@code name} a tribe name, an NPC tribe's id, a village's or a hermit's name; {@code colour} a DyeColor id. */
     public record Land(int kind, String key, String name, int colour, UUID tribe) {}
 
-    /** {@code rep} the player's standing with an NPC tribe (unused for player tribes). */
+    /** {@code rep} the player's standing with an NPC tribe (unused for the other kinds). */
     public record Entered(int kind, String name, int colour, int rep) implements CustomPacketPayload {
         public static final Type<Entered> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "land_entered"));
         public static final StreamCodec<RegistryFriendlyByteBuf, Entered> CODEC = StreamCodec.composite(
@@ -56,12 +61,40 @@ public final class Lands {
     /** The land each online player stood on at the last check (not saved: logging in inside one shows it again). */
     private static final Map<UUID, String> LAST = new HashMap<>();
 
-    /** The land at {@code pos} for {@code player}: player tribes first, then villages, then camps; null in the wild. */
+    /** The land at {@code pos} for {@code player}: player tribes, tribe villages, camps, vanilla villages, huts; null in the wild. */
     public static Land landAt(Clans data, ServerLevel level, UUID player, Vec3 pos) {
         Clans.Clan owner = data.owner(level.dimension(), ChunkPos.containing(BlockPos.containing(pos)));
         if (owner != null) return new Land(owner.member(player) != null ? HOME : CLAN, "clan:" + owner.id, owner.name, owner.colour, null);
         UUID npc = npcTribeAt(level, pos);
-        return npc == null ? null : tribe(npc);
+        if (npc != null) return tribe(npc);
+        BlockPos at = BlockPos.containing(pos);
+        Land village = villageLand(level, at);
+        return village != null ? village : hutLand(level, at);
+    }
+
+    private static Land villageLand(ServerLevel level, BlockPos at) {
+        var structures = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
+        // only reads the chunk's structure references, so it is cheap enough for the 10 tick check
+        for (var start : level.structureManager().startsForStructure(at.getX() >> 4, at.getZ() >> 4,
+                s -> structures.wrapAsHolder(s).is(net.minecraft.tags.StructureTags.VILLAGE))) {
+            for (var piece : start.getPieces()) {
+                if (piece.getBoundingBox().inflatedBy(VILLAGE_MARGIN).isInside(at))
+                    return new Land(VILLAGE, "village:" + start.getChunkPos().pack(), Villages.name(level, start),
+                            net.minecraft.world.item.DyeColor.YELLOW.getId(), null);
+            }
+        }
+        return null;
+    }
+
+    /** Round the hut of a hermit who is still about; named from where the hut stands. */
+    private static Land hutLand(ServerLevel level, BlockPos at) {
+        for (var v : level.getEntitiesOfClass(net.minecraft.world.entity.npc.villager.Villager.class, new net.minecraft.world.phys.AABB(at).inflate(32))) {
+            BlockPos hut = HermitsHut.home(v);
+            if (hut != null && Math.abs(hut.getY() - at.getY()) <= HUT_LAND && flat(hut, Vec3.atCenterOf(at)) <= HUT_LAND)
+                return new Land(HERMIT, "hut:" + hut.asLong(), hermitName(level.getSeed() ^ hut.asLong()),
+                        net.minecraft.world.item.DyeColor.BROWN.getId(), null);
+        }
+        return null;
     }
 
     /**
@@ -87,6 +120,14 @@ public final class Lands {
         return null;
     }
 
+    private static final String[] HERMITS = {"Aldric", "Wren", "Osric", "Hilda", "Bartholomew", "Agnes", "Edwin", "Maud",
+            "Godric", "Elspeth", "Anselm", "Rowena", "Cedric", "Winifred", "Leofric", "Ingrid", "Ulric", "Mildred", "Percival", "Gytha",
+            "Alwin", "Brida", "Orrin", "Sigrun", "Tobias", "Hedda", "Emeric", "Ysolde"};
+
+    static String hermitName(long seed) {
+        return HERMITS[net.minecraft.util.RandomSource.create(seed).nextInt(HERMITS.length)];
+    }
+
     private static Land tribe(UUID id) {
         return new Land(TRIBE, "tribe:" + id, id.toString(), Tribe.of(id).baseColour().getId(), id);
     }
@@ -106,10 +147,15 @@ public final class Lands {
         if (java.util.Objects.equals(key, LAST.put(player.getUUID(), key)) || land == null) return;
         int rep = land.tribe() == null ? 0 : Tribe.of(land.tribe()).reputation(player);
         PacketDistributor.sendToPlayer(player, new Entered(land.kind(), land.name(), land.colour(), rep));
-        if (land.kind() != HOME) {
-            var holder = level.getServer().getAdvancements().get(Identifier.fromNamespaceAndPath(Mechanical.MODID, "wilderness/tribe_land"));
-            if (holder != null) player.getAdvancements().award(holder, "done");
-        }
+        String advancement = switch (land.kind()) {
+            case CLAN, TRIBE -> "tribe_land";
+            case VILLAGE -> "village_land";
+            case HERMIT -> "hermit_land";
+            default -> null;
+        };
+        if (advancement == null) return;
+        var holder = level.getServer().getAdvancements().get(Identifier.fromNamespaceAndPath(Mechanical.MODID, "wilderness/" + advancement));
+        if (holder != null) player.getAdvancements().award(holder, "done");
     }
 
     @SubscribeEvent
