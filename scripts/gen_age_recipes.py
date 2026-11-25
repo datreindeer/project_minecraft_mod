@@ -33,6 +33,9 @@ RECIPES = [
     # are taken away in gen_iron_ores.py / gen_bloomery.py, tin's own recipes are gone
     *[(f"copper_ingot_from_{k}_{o}", "misc", "copper ore is crushed and melted in a crucible or High Furnace, not a furnace", "never")
       for k in ("smelting", "blasting") for o in ("raw_copper", "copper_ore", "deepslate_copper_ore")],
+    # the Iron Nugget is the shared nugget of pig iron, steel and wrought iron (docs/metals.md); 9 of them must not become a
+    # vanilla Iron Ingot, which the mod never makes from its own iron
+    ("iron_ingot_from_nuggets", "misc", "Iron Nuggets come from the mod's pig iron, steel and wrought iron, not vanilla iron", "never"),
     # decided with the user (borderline cases)
     ("bundle", "tools", "replaced by the mod's Leather Pouch (Cordage over Leather, 2x2, worn at the hip)", "never"),
     # paper, book and writable_book are back in the Bronze Age: scripts/gen_writing.py

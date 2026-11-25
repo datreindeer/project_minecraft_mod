@@ -42,7 +42,7 @@ METALS = [
     dict(id="lead", name="Lead", melt=330, real_melt="327", density=11.34, color=0x8C93A8,
          ingot=M + "lead_ingot", nugget=M + "lead_nugget", block=M + "lead_block", solid=0x5E6474, dents=3, ores={M + "raw_galena": 300}, also="Clay Kiln 800° (Raw Galena)"),
     dict(id="silver", name="Silver", melt=1000, real_melt="962", density=10.49, color=0xF4F6FF,
-         ingot=M + "silver_ingot", nugget=M + "silver_nugget", block=M + "silver_block", solid=0x96AEA9, coin=M + "silver_coin", also="Clay Kiln 1000° (Leaded Cupel)"),
+         ingot=M + "silver_ingot", nugget=M + "silver_nugget", block=M + "silver_block", solid=0xD4D8E0, coin=M + "silver_coin", also="Clay Kiln 1000° (Leaded Cupel)"),
     dict(id="copper", name="Copper", melt=1085, real_melt="1085", density=8.96, color=0xFF7A2A,
          ingot=V + "copper_ingot", nugget=V + "copper_nugget", block=V + "copper_block", coin=M + "copper_coin",
          ores={M + "crushed_copper_ore": 200, M + "copper_concentrate": 400, M + "native_copper": 400, V + "raw_copper": 400},
@@ -61,7 +61,7 @@ METALS = [
          plate=M + "iron_plate", solid=0x72706D, marks="fibres",
          also="Bloomery 1350° (bloom), Finery Hearth 1300°"),
     dict(id="tin", name="Tin", melt=232, real_melt="232", density=7.29, color=0xE8ECF2,
-         ingot=M + "tin_ingot", nugget=M + "tin_nugget", block=M + "tin_block", solid=0xB2B8C0, ores={M + "crushed_tin_ore": 200, M + "tin_concentrate": 400},
+         ingot=M + "tin_ingot", nugget=M + "tin_nugget", block=M + "tin_block", solid=0x96978F, ores={M + "crushed_tin_ore": 200, M + "tin_concentrate": 400},
          crucible={M + "crushed_tin_ore": 1, M + "tin_concentrate": 2}),
     # iron nuggets (shared by the three irons) remelt as pig iron: scrap iron takes up carbon in the furnace
     dict(id="pig_iron", name="Pig Iron", melt=1200, real_melt="1150–1200", density=7.1, color=0xFFA33A,
