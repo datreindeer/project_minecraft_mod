@@ -1440,7 +1440,10 @@ def steel_kitchen_items():
     FILL = {"apple": [(120, 110, 40), (160, 150, 70), (196, 188, 110), (222, 216, 150), (240, 236, 196)],
             "plum": [(40, 10, 40), (74, 22, 70), (110, 40, 104), (146, 66, 136), (180, 110, 170)],
             "rowan": [(120, 30, 10), (176, 56, 16), (214, 90, 26), (236, 130, 50), (248, 176, 96)],
-            "bird_cherry": [(14, 8, 16), (34, 16, 34), (58, 28, 56), (86, 46, 82), (120, 76, 112)]}
+            "bird_cherry": [(14, 8, 16), (34, 16, 34), (58, 28, 56), (86, 46, 82), (120, 76, 112)],
+            # the orchard: pale gold pear, sunset peach
+            "pear": [(132, 112, 46), (176, 156, 76), (210, 194, 112), (232, 222, 156), (246, 240, 200)],
+            "peach": [(150, 56, 26), (204, 96, 44), (236, 140, 70), (248, 182, 108), (252, 220, 160)]}
     for k, (f, pal) in enumerate(FILL.items()):
         pie(f"raw_{f}_pie", pal, True, 1400 + k)
         pie(f"{f}_pie", pal, False, 1410 + k)
@@ -1568,6 +1571,75 @@ def flora3_items():
                     (5, 6, (255, 255, 255)), (9, 6, (255, 255, 255)), (11, 7, (120, 170, 150))])
 
 
+def orchard_items():
+    """The orchard's preserves: walnut and almond oil in flasks, quince paste turned out as a dark amber block, cherry jam
+    in a cloth-tied pot, pickled lemons in a crock."""
+    WAL_OIL = [(96, 64, 10), (150, 108, 22), (196, 152, 50), (236, 204, 120)]
+    oil_flask("walnut_oil", STONEWARE, WAL_OIL, 1601,
+              [(12, 10, (176, 140, 92)), (13, 10, (140, 104, 62)), (12, 11, (120, 86, 48)), (13, 11, (196, 160, 110)),  # a walnut
+               (14, 11, (120, 86, 48)), (12, 12, (100, 70, 38)), (13, 12, (150, 112, 70)), (14, 12, (110, 78, 42))])
+    ALM_OIL = [(150, 128, 50), (206, 186, 96), (236, 222, 150), (252, 246, 210)]
+    oil_flask("almond_oil", CLAY[1:], ALM_OIL, 1602,
+              [(13, 8, (236, 200, 214)), (12, 9, (250, 230, 236)), (13, 9, (214, 110, 146)), (14, 9, (250, 230, 236)),  # a blossom
+               (13, 10, (90, 70, 50)), (12, 12, (210, 176, 124)), (13, 12, (176, 138, 88)), (12, 13, (176, 138, 88)), (13, 13, (130, 96, 58))])
+
+    # quince paste: a firm block of deep amber-red membrillo on a board, one slice cut off and leaning
+    img = new()
+    plate(img, OAK, 11)
+    PASTE = [(90, 24, 10), (140, 46, 18), (186, 78, 30), (220, 120, 56), (244, 170, 104)]
+    for y in range(5, 12):
+        for x in range(3, 11):
+            top = y < 7
+            t = 0.78 if top else 0.5 - 0.04 * (x - 3) - 0.03 * (y - 7)
+            if x == 10 or y == 11: t = 0.18
+            put(img, x, y, ramp(PASTE, t + r_unif(1611, x, y, 0.03)))
+    for x in range(4, 10): put(img, x, 5, PASTE[4] if x % 3 else PASTE[3])  # light on the top edge
+    for y in range(6, 12):  # the cut slice, leaning on the block
+        for x in (12, 13):
+            put(img, x, y, ramp(PASTE, 0.62 if x == 12 else 0.34))
+    put(img, 12, 6, PASTE[4]); put(img, 6, 8, (255, 210, 160))
+    outline_dark(img, (50, 14, 6), only_bottom_right=True)
+    save(img, "quince_paste", "item")
+
+    # cherry jam: a glazed pot tied over with cloth, a peep of dark red jam, two cherries beside it
+    img = new()
+    POT = [(40, 50, 60), (66, 80, 94), (96, 112, 126), (130, 146, 158), (170, 184, 194)]
+    lathe(img, {8: 4.6, 9: 5.0, 10: 5.2, 11: 5.2, 12: 4.8, 13: 4.0, 14: 3.0}, POT, 1621)
+    CLOTH = [(150, 40, 40), (196, 70, 64), (226, 120, 110), (246, 190, 180)]
+    for y, (a, b) in {3: (6, 9), 4: (4, 11), 5: (3, 12), 6: (3, 12), 7: (3, 12)}.items():
+        for x in range(a, b + 1):
+            check = ((x // 2) + (y // 2)) % 2 == 0   # a red and white checked cloth
+            t = 0.75 - 0.4 * (x - a) / max(1, b - a) - 0.1 * (y == 7)
+            put(img, x, y, mix(ramp(CLOTH, t), (250, 246, 240), 0.7) if check else ramp(CLOTH, t))
+    for x in range(3, 13):
+        put(img, x, 8, (150, 110, 60) if x % 2 else (196, 156, 96))  # the string
+    JAM = [(70, 6, 16), (120, 10, 28), (170, 24, 44), (230, 110, 120)]
+    for x, y, k in ((5, 4, 2), (6, 4, 1), (4, 5, 1), (5, 5, 0), (6, 5, 1)):
+        put(img, x, y, JAM[k])
+    put(img, 5, 4, JAM[3])
+    for cx, cy in ((12.6, 12.6), (14.4, 13.6)):
+        for x, y in ellipse_px(cx, cy, 1.4, 1.4):
+            put(img, x, y, (206, 24, 40) if (x + 0.5 - cx) + (y + 0.5 - cy) > -0.6 else (255, 150, 150))
+    for x, y in ((13, 10), (13, 9), (14, 11), (12, 9)): put(img, x, y, (96, 70, 40))
+    save(img, "cherry_jam", "item")
+
+    # pickled lemons: a stoneware crock of cloudy brine packed with quartered lemons, a bay leaf on top
+    img = new()
+    lathe(img, {7: 5.4, 8: 5.8, 9: 6.0, 10: 6.0, 11: 5.8, 12: 5.4, 13: 4.6, 14: 3.4}, STONEWARE, 1631)
+    for y, (a, b) in {4: (4, 11), 5: (3, 12), 6: (3, 12)}.items():
+        for x in range(a, b + 1):
+            put(img, x, y, mix((200, 196, 140), (230, 226, 180), 0.5 + 0.3 * (x < 7) - 0.2 * (y == 6)))
+    for x in range(2, 14):
+        put(img, x, 7, ramp(STONEWARE, 0.9 - 0.05 * abs(x - 5)))
+    for ox, oy in ((4, 5), (7, 4), (10, 5), (6, 6), (9, 6)):  # lemon quarters: bright rind, pale flesh
+        put(img, ox, oy, (250, 230, 60)); put(img, ox + 1, oy, (252, 244, 170)); put(img, ox, oy + 1, (214, 180, 30)); put(img, ox + 1, oy + 1, (240, 214, 90))
+    for x, y in ((8, 3), (9, 2), (10, 2)):
+        put(img, x, y, (70, 110, 50))
+    for x in range(4, 12):
+        put(img, x, 10, mix(get(img, x, 10), (200, 170, 40), 0.35))  # a yellow glaze band
+    save(img, "pickled_lemons", "item")
+
+
 def effect_icon(rows, pal):
     img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
     assert len(rows) == 18 and all(len(r) == 18 for r in rows), [len(r) for r in rows]
@@ -1648,6 +1720,7 @@ def main():
     steel_kitchen_items()
     flora3_items()
     flora3_effects()
+    orchard_items()
     print(f"cookware textures ok ({len(WRITTEN)} files)")
 
 

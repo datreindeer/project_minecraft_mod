@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mechanical:block/clementine_planks",
+    "side": "mechanical:block/clementine_planks",
+    "top": "mechanical:block/clementine_planks"
+  }
+}

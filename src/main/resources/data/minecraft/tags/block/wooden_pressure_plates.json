@@ -16,6 +16,19 @@
     "mechanical:olive_pressure_plate",
     "mechanical:date_palm_pressure_plate",
     "mechanical:bitter_orange_pressure_plate",
+    "mechanical:pear_pressure_plate",
+    "mechanical:sweet_cherry_pressure_plate",
+    "mechanical:lemon_pressure_plate",
+    "mechanical:clementine_pressure_plate",
+    "mechanical:walnut_pressure_plate",
+    "mechanical:chestnut_pressure_plate",
+    "mechanical:quince_pressure_plate",
+    "mechanical:mulberry_pressure_plate",
+    "mechanical:medlar_pressure_plate",
+    "mechanical:peach_pressure_plate",
+    "mechanical:apricot_pressure_plate",
+    "mechanical:almond_pressure_plate",
+    "mechanical:pomegranate_pressure_plate",
     "mechanical:bog_oak_pressure_plate"
   ]
 }

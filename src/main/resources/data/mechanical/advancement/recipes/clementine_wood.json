@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:clementine_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:clementine_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:clementine_planks",
+      "mechanical:clementine_wood",
+      "mechanical:stripped_clementine_wood",
+      "mechanical:clementine_slab",
+      "mechanical:clementine_stairs",
+      "mechanical:clementine_fence",
+      "mechanical:clementine_fence_gate",
+      "mechanical:clementine_door",
+      "mechanical:clementine_trapdoor",
+      "mechanical:clementine_button",
+      "mechanical:clementine_pressure_plate"
+    ]
+  }
+}

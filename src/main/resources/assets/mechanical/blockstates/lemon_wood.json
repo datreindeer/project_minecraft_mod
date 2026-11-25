@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "mechanical:block/lemon_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "mechanical:block/lemon_wood"
+    },
+    "axis=z": {
+      "model": "mechanical:block/lemon_wood",
+      "x": 90
+    }
+  }
+}

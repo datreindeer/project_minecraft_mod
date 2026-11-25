@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "wooden_button",
+  "ingredients": [
+    "mechanical:pear_planks"
+  ],
+  "result": {
+    "id": "mechanical:pear_button"
+  }
+}

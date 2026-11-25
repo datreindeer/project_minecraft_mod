@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:chalk_downs",
+    "mechanical:hazel_meadow"
+  ],
+  "features": "mechanical:quince_downs",
+  "step": "vegetal_decoration"
+}

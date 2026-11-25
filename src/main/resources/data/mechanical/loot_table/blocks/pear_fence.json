@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:pear_fence"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "mechanical:blocks/pear_fence"
+}

@@ -1,0 +1,162 @@
+{
+  "variants": {
+    "age=0": [
+      {
+        "model": "mechanical:block/apricot_leaves"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves",
+        "y": 270
+      }
+    ],
+    "age=1": [
+      {
+        "model": "mechanical:block/apricot_leaves_blossom"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom_2"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom_2",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom_2",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom_2",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom_3"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom_3",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom_3",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_blossom_3",
+        "y": 270
+      }
+    ],
+    "age=2": [
+      {
+        "model": "mechanical:block/apricot_leaves_unripe"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe_2"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe_2",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe_2",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe_2",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe_3"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe_3",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe_3",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_unripe_3",
+        "y": 270
+      }
+    ],
+    "age=3": [
+      {
+        "model": "mechanical:block/apricot_leaves_ripe"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe_2"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe_2",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe_2",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe_2",
+        "y": 270
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe_3"
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe_3",
+        "y": 90
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe_3",
+        "y": 180
+      },
+      {
+        "model": "mechanical:block/apricot_leaves_ripe_3",
+        "y": 270
+      }
+    ]
+  }
+}

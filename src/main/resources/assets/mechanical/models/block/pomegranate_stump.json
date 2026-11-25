@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/stump",
+  "textures": {
+    "side": "mechanical:block/pomegranate_log",
+    "top": "mechanical:block/pomegranate_log_top"
+  }
+}

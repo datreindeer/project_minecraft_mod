@@ -126,8 +126,8 @@ KINDS = {
         # flora and food plan 4b: the spice traders from the far east, on camels; rare (weight 1 against the others' 4)
         "name": "Eastern Caravan", "animal": "camel", "weight": 1,
         "dialog": "Peace and plenty to you! The %s have walked a year of roads from the far east, past the great mountains and the "
-                  "deserts, with what never grows in these lands: pepper and cinnamon, ginger, rice, saffron and tea, bitter orange trees "
-                  "for warm gardens, and silk and indigo for your looms. We pay in silver for gemstones, and gladly for jujubes and sea buckthorn: a taste of home.",
+                  "deserts, with what never grows in these lands: pepper and cinnamon, ginger, rice, saffron and tea, bitter orange, lemon, "
+                  "clementine, pomegranate and almond trees for warm gardens, and silk and indigo for your looms. We pay in silver for gemstones, and gladly for jujubes and sea buckthorn: a taste of home.",
         "cargo": [V + "decorated_pot", V + "barrel", V + "decorated_pot", V + "barrel", M + "black_pepper", M + "cinnamon_bark",
                   M + "rice", M + "tea_leaves", M + "silk_thread", M + "dried_dates", M + "indigo", M + "saffron"],
         "purse": [300, 520],
@@ -136,6 +136,9 @@ KINDS = {
                   g(M + "saffron_corm", 2, 2 * S, 2, 2), g(M + "tea_leaves", 4, 1 * S, 3, 2), g(M + "silk_thread", 4, 3 * S, 2, 2),
                   g(M + "indigo", 2, 1 * S, 3, 1), g(V + "lapis_lazuli", 2, 2 * S, 2, 1),
                   g(M + "bitter_orange_sapling", 1, 3 * S, 2, 2),  # the plan's citrus: grows only in a warm biome
+                  # the orchard's southern trees (lemon, clementine and pomegranate take only in a warm biome)
+                  g(M + "lemon_sapling", 1, 3 * S, 2, 2), g(M + "clementine_sapling", 1, 3 * S, 2, 2),
+                  g(M + "pomegranate_sapling", 1, 3 * S, 1, 2), g(M + "almond_sapling", 1, 2 * S, 2, 2),
                   g(M + "saffron", 2, 4 * S, 1, 2, True), g(M + "flawless_sapphire", 1, 2 * G, 1, 0, True)],
         "buys": [g("#mechanical:gemstones", 1, 4 * S, 3), g(M + "jujubes", 6, 4, 6), g(M + "sea_buckthorn_berries", 8, 3, 6),
                  g(V + "amethyst_shard", 1, 2 * S, 4)],

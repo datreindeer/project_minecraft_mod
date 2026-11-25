@@ -502,3 +502,39 @@ stekning och berusning"), `docs/farming.md` (Rapeseed).
   i rutorna (planerat ~1 på 60 och 90 chunks, och de blommar bara på natten). Bilder i rapporten.
 - **Svagt / kvar:** Ostpressen visar sin ostskiva även när den pressar olja. Apple har ingen egen lövströ (vildapelns används).
   Sea Salt i morteln är inte gjort. Inget Oak Folk-uppdrag med blommorna.
+
+## Fruktträdgården: resultat
+
+Byggt v0.211.0. Spelarens beskrivning: `docs/ages/01-stone-age.md` (fruktträdstabellen, "Fruktträdgården"), `02-bronze-age.md`
+(kvittenpasta, körsbärssylt, karavanens plantor), `03-iron-age.md` (nötolja, saltade citroner, päron- och persikopaj).
+
+- **Tretton träd som hela träslag**, byggda exakt som fas 3 och Bitter Orange: Pear, Sweet Cherry (skilt från häggen), Lemon,
+  Clementine, Walnut, Chestnut, Quince, Mulberry (planens mullbärsträd i avsnitt 4), Medlar, Peach, Apricot, Almond, Pomegranate.
+  Namnlistan står på ett ställe för skripten (`scripts/orchard_table.py`, som alla trä-generatorer läser: `WOODS = [...] + ORCHARD`)
+  och i Java i `Trees.FRUIT_KINDS`/`Trees.WOODS`, `Mechanical.WOODS`/`LITTER_LEAVES` och `SeasonalFoliage.DECIDUOUS`.
+  `StumpBlock.LOG` går nu till 39. Nya träslag ligger sist, så gamla vedtravars index är oförändrade.
+- **Säsong:** samma `FruitLeavesBlock` med mål per säsong. Sötkörsbär, mullbär och aprikos mognar på sommaren och är borta på
+  hösten; persika sommar–höst; päron, valnöt, kvitten, mispel, mandel på hösten; kastanj och granatäpple blommar först på
+  sommaren; citron är mogen höst och vinter, klementin mognar på vintern. Lövfällande sorter har kala grenar och knoppar
+  (`gen_seasonal_leaves_textures.py`, egna knoppfärger: vitt, ljusrosa, rosa); citron och klementin är vintergröna.
+- **Klimat:** `Trees.WARM_ONLY` (Bitter Orange, Lemon, Clementine, Pomegranate) växer bara där biomens temperatur ≥ 0,95. Mandel,
+  persika och aprikos växer var som helst om man planterar dem, men vilda bara i varma biomer. **Beslut (Claude, kan ändras):**
+  ingen ympning och ingen vild→tämjd form för de nya träden (planen gör det bara för äpplet).
+- **Var de växer** (`gen_trees.py`, glest som de andra fruktträden): tempererat Deciduous Forest, Hazel Meadow, Chalk Downs,
+  Forest, Dark Forest, slätter; varmt Marble Gorge, savannen (citrus och persika vid vatten), savannplatån, Ochre Badlands, Limestone
+  Karst. Kronformer av befintliga placerare: päron hög oval (fancy), sötkörsbär och kvitten/aprikos/mullbär körsbärsträdets krokiga
+  grenar, valnöt stor fancy-krona, kastanj grov 2x2-stam (dark oak), citron/klementin tät kupol som pomeransen, mispel och
+  granatäpple flera stammar, mandel luftig glest spridd krona, persika liten skål.
+- **Mat (befintliga system):** Roasted Chestnuts (campfire-recept, alltså Campfire och Fire Pit), Walnut Oil och Almond Oil
+  (Cheese Press, räknas som stekfett och pajfett), Quince Paste och Cherry Jam (kitteln, som marmeladen), Pickled Lemons
+  (tunnan), Pear Pie och Peach Pie (Clay Kiln). Sötkörsbär, mullbär och aprikoser i `dryable_berries` (torkas till Dried Berries
+  som dadlar); valnötter, mandlar och kastanjer duger som nöt i Berry Mash. Nötter förskäms inte (som hasselnötter).
+- **Den östra karavanen** säljer Lemon, Clementine, Pomegranate (3 Silver Coin) och Almond Sapling (2 Silver Coin).
+- **Texturer** (`gen_wood_textures.py`, avsnittet "the orchard"): egen bark per sort (päronets rutiga plattor, körsbärets
+  blanka bark med korkporband, valnötens ljusa åsar, kastanjens vridna fåror, kvittens flagor, persikans kåda, mandelns svarta
+  rutor, granatäpplets räfflor), egna frukt- och blomsprites per stadium, plantor, dörrar, luckor och frukt-items. Rätterna i
+  `gen_cookware_textures.py`.
+- **Test:** `OrchardTest` (päronplanta växer till träd med fruktlöv, alla tretton ger sin frukt, säsongsmål, citron bara i värme,
+  mandel överallt, oljor, pasta, sylt, saltade citroner, pajer).
+- **Svagt / kvar:** ingen världsgenererad kontroll av hur täta de nya träden blev (bara datat och testet). Mispeln blir inte
+  "övermogen" på riktigt (den är bara mogen sent på hösten). Granatäpple och citron har ingen egen dryck.

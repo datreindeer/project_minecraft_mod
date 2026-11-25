@@ -702,6 +702,12 @@ hunger, håller 30 dagar). Advancements: *Brewer*, *Fruit Pie*, *Sunday Roast*.
 - **Stekt i olja** (Iron Skillet, olja **eller Lard**): **Fried Fish** (2 råa fiskar + fett → 2 à 7), **Fried Roots** (2 potatis,
   rovor eller palsternackor + fett + lök → 2 à 7). Fruktpajerna kan göras med olja i stället för ister. *First Pressing*, *Fried in Oil*.
 - **Pickled Olives** (Fermenting Barrel: 3 Olives + Salt → 3, håller 30 dagar): råa är de beska. *Olives in Brine*.
+
+**Fruktträdgården (v0.211.0):**
+- **Nötolja i Cheese Press:** 4 Walnuts → **Walnut Oil**, 4 Almonds → **Almond Oil** (håller 30 dagar). Steker som de andra oljorna
+  och går i fruktpajerna. *Nut Oil*.
+- **Pickled Lemons** (Fermenting Barrel: 3 Lemons + Salt → 3 à 2, håller 30 dagar). *Lemons in Salt*.
+- **Pear Pie** och **Peach Pie**: 2 Flour + Lard (eller olja) + 3 Pears / Peaches → rå paj som bakas i Clay Kiln (8 hunger). *Orchard Pie*.
 - **Tipsy** (Ale och Cider): varje drick inom 2 minuter höjer effekten ett steg (högst IV) och tiden börjar om. Varm i magen (+0,1
   isolering mot kyla). Från tredje i rad lutar världen sakta lite åt sidorna (en grad eller två), mycket mjukare än Nausea; inget
   annat. Cider går också av ympade äpplen. *One More Round*.

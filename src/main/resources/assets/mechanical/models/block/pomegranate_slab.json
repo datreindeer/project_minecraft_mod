@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "mechanical:block/pomegranate_planks",
+    "side": "mechanical:block/pomegranate_planks",
+    "top": "mechanical:block/pomegranate_planks"
+  }
+}

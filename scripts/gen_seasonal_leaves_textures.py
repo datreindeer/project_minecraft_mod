@@ -11,6 +11,8 @@ from pathlib import Path
 
 from PIL import Image
 
+from orchard_table import EVERGREEN, ORCHARD
+
 ROOT = Path(__file__).resolve().parent.parent
 JAR = ROOT / "build/moddev/artifacts/minecraft-patched-26.3.0.95-merged.jar"
 ASSETS = ROOT / "src/main/resources/assets/mechanical"
@@ -19,12 +21,17 @@ OUT_TEX = TEX / "seasonal"
 OUT_MODEL = ASSETS / "models/block/seasonal"
 # must match SeasonalFoliage.DECIDUOUS / AUTUMN_MODEL
 VANILLA = ["oak", "dark_oak", "birch", "cherry", "red_poplar", "orange_poplar", "yellow_poplar"]
-MOD = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "rowan", "bird_cherry", "wild_apple", "plum", "apple"]
+MOD = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "rowan", "bird_cherry", "wild_apple", "plum", "apple"] + [t for t in ORCHARD if t not in EVERGREEN]
 AUTUMN_MODEL = ["cherry", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel"]  # fruit trees: bare + buds only
 LOG = {"red_poplar": "poplar", "orange_poplar": "poplar", "yellow_poplar": "poplar", "apple": "wild_apple"}  # the grafted apple grows on wild apple wood
 TWIG_BROWN = (74, 54, 38)
 BUDS = {"cherry": [(236, 160, 192, 255), (250, 204, 220, 255)], "wild_apple": [(214, 110, 146, 255), (246, 206, 218, 255)], "apple": [(214, 110, 146, 255), (246, 206, 218, 255)],
         "plum": [(232, 232, 220, 255), (250, 250, 244, 255)]}
+# the orchard's spring buds: white pear, cherry, medlar and quince-pink blossom, pink peach and almond (orchard_table.py)
+BUDS.update({"pear": [(236, 236, 226, 255), (252, 252, 246, 255)], "sweet_cherry": [(238, 238, 228, 255), (255, 255, 250, 255)],
+             "medlar": [(236, 234, 222, 255), (252, 250, 242, 255)], "quince": [(236, 190, 196, 255), (252, 226, 228, 255)],
+             "peach": [(220, 100, 146, 255), (248, 172, 200, 255)], "almond": [(230, 160, 186, 255), (252, 226, 234, 255)],
+             "apricot": [(236, 196, 204, 255), (254, 236, 238, 255)]})
 GREEN_BUDS = [(124, 170, 58, 255), (162, 204, 84, 255)]
 
 

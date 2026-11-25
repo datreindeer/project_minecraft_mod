@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/clementine_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/clementine_planks"
+    },
+    "type=top": {
+      "model": "mechanical:block/clementine_slab_top"
+    }
+  }
+}

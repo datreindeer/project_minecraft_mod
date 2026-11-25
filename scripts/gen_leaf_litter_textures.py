@@ -7,13 +7,14 @@ import zipfile
 from pathlib import Path
 
 from PIL import Image
+from orchard_table import ORCHARD
 
 ROOT = Path(__file__).resolve().parent.parent
 JAR = ROOT / "build/moddev/artifacts/minecraft-patched-26.3.0.95-merged.jar"
 OUT = ROOT / "src/main/resources/assets/mechanical/textures/block"
 VANILLA = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "yellow_poplar",
            "orange_poplar", "red_poplar", "azalea", "flowering_azalea"]
-MOD = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]
+MOD = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"] + ORCHARD
 # vanilla's fixed/default foliage tints for the grey leaf textures
 TINT = {"oak": (0x48, 0xB5, 0x18), "jungle": (0x30, 0xBB, 0x0B), "acacia": (0xAE, 0xA4, 0x2A), "dark_oak": (0x59, 0xAE, 0x30),
         "mangrove": (0x8D, 0xB1, 0x27), "spruce": (0x61, 0x99, 0x61), "birch": (0x80, 0xA7, 0x55)}

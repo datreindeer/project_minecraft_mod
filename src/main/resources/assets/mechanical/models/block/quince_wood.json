@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "mechanical:block/quince_log",
+    "side": "mechanical:block/quince_log"
+  }
+}

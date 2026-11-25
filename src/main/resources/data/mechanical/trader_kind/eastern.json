@@ -109,6 +109,30 @@
       "age": 2
     },
     {
+      "item": "mechanical:lemon_sapling",
+      "price": 30,
+      "stock": 2,
+      "age": 2
+    },
+    {
+      "item": "mechanical:clementine_sapling",
+      "price": 30,
+      "stock": 2,
+      "age": 2
+    },
+    {
+      "item": "mechanical:pomegranate_sapling",
+      "price": 30,
+      "stock": 1,
+      "age": 2
+    },
+    {
+      "item": "mechanical:almond_sapling",
+      "price": 20,
+      "stock": 2,
+      "age": 2
+    },
+    {
       "item": "mechanical:saffron",
       "price": 40,
       "count": 2,

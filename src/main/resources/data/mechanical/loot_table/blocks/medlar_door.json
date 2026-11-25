@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:medlar_door",
+            "state": {
+              "half": "lower"
+            }
+          },
+          "name": "mechanical:medlar_door"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "mechanical:blocks/medlar_door"
+}

@@ -87,6 +87,20 @@ public final class Trees {
         FRUIT_KINDS.put("date_palm", new Fruit("dates", new int[] {1, 2, 3, 3}, food(3, 0.5F)));
         // evergreen: white blossom in spring, green all summer, orange from autumn and hanging on through winter
         FRUIT_KINDS.put("bitter_orange", new Fruit("bitter_oranges", new int[] {1, 2, 3, 3}, food(1, 0.1F)));
+        // ---- the orchard (docs/flora-and-food-plan.md, "Orchard"): stages per season as above ----
+        FRUIT_KINDS.put("pear", new Fruit("pears", new int[] {1, 2, 3, 0}, food(3, 0.3F)));
+        FRUIT_KINDS.put("sweet_cherry", new Fruit("sweet_cherries", new int[] {1, 3, 0, 0}, food(2, 0.2F)));      // early summer
+        FRUIT_KINDS.put("lemon", new Fruit("lemons", new int[] {1, 2, 3, 3}, food(1, 0.1F)));                     // evergreen, sour
+        FRUIT_KINDS.put("clementine", new Fruit("clementines", new int[] {1, 2, 2, 3}, food(3, 0.4F)));          // evergreen, ripe in winter
+        FRUIT_KINDS.put("walnut", new Fruit("walnuts", new int[] {1, 2, 3, 0}, food(2, 0.6F)));
+        FRUIT_KINDS.put("chestnut", new Fruit("chestnuts", new int[] {0, 1, 3, 0}, food(1, 0.2F)));              // catkins in high summer
+        FRUIT_KINDS.put("quince", new Fruit("quinces", new int[] {1, 2, 3, 0}, food(1, 0.2F)));                  // hard and sour raw
+        FRUIT_KINDS.put("mulberry", new Fruit("mulberries", new int[] {1, 3, 0, 0}, food(2, 0.2F)));
+        FRUIT_KINDS.put("medlar", new Fruit("medlars", new int[] {1, 2, 3, 0}, food(2, 0.3F)));                  // soft only late in autumn
+        FRUIT_KINDS.put("peach", new Fruit("peaches", new int[] {1, 3, 3, 0}, food(3, 0.3F)));
+        FRUIT_KINDS.put("apricot", new Fruit("apricots", new int[] {1, 3, 0, 0}, food(2, 0.3F)));
+        FRUIT_KINDS.put("almond", new Fruit("almonds", new int[] {1, 2, 3, 0}, food(2, 0.6F)));
+        FRUIT_KINDS.put("pomegranate", new Fruit("pomegranates", new int[] {0, 1, 3, 0}, food(3, 0.3F)));       // red flowers in summer
     }
     public static final Map<String, DeferredItem<Item>> FRUITS = new LinkedHashMap<>();
     static {
@@ -98,6 +112,9 @@ public final class Trees {
     private static FoodProperties food(int nutrition, float saturation) {
         return new FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturation).build();
     }
+
+    /** Saplings that take only in a warm biome (citrus and pomegranate: frost-tender); almond, peach and apricot grow anywhere. Before WOODS: wood() reads it. */
+    public static final java.util.Set<String> WARM_ONLY = java.util.Set.of("bitter_orange", "lemon", "clementine", "pomegranate");
 
     public static final Map<String, Wood> WOODS = Map.ofEntries(
             Map.entry("aspen", wood("aspen", MapColor.SAND, MapColor.COLOR_LIGHT_GRAY)),
@@ -115,7 +132,21 @@ public final class Trees {
             Map.entry("plum", wood("plum", MapColor.TERRACOTTA_RED, MapColor.TERRACOTTA_PURPLE)),
             Map.entry("olive", wood("olive", MapColor.SAND, MapColor.STONE)),
             Map.entry("date_palm", wood("date_palm", MapColor.SAND, MapColor.COLOR_BROWN)),
-            Map.entry("bitter_orange", wood("bitter_orange", MapColor.TERRACOTTA_YELLOW, MapColor.TERRACOTTA_GRAY)));
+            Map.entry("bitter_orange", wood("bitter_orange", MapColor.TERRACOTTA_YELLOW, MapColor.TERRACOTTA_GRAY)),
+            // the orchard
+            Map.entry("pear", wood("pear", MapColor.TERRACOTTA_PINK, MapColor.TERRACOTTA_BLACK)),
+            Map.entry("sweet_cherry", wood("sweet_cherry", MapColor.TERRACOTTA_RED, MapColor.TERRACOTTA_BROWN)),
+            Map.entry("lemon", wood("lemon", MapColor.SAND, MapColor.TERRACOTTA_GRAY)),
+            Map.entry("clementine", wood("clementine", MapColor.TERRACOTTA_YELLOW, MapColor.TERRACOTTA_GRAY)),
+            Map.entry("walnut", wood("walnut", MapColor.TERRACOTTA_BROWN, MapColor.COLOR_LIGHT_GRAY)),
+            Map.entry("chestnut", wood("chestnut", MapColor.TERRACOTTA_ORANGE, MapColor.TERRACOTTA_BROWN)),
+            Map.entry("quince", wood("quince", MapColor.TERRACOTTA_PINK, MapColor.TERRACOTTA_GRAY)),
+            Map.entry("mulberry", wood("mulberry", MapColor.TERRACOTTA_YELLOW, MapColor.TERRACOTTA_BROWN)),
+            Map.entry("medlar", wood("medlar", MapColor.TERRACOTTA_PINK, MapColor.COLOR_GRAY)),
+            Map.entry("peach", wood("peach", MapColor.TERRACOTTA_RED, MapColor.TERRACOTTA_BROWN)),
+            Map.entry("apricot", wood("apricot", MapColor.TERRACOTTA_ORANGE, MapColor.TERRACOTTA_BROWN)),
+            Map.entry("almond", wood("almond", MapColor.TERRACOTTA_WHITE, MapColor.COLOR_GRAY)),
+            Map.entry("pomegranate", wood("pomegranate", MapColor.TERRACOTTA_YELLOW, MapColor.COLOR_GRAY)));
 
     /** A Bitter Orange sapling grows only where the biome is warm (base temperature at least this: savanna, desert, Marble Gorge, jungle). */
     public static final float CITRUS_MIN_TEMPERATURE = 0.95F;
@@ -144,6 +175,9 @@ public final class Trees {
             p -> p.food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).build()));
     public static final DeferredItem<Item> ROASTED_BEECHNUTS = Mechanical.ITEMS.registerSimpleItem("roasted_beechnuts",
             p -> p.food(new FoodProperties.Builder().nutrition(3).saturationModifier(0.5F).build()));
+    /** Chestnuts roasted on a campfire or a fire pit (gen_trees.py): sweet and floury, far better than raw. */
+    public static final DeferredItem<Item> ROASTED_CHESTNUTS = Mechanical.ITEMS.registerSimpleItem("roasted_chestnuts",
+            p -> p.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6F).build()));
     public static final DeferredItem<Item> PINE_RESIN = Mechanical.ITEMS.registerSimpleItem("pine_resin");
 
     private static Wood wood(String w, MapColor planksColor, MapColor barkColor) {
@@ -157,7 +191,7 @@ public final class Trees {
             protected boolean mayPlaceOn(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
                 return super.mayPlaceOn(state, level, pos) || state.is(net.minecraft.tags.BlockTags.SAND);
             }
-        } : w.equals("bitter_orange") ? p -> new SaplingBlock(grower, p) { // citrus: grows only in a warm biome
+        } : WARM_ONLY.contains(w) ? p -> new SaplingBlock(grower, p) { // citrus, pomegranate: grow only in a warm biome
             @Override
             public void advanceTree(ServerLevel level, BlockPos pos, BlockState state, net.minecraft.util.RandomSource random) {
                 if (warmEnoughForCitrus(level, pos)) super.advanceTree(level, pos, state, random);

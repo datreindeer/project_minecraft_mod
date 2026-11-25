@@ -333,13 +333,14 @@ STEEL_DISHES = {
     "raw_gingerbread": "Raw Gingerbread", "gingerbread": "Gingerbread", "steel_knife_set": "Steel Knife Set",
 }
 PIES = {"apple": ("Apple Pie", S + "crab_apple"), "plum": ("Plum Pie", S + "wild_plums"), "rowan": ("Rowan Pie", S + "rowan_berries"),
-        "bird_cherry": ("Bird Cherry Pie", S + "bird_cherries")}
+        "bird_cherry": ("Bird Cherry Pie", S + "bird_cherries"),
+        "pear": ("Pear Pie", S + "pears"), "peach": ("Peach Pie", S + "peaches")}  # the last two: the orchard
 for f, (en, fruit) in PIES.items():
     STEEL_DISHES[f"{f}_pie"] = en
     STEEL_DISHES[f"raw_{f}_pie"] = "Raw " + en
     # the fruit of the fruit trees, flour and lard (or a pressed oil); baked in the Clay Kiln (KilnBlockEntity.RECIPES)
     fruit = [fruit, M + "apple"] if f == "apple" else fruit
-    shapeless(f"raw_{f}_pie", [S + "flour", S + "flour", [S + "lard", S + "olive_oil", S + "rapeseed_oil"], fruit, fruit, fruit], S + f"raw_{f}_pie")
+    shapeless(f"raw_{f}_pie", [S + "flour", S + "flour", [S + "lard", S + "olive_oil", S + "rapeseed_oil", S + "walnut_oil", S + "almond_oil"], fruit, fruit, fruit], S + f"raw_{f}_pie")
 for item, en in STEEL_DISHES.items():
     lang[f"item.mechanical.{item}"] = en
 for block, en in {"steel_pan": "Steel Pan", "mortar_and_pestle": "Mortar and Pestle", "sieve": "Sieve"}.items():
@@ -370,6 +371,13 @@ lang["effect.mechanical.frost_ward"] = "Frost Ward"
 tag(MIT / "compostable.json", S + "rapeseed")
 tag(MIT / "perishes_1_day.json", S + "fried_fish", S + "fried_roots", S + "frost_lily_tea")
 tag(MIT / "perishes_30_days.json", S + "olive_oil", S + "rapeseed_oil", S + "pickled_olives", S + "bitter_orange_marmalade")
+
+# ---------------------------------------------------------------- the orchard: nut oils, quince paste, cherry jam, pickled lemons
+ORCHARD_DISHES = {"walnut_oil": "Walnut Oil", "almond_oil": "Almond Oil", "quince_paste": "Quince Paste", "cherry_jam": "Cherry Jam",
+                  "pickled_lemons": "Pickled Lemons"}
+for item, en in ORCHARD_DISHES.items():
+    lang[f"item.mechanical.{item}"] = en
+tag(MIT / "perishes_30_days.json", *(S + i for i in ORCHARD_DISHES))
 
 # ---------------------------------------------------------------- lang: messages, trades
 lang.update({

@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:forest",
+    "mechanical:soapstone_valley"
+  ],
+  "features": "mechanical:chestnut_valley",
+  "step": "vegetal_decoration"
+}

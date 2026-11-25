@@ -39,8 +39,10 @@ DISHES = ["nettle_soup", "root_pottage", "berry_mash", "pea_soup", "onion_garlic
           "roast_with_herbs", "cider", "ale", "kitchen_pepper", "sweet_spice", "golden_spice", "pickling_spice", "herb_salt", "fine_flour",
           "sea_buckthorn_juice", "saffron_rice", "peppered_steak", "spiced_pilaf", "pickled_vegetables", "raw_gingerbread", "gingerbread",
           # flora3: oils, frying, marmalade, pickled olives, Frost Lily Tea
-          "olive_oil", "rapeseed_oil", "fried_fish", "fried_roots", "pickled_olives", "bitter_orange_marmalade", "frost_lily_tea"]
-DISHES += [f"{raw}{f}_pie" for f in ("apple", "plum", "rowan", "bird_cherry") for raw in ("raw_", "")]
+          "olive_oil", "rapeseed_oil", "fried_fish", "fried_roots", "pickled_olives", "bitter_orange_marmalade", "frost_lily_tea",
+          # the orchard
+          "walnut_oil", "almond_oil", "quince_paste", "cherry_jam", "pickled_lemons"]
+DISHES += [f"{raw}{f}_pie" for f in ("apple", "plum", "rowan", "bird_cherry", "pear", "peach") for raw in ("raw_", "")]
 FLAT = ["unfired_clay_cooking_pot", "iron_cauldron"] + DISHES
 
 

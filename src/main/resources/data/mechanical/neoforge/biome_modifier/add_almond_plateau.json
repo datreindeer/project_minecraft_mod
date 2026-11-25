@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:savanna_plateau",
+    "mechanical:marble_gorge"
+  ],
+  "features": "mechanical:almond_plateau",
+  "step": "vegetal_decoration"
+}

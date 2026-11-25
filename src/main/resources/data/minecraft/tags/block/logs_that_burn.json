@@ -16,6 +16,19 @@
     "#mechanical:olive_logs",
     "#mechanical:date_palm_logs",
     "#mechanical:bitter_orange_logs",
+    "#mechanical:pear_logs",
+    "#mechanical:sweet_cherry_logs",
+    "#mechanical:lemon_logs",
+    "#mechanical:clementine_logs",
+    "#mechanical:walnut_logs",
+    "#mechanical:chestnut_logs",
+    "#mechanical:quince_logs",
+    "#mechanical:mulberry_logs",
+    "#mechanical:medlar_logs",
+    "#mechanical:peach_logs",
+    "#mechanical:apricot_logs",
+    "#mechanical:almond_logs",
+    "#mechanical:pomegranate_logs",
     "#mechanical:bog_oak_logs"
   ]
 }

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_right",
+  "textures": {
+    "bottom": "mechanical:block/quince_door_bottom",
+    "top": "mechanical:block/quince_door_top"
+  }
+}

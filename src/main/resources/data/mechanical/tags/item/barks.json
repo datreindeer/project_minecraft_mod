@@ -25,6 +25,19 @@
     "mechanical:plum_bark",
     "mechanical:olive_bark",
     "mechanical:date_palm_bark",
-    "mechanical:bitter_orange_bark"
+    "mechanical:bitter_orange_bark",
+    "mechanical:pear_bark",
+    "mechanical:sweet_cherry_bark",
+    "mechanical:lemon_bark",
+    "mechanical:clementine_bark",
+    "mechanical:walnut_bark",
+    "mechanical:chestnut_bark",
+    "mechanical:quince_bark",
+    "mechanical:mulberry_bark",
+    "mechanical:medlar_bark",
+    "mechanical:peach_bark",
+    "mechanical:apricot_bark",
+    "mechanical:almond_bark",
+    "mechanical:pomegranate_bark"
   ]
 }

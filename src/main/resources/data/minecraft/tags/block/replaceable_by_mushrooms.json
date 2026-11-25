@@ -29,6 +29,19 @@
     "mechanical:plum_leaf_litter",
     "mechanical:olive_leaf_litter",
     "mechanical:date_palm_leaf_litter",
-    "mechanical:bitter_orange_leaf_litter"
+    "mechanical:bitter_orange_leaf_litter",
+    "mechanical:pear_leaf_litter",
+    "mechanical:sweet_cherry_leaf_litter",
+    "mechanical:lemon_leaf_litter",
+    "mechanical:clementine_leaf_litter",
+    "mechanical:walnut_leaf_litter",
+    "mechanical:chestnut_leaf_litter",
+    "mechanical:quince_leaf_litter",
+    "mechanical:mulberry_leaf_litter",
+    "mechanical:medlar_leaf_litter",
+    "mechanical:peach_leaf_litter",
+    "mechanical:apricot_leaf_litter",
+    "mechanical:almond_leaf_litter",
+    "mechanical:pomegranate_leaf_litter"
   ]
 }

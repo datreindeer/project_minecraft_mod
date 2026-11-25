@@ -4,8 +4,9 @@
 # usage: python gen_rough_log_textures.py <vanilla block texture dir> <out item texture dir> <preview png>
 import math, os, random, sys
 from PIL import Image
+from orchard_table import ORCHARD
 src, out, prev = sys.argv[1:4]
-WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]
+WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"] + ORCHARD
 # mod woods have no vanilla texture: read the log textures painted by gen_wood_textures.py
 def tex(name): p = f"{src}/{name}.png"; return p if os.path.exists(p) else os.path.join(os.path.dirname(os.path.abspath(out)), "block", f"{name}.png")
 

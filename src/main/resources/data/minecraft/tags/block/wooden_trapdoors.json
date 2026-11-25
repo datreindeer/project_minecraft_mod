@@ -16,6 +16,19 @@
     "mechanical:olive_trapdoor",
     "mechanical:date_palm_trapdoor",
     "mechanical:bitter_orange_trapdoor",
+    "mechanical:pear_trapdoor",
+    "mechanical:sweet_cherry_trapdoor",
+    "mechanical:lemon_trapdoor",
+    "mechanical:clementine_trapdoor",
+    "mechanical:walnut_trapdoor",
+    "mechanical:chestnut_trapdoor",
+    "mechanical:quince_trapdoor",
+    "mechanical:mulberry_trapdoor",
+    "mechanical:medlar_trapdoor",
+    "mechanical:peach_trapdoor",
+    "mechanical:apricot_trapdoor",
+    "mechanical:almond_trapdoor",
+    "mechanical:pomegranate_trapdoor",
     "mechanical:bog_oak_trapdoor"
   ]
 }

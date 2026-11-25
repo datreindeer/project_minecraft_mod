@@ -20,6 +20,8 @@
     "mechanical:rowan_berries",
     "mechanical:crab_apple",
     "mechanical:olives",
+    "mechanical:pears",
+    "mechanical:medlars",
     "mechanical:cooked_haunch",
     "mechanical:cooked_ribs",
     "mechanical:cooked_loin",
@@ -120,6 +122,8 @@
     "mechanical:plum_pie",
     "mechanical:rowan_pie",
     "mechanical:bird_cherry_pie",
+    "mechanical:pear_pie",
+    "mechanical:peach_pie",
     "mechanical:oatcakes"
   ]
 }

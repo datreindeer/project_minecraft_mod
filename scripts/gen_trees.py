@@ -8,11 +8,12 @@ Generator order: ... gen_soot.py, gen_phantom.py, gen_trees.py, gen_block_items.
 Run: python scripts/gen_trees.py"""
 import json
 from pathlib import Path
+from orchard_table import ORCHARD, ORCHARD_FRUIT
 
 ROOT = Path(__file__).resolve().parent.parent / "src/main/resources"
 A, D = ROOT / "assets/mechanical", ROOT / "data"
 ALL_TREES = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive",
-             "date_palm", "bitter_orange"]
+             "date_palm", "bitter_orange"] + ORCHARD
 
 
 def w(path, obj):
@@ -103,6 +104,45 @@ tree_feature("bitter_orange", trunk("minecraft:straight_trunk_placer", 2, 1),
 tree_feature("apple", cherry_trunk(3, 1, (2, 3), (2, 3), (-2, -1)), cherry_crown(3, 4, 0.25, 0.08),
              {"type": "minecraft:two_layers_feature_size", "upper_size": 2}, log="wild_apple")
 
+# ---- the orchard (orchard_table.py; Trees.FRUIT_KINDS): crown shapes from the same vanilla/our placers ----
+# (vanilla's cherry placers want a crown height of at least 4 and limbs at least 2 long)
+# pear: a tall upright oval on a straight-ish bole with a few limbs
+tree_feature("pear", trunk("minecraft:fancy_trunk_placer", 6, 3), {"type": "minecraft:fancy_foliage_placer", "radius": 2, "offset": 3, "height": 5},
+             {"type": "minecraft:two_layers_feature_size", "limit": 0, "min_clipped_height": 5, "upper_size": 0})
+# sweet cherry: taller than the wild apple, a few strong limbs, an open rounded crown
+tree_feature("sweet_cherry", cherry_trunk(5, 1, (2, 3), (2, 3), (-2, -1)), cherry_crown(3, 4, 0.35, 0.1),
+             {"type": "minecraft:two_layers_feature_size", "upper_size": 2})
+# lemon: a small evergreen like the bitter orange, a little taller and looser
+tree_feature("lemon", trunk("minecraft:straight_trunk_placer", 3, 1), {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 3})
+# clementine: a low dense evergreen bush-tree
+tree_feature("clementine", trunk("minecraft:straight_trunk_placer", 1, 1), {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 3})
+# walnut: a big tree, tall bole and a broad high crown on long limbs
+tree_feature("walnut", trunk("minecraft:fancy_trunk_placer", 8, 4), {"type": "minecraft:fancy_foliage_placer", "radius": 2, "offset": 4, "height": 4},
+             FANCY_SIZE)
+# chestnut: a massive short bole (2x2) with heavy limbs and a wide dense dome
+tree_feature("chestnut", trunk("minecraft:dark_oak_trunk_placer", 6, 2, 1), {"type": "minecraft:dark_oak_foliage_placer", "radius": 0, "offset": 0},
+             {"type": "minecraft:three_layers_feature_size", "upper_size": 2})
+# quince: a little crooked tree, low twisting limbs, a small ragged crown
+tree_feature("quince", cherry_trunk(2, 1, (2, 2), (2, 2), (-1, 0)), cherry_crown(2, 4, 0.45, 0.08),
+             {"type": "minecraft:two_layers_feature_size", "upper_size": 1})
+# mulberry: low and wide, spreading limbs, leaves hanging off the crown edge
+tree_feature("mulberry", cherry_trunk(3, 1, (2, 3), (2, 3), (-2, -1)), cherry_crown(3, 4, 0.4, 0.25),
+             {"type": "minecraft:two_layers_feature_size", "upper_size": 2})
+# medlar: a few short stems from one stool, small flat-topped crowns
+tree_feature("medlar", trunk("mechanical:multi_stem_trunk_placer", 3, 1, 1), {"type": "minecraft:blob_foliage_placer", "radius": 2, "offset": 0, "height": 2})
+# peach: a small open bowl of a tree
+tree_feature("peach", trunk("minecraft:fancy_trunk_placer", 3, 2), {"type": "minecraft:fancy_foliage_placer", "radius": 2, "offset": 2, "height": 3},
+             {"type": "minecraft:two_layers_feature_size", "limit": 0, "min_clipped_height": 3, "upper_size": 0})
+# apricot: short crooked limbs, a small round crown
+tree_feature("apricot", cherry_trunk(3, 1, (2, 3), (2, 2), (-1, 0)), cherry_crown(2, 4, 0.45, 0.05),
+             {"type": "minecraft:two_layers_feature_size", "upper_size": 1})
+# almond: an airy, open crown full of gaps on a straight bole
+tree_feature("almond", trunk("minecraft:straight_trunk_placer", 3, 2),
+             {"type": "minecraft:random_spread_foliage_placer", "radius": 2, "offset": 0, "foliage_height": 2, "leaf_placement_attempts": 30})
+# pomegranate: shrubby, several thin stems, small loose crowns
+tree_feature("pomegranate", trunk("mechanical:multi_stem_trunk_placer", 2, 1, 1),
+             {"type": "minecraft:random_spread_foliage_placer", "radius": 2, "offset": 0, "foliage_height": 2, "leaf_placement_attempts": 20})
+
 # ---- placed features ----
 survives = lambda x: {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:would_survive", "state": f"mechanical:{x}_sapling"}}
 for x in ALL_TREES:  # for biomes' own tree lists (random_selector etc.), like vanilla's oak_checked
@@ -148,6 +188,34 @@ TREE_PLACEMENTS = {
     "bitter_orange_gorge": ("bitter_orange", rarity(6), ["mechanical:marble_gorge"]),
     "bitter_orange_savanna": ("bitter_orange", rarity(24), ["minecraft:savanna", "minecraft:savanna_plateau"], [NEAR_WATER]),
 }
+# the orchard: scattered single trees like the other fruit trees; the warm ones in the gorge and by savanna water
+GORGE = ["mechanical:marble_gorge"]
+TREE_PLACEMENTS.update({
+    "pear_meadow": ("pear", rarity(6), ["mechanical:hazel_meadow"]),
+    "pear_plains": ("pear", rarity(18), ["minecraft:plains", "minecraft:forest"]),
+    "sweet_cherry_forest": ("sweet_cherry", rarity(5), ["mechanical:deciduous_forest"]),
+    "sweet_cherry_woods": ("sweet_cherry", rarity(14), ["minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest"]),
+    "walnut_forest": ("walnut", rarity(6), ["mechanical:deciduous_forest"]),
+    "walnut_plains": ("walnut", rarity(20), ["minecraft:plains", "minecraft:meadow", "mechanical:hazel_meadow"]),
+    "chestnut_forest": ("chestnut", rarity(5), ["mechanical:deciduous_forest", "minecraft:dark_forest"]),
+    "chestnut_valley": ("chestnut", rarity(16), ["minecraft:forest", "mechanical:soapstone_valley"]),
+    "quince_downs": ("quince", rarity(10), ["mechanical:chalk_downs", "mechanical:hazel_meadow"]),
+    "medlar_meadow": ("medlar", rarity(12), ["mechanical:hazel_meadow", "mechanical:deciduous_forest"]),
+    "mulberry_gorge": ("mulberry", rarity(8), GORGE),
+    "mulberry_waterside": ("mulberry", rarity(30), ["minecraft:savanna", "minecraft:plains"], [NEAR_WATER]),
+    "lemon_gorge": ("lemon", rarity(7), GORGE),
+    "lemon_savanna": ("lemon", rarity(28), ["minecraft:savanna"], [NEAR_WATER]),
+    "clementine_gorge": ("clementine", rarity(8), GORGE),
+    "clementine_savanna": ("clementine", rarity(28), ["minecraft:savanna_plateau"], [NEAR_WATER]),
+    "pomegranate_gorge": ("pomegranate", rarity(6), GORGE),
+    "pomegranate_badlands": ("pomegranate", rarity(24), ["mechanical:ochre_badlands", "minecraft:savanna_plateau"]),
+    "almond_plateau": ("almond", rarity(8), ["minecraft:savanna_plateau"] + GORGE),
+    "almond_karst": ("almond", rarity(20), ["mechanical:limestone_karst", "minecraft:windswept_savanna"]),
+    "peach_savanna": ("peach", rarity(20), ["minecraft:savanna"], [NEAR_WATER]),
+    "peach_gorge": ("peach", rarity(10), GORGE),
+    "apricot_plateau": ("apricot", rarity(10), ["minecraft:savanna_plateau"]),
+    "apricot_gorge": ("apricot", rarity(10), GORGE),
+})
 for name, (x, freq, biomes, *extra) in TREE_PLACEMENTS.items():
     extra = extra[0] if extra else []
     w(D / f"mechanical/worldgen/placed_feature/{name}.json", {"feature": f"mechanical:{x}", "placement": [
@@ -169,6 +237,7 @@ for tree, nut, chance in (("beech", "mechanical:beechnuts", 0.06), ("hazel", "me
 # ---- fruit leaves: a model per stage (leaves, blossom, unripe, ripe), fruit when broken ripe ----
 FRUIT = {"rowan": "rowan_berries", "bird_cherry": "bird_cherries", "wild_apple": "crab_apple", "plum": "wild_plums", "olive": "olives",
          "date_palm": "dates", "bitter_orange": "bitter_oranges", "apple": "minecraft:apple"}  # Trees.FRUIT_KINDS, Trees.APPLE_LEAVES
+FRUIT.update({t: f for t, (f, _) in ORCHARD_FRUIT.items()})
 fruit_id = lambda f: f if ":" in f else f"mechanical:{f}"
 LOOKS = ["", "_blossom", "_unripe", "_ripe"]
 TEX = ROOT / "assets/mechanical/textures/block"
@@ -241,13 +310,17 @@ for tree, fruit in FRUIT.items():
 # ---- items ----
 ITEMS = {"beechnuts": "Beechnuts", "roasted_beechnuts": "Roasted Beechnuts", "pine_resin": "Pine Resin", "yew_arils": "Yew Arils",
          "rowan_berries": "Rowan Berries", "bird_cherries": "Bird Cherries", "crab_apple": "Crab Apple", "wild_plums": "Wild Plums",
-         "olives": "Olives", "dates": "Dates", "bitter_oranges": "Bitter Oranges"}
+         "olives": "Olives", "dates": "Dates", "bitter_oranges": "Bitter Oranges", "roasted_chestnuts": "Roasted Chestnuts",
+         **{f: en for f, en in ORCHARD_FRUIT.values()}}
 for item in ITEMS:
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"mechanical:item/{item}"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": f"mechanical:item/{item}"}})
 merge(A / "lang/en_us.json", {f"item.mechanical.{k}": v for k, v in ITEMS.items()})
 w(D / "mechanical/recipe/roasted_beechnuts.json", {"type": "minecraft:campfire_cooking", "category": "food", "cookingtime": 300,
     "experience": 0.1, "ingredient": "mechanical:beechnuts", "result": {"id": "mechanical:roasted_beechnuts"}})
+# chestnuts roast on a campfire or fire pit like beechnuts
+w(D / "mechanical/recipe/roasted_chestnuts.json", {"type": "minecraft:campfire_cooking", "category": "food", "cookingtime": 300,
+    "experience": 0.1, "ingredient": "mechanical:chestnuts", "result": {"id": "mechanical:roasted_chestnuts"}})
 # resin torch: a resin-soaked stick burns like a coal torch, before there is charcoal
 w(D / "mechanical/recipe/torch_from_pine_resin.json", {"type": "minecraft:crafting_shaped", "category": "misc",
     "key": {"R": "mechanical:pine_resin", "#": "minecraft:stick"}, "pattern": ["R", "#"], "result": {"id": "minecraft:torch", "count": 2}})
@@ -259,5 +332,12 @@ tag_add(D / "mechanical/tags/item/basket_storable.json", "mechanical:beechnuts",
 tag_add(D / "mechanical/tags/item/perishes_2_days.json", "mechanical:bird_cherries", "mechanical:wild_plums", "mechanical:yew_arils")
 tag_add(D / "mechanical/tags/item/perishes_3_days.json", "mechanical:rowan_berries", "mechanical:crab_apple", "mechanical:olives")
 tag_add(D / "mechanical/tags/item/perishes_10_days.json", "mechanical:bitter_oranges")  # thick-skinned, they keep
+# the orchard: soft fruit keeps two days, pears and medlars three, citrus, quinces and pomegranates ten; nuts keep (like hazelnuts)
+tag_add(D / "mechanical/tags/item/perishes_2_days.json", "mechanical:sweet_cherries", "mechanical:mulberries", "mechanical:peaches", "mechanical:apricots")
+tag_add(D / "mechanical/tags/item/perishes_3_days.json", "mechanical:pears", "mechanical:medlars")
+tag_add(D / "mechanical/tags/item/perishes_10_days.json", "mechanical:lemons", "mechanical:clementines", "mechanical:quinces", "mechanical:pomegranates")
+tag_add(D / "mechanical/tags/item/basket_storable.json", "mechanical:roasted_chestnuts")
+# dried on the rack like dates (into Dried Berries)
+tag_add(D / "mechanical/tags/item/dryable_berries.json", "mechanical:sweet_cherries", "mechanical:mulberries", "mechanical:apricots")
 tag_add(D / "mechanical/tags/item/dryable_berries.json", "mechanical:rowan_berries", "mechanical:bird_cherries", "mechanical:wild_plums", "mechanical:dates")
 print("trees ok")

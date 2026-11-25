@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "FF",
+    "FF"
+  ],
+  "key": {
+    "F": "mechanical:apricot_firewood"
+  },
+  "result": {
+    "id": "mechanical:apricot_log"
+  }
+}

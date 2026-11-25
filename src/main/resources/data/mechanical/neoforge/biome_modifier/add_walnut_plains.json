@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:meadow",
+    "mechanical:hazel_meadow",
+    "mechanical:chalk_downs",
+    "mechanical:limestone_karst"
+  ],
+  "features": "mechanical:walnut_plains",
+  "step": "vegetal_decoration"
+}

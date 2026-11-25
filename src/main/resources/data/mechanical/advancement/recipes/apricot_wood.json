@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:apricot_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:apricot_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:apricot_planks",
+      "mechanical:apricot_wood",
+      "mechanical:stripped_apricot_wood",
+      "mechanical:apricot_slab",
+      "mechanical:apricot_stairs",
+      "mechanical:apricot_fence",
+      "mechanical:apricot_fence_gate",
+      "mechanical:apricot_door",
+      "mechanical:apricot_trapdoor",
+      "mechanical:apricot_button",
+      "mechanical:apricot_pressure_plate"
+    ]
+  }
+}

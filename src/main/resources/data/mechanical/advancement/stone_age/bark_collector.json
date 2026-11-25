@@ -260,6 +260,136 @@
           }
         ]
       }
+    },
+    "has_26": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pear_bark"
+          }
+        ]
+      }
+    },
+    "has_27": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sweet_cherry_bark"
+          }
+        ]
+      }
+    },
+    "has_28": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:lemon_bark"
+          }
+        ]
+      }
+    },
+    "has_29": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:clementine_bark"
+          }
+        ]
+      }
+    },
+    "has_30": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:walnut_bark"
+          }
+        ]
+      }
+    },
+    "has_31": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:chestnut_bark"
+          }
+        ]
+      }
+    },
+    "has_32": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:quince_bark"
+          }
+        ]
+      }
+    },
+    "has_33": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:mulberry_bark"
+          }
+        ]
+      }
+    },
+    "has_34": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:medlar_bark"
+          }
+        ]
+      }
+    },
+    "has_35": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:peach_bark"
+          }
+        ]
+      }
+    },
+    "has_36": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:apricot_bark"
+          }
+        ]
+      }
+    },
+    "has_37": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:almond_bark"
+          }
+        ]
+      }
+    },
+    "has_38": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pomegranate_bark"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -340,6 +470,45 @@
     ],
     [
       "has_25"
+    ],
+    [
+      "has_26"
+    ],
+    [
+      "has_27"
+    ],
+    [
+      "has_28"
+    ],
+    [
+      "has_29"
+    ],
+    [
+      "has_30"
+    ],
+    [
+      "has_31"
+    ],
+    [
+      "has_32"
+    ],
+    [
+      "has_33"
+    ],
+    [
+      "has_34"
+    ],
+    [
+      "has_35"
+    ],
+    [
+      "has_36"
+    ],
+    [
+      "has_37"
+    ],
+    [
+      "has_38"
     ]
   ],
   "display": {

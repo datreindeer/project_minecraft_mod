@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "wooden_button",
+  "ingredients": [
+    "mechanical:sweet_cherry_planks"
+  ],
+  "result": {
+    "id": "mechanical:sweet_cherry_button"
+  }
+}

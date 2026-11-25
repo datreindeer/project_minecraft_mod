@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/sweet_cherry_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/sweet_cherry_planks"
+    },
+    "type=top": {
+      "model": "mechanical:block/sweet_cherry_slab_top"
+    }
+  }
+}

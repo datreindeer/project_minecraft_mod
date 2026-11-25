@@ -1,0 +1,41 @@
+{
+  "textures": {
+    "bark": "mechanical:block/pear_fallen_bark",
+    "particle": "mechanical:block/pear_fallen_bark"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0.1,
+        0
+      ],
+      "to": [
+        16,
+        0.1,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#bark",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#bark",
+          "uv": [
+            0,
+            16,
+            16,
+            0
+          ]
+        }
+      },
+      "shade": false
+    }
+  ]
+}

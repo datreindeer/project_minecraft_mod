@@ -16,6 +16,19 @@
     "mechanical:olive_door",
     "mechanical:date_palm_door",
     "mechanical:bitter_orange_door",
+    "mechanical:pear_door",
+    "mechanical:sweet_cherry_door",
+    "mechanical:lemon_door",
+    "mechanical:clementine_door",
+    "mechanical:walnut_door",
+    "mechanical:chestnut_door",
+    "mechanical:quince_door",
+    "mechanical:mulberry_door",
+    "mechanical:medlar_door",
+    "mechanical:peach_door",
+    "mechanical:apricot_door",
+    "mechanical:almond_door",
+    "mechanical:pomegranate_door",
     "mechanical:bog_oak_door"
   ]
 }

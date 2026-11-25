@@ -1,0 +1,46 @@
+{
+  "parent": "mechanical:iron_age/pressed_oil",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:walnut_oil"
+          }
+        ]
+      }
+    },
+    "has_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:almond_oil"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0",
+      "has_1"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:walnut_oil"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.nut_oil.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.nut_oil.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

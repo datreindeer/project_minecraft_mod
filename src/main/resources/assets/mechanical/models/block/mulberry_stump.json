@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/stump",
+  "textures": {
+    "side": "mechanical:block/mulberry_log",
+    "top": "mechanical:block/mulberry_log_top"
+  }
+}

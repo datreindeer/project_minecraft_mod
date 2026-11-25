@@ -227,6 +227,110 @@
       "apply": {
         "model": "mechanical:block/bitter_orange_upright_log"
       }
+    },
+    {
+      "when": {
+        "log": "27"
+      },
+      "apply": {
+        "model": "mechanical:block/pear_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "28"
+      },
+      "apply": {
+        "model": "mechanical:block/sweet_cherry_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "29"
+      },
+      "apply": {
+        "model": "mechanical:block/lemon_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "30"
+      },
+      "apply": {
+        "model": "mechanical:block/clementine_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "31"
+      },
+      "apply": {
+        "model": "mechanical:block/walnut_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "32"
+      },
+      "apply": {
+        "model": "mechanical:block/chestnut_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "33"
+      },
+      "apply": {
+        "model": "mechanical:block/quince_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "34"
+      },
+      "apply": {
+        "model": "mechanical:block/mulberry_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "35"
+      },
+      "apply": {
+        "model": "mechanical:block/medlar_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "36"
+      },
+      "apply": {
+        "model": "mechanical:block/peach_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "37"
+      },
+      "apply": {
+        "model": "mechanical:block/apricot_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "38"
+      },
+      "apply": {
+        "model": "mechanical:block/almond_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "39"
+      },
+      "apply": {
+        "model": "mechanical:block/pomegranate_upright_log"
+      }
     }
   ]
 }

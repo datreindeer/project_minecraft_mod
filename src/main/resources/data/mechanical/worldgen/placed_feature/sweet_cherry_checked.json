@@ -1,0 +1,12 @@
+{
+  "feature": "mechanical:sweet_cherry",
+  "placement": [
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:would_survive",
+        "state": "mechanical:sweet_cherry_sapling"
+      }
+    }
+  ]
+}

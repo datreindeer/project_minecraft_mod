@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/pomegranate_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/pomegranate_planks"
+    },
+    "type=top": {
+      "model": "mechanical:block/pomegranate_slab_top"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:chestnut_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:chestnut_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:chestnut_planks",
+      "mechanical:chestnut_wood",
+      "mechanical:stripped_chestnut_wood",
+      "mechanical:chestnut_slab",
+      "mechanical:chestnut_stairs",
+      "mechanical:chestnut_fence",
+      "mechanical:chestnut_fence_gate",
+      "mechanical:chestnut_door",
+      "mechanical:chestnut_trapdoor",
+      "mechanical:chestnut_button",
+      "mechanical:chestnut_pressure_plate"
+    ]
+  }
+}

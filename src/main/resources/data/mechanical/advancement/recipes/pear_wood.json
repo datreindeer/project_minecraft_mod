@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:pear_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pear_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:pear_planks",
+      "mechanical:pear_wood",
+      "mechanical:stripped_pear_wood",
+      "mechanical:pear_slab",
+      "mechanical:pear_stairs",
+      "mechanical:pear_fence",
+      "mechanical:pear_fence_gate",
+      "mechanical:pear_door",
+      "mechanical:pear_trapdoor",
+      "mechanical:pear_button",
+      "mechanical:pear_pressure_plate"
+    ]
+  }
+}

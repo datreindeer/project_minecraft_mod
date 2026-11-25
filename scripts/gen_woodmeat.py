@@ -19,13 +19,14 @@ Textures: scripts/gen_woodmeat_textures.py. Run after gen_tribes2.py: python scr
 """
 import json
 from pathlib import Path
+from orchard_table import ORCHARD
 
 ROOT = Path(__file__).resolve().parent.parent / "src/main/resources"
 A, D = ROOT / "assets/mechanical", ROOT / "data"
 M = "mechanical:"
 TAGS = D / "mechanical/tags/item"
 WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
-         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]
+         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"] + ORCHARD
 
 
 def w(path, obj):

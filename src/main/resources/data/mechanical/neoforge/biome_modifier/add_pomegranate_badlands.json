@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:ochre_badlands",
+    "minecraft:savanna_plateau",
+    "mechanical:marble_gorge"
+  ],
+  "features": "mechanical:pomegranate_badlands",
+  "step": "vegetal_decoration"
+}

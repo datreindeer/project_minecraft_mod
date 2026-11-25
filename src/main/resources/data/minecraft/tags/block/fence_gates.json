@@ -16,6 +16,19 @@
     "mechanical:olive_fence_gate",
     "mechanical:date_palm_fence_gate",
     "mechanical:bitter_orange_fence_gate",
+    "mechanical:pear_fence_gate",
+    "mechanical:sweet_cherry_fence_gate",
+    "mechanical:lemon_fence_gate",
+    "mechanical:clementine_fence_gate",
+    "mechanical:walnut_fence_gate",
+    "mechanical:chestnut_fence_gate",
+    "mechanical:quince_fence_gate",
+    "mechanical:mulberry_fence_gate",
+    "mechanical:medlar_fence_gate",
+    "mechanical:peach_fence_gate",
+    "mechanical:apricot_fence_gate",
+    "mechanical:almond_fence_gate",
+    "mechanical:pomegranate_fence_gate",
     "mechanical:bog_oak_fence_gate"
   ]
 }
