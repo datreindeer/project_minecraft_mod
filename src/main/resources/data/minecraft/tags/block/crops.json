@@ -30,6 +30,8 @@
     "mechanical:ginger_crop",
     "mechanical:saffron_crop",
     "mechanical:rice_crop",
-    "mechanical:rapeseed_crop"
+    "mechanical:rapeseed_crop",
+    "mechanical:maize_crop",
+    "mechanical:wild_maize_crop"
   ]
 }

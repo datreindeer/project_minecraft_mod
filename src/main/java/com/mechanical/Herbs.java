@@ -168,6 +168,7 @@ public final class Herbs {
         if (oilSeed && wildCrop == WILD_CROPS.get("turnip").get()) return ITEMS_BY_NAME.get("rapeseed").get();
         // emmer is still the wild type on the field; bread wheat came from it (emmer x goat grass), now and then a Wheat Grain
         if (wildCrop == Farming.CROPS.get("emmer").get()) return net.minecraft.world.item.Items.WHEAT_SEEDS;
+        if (wildCrop == Maize.WILD_MAIZE_CROP.get()) return Maize.KERNELS.get(); // teosinte -> maize (flora 4)
         for (var e : WILD_CROPS.entrySet()) if (e.getValue().get() == wildCrop) return ITEMS_BY_NAME.get(e.getKey()).get();
         return null;
     }

@@ -32,6 +32,11 @@
     "mechanical:barberries",
     "mechanical:capers",
     "mechanical:red_currants",
-    "mechanical:black_currants"
+    "mechanical:black_currants",
+    "mechanical:white_currants",
+    "mechanical:gooseberries",
+    "mechanical:cranberries",
+    "mechanical:maize_kernels",
+    "mechanical:grapes"
   ]
 }

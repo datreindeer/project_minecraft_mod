@@ -47,7 +47,8 @@ public class DryingRackBlockEntity extends BlockEntity {
             new Drying(EarthBlocks.WET_ADOBE_BRICK, EarthBlocks.ADOBE_BRICK, 360, 4),
             new Drying(EarthBlocks.CUT_PEAT, EarthBlocks.DRIED_PEAT, 480, 4),
             new Drying(() -> EarthBlocks.REED.get().asItem(), EarthBlocks.DRIED_REED, 240, 8),
-            new Drying(() -> Items.KELP, () -> Items.DRIED_KELP, 180, 8));
+            new Drying(() -> Items.KELP, () -> Items.DRIED_KELP, 180, 8),
+            new Drying(Vineyard.GRAPES, Vineyard.RAISINS, 300, 8));
 
     public static final Identifier FIVE_KINDS = Identifier.fromNamespaceAndPath(Mechanical.MODID, "wilderness/five_kinds_dried");
     private static final String KINDS = "mechanical_rack_kinds";

@@ -198,7 +198,8 @@ COOKED = [f"cooked_{s}" for s in SCRAPS] + ["cooked_haunch", "cooked_ribs", "coo
 BERRIES = ["raspberries", "blueberries", "lingonberries", "wild_strawberries", "elderberries", "cloudberries",
            "blackberries", "chanterelle", "porcini", "morel", "oyster_mushroom", "puffball", "hazelnuts", "beechnuts",
            "juniper_berries", "minecraft:sweet_berries", "rosehips", "crowberries", "bearberries", "barberries", "capers", "red_currants",
-           "black_currants", "rowan_berries", "bird_cherries", "crab_apple", "wild_plums", "olives", "dates", "yew_arils"]
+           "black_currants", "rowan_berries", "bird_cherries", "crab_apple", "wild_plums", "olives", "dates", "yew_arils",
+           "white_currants", "gooseberries", "cranberries", "grapes"]
 T, G, C = "task", "goal", "challenge"
 BARK_WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
               "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]  # Mechanical.WOODS
@@ -1417,6 +1418,24 @@ TABS["food"][1].extend([
      has("thyme", "marjoram", "yarrow_leaves", "chamomile_flowers", "mint_leaves", "sorrel_leaves", "sage_leaves", "rosemary_sprigs",
          "bog_myrtle_leaves", "meadowsweet_flowers", "hop_cones")),
 ])
+# flora 4 (berries branch: Flora thickets, Vineyard, Maize; gen_flora.py)
+TABS["food"][1].extend([
+    ("bog_and_bramble", "hedgerow", "gooseberries", T, "Bog and Bramble",
+     "Pick White Currants in a damp wood, Gooseberries from a thorny bush (step carefully), or Cranberries from the Peat Bog's "
+     "low mats, which keep their berries into winter", has("white_currants", "gooseberries", "cranberries")),
+    ("pick_grapes", "tree_fruit", "grapes", T, "Wild Grapes",
+     "Pick ripe Grapes from a wild Grape Vine climbing the trunks and rocks of warm woods in autumn. Cut a vine with a knife "
+     "or shears to plant it on your own wall", by_code()),
+    ("raisins", "pick_grapes", "raisins", T, "Sun-Dried",
+     "Hang eight Grapes on a Drying Rack: in sun and wind they turn into Raisins, which keep a month", has("raisins")),
+    ("teosinte", "wild_greens", "teosinte", T, "Wild Maize",
+     "Gather Teosinte from the Wild Maize Plant of the warm savanna. Its hard little ears are no food yet: sow them", has("teosinte")),
+    ("maize", "teosinte", "corn_cob", G, "Corn on the Cob",
+     "Sow Teosinte on farmland: now and then it gives Maize Kernels, which grow two blocks tall in the summer heat and bear Corn Cobs",
+     has("corn_cob")),
+    ("roasted_corn", "maize", "roasted_corn", T, "Roasted Corn",
+     "Roast a Corn Cob over a Campfire or a Fire Pit, or shell it into Maize Kernels for seed and the Quern", has("roasted_corn")),
+])
 TABS["stone_age"][1].extend([
     ("clay_cooking_pot", "kiln", "clay_cooking_pot", T, "Pot in the Embers",
      "Fire an Unfired Clay Cooking Pot in the Clay Kiln and set it on a Campfire. Water first, then the ingredients of a dish",
@@ -1792,8 +1811,10 @@ TABS["iron_age"][1].extend([
      "Fry Fish or Roots and Onion in an Iron Skillet with oil (or lard)", has("fried_fish", "fried_roots")),
     ("pickled_olives", "sauerkraut", "pickled_olives", T, "Olives in Brine",
      "Pickle Olives with Salt in a Fermenting Barrel: raw they are bitter, in brine they keep a month", has("pickled_olives")),
+    ("vintner", "brewer", "wine", T, "Vintner",
+     "Ferment four Grapes in a Fermenting Barrel into Wine", has("wine")),
     ("tipsy", "brewer", "cider", T, "One More Round",
-     "Drink three cups of Ale or Cider in a row: a warm belly, and the world leans a little", effect("mechanical:tipsy", 2)),
+     "Drink three cups of Ale, Cider or Wine in a row: a warm belly, and the world leans a little", effect("mechanical:tipsy", 2)),
     ("knife_set", "steel", "steel_knife_set", T, "A Cut Above",
      "Roll a Steel Knife and two more blades into a Steel Knife Set: it gets more meat and hide from every carcass", has("steel_knife_set")),
 ])

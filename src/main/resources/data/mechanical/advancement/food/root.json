@@ -299,6 +299,46 @@
           }
         ]
       }
+    },
+    "has_30": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:white_currants"
+          }
+        ]
+      }
+    },
+    "has_31": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:gooseberries"
+          }
+        ]
+      }
+    },
+    "has_32": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:cranberries"
+          }
+        ]
+      }
+    },
+    "has_33": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:grapes"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -332,7 +372,11 @@
       "has_26",
       "has_27",
       "has_28",
-      "has_29"
+      "has_29",
+      "has_30",
+      "has_31",
+      "has_32",
+      "has_33"
     ]
   ],
   "display": {

@@ -207,6 +207,7 @@ public final class Farming {
             Climate warm = new Climate(12, 15, 20, 25, 6, false, new float[] {0.5F, 1.3F, 0.6F, 0});
             m.put(Blocks.MELON_STEM, warm);
             m.put(Blocks.PUMPKIN_STEM, warm);
+            Maize.climates(m); // teosinte and maize (flora 4)
             Herbs.climates(m); // wild and tamed vegetables, bought crops (flora and food plan phase 4)
             climates = m;
         }
@@ -231,6 +232,7 @@ public final class Farming {
     static final Identifier FALLOW = Identifier.fromNamespaceAndPath(MODID, "food/fallow_season");
 
     public static boolean isYoungCrop(BlockState state) {
+        if (MaizeCropBlock.isUpper(state)) return false; // only the lower half is the plant
         if (state.getBlock() instanceof CropBlock crop) return !crop.isMaxAge(state);
         return state.getBlock() instanceof StemBlock && state.getValue(StemBlock.AGE) < StemBlock.MAX_AGE;
     }

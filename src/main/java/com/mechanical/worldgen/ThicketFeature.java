@@ -24,7 +24,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
  */
 final class ThicketFeature extends StoneAgeFeature {
     static final List<ThicketFeature> ALL = List.of("blackthorn", "sea_buckthorn", "jujube", "rosehip", "crowberry", "bearberry", "barberry", "caper",
-            "red_currant", "black_currant").stream().map(ThicketFeature::new).toList();
+            "red_currant", "black_currant", "white_currant", "gooseberry", "cranberry").stream().map(ThicketFeature::new).toList();
 
     final String kind;
     private final MapCodec<ThicketFeature> codec;

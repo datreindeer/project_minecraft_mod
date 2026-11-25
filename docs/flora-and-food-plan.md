@@ -502,3 +502,40 @@ stekning och berusning"), `docs/farming.md` (Rapeseed).
   i rutorna (planerat ~1 på 60 och 90 chunks, och de blommar bara på natten). Bilder i rapporten.
 - **Svagt / kvar:** Ostpressen visar sin ostskiva även när den pressar olja. Apple har ingen egen lövströ (vildapelns används).
   Sea Salt i morteln är inte gjort. Inget Oak Folk-uppdrag med blommorna.
+
+## Flora 4 (bär, vin och majs): resultat
+
+Byggt v0.211.0 (gren `feat/berries`). Kod: `Flora.THICKET_KINDS` (snårbuskarna), `Vineyard` + `GrapeVineBlock` +
+`worldgen/GrapeVineFeature` (vinrankan), `Maize` + `MaizeCropBlock` (majsen). Data i `scripts/gen_flora.py` (nya sektioner
+"flora 4"), texturer i `scripts/gen_flora_textures.py` (snåren) och den nya fristående `scripts/gen_vines_textures.py`
+(vinranka, majs, sakerna). Test: `VinesTest` (grape_vine, maize).
+
+- **White Currant** (vitt vinbär): som Red Currant men bleka, genomskinligt gula klasar. Klimat 0,5–0,75, fukt 0,75–1,0
+  (fuktig lövskog, Willow Fen, Reed Delta, träsk). **White Currants**.
+- **Gooseberry** (krusbär): **taggig** snårbuske (som Dog Rose och Barberry) i skogsbryn och lövskog, klimat 0,4–0,8, fukt
+  0,4–0,8. Små röda klockblommor, sedan ett stort ådrat bär i taget som hänger från grenen. **Gooseberries** (2 hunger).
+- **Cranberry** (tranbär): låg **vintergrön matta** bara i **Peat Bog** (som Crowberry): rosa blommor, rodnande omogna,
+  blanka mörkröda bär på hösten som sitter kvar över vintern; bladen blir bronsröda på vintern. **Cranberries**.
+- Alla tre: snår som växer ihop och sprider sig i sitt klimat, torkas på Drying Rack, Bark Basket, håller 2 dagar, frosttint.
+- **Grape Vine** (vildvin, *Vitis vinifera sylvestris*): klättrar på väggar, klippor och trädstammar som vanillas vine (samma
+  sidor, sprider sig uppåt, åt sidan runt hörn och nedåt), men bara under växtsäsongen, i biomtemp 0,5–2,0 och mycket långsammare.
+  Följer året: blad och små blomvippor på våren, hårda gröna klasar på sommaren, **mogna blådaggiga klasar bland gula och
+  rostroda löv på hösten**, kala vedartade rankor på vintern. Klasarna sitter på ett eget plan framför bladen så de hänger ut.
+  Högerklicka mogen: 1–3 **Grapes**, klasarna börjar om gröna. Bruten med kniv eller sax: en Grape Vine att plantera på egen
+  vägg; mogen ger den också 1–2 Grapes. Klätterbar (`minecraft:climbable`). Världsgen: 1–2 rankor 2–5 block upp på en stam
+  eller klippa i varm skog (Forest, Dark Forest, Birch Forest, Flower Forest, Deciduous Forest, Hazel Meadow, Chalk Downs,
+  Limestone Karst, djungel...), chans 1/6 per chunk; Retrogen ger gamla chunkar dem.
+  - **Raisins**: 8 Grapes på Drying Rack (300 s i sol och vind) → 8 Raisins (2 hunger, håller 30 dagar).
+  - **Wine**: 4 Grapes i Fermenting Barrel (järnåldern) → 2 Wine. Ger **Tipsy** som Cider och Ale.
+  - **Spaljé:** inte byggd. Vanillas vine-logik kräver hela blocksidor, så rankan fäster inte på staket; den klättrar på
+    vanliga väggar.
+- **Majs** (se docs/farming.md "Majs"): Wild Maize Plant (teosinte) på savannen → Teosinte → odlad Teosinte tämjs till Maize
+  Kernels → två block hög Maize → Corn Cob (äts, rostas, skalas till kärnor; kärnorna mals till Flour).
+
+**Beslut:**
+- **Bilberry gjordes inte.** Modens **Blueberry** är redan det svenska blåbäret (låg risbuske i skog och taiga, även Peat Bog,
+  klimat 0,2–0,7, mognar sommar–höst); en Bilberry vore samma växt två gånger. Namnet "Blueberry" behölls (inget byte,
+  så gamla världar och docs stämmer).
+- **Melon och Pumpkin: inga nya sorter.** Vanilla-melon och pumpa finns redan vilda (vanillas `patch_pumpkin` i de flesta
+  biomer, meloner i djungeln), har modens klimat- och säsongsregler (12–25°, bäst 15–20, frost 6, sommar ×1,3), knappa frön
+  (melon 0–1 frö, pumpa 1 frö) och går i Seed Bag. En "Wild Melon"/"Wild Pumpkin" vore samma block igen.

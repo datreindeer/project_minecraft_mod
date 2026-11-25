@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/brewer",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:wine"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:wine"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.vintner.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.vintner.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

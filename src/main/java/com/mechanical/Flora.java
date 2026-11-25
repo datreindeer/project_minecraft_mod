@@ -190,7 +190,11 @@ public final class Flora {
             new Thicket("barberry", "barberries", new int[] {1, 2, 3, 3}, 0.6F, 1.3F, false, berry(1, 0.2F), true, false, false),
             new Thicket("caper", "capers", new int[] {0, 3, 2, 0}, 1.0F, 1.6F, true, berry(1, 0.2F), false, true, false),
             new Thicket("red_currant", "red_currants", new int[] {1, 2, 3, 0}, 0.6F, 0.8F, false, berry(1, 0.3F), false, false, false),
-            new Thicket("black_currant", "black_currants", new int[] {1, 2, 3, 0}, 0.25F, 0.6F, false, berry(1, 0.3F), false, false, false));
+            new Thicket("black_currant", "black_currants", new int[] {1, 2, 3, 0}, 0.25F, 0.6F, false, berry(1, 0.3F), false, false, false),
+            // flora 4 (berries): pale see-through currants, the thorny gooseberry, and the bog's evergreen cranberry mat (ripe autumn, kept into winter)
+            new Thicket("white_currant", "white_currants", new int[] {1, 2, 3, 0}, 0.5F, 0.75F, false, berry(1, 0.3F), false, false, false),
+            new Thicket("gooseberry", "gooseberries", new int[] {1, 2, 3, 0}, 0.4F, 0.8F, false, berry(2, 0.3F), true, false, false),
+            new Thicket("cranberry", "cranberries", new int[] {1, 2, 3, 3}, 0.0F, 0.45F, false, berry(1, 0.2F), false, true, true));
 
     public static final Map<String, DeferredBlock<ThicketBushBlock>> THICKETS = new LinkedHashMap<>();
     public static final Map<String, DeferredItem<Item>> THICKET_BERRIES = new LinkedHashMap<>();

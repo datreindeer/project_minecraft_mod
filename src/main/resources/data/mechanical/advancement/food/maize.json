@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:food/teosinte",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:corn_cob"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:corn_cob"
+    },
+    "title": {
+      "translate": "advancements.mechanical.food.maize.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.food.maize.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

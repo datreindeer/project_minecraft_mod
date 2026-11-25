@@ -1,0 +1,80 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mechanical:block/grape_vine_stage1",
+    "vine": "mechanical:block/grape_vine_stage1",
+    "fruit": "mechanical:block/grape_vine_stage1_fruit"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0.8
+      ],
+      "to": [
+        16,
+        16,
+        0.8
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#vine",
+          "tintindex": 0
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#vine",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        2.4
+      ],
+      "to": [
+        16,
+        16,
+        2.4
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#fruit",
+          "tintindex": 0
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#fruit",
+          "tintindex": 0
+        }
+      }
+    }
+  ]
+}

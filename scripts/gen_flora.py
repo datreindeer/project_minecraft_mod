@@ -254,8 +254,13 @@ THICKETS = {
     "caper": ("Caper Bush", "capers", "Capers", (1.0, 1.6, 0.0, 0.3), 3),
     "red_currant": ("Red Currant", "red_currants", "Red Currants", (0.6, 0.8, 0.8, 1.0), 8),
     "black_currant": ("Black Currant", "black_currants", "Black Currants", (0.25, 0.6, 0.8, 1.0), 7),
+    # flora 4 (berries): the pale currant of damp woods, the thorny gooseberry of woodland edges, the bog's cranberry mat
+    "white_currant": ("White Currant", "white_currants", "White Currants", (0.5, 0.75, 0.75, 1.0), 10),
+    "gooseberry": ("Gooseberry", "gooseberries", "Gooseberries", (0.4, 0.8, 0.4, 0.8), 9),
+    "cranberry": ("Cranberry", "cranberries", "Cranberries", (0.0, 0.45, 0.8, 1.0), 3),
 }
-LOW = {"crowberry", "bearberry", "caper"}
+LOW = {"crowberry", "bearberry", "caper", "cranberry"}
+THICKET_BIOMES = {"cranberry": [S + "peat_bog"]}  # a bog plant: only the Peat Bog, not every damp cold biome
 LOOKS = ["stage0", "stage1", "stage2", "stage3", "bare", "bare_ripe"]
 LOOK_WHEN = {"stage0": {"leafless": "false", "age": "0"}, "stage1": {"leafless": "false", "age": "1"},
              "stage2": {"leafless": "false", "age": "2"}, "stage3": {"leafless": "false", "age": "3"},
@@ -348,7 +353,7 @@ for name, (en, berries, berries_en, (tmin, tmax, dmin, dmax), rarity) in THICKET
     w(A / f"models/item/{berries}.json", flat)
     w(A / f"items/{berries}.json", {"model": {"type": "minecraft:model", "model": S + f"item/{berries}"}})
     lang[f"item.mechanical.{berries}"] = berries_en
-    biomes = climate(tmin, tmax, dmin, dmax, minus=("pale_garden", "mangrove_swamp"))
+    biomes = THICKET_BIOMES.get(name) or climate(tmin, tmax, dmin, dmax, minus=("pale_garden", "mangrove_swamp"))
     w(D / f"mechanical/worldgen/feature/{name}_thicket.json", {"type": S + f"{name}_thicket"})
     w(D / f"mechanical/worldgen/placed_feature/{name}_thicket.json", {"feature": S + f"{name}_thicket", "placement": [
         {"type": "minecraft:rarity_filter", "chance": rarity}, {"type": "minecraft:in_square"},
@@ -399,6 +404,123 @@ w(A / "items/fern_flower_charm.json", {"model": {"type": "minecraft:model", "mod
 lang["item.mechanical.fern_flower_charm"] = "Fern Flower Charm"
 w(D / "mechanical/recipe/fern_flower_charm.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
     "ingredients": [S + "fern_flower", S + "twine"], "result": {"id": S + "fern_flower_charm"}})
+
+# ---------------------------------------------------------------- flora 4: the wild grape vine (Vineyard, GrapeVineBlock, worldgen/GrapeVineFeature)
+# Each face is a leaf plane just off the wall (as vanilla's vine) with a second plane further out carrying only the flowers or
+# grape clusters, so they hang out of the leaves. Looks: stage0 leaves, stage1 flowers, stage2 green clusters, stage3 ripe grapes
+# among the turning leaves, bare (winter: the woody vine). Every face tintindex 0 (the winter frost filter, SeasonalFoliage).
+VINE_LOOKS = {"stage0": {"age": "0", "leafless": "false"}, "stage1": {"age": "1", "leafless": "false"},
+              "stage2": {"age": "2", "leafless": "false"}, "stage3": {"age": "3", "leafless": "false"}, "bare": {"leafless": "true"}}
+
+
+def vine_plane(f, t, faces, tex, uv=(0, 0, 16, 16)):
+    return {"from": f, "to": t, "shade": False, "faces": {d: {"uv": list(uv), "texture": tex, "tintindex": 0} for d in faces}}
+
+
+for look in VINE_LOOKS:
+    tex = {"particle": S + f"block/grape_vine_{look}", "vine": S + f"block/grape_vine_{look}"}
+    side = [vine_plane([0, 0, 0.8], [16, 16, 0.8], ("north", "south"), "#vine")]
+    up = [vine_plane([0, 15.2, 0], [16, 15.2, 16], ("up", "down"), "#vine")]
+    if look in ("stage1", "stage2", "stage3"):
+        tex["fruit"] = S + f"block/grape_vine_{look}_fruit"
+        side.append(vine_plane([0, 0, 2.4], [16, 16, 2.4], ("north", "south"), "#fruit"))
+        up.append(vine_plane([0, 13.6, 0], [16, 13.6, 16], ("down",), "#fruit"))  # clusters hanging from a vine over a gap
+    w(A / f"models/block/grape_vine_{look}.json", {"ambientocclusion": False, "textures": tex, "elements": side})
+    w(A / f"models/block/grape_vine_up_{look}.json", {"ambientocclusion": False, "textures": tex, "elements": up})
+vine_parts = []
+for look, when in VINE_LOOKS.items():
+    for side, rot in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
+        vine_parts.append({"when": {side: "true", **when}, "apply": {"model": S + f"block/grape_vine_{look}", "y": rot}})
+    vine_parts.append({"when": {"up": "true", **when}, "apply": {"model": S + f"block/grape_vine_up_{look}"}})
+w(A / "blockstates/grape_vine.json", {"multipart": vine_parts})
+lang["block.mechanical.grape_vine"] = "Grape Vine"
+w(A / "models/item/grape_vine.json", {"parent": M + "item/generated", "textures": {"layer0": S + "item/grape_vine"}})
+w(A / "items/grape_vine.json", {"model": {"type": "minecraft:model", "model": S + "item/grape_vine"}})
+CUT = {"type": "minecraft:any_of", "terms": [{"type": "minecraft:match_tool", "predicate": {"items": "#mechanical:knives"}},
+                                             {"type": "minecraft:match_tool", "predicate": {"items": M + "shears"}}]}
+w(D / "mechanical/loot_table/blocks/grape_vine.json", {"type": "minecraft:block", "pools": [
+    {"rolls": 1, "condition": CUT, "entries": [{"type": "minecraft:item", "name": S + "grape_vine"}]},  # a cutting to plant
+    {"rolls": 1, "condition": {"type": "minecraft:match_block", "blocks": S + "grape_vine", "state": {"age": "3", "leafless": "false"}},
+     "entries": [{"type": "minecraft:item", "name": S + "grapes",
+                  "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]}],
+    "random_sequence": "mechanical:blocks/grape_vine"})
+tag(TAGS_B / "climbable.json", S + "grape_vine")
+tag(TAGS_B / "replaceable_by_trees.json", S + "grape_vine")
+tag(D / "minecraft/tags/block/mineable/axe.json", S + "grape_vine")
+tag(D / "mechanical/tags/item/compostable.json", S + "grape_vine")
+# wild grapes climb the trunks and rocks of warm woods (GrapeVineBlock.MIN_TEMP..MAX_TEMP)
+vine_biomes = climate(0.6, 1.0, 0.3, 0.9, minus=("pale_garden", "mangrove_swamp", "swamp", "willow_fen", "reed_delta", "cherry_grove"))
+w(D / "mechanical/worldgen/feature/grape_vine.json", {"type": S + "grape_vine"})
+w(D / "mechanical/worldgen/placed_feature/grape_vine.json", {"feature": S + "grape_vine", "placement": [
+    {"type": "minecraft:rarity_filter", "chance": 6}, {"type": "minecraft:in_square"},
+    {"type": "minecraft:heightmap", "heightmap": "MOTION_BLOCKING_NO_LEAVES"}, {"type": "minecraft:biome"}]})
+w(D / "mechanical/neoforge/biome_modifier/add_grape_vine.json", {"type": "neoforge:add_features", "biomes": vine_biomes,
+                                                                 "features": S + "grape_vine", "step": "vegetal_decoration"})
+print(f"grape_vine: {', '.join(b.split(':')[1] for b in vine_biomes)}")
+
+# ---------------------------------------------------------------- flora 4: teosinte and maize (Maize, MaizeCropBlock; docs/farming.md "Majs")
+MAIZE_LOWER = [0, 0, 1, 2, 3, 4, 5, 6]  # 8 ages drawn in 7 looks; the top (ages 4-7) in 4
+MAIZE_TOP = {4: 3, 5: 4, 6: 5, 7: 6}
+for s in range(7):
+    w(A / f"models/block/maize_stage{s}.json", {"parent": M + "block/crop", "textures": {"crop": S + f"block/maize_stage{s}"}})
+for s in range(3, 7):
+    w(A / f"models/block/maize_stage{s}_top.json", {"parent": M + "block/crop", "textures": {"crop": S + f"block/maize_stage{s}_top"}})
+w(A / "blockstates/maize_crop.json", {"variants": {
+    **{f"age={a},half=lower": {"model": S + f"block/maize_stage{MAIZE_LOWER[a]}"} for a in range(8)},
+    **{f"age={a},half=upper": {"model": S + f"block/maize_stage{MAIZE_TOP.get(a, 3)}_top"} for a in range(8)}}})
+for s in range(4):
+    w(A / f"models/block/wild_maize_stage{s}.json", {"parent": M + "block/crop", "textures": {"crop": S + f"block/wild_maize_stage{s}"}})
+w(A / "blockstates/wild_maize_crop.json", {"variants": {f"age={a}": {"model": S + f"block/wild_maize_stage{[0, 0, 1, 1, 2, 2, 2, 3][a]}"}
+                                                        for a in range(8)}})
+w(A / "models/block/wild_maize_plant.json", {"parent": M + "block/cross", "textures": {"cross": S + "block/wild_maize_plant"}})
+w(A / "blockstates/wild_maize_plant.json", {"variants": {"": {"model": S + "block/wild_maize_plant"}}})
+lang.update({"block.mechanical.maize_crop": "Maize", "block.mechanical.wild_maize_crop": "Teosinte",
+             "block.mechanical.wild_maize_plant": "Wild Maize Plant"})
+for crop in ("maize_crop", "wild_maize_crop"):
+    tag(TAGS_B / "crops.json", S + crop)
+    tag(TAGS_B / "maintains_farmland.json", S + crop)
+    tag(D / "mechanical/tags/block/mineable/sickle.json", S + crop)
+tag(D / "mechanical/tags/block/mineable/sickle.json", S + "wild_maize_plant")
+
+
+def count(item, lo, hi):
+    return {"type": "minecraft:item", "name": item, "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": lo, "max": hi}}]}
+
+
+RIPE_LOW = {"type": "minecraft:match_block", "blocks": S + "maize_crop", "state": {"age": "7", "half": "lower"}}
+w(D / "mechanical/loot_table/blocks/maize_crop.json", {"type": "minecraft:block", "pools": [
+    {"rolls": 1, "condition": RIPE_LOW, "entries": [count(S + "corn_cob", 1, 3)]}], "random_sequence": "mechanical:blocks/maize_crop"})
+w(D / "mechanical/loot_table/blocks/wild_maize_crop.json", {"type": "minecraft:block", "pools": [
+    {"rolls": 1, "condition": {"type": "minecraft:match_block", "blocks": S + "wild_maize_crop", "state": {"age": "7"}},
+     "entries": [count(S + "teosinte", 1, 2)]}], "random_sequence": "mechanical:blocks/wild_maize_crop"})
+KNIFE = {"type": "minecraft:match_tool", "predicate": {"items": "#mechanical:knives"}}
+SICKLE = {"type": "minecraft:match_tool", "predicate": {"items": "#mechanical:sickles"}}
+w(D / "mechanical/loot_table/blocks/wild_maize_plant.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+    {"type": "minecraft:alternatives", "children": [dict(count(S + "teosinte", 1, 2), condition=KNIFE), dict(count(S + "teosinte", 1, 2), condition=SICKLE),
+                                                    {"type": "minecraft:item", "name": S + "teosinte", "condition": {"type": "minecraft:random_chance", "chance": 0.5}}]}]}],
+    "random_sequence": "mechanical:blocks/wild_maize_plant"})
+# teosinte: warm, open grassland (Maize.CLIMATE: needs summer heat)
+patch("wild_maize_patch", {"id": S + "wild_maize_plant"}, [M + "savanna", M + "savanna_plateau", M + "windswept_savanna", M + "sparse_jungle"],
+      10, 6, 3, False)
+print("wild_maize_patch: savanna, savanna_plateau, windswept_savanna, sparse_jungle")
+w(D / "mechanical/recipe/maize_kernels.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+    "ingredients": [S + "corn_cob"], "result": {"id": S + "maize_kernels", "count": 3}})
+w(D / "mechanical/recipe/roasted_corn.json", {"type": "minecraft:campfire_cooking", "category": "food", "cookingtime": 400,
+    "experience": 0.1, "ingredient": S + "corn_cob", "result": {"id": S + "roasted_corn"}})
+tag(D / "mechanical/tags/item/grains.json", S + "maize_kernels")
+tag(D / "mechanical/tags/item/compostable.json", S + "corn_cob")
+for t, items in (("basket_storable", ["corn_cob", "roasted_corn", "maize_kernels", "teosinte", "grapes", "raisins"]),
+                 ("perishes_10_days", ["corn_cob"]), ("perishes_3_days", ["roasted_corn", "grapes"]), ("perishes_30_days", ["raisins"]),
+                 ("snare_bait", ["maize_kernels", "grapes"])):
+    for i in items:
+        tag(D / f"mechanical/tags/item/{t}.json", S + i)
+
+# ---------------------------------------------------------------- flora 4 items
+for item, en in {"grapes": "Grapes", "raisins": "Raisins", "wine": "Wine", "teosinte": "Teosinte", "maize_kernels": "Maize Kernels",
+                 "corn_cob": "Corn Cob", "roasted_corn": "Roasted Corn"}.items():
+    w(A / f"models/item/{item}.json", {"parent": M + "item/generated", "textures": {"layer0": S + f"item/{item}"}})
+    w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": S + f"item/{item}"}})
+    lang[f"item.mechanical.{item}"] = en
 
 w(A / "lang/en_us.json", lang, ascii=True)
 print("flora ok")
