@@ -22,6 +22,9 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  * many you carry) and the price in gold, silver and copper coins; your coins at the bottom. A click on a row trades once
  * (the server checks and answers with the new state, {@link #update}); rows that can't trade now are dimmed, the reason in
  * the tooltip. Scrolls when a column is longer than the screen.
+ * <p>
+ * Tribes (elders, the Miner, envoys) use it too: no purse (purse -1, hidden), and a deal may ask for goods in barter
+ * ({@code Deal.cost}), drawn as small item icons before the coins.
  */
 public class CaravanTradeScreen extends Screen {
     private static final int W = 372, PAD = 10, ROW = 22, COL_GAP = 8, HEADER = 38, COL_HEAD = 14, FOOTER = 26;
@@ -71,8 +74,9 @@ public class CaravanTradeScreen extends Screen {
         CaravanTrade.Deal d = open.deals().get(i);
         if (d.stock() <= 0) return Component.translatable(d.sale() ? "gui.mechanical.caravan.sold_out" : "gui.mechanical.caravan.enough");
         boolean creative = minecraft != null && minecraft.player != null && minecraft.player.isCreative();
+        if (d.sale() && open.have().get(i) < 1) return Component.translatable("gui.mechanical.caravan.no_goods");
         if (d.sale()) return open.coins() >= d.price() || creative ? null : Component.translatable("gui.mechanical.caravan.too_dear");
-        if (open.purse() < d.price()) return Component.translatable("gui.mechanical.caravan.purse_empty");
+        if (open.purse() >= 0 && open.purse() < d.price()) return Component.translatable("gui.mechanical.caravan.purse_empty");
         return open.have().get(i) >= d.goods().getCount() ? null : Component.translatable("gui.mechanical.caravan.none_to_sell");
     }
 
@@ -112,18 +116,21 @@ public class CaravanTradeScreen extends Screen {
         super.extractRenderState(g, mouseX, mouseY, a);
         // header: who, of which tribe, and what they deal in
         // the name tag already says "of the X tribe": the name on one line, cut to leave room for the purse
-        int nameRoom = W - PAD * 3 - Math.max(font.width(Component.translatable("gui.mechanical.caravan.purse")), coinsWidth(open.purse()));
+        int nameRoom = open.purse() < 0 ? W - PAD * 2
+                : W - PAD * 3 - Math.max(font.width(Component.translatable("gui.mechanical.caravan.purse")), coinsWidth(open.purse()));
         g.text(font, font.plainSubstrByWidth(open.name().getString(), nameRoom), left + PAD, top + PAD, NAME);
         Component kind = open.big() ? Component.translatable("gui.mechanical.caravan.big", open.kind()) : open.kind();
         int kw = font.width(kind) + 10;
         g.fill(left + PAD, top + PAD + 13, left + PAD + kw, top + PAD + 25, KIND_BG);
         g.outline(left + PAD, top + PAD + 13, kw, 12, BORDER);
         g.text(font, kind, left + PAD + 5, top + PAD + 15, GOLD);
-        // the purse, top right
-        Component purse = Component.translatable("gui.mechanical.caravan.purse");
-        int pw = coinsWidth(open.purse());
-        g.text(font, purse, left + W - PAD - font.width(purse), top + PAD, DIM);
-        coins(g, open.purse(), left + W - PAD - pw, top + PAD + 12, open.purse() > 0 ? TEXT : BAD);
+        // the purse, top right (a tribe has none: it always pays)
+        if (open.purse() >= 0) {
+            Component purse = Component.translatable("gui.mechanical.caravan.purse");
+            int pw = coinsWidth(open.purse());
+            g.text(font, purse, left + W - PAD - font.width(purse), top + PAD, DIM);
+            coins(g, open.purse(), left + W - PAD - pw, top + PAD + 12, open.purse() > 0 ? TEXT : BAD);
+        }
 
         int cw = colWidth(), sx = left + PAD, bx = sx + cw + COL_GAP;
         g.text(font, Component.translatable("gui.mechanical.caravan.for_sale"), sx + 2, top + HEADER + 2, NAME);
@@ -137,7 +144,7 @@ public class CaravanTradeScreen extends Screen {
         Component yours = Component.translatable("gui.mechanical.caravan.your_coins");
         g.text(font, yours, left + PAD, fy + 4, DIM);
         coins(g, open.coins(), left + PAD + font.width(yours) + 6, fy, TEXT);
-        Component hint = Component.translatable("gui.mechanical.caravan.hint");
+        Component hint = Component.translatable(open.purse() < 0 ? "gui.mechanical.caravan.barter_hint" : "gui.mechanical.caravan.hint");
         g.text(font, hint, left + W - PAD - font.width(hint), fy + 4, DIM);
 
         if (hovered >= 0) tooltip(g, hovered, mouseX, mouseY);
@@ -156,7 +163,8 @@ public class CaravanTradeScreen extends Screen {
             g.fill(x + 3, y + 2, x + 19, y + 18, SLOT);
             g.item(d.goods(), x + 3, y + 2);
             g.itemDecorations(font, d.goods(), x + 3, y + 2);
-            String name = font.plainSubstrByWidth(d.goods().getHoverName().getString(), cw - 24 - coinsWidth(d.price()) - 4);
+            int pw = priceWidth(d);
+            String name = font.plainSubstrByWidth(d.goods().getHoverName().getString(), cw - 24 - pw - 4);
             g.text(font, name, x + 23, y + 2, ok ? TEXT : DIM);
             Component count = d.sale() ? Component.translatable("gui.mechanical.caravan.left", d.stock())
                     : Component.translatable("gui.mechanical.caravan.wants", d.stock(), open.have().get(i));
@@ -165,7 +173,7 @@ public class CaravanTradeScreen extends Screen {
             g.pose().scale(0.75F, 0.75F);
             g.text(font, count, 0, 0, d.stock() > 0 ? (d.sale() ? GOOD : DIM) : BAD);
             g.pose().popMatrix();
-            coins(g, d.price(), x + cw - 3 - coinsWidth(d.price()), y + 3, ok ? GOLD : DIM);
+            price(g, d, x + cw - 3 - pw, y + 3, ok ? GOLD : DIM);
             if (!ok) g.fill(x, y, x + cw, y + ROW - 2, 0x50000000);
         }
         // a scroll bar when the column is longer than the screen
@@ -178,6 +186,28 @@ public class CaravanTradeScreen extends Screen {
     }
 
     private static final int COIN = 12;
+
+    /** Width of a deal's price: the barter goods ({@link #price}), then the coins if any. */
+    private int priceWidth(CaravanTrade.Deal d) {
+        int w = 0;
+        for (ItemStack c : d.cost()) w += COIN + 1 + font.width(String.valueOf(c.getCount())) + 4;
+        return d.cost().isEmpty() || d.price() > 0 ? w + coinsWidth(d.price()) : w - 4;
+    }
+
+    /** A deal's price: each barter good as a small icon with its count, then the coins (left out when it is barter only). */
+    private void price(GuiGraphicsExtractor g, CaravanTrade.Deal d, int x, int y, int colour) {
+        for (ItemStack c : d.cost()) {
+            g.pose().pushMatrix();
+            g.pose().translate(x, y);
+            g.pose().scale(COIN / 16.0F, COIN / 16.0F);
+            g.item(c, 0, 0);
+            g.pose().popMatrix();
+            String n = String.valueOf(c.getCount());
+            g.text(font, n, x + COIN + 1, y + 2, colour);
+            x += COIN + 1 + font.width(n) + 4;
+        }
+        if (d.cost().isEmpty() || d.price() > 0) coins(g, d.price(), x, y, colour);
+    }
 
     private Item[] coinItems() {
         return new Item[] {Coins.GOLD_COIN.get(), Coins.SILVER_COIN.get(), Coins.COPPER_COIN.get()};
@@ -212,8 +242,11 @@ public class CaravanTradeScreen extends Screen {
         CaravanTrade.Deal d = open.deals().get(i);
         List<Component> lines = new ArrayList<>(Screen.getTooltipFromItem(minecraft, d.goods()));
         int[] split = Coins.split(d.price());
-        lines.add(Component.translatable(d.sale() ? "gui.mechanical.caravan.buy_for" : "gui.mechanical.caravan.sell_for", split[0], split[1], split[2])
-                .withStyle(ChatFormatting.GOLD));
+        for (ItemStack c : d.cost())
+            lines.add(Component.translatable("gui.mechanical.caravan.barter", c.getCount() + " " + c.getHoverName().getString()).withStyle(ChatFormatting.GOLD));
+        if (d.cost().isEmpty() || d.price() > 0)
+            lines.add(Component.translatable(d.sale() ? "gui.mechanical.caravan.buy_for" : "gui.mechanical.caravan.sell_for", split[0], split[1], split[2])
+                    .withStyle(ChatFormatting.GOLD));
         Component why = blocked(i);
         lines.add(why != null ? why.copy().withStyle(ChatFormatting.RED)
                 : Component.translatable(d.sale() ? "gui.mechanical.caravan.click_buy" : "gui.mechanical.caravan.click_sell").withStyle(ChatFormatting.GREEN));

@@ -45,12 +45,15 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * buying stops when the stock runs out; coins are paid with change.</li>
  * <li>caravan_arrive: a caravan set out down the road walks in as a column, the animals and the cart following the
  * handler, and stops at its stop: then it is stopped, the cart still hitched behind the horse.</li>
+ * <li>tribe_trade: an elder's barter goes through the caravans' trade screen (CaravanTrade), not vanilla's merchant menu:
+ * one deal per offer, no purse, the barter goods as the cost; a trade takes the goods, hands over the result and uses up
+ * the offer; out of reach there is no screen, and no vanilla merchant menu opens.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = MODID)
 public final class CaravanTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"caravan_kinds", "caravan_still", "caravan_guards", "caravan_purse", "caravan_arrive"};
+    private static final String[] TESTS = {"caravan_kinds", "caravan_still", "caravan_guards", "caravan_purse", "caravan_arrive", "tribe_trade"};
 
     static {
         TEST_FUNCTIONS.register("caravan_kinds", () -> CaravanTest::kinds);
@@ -58,6 +61,7 @@ public final class CaravanTest {
         TEST_FUNCTIONS.register("caravan_guards", () -> CaravanTest::guards);
         TEST_FUNCTIONS.register("caravan_purse", () -> CaravanTest::purse);
         TEST_FUNCTIONS.register("caravan_arrive", () -> CaravanTest::arrive);
+        TEST_FUNCTIONS.register("tribe_trade", () -> CaravanTest::tribeTrade);
     }
 
     static void init(IEventBus modEventBus) {
@@ -227,6 +231,40 @@ public final class CaravanTest {
             p.getInventory().clearContent();
             h.assertFalse(CaravanTrade.trade(p, leader, 1), "nothing to sell");
             people.forEach(Caravans::leave);
+            h.succeed();
+        });
+    }
+
+    private static void tribeTrade(GameTestHelper h) {
+        guarded(h, () -> {
+            java.util.UUID traders = null;
+            for (int i = 0; traders == null; i++) {
+                java.util.UUID id = java.util.UUID.nameUUIDFromBytes(("tribe_trade" + i).getBytes());
+                if (Tribe.of(id).temperament == Tribe.Temperament.TRADERS) traders = id; // deals with strangers
+            }
+            Tribesperson elder = h.spawn(People.TRIBESPERSON.get(), new BlockPos(8, 1, 8));
+            elder.setup(TribeRole.ELDER, null, traders, false);
+            net.minecraft.world.entity.player.Player p = h.makeMockPlayer(GameType.SURVIVAL);
+            p.setPos(elder.position().add(1, 0, 0));
+            CaravanTrade.Open open = CaravanTrade.payload(p, elder);
+            h.assertTrue(open != null && open.purse() < 0 && open.deals().size() == elder.getOffers().size(), "one deal per offer, no purse: " + open);
+            CaravanTrade.Deal d = open.deals().get(0);
+            h.assertTrue(d.sale() && !d.cost().isEmpty() && d.price() == 0, "an elder sells for goods in barter: " + d);
+            h.assertTrue(open.have().get(0) == 0 && !CaravanTrade.trade(p, elder, 0), "nothing to barter with: refused");
+            d.cost().forEach(c -> p.getInventory().add(c.copy()));
+            int uses = elder.getOffers().get(0).getUses();
+            h.assertTrue(CaravanTrade.trade(p, elder, 0), "barters once");
+            h.assertTrue(p.getInventory().countItem(d.goods().getItem()) >= d.goods().getCount()
+                    && d.cost().stream().allMatch(c -> p.getInventory().countItem(c.getItem()) == 0), "goods got, barter goods taken");
+            h.assertTrue(elder.getOffers().get(0).getUses() == uses + 1, "the offer is used once");
+            h.assertFalse(CaravanTrade.trade(p, elder, 99) || CaravanTrade.trade(p, elder, -1), "a forged deal index does nothing");
+            p.setPos(elder.position().add(20, 0, 0));
+            h.assertTrue(CaravanTrade.payload(p, elder) == null, "out of reach: no screen");
+            // no vanilla merchant menu any more (a real player gets the CaravanTrade.Open packet instead)
+            p.setPos(elder.position().add(1, 0, 0));
+            elder.openTrade(p);
+            h.assertTrue(p.containerMenu == p.inventoryMenu && elder.getTradingPlayer() == null, "no merchant menu: " + p.containerMenu);
+            elder.discard();
             h.succeed();
         });
     }

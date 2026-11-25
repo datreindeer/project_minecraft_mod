@@ -168,6 +168,9 @@ LANG = {
     "gui.mechanical.caravan.sell_for": "Sell for %s gold, %s silver, %s copper",
     "gui.mechanical.caravan.click_buy": "Click to buy one",
     "gui.mechanical.caravan.click_sell": "Click to sell one",
+    "gui.mechanical.caravan.no_goods": "You don't have the goods they want for it",
+    "gui.mechanical.caravan.barter": "In barter: %s",
+    "gui.mechanical.caravan.barter_hint": "Click to trade · barter or coins",
 }
 
 

@@ -38,7 +38,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /**
  * Living-world plan F6, F7, F11: every stone family rock drops its chunk (a rock chunk) or Pumice Chunk; the Mold Chest
  * takes a mold from a hopper and its menu, and refuses anything else; a Dirt Slab grows grass from a grass block next to
- * it, the Grass Slab dies back under stone, gets snowy under snow, flattens to a path slab with a shovel and drops a Dirt Slab.
+ * it, the Grass Slab dies back under stone, gets snowy under snow, flattens to a path slab with a shovel and drops a full Dirt.
  */
 @EventBusSubscriber(modid = MODID)
 public final class LivingWorldBlocksTest {
@@ -111,7 +111,7 @@ public final class LivingWorldBlocksTest {
                 })
                 .thenExecute(() -> {
                     Calendar.overworldClock(server).ifPresent(c -> server.clockManager().setTotalTicks(c, saved));
-                    h.assertTrue(drops(h, slab, level.getBlockState(abs)).stream().allMatch(s -> s.is(EarthBlocks.DIRT_SLAB.asItem())), "a grass slab drops a dirt slab");
+                    h.assertTrue(drops(h, slab, level.getBlockState(abs)).stream().allMatch(s -> s.is(Items.DIRT) && s.getCount() == 1), "a grass slab drops a Dirt");
 
                     // snow on a top slab makes it snowy; under stone it dies back to a dirt slab
                     BlockPos top = new BlockPos(2, 1, 4);
@@ -124,7 +124,7 @@ public final class LivingWorldBlocksTest {
                     h.assertTrue(level.getBlockState(topAbs).is(EarthBlocks.DIRT_SLAB) && level.getBlockState(topAbs).getValue(SlabBlock.TYPE) == SlabType.DOUBLE,
                             "under stone the grass slab turns back to a (double) dirt slab: " + level.getBlockState(topAbs));
                     List<ItemStack> two = drops(h, top, level.getBlockState(topAbs));
-                    h.assertTrue(two.size() == 1 && two.get(0).getCount() == 2, "a double dirt slab drops 2: " + two);
+                    h.assertTrue(two.size() == 1 && two.get(0).is(Items.DIRT) && two.get(0).getCount() == 1, "a double dirt slab drops one Dirt: " + two);
 
                     // a shovel flattens the grass slab into a path slab, keeping its type
                     ItemStack shovel = new ItemStack(Items.STONE_SHOVEL);

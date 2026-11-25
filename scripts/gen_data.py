@@ -976,7 +976,8 @@ def _e(item, lo, hi, weight):
             "modifier": [{"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": lo, "max": hi}}]}
 BASE = [_e("minecraft:stick", 2, 6, 10), _e("minecraft:flint", 1, 4, 8), _e(M + "plant_fibre", 2, 6, 8),
         _e(M + "cordage", 1, 3, 5), _e(M + "oak_bark", 1, 3, 5), _e("minecraft:wheat_seeds", 1, 4, 6),
-        _e(M + "twine", 1, 3, 4), _e("minecraft:bone", 1, 3, 4)]
+        _e(M + "twine", 1, 3, 4), _e("minecraft:bone", 1, 3, 4),
+        _e(M + "copper_coin", 1, 3, 3), _e(M + "flax_seeds", 1, 3, 3)]  # a few coins where vanilla had emeralds
 EXTRA = {
     "weaponsmith": [_e(M + "flint_spear", 1, 1, 2), _e("minecraft:arrow", 2, 6, 4), _e(M + "flint_knife", 1, 1, 2)],
     "toolsmith": [_e(M + "flint_axe", 1, 1, 2), _e(M + "stone_axe_head", 1, 1, 3), _e(M + "tool_rod", 1, 2, 4)],
@@ -1274,6 +1275,39 @@ def _filter_entries(entries):
     return out
 SCRAPS = [_e("minecraft:stick", 1, 4, 10), _e("minecraft:flint", 1, 3, 8), _e(M + "plant_fibre", 1, 4, 8), _e(M + "cordage", 1, 2, 5),
           _e("minecraft:bone", 1, 3, 6), _e(M + "twine", 1, 2, 4), _e(M + "stone_chunk", 1, 4, 6), _e("minecraft:wheat_seeds", 1, 3, 4)]
+# Mod loot by how deep or dangerous the place is (docs/ages/01-stone-age.md "Fynd i gamla kistor"): common camps and wrecks
+# hold early-age gear, seeds and a few copper coins; dungeons, mineshafts, ruins and temples tin, bronze, rough gems and
+# silver; strongholds, cities, bastions, mansions and treasure gems, gold coins and jewellery. One extra pool per chest.
+LOOT_COMMON = [_e(M + "flint_knife", 1, 1, 3), _e(M + "flint_axe", 1, 1, 2), _e(M + "bone_needle", 1, 1, 3),
+               _e(M + "flax_seeds", 1, 3, 4), _e(M + "nettle_seeds", 1, 3, 3), _e(M + "raw_hide", 1, 2, 4),
+               _e(M + "copper_coin", 1, 4, 5), _e(M + "rough_amber", 1, 1, 1)]
+LOOT_DEEP = [_e(M + "copper_coin", 2, 8, 6), _e(M + "silver_coin", 1, 2, 2), _e(M + "tin_nugget", 1, 4, 4),
+             _e(M + "bronze_nugget", 1, 4, 4), _e(M + "bronze_ingot", 1, 1, 1), _e(M + "copper_knife", 1, 1, 2),
+             _e(M + "rough_garnet", 1, 1, 2), _e(M + "rough_amber", 1, 2, 2), _e(M + "amber", 1, 1, 1)]
+LOOT_TREASURE = [_e(M + "silver_coin", 1, 4, 5), _e(M + "gold_coin", 1, 1, 2), _e(M + "silver_ingot", 1, 2, 2),
+                 _e(M + "bronze_ingot", 1, 3, 3), _e(M + "garnet", 1, 1, 3), _e(M + "amber", 1, 2, 3), _e(M + "ruby", 1, 1, 1),
+                 _e(M + "sapphire", 1, 1, 1), _e(M + "celestine", 1, 1, 1), _e(M + "gold_ring", 1, 1, 1),
+                 _e(M + "gold_necklace", 1, 1, 1), _e(M + "bronze_knife", 1, 1, 2)]
+_mod_items = {k.removeprefix("item.mechanical.") for k in lang if k.startswith("item.mechanical.")}
+for _pool in (LOOT_COMMON, LOOT_DEEP, LOOT_TREASURE):
+    for _x in _pool:
+        assert _x["name"].removeprefix(M) in _mod_items, _x["name"]
+TREASURE = ("chests/stronghold_", "chests/ancient_city", "chests/bastion_treasure", "chests/end_city_treasure", "chests/woodland_mansion",
+            "chests/buried_treasure", "chests/trial_chambers/reward", "chests/abandoned_camp_secret_chest")
+DEEP = ("chests/simple_dungeon", "chests/abandoned_mineshaft", "chests/desert_pyramid", "chests/jungle_temple", "chests/shipwreck_treasure",
+        "chests/underwater_ruin_big", "chests/nether_bridge", "chests/bastion_", "chests/trial_chambers/")
+def mod_loot(rel):
+    """The extra pool of mod items for chest table {@code rel} (no prefix), or None (barrels, dispensers, the spawn chest)."""
+    if not rel.startswith("chests/") or rel in ("chests/spawn_bonus_chest", "chests/jungle_temple_dispenser"):
+        return None
+    if rel.startswith(TREASURE):
+        return {"rolls": {"type": "minecraft:uniform", "min": 1, "max": 3}, "entries": LOOT_TREASURE + LOOT_DEEP[:2]}
+    if rel.startswith(DEEP):
+        return {"rolls": {"type": "minecraft:uniform", "min": 1, "max": 3}, "entries": LOOT_DEEP}
+    return {"rolls": {"type": "minecraft:uniform", "min": 1, "max": 2}, "entries": LOOT_COMMON}
+assert mod_loot("chests/stronghold_library")["entries"][0]["name"] == M + "silver_coin"
+assert mod_loot("chests/simple_dungeon")["entries"] is LOOT_DEEP and mod_loot("chests/shipwreck_supply")["entries"] is LOOT_COMMON
+assert mod_loot("chests/spawn_bonus_chest") is None and mod_loot("barrels/x") is None
 _sjar = zipfile.ZipFile(JAR)
 _filtered = 0
 for path in _sjar.namelist():
@@ -1293,6 +1327,8 @@ for path in _sjar.namelist():
             pools.append(dict(pool, entries=entries))
     if rel.startswith(("chests/", "trade_rebalance/", "barrels/")):
         pools.append({"rolls": {"type": "minecraft:uniform", "min": 2, "max": 4}, "entries": SCRAPS})
+    if mod_loot(rel):
+        pools.append(mod_loot(rel))
     elif not pools:
         pools.append({"rolls": 1, "entries": SCRAPS})
     table["pools"] = pools

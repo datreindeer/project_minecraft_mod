@@ -30,19 +30,8 @@
             },
             {
               "type": "minecraft:item",
-              "name": "mechanical:dirt_slab",
+              "name": "minecraft:dirt",
               "modifier": [
-                {
-                  "type": "minecraft:set_count",
-                  "count": 2,
-                  "condition": {
-                    "type": "minecraft:match_block",
-                    "blocks": "mechanical:podzol_slab",
-                    "state": {
-                      "type": "double"
-                    }
-                  }
-                },
                 {
                   "type": "minecraft:explosion_decay"
                 }

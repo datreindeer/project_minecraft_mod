@@ -5601,5 +5601,8 @@
   "message.mechanical.clan.dir.s": "south",
   "message.mechanical.clan.dir.sw": "southwest",
   "message.mechanical.clan.dir.w": "west",
-  "message.mechanical.clan.dir.nw": "northwest"
+  "message.mechanical.clan.dir.nw": "northwest",
+  "gui.mechanical.caravan.no_goods": "You don't have the goods they want for it",
+  "gui.mechanical.caravan.barter": "In barter: %s",
+  "gui.mechanical.caravan.barter_hint": "Click to trade \u00b7 barter or coins"
 }
