@@ -87,17 +87,19 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
 
     /**
      * A prepared body's wrapping (part 0: a 1-block cube, the salted hide with its cords) and carrying pole (part 1: 2 x 2 px,
-     * a block long); the renderer scales each to the body. Texture 64 x 64: scripts/gen_carcass_lashing_textures.py.
+     * a block long); the renderer scales each to the body. Part 2 is a length of cord (2 x 2 x 8 px), the drag rope
+     * ({@link #cord}). Texture 64 x 64: scripts/gen_carcass_lashing_textures.py.
      */
     public static class Lashing extends Model<Integer> {
         public static final net.minecraft.client.model.geom.ModelLayerLocation LAYER = new net.minecraft.client.model.geom.ModelLayerLocation(
                 Identifier.fromNamespaceAndPath(Mechanical.MODID, "carcass"), "lashing");
-        private final ModelPart wrap, pole;
+        private final ModelPart wrap, pole, rope;
 
         public Lashing(ModelPart root) {
             super(root, net.minecraft.client.renderer.rendertype.RenderTypes::entityCutout);
             wrap = root.getChild("wrap");
             pole = root.getChild("pole");
+            rope = root.getChild("rope");
         }
 
         @Override
@@ -105,6 +107,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             super.setupAnim(part);
             wrap.visible = part == 0;
             pole.visible = part == 1;
+            rope.visible = part == 2;
         }
 
         public static net.minecraft.client.model.geom.builders.LayerDefinition create() {
@@ -113,6 +116,8 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             root.addOrReplaceChild("wrap", net.minecraft.client.model.geom.builders.CubeListBuilder.create().texOffs(0, 0).addBox(-8, -8, -8, 16, 16, 16),
                     net.minecraft.client.model.geom.PartPose.ZERO);
             root.addOrReplaceChild("pole", net.minecraft.client.model.geom.builders.CubeListBuilder.create().texOffs(0, 32).addBox(-1, -1, -8, 2, 2, 16),
+                    net.minecraft.client.model.geom.PartPose.ZERO);
+            root.addOrReplaceChild("rope", net.minecraft.client.model.geom.builders.CubeListBuilder.create().texOffs(36, 32).addBox(-1, -1, -4, 2, 2, 8),
                     net.minecraft.client.model.geom.PartPose.ZERO);
             return net.minecraft.client.model.geom.builders.LayerDefinition.create(mesh, 64, 64);
         }
@@ -266,6 +271,10 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         /** Carried: from the carcass to the hauler's feet, and the shoulder height above them. */
         double dx, dy, dz;
         float shoulder;
+        /** Dragged: per grip slot held, the hauler's two hands (right, left), from the carcass; else null. */
+        Vec3[][] hands;
+        /** The drag ropes to draw this frame: from, to (from the carcass), thickness in x. */
+        final java.util.List<Vec3[]> cords = new java.util.ArrayList<>();
         /** A caravan's trade goods, and the scale that fits it under the canopy. */
         boolean prepared;
         float fit = 1.0F;
@@ -301,6 +310,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     public void extractRenderState(CarcassEntity carcass, State state, float partialTicks) {
         super.extractRenderState(carcass, state, partialTicks);
         state.animal = null;
+        state.hands = null;
         if (carcass.tickCount < CarcassEntity.HIDDEN_TICKS) return; // the dying animal is still playing its death animation
         if (carcass.renderDummy == null) {
             carcass.renderDummy = carcass.animal().create(carcass.level(), EntitySpawnReason.LOAD);
@@ -336,6 +346,11 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             int held = 0;
             for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) if (carcass.haulerId(i) >= 0) held |= 1 << i;
             state.animal.setRenderData(GRIP, held);
+            state.hands = new Vec3[CarcassEntity.MAX_HAULERS][];
+            for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) {
+                net.minecraft.world.entity.player.Player p = carcass.hauler(i);
+                if (p != null) state.hands[i] = HaulingClient.hands(p, carcass, partialTicks, carcass.getPosition(partialTicks));
+            }
         }
         if (state.pose == Pose.HUNG || state.pose == Pose.SLUNG || state.pose == Pose.HORSE) state.animal.setRenderData(HUNG, true);
         if (state.animal instanceof LivingEntityRenderState living) {
@@ -388,6 +403,12 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         if (state.animal == null) return;
+        state.cords.clear();
+        drawBody(state, new org.joml.Matrix4f(poseStack.last().pose()).invert(), poseStack, collector, camera);
+        for (Vec3[] c : state.cords) cord(state, poseStack, collector, c[0], c[1], (float) c[2].x);
+    }
+
+    private void drawBody(State state, org.joml.Matrix4f toEntity, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
         if (state.pose == Pose.CARRIED || state.pose == Pose.SLUNG) poseStack.translate(state.dx, state.dy + state.shoulder, state.dz);
         if (state.pose == Pose.HORSE) {
@@ -444,7 +465,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             // on its belly, head forward, wings flat on the ground (the model stands 10 px tall, its face to -z)
             poseStack.translate(0.0F, 0.07F, 0.31F);
             poseStack.rotate(Axis.XP.rotationDegrees(-90.0F));
-            state.renderer.submit(state.animal, poseStack, collector, camera);
+            drawLying(state, toEntity, poseStack, collector, camera);
             poseStack.popPose();
             return;
         }
@@ -452,12 +473,12 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             // on its back, face up, head along +z: the body centred on the hitbox, resting on its back
             poseStack.translate(0.0F, state.width * 0.2F, -state.height / 2.0F);
             poseStack.rotate(Axis.XP.rotationDegrees(90.0F));
-            state.renderer.submit(state.animal, poseStack, collector, camera);
+            drawLying(state, toEntity, poseStack, collector, camera);
             poseStack.popPose();
             return;
         }
         if (state.flat) {
-            state.renderer.submit(state.animal, poseStack, collector, camera);
+            drawLying(state, toEntity, poseStack, collector, camera);
             poseStack.popPose();
             return;
         }
@@ -473,7 +494,111 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         }
         poseStack.translate(state.height / 2.0F, lift, 0.0F);
         poseStack.rotate(Axis.ZP.rotationDegrees(90.0F));
+        drawLying(state, toEntity, poseStack, collector, camera);
+        poseStack.popPose();
+    }
+
+    /** Thickness of the drag rope (blocks), how far up the held leg it is tied (from the foot), and the wrap's width there. */
+    private static final float CORD = 0.05F, TIE_UP = 0.2F, WRAP_WIDTH = 0.09F, GROUND = 0.08F;
+
+    /** The body lying; dragged, also finds where the ropes from the haulers' hands are tied ({@link State#cords}). */
+    private void drawLying(State state, org.joml.Matrix4f toEntity, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         state.renderer.submit(state.animal, poseStack, collector, camera);
+        if (state.hands != null && (Object) state.renderer instanceof LivingEntityRenderer<?, ?, ?> living
+                && state.animal instanceof LivingEntityRenderState animal) tieCords(state, living, animal, toEntity, poseStack);
+    }
+
+    /** A box of a posed model: its top and bottom face middles and its width, from the carcass; and the parts it belongs to. */
+    private record Limb(String path, Vec3 top, Vec3 bottom, double width) {}
+
+    /**
+     * Poses the animal's model as it will be drawn and walks its boxes: each held grip's rope runs from both hands to just
+     * above the foot of that leg, with a few turns round it. A model without such a leg is tied by the box nearest the hands.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void tieCords(State state, LivingEntityRenderer<?, ?, ?> renderer, LivingEntityRenderState animal, org.joml.Matrix4f toEntity, PoseStack poseStack) {
+        Model model = renderer.getModel();
+        model.setupAnim(animal);
+        poseVanillaCarcass(model, animal);
+        var invoker = (com.mechanical.mixin.LivingEntityRendererInvoker) renderer;
+        java.util.List<Limb> limbs = new java.util.ArrayList<>();
+        poseStack.pushPose();
+        poseStack.scale(animal.scale, animal.scale, animal.scale);
+        invoker.mechanical$setupRotations(animal, poseStack, animal.bodyRot, animal.scale);
+        poseStack.scale(-1.0F, -1.0F, 1.0F);
+        invoker.mechanical$scale(animal, poseStack);
+        poseStack.translate(0.0F, -1.501F, 0.0F);
+        model.root().visit(poseStack, (pose, path, index, cube) -> {
+            org.joml.Matrix4f m = new org.joml.Matrix4f(toEntity).mul(pose.pose());
+            float x = (cube.minX + cube.maxX) / 32.0F, z = (cube.minZ + cube.maxZ) / 32.0F;
+            double wide = point(m, cube.minX / 16.0F, cube.maxY / 16.0F, z).distanceTo(point(m, cube.maxX / 16.0F, cube.maxY / 16.0F, z));
+            double deep = point(m, x, cube.maxY / 16.0F, cube.minZ / 16.0F).distanceTo(point(m, x, cube.maxY / 16.0F, cube.maxZ / 16.0F));
+            limbs.add(new Limb(path + "/", point(m, x, cube.minY / 16.0F, z), point(m, x, cube.maxY / 16.0F, z), Math.max(wide, deep)));
+        });
+        poseStack.popPose();
+        for (int slot = 0; slot < state.hands.length; slot++) {
+            Vec3[] hands = state.hands[slot];
+            if (hands == null) continue;
+            Limb foot = legEnd(limbs, GRIP_LEGS[slot]);
+            float up = TIE_UP;
+            if (foot != null && foot.bottom.lerp(foot.top, TIE_UP).y < GROUND) { // that side lies in the ground (a mammoth): its pair
+                Limb pair = legEnd(limbs, GRIP_LEGS[slot ^ 1]);
+                if (pair != null) {
+                    foot = pair;
+                    up = 1.0F - TIE_UP;
+                }
+            }
+            if (foot == null) {
+                Vec3 mid = hands[0].add(hands[1]).scale(0.5);
+                foot = limbs.stream().min(java.util.Comparator.comparingDouble(l -> l.bottom.distanceToSqr(mid))).orElse(null);
+                if (foot == null) continue;
+            }
+            Vec3 tie = foot.bottom.lerp(foot.top, up), axis = foot.top.subtract(foot.bottom).normalize();
+            Vec3 wrap = new Vec3(foot.width + 0.04, 0, 0);
+            state.cords.add(new Vec3[] {tie.subtract(axis.scale(WRAP_WIDTH / 2)), tie.add(axis.scale(WRAP_WIDTH / 2)), wrap});
+            for (Vec3 hand : hands) {
+                // a little past the middle of the fist, so its end is inside the hand
+                state.cords.add(new Vec3[] {hand.add(hand.subtract(tie).normalize().scale(0.05)), tie, new Vec3(CORD, 0, 0)});
+            }
+            // from hand to hand through the fists
+            state.cords.add(new Vec3[] {hands[0], hands[1], new Vec3(CORD, 0, 0)});
+        }
+    }
+
+    /** The end of the leg called {@code leg} (or without its "_leg": the walrus's flippers): its box farthest from the hip, or null. */
+    private static Limb legEnd(java.util.List<Limb> limbs, String leg) {
+        String name = "/" + leg + "/", flipper = name.replace("_leg", "");
+        Limb end = null;
+        Vec3 hip = null;
+        double far = -1;
+        for (Limb l : limbs) {
+            if (!l.path.contains(name) && !l.path.contains(flipper)) continue;
+            if (hip == null) hip = l.top;
+            double d = l.bottom.distanceToSqr(hip);
+            if (d > far) {
+                far = d;
+                end = l;
+            }
+        }
+        return end;
+    }
+
+    private static Vec3 point(org.joml.Matrix4f m, float x, float y, float z) {
+        org.joml.Vector3f v = m.transformPosition(x, y, z, new org.joml.Vector3f());
+        return new Vec3(v.x, v.y, v.z);
+    }
+
+    /** A length of square cord {@code thick} blocks wide from {@code a} to {@code b} (from the carcass). */
+    private void cord(State state, PoseStack poseStack, SubmitNodeCollector collector, Vec3 a, Vec3 b, float thick) {
+        Vec3 d = b.subtract(a);
+        double length = d.length();
+        if (length < 1.0E-3) return;
+        Vec3 mid = a.add(b).scale(0.5);
+        poseStack.pushPose();
+        poseStack.translate(mid.x, mid.y, mid.z);
+        poseStack.rotate(new org.joml.Quaternionf().rotationTo(0, 0, 1, (float) (d.x / length), (float) (d.y / length), (float) (d.z / length)));
+        poseStack.scale(thick * 8.0F, thick * 8.0F, (float) length * 2.0F); // the part is 1/8 x 1/8 x 1/2 block
+        collector.submitModel(lashing, 2, poseStack, LASHING_TEXTURE, state.lightCoords, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();
     }
 

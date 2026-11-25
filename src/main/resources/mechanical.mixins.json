@@ -17,6 +17,7 @@
     "AdvancementsScreenMixin",
     "HumanoidModelMixin",
     "LivingEntityRendererMixin",
+    "LivingEntityRendererInvoker",
     "ModelFeatureRendererMixin",
     "QuadrupedModelMixin",
     "SheepModelMixin",

@@ -942,8 +942,9 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
   ett block eller en **träff på 4 skada eller mer** tappar kroppen. Högerklicka på ett block för att lägga ner den där. Dör
   eller loggar du ut, eller kommer mer än 12 block ifrån den, ligger den kvar.
 - **Armarna håller kroppen**, och alla spelare ser det: bär du på axlarna är båda armarna uppe och håller kroppen. Släpar
-  du har du båda händerna nere på benet framför dig och rycker bakåt i varje steg; är kroppen för tung spänner du armarna
-  och darrar.
+  du håller du med båda händerna i ett **rep surrat runt benet** (varje dragare sitt rep och sitt ben): vänd mot kroppen
+  har du händerna framför dig, går du ifrån den ligger de bakom höften. Du rycker i varje steg; är kroppen för tung spänner
+  du armarna och darrar. I första person kommer repet in underifrån.
 - **Blodspår:** en färsk kropp blöder på vägen, glest men lätt att följa. En släpad kropp lämnar en blodfläck på marken
   ungefär **var 2:a block**, en buren droppar då och då och lämnar en fläck ungefär **var 6:e block**. Står du still blir
   det inga fläckar. Har kroppen åldrats på en Hanging Rack, börjat bli dålig eller förskämts blöder den inte längre.
