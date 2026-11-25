@@ -10,6 +10,7 @@ import com.mechanical.HighFurnaceMelting;
 import com.mechanical.HighFurnaceMenu;
 import com.mechanical.MeltPool;
 import com.mechanical.Molten;
+import com.mechanical.client.ui.HideUi;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -37,7 +38,7 @@ public class HighFurnaceScreen extends AbstractContainerScreen<HighFurnaceMenu> 
     private static final int COL_X = 30, COL_W = 18, COL_TOP = 20, COL_BOTTOM = 119, TEXT_X = 56, GRID_X = 206, GRID_Y = 20, CELL = 22, GRID_COLS = 4, GRID_ROWS = 5;
     private static final int[] MARKS = {950, 1450, 1500, 1600};
     private static final Identifier FLAME = Identifier.withDefaultNamespace("container/furnace/lit_progress");
-    private static final int DARK = 0xFF404040, GREY = 0xFF6A6A6A, GREEN = 0xFF2E7D32, RED = 0xFFB71C1C, GOLD = 0xFF8A5A00;
+    private static final int DARK = HideUi.LABEL, GREY = HideUi.DIM, GREEN = HideUi.GOOD, RED = HideUi.BAD, GOLD = HideUi.GOLD;
     private final ItemStack charcoal = new ItemStack(Items.CHARCOAL);
 
     public HighFurnaceScreen(HighFurnaceMenu menu, Inventory inventory, Component title) {
@@ -65,26 +66,15 @@ public class HighFurnaceScreen extends AbstractContainerScreen<HighFurnaceMenu> 
         return out;
     }
 
-    private static void panel(GuiGraphicsExtractor g, int x, int y, int w, int h) {
-        g.fill(x, y, x + w, y + h, 0xFF000000);
-        g.fill(x + 1, y + 1, x + w - 1, y + h - 1, 0xFFC6C6C6);
-        g.fill(x + 1, y + 1, x + w - 2, y + 3, 0xFFFFFFFF);
-        g.fill(x + 1, y + 1, x + 3, y + h - 2, 0xFFFFFFFF);
-        g.fill(x + 3, y + h - 3, x + w - 1, y + h - 1, 0xFF555555);
-        g.fill(x + w - 3, y + 3, x + w - 1, y + h - 1, 0xFF555555);
-    }
-
     private static void inset(GuiGraphicsExtractor g, int x0, int y0, int x1, int y1) {
-        g.fill(x0 - 1, y0 - 1, x1 + 1, y1 + 1, 0xFF373737);
-        g.fill(x0, y0, x1 + 1, y1 + 1, 0xFFFFFFFF);
-        g.fill(x0, y0, x1, y1, 0xFF1E1A18);
+        HideUi.inset(g, x0 - 1, y0 - 1, x1 - x0 + 2, y1 - y0 + 2);
     }
 
     @Override
     public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(g, mouseX, mouseY, partialTick);
         int x = leftPos, y = topPos;
-        panel(g, x, y, W, H);
+        HideUi.panel(g, x, y, W, H);
         // thermometer
         inset(g, x + TUBE_X, y + TUBE_TOP, x + TUBE_X + TUBE_W, y + TUBE_BOTTOM + 7);
         int t = menu.temperature();
@@ -96,7 +86,7 @@ public class HighFurnaceScreen extends AbstractContainerScreen<HighFurnaceMenu> 
         g.fill(x + TUBE_X, y + TUBE_BOTTOM, x + TUBE_X + TUBE_W, y + TUBE_BOTTOM + 7, bulb);
         for (int m : MARKS) {
             int r = y + row(m);
-            g.fill(x + TUBE_X + TUBE_W + 1, r, x + TUBE_X + TUBE_W + 4, r + 1, t >= m ? 0xFF2E7D32 : 0xFF555555);
+            g.fill(x + TUBE_X + TUBE_W + 1, r, x + TUBE_X + TUBE_W + 4, r + 1, t >= m ? HideUi.GOOD : HideUi.EDGE);
         }
         int tr = y + row(menu.target());
         g.fill(x + TUBE_X - 4, tr, x + TUBE_X, tr + 1, 0xFFFFFFFF);
@@ -154,8 +144,9 @@ public class HighFurnaceScreen extends AbstractContainerScreen<HighFurnaceMenu> 
         g.text(font, Component.translatable("gui.mechanical.high_furnace.pool", menu.pool(), menu.capacity()), TEXT_X, H - 14, GREY, false);
         HighFurnaceBlockEntity f = menu.furnace();
         Molten pouring = f == null ? null : f.pouring();
-        g.text(font, pouring == null ? Component.translatable("gui.mechanical.high_furnace.pours_nothing")
-                : Component.translatable("gui.mechanical.high_furnace.pours", Component.translatable("molten.mechanical." + pouring.id)), GRID_X, 8, DARK, false);
+        Component pours = pouring == null ? Component.translatable("gui.mechanical.high_furnace.pours_nothing")
+                : Component.translatable("gui.mechanical.high_furnace.pours", Component.translatable("molten.mechanical." + pouring.id));
+        g.text(font, pours, Math.min(GRID_X, W - 8 - font.width(pours)), 8, DARK, false);
     }
 
     private @Nullable Band bandAt(double mx, double my) {

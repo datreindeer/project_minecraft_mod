@@ -61,6 +61,7 @@ public final class People {
         OakFolkTest.init(modEventBus);
         TribeTest.init(modEventBus);
         CaravanTest.init(modEventBus);
+        VillagerTradeTest.init(modEventBus);
         RelationsTest.init(modEventBus);
         RoadTest.init(modEventBus);
         TribeAiTest.init(modEventBus);

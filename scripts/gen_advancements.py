@@ -1251,6 +1251,10 @@ TABS["wilderness"][1].extend([
     ("tribe_sleeping_camp", "tribe_land", "minecraft:hay_block", T, "Sleeping Camp",
      "Come upon tribespeople at night: they lay out Straw Beds round the fire and sleep while their warriors keep watch. "
      "By day they sit round the fire whittling, eating and talking", by_code()),
+    # vanilla villagers, on the mod's own trade screen (client/people/VillagerTradeScreen)
+    ("village_trade", "root", "copper_coin", T, "Market Day",
+     "Trade with a villager. The trade screen shows what they sell and what they buy, how much is left, their level and the "
+     "experience to the next one. A changed price shows the usual one struck through", {"trade": {"trigger": "minecraft:villager_trade"}}),
     # Trader Caravans (people/Caravans.java), in the Wandering Trader's place
     ("caravan", "root", "coin_purse", T, "The Caravan Has Come",
      "Talk to the old leader of a Trader Caravan: a handler with the animals, a laden cart and guards in armour, now and then near "

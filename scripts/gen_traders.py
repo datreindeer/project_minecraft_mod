@@ -174,6 +174,22 @@ LANG = {
     "gui.mechanical.caravan.no_goods": "You don't have the goods they want for it",
     "gui.mechanical.caravan.barter": "In barter: %s",
     "gui.mechanical.caravan.barter_hint": "Click to trade · barter or coins",
+    # the shared trade screen's lines, and villagers on it (client/people/TradeBoardScreen, VillagerTradeScreen)
+    "gui.mechanical.trade.price": "Price: %s",
+    "gui.mechanical.trade.pays": "Pays: %s",
+    "gui.mechanical.trade.cheaper": "Cheaper for you (usually %s)",
+    "gui.mechanical.trade.dearer": "Dearer than usual (usually %s)",
+    "gui.mechanical.trade.bought": "Bought %s",
+    "gui.mechanical.trade.sold": "Sold %s",
+    "gui.mechanical.trade.out_of_stock": "Out of stock",
+    "gui.mechanical.trade.restocks": "Out of stock until they restock at their work station",
+    "gui.mechanical.trade.hint": "Click to trade · Shift: all you can",
+    "gui.mechanical.trade.click_buy": "Click to buy one (Shift: as many as you can)",
+    "gui.mechanical.trade.click_sell": "Click to sell one (Shift: as many as you can)",
+    "gui.mechanical.trade.travelling": "Travelling Trader",
+    "gui.mechanical.trade.profession_level": "%s · %s",
+    "gui.mechanical.trade.xp": "Experience %s / %s, then %s",
+    "gui.mechanical.trade.master": "Master of the trade",
 }
 
 

@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Inventory;
  * for that layout by scripts/gen_equipment_textures.py. The B key closes it again, like E closes the inventory.
  */
 public class PackScreen extends AbstractContainerScreen<PackMenu> {
-    private static final int LABEL_COLOR = -12566464;
+    private static final int LABEL_COLOR = com.mechanical.client.ui.HideUi.LABEL;
     private final Identifier background;
 
     public PackScreen(PackMenu menu, Inventory inventory, Component title) {

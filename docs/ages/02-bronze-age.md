@@ -608,6 +608,7 @@ betalar för), säljer = vad de ger. Max = hur många gånger innan den måste f
 - **Myntens ikon växer med stacken** som Firewood: 1–6, 7–16, 17–32, 33–46 och 47–64 mynt ger fem bilder
   (ett mynt upp till tre staplar; texturer från `scripts/gen_coin_textures.py`, modeller från `gen_bronze.py`).
 - **Pengarna är mynt** (ersätter vanillas Emerald). Byborna betalar med mynt när de köper och tar mynt när de säljer.
+- Byborna handlar i samma handelsruta som stammar och karavaner: porträtt, yrkesnivå med erfarenhetsmätare, de säljer till vänster och köper till höger, hur många gånger kvar, och ändrat pris med det vanliga överstruket (rykte, Hero of the Village, efterfrågan). Klick handlar en gång, Shift så många gånger det går. Vanillas handelsmeny och regler är kvar under ytan (`people/VillagerTrade.java`, `client/people/VillagerTradeScreen.java`). Advancement: **Market Day**.
   Mynt präglas på Bronze Anvil (se Prägla mynt nedan).
 - Priser: ett bronsverktyg 2–5 Silver Coin, en Bronze Ingot drygt 1 Copper, mat och råvaror 4–9 Copper. Köpen ger 20 xp (nivå 3)
   och 30 xp (nivå 4), säljen 10 / 15; max 12–16 för köp, 3 för bronsverktyg och rustning.

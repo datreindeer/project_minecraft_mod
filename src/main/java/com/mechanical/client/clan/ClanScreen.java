@@ -7,6 +7,7 @@ import com.mechanical.clan.ClanNetwork.Entry;
 import com.mechanical.clan.ClanNetwork.Row;
 import com.mechanical.clan.ClanNetwork.View;
 import com.mechanical.clan.Clans;
+import com.mechanical.client.ui.HideUi;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -23,7 +24,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  */
 public class ClanScreen extends Screen {
     private static final int W = 320, PAD = 10, ROW = 20, ROWS = 7, BTN = 20;
-    private static final int PANEL = 0xE0302418, BORDER = 0xFF8A6A44, TITLE = 0xFFF0D8A8, TEXT = 0xFFE8E0D0, DIM = 0xFF9A8A70, ONLINE = 0xFFB8E08A;
+    private static final int BORDER = HideUi.EDGE, TITLE = HideUi.NAME, TEXT = HideUi.TEXT, DIM = HideUi.DIM, ONLINE = HideUi.GOOD;
     private View view;
     private int top, panelH, page, invitePick, relPage;
     /** The Relations tab: your standing with every NPC tribe you know. */
@@ -180,8 +181,7 @@ public class ClanScreen extends Screen {
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractBackground(graphics, mouseX, mouseY, a);
         int left = (width - W) / 2;
-        graphics.fill(left - 1, top - 1, left + W + 1, top + panelH + 1, BORDER);
-        graphics.fill(left, top, left + W, top + panelH, PANEL);
+        HideUi.panel(graphics, left, top, W, panelH);
     }
 
     /** Bar from -100 to 100 with a mark at 0, filled from 0 to {@code rep} in the standing's colour. */
@@ -203,7 +203,7 @@ public class ClanScreen extends Screen {
             graphics.text(font, Component.translatable("tribe.mechanical.temperament." + tribe.temperament.id()), x + 14, y + 11, DIM);
             int bx = x + BAR_X, mid = bx + BAR_W / 2, fillTo = mid + Math.round(Math.clamp(r.rep(), -100, 100) * BAR_W / 200.0F);
             graphics.fill(bx - 1, y + 6, bx + BAR_W + 1, y + 13, BORDER);
-            graphics.fill(bx, y + 7, bx + BAR_W, y + 12, 0xFF1E160E);
+            graphics.fill(bx, y + 7, bx + BAR_W, y + 12, HideUi.DARK);
             graphics.fill(Math.min(mid, fillTo), y + 7, Math.max(mid, fillTo), y + 12, standing);
             graphics.fill(mid, y + 5, mid + 1, y + 14, TITLE);
             graphics.text(font, Component.translatable("gui.mechanical.land.standing", com.mechanical.people.Tribe.standing(r.rep()), r.rep()),

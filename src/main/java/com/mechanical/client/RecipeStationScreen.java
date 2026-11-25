@@ -84,7 +84,7 @@ public class RecipeStationScreen<M extends RecipeStationMenu> extends AbstractCo
             boolean lit = recipe.hasParts(minecraft.player);
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, lit ? BUTTON_LIT : pos == hovered ? BUTTON_HOVER : BUTTON, x, y, 16, 18);
             graphics.item(recipe.assemble(), x, y + 1);
-            if (!lit) graphics.fill(x, y, x + 16, y + 18, 0x80000000);
+            if (!lit) graphics.fill(x, y, x + 16, y + 18, 0x58000000);
         }
     }
 
