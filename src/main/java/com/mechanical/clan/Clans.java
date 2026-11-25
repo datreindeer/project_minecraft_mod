@@ -321,6 +321,11 @@ public final class Clans extends SavedData {
         if (clanOf(player.getUUID()) != null || name.isEmpty() || name.length() > NAME_MAX || nameTaken(name)) return false;
         GlobalPos pit = freePitNear(player);
         if (pit == null) return false;
+        Clan other = blockingTribe(pit);
+        if (other != null) {
+            tooClose(player, pit, other);
+            return false;
+        }
         long today = today(player.level().getServer());
         Clan clan = new Clan(UUID.randomUUID(), name, Optional.of(pit),
                 List.of(new Member(player.getUUID(), player.getGameProfile().name(), LEADER, today, today)), List.of(), Optional.empty(), Optional.empty());
@@ -343,6 +348,11 @@ public final class Clans extends SavedData {
         if (clan == null || clan.pit.isPresent() || clan.member(player.getUUID()).rank != LEADER) return false;
         GlobalPos pit = freePitNear(player);
         if (pit == null) return false;
+        Clan other = blockingTribe(pit);
+        if (other != null) {
+            tooClose(player, pit, other);
+            return false;
+        }
         clan.pit = Optional.of(pit);
         recomputeTerritory(player.level().getServer(), clan);
         tell(player.level().getServer(), clan, Component.translatable("message.mechanical.clan.new_centre", player.getName()));
@@ -608,20 +618,39 @@ public final class Clans extends SavedData {
      * tribe holds, and NPC land, are never taken; chunks this frees are not handed to neighbours.
      */
     void recomputeTerritory(MinecraftServer server, Clan clan) {
+        Set<Long> next = new HashSet<>();
+        GlobalPos pit = clan.pit.orElse(null);
+        ServerLevel level = pit == null ? null : server.getLevel(pit.dimension());
+        if (level != null) {
+            Set<Long> others = new HashSet<>();
+            for (Clan c : clans) if (c != clan && c.pit.isPresent() && c.pit.get().dimension() == pit.dimension()) others.addAll(c.territory);
+            Predicate<ChunkPos> blocked = c -> others.contains(c.pack()) || npcLand(level, c);
+            ChunkPos centre = ChunkPos.containing(pit.pos());
+            for (long c : Territory.square(centre, LOAD_RADIUS)) if (!blocked.test(ChunkPos.unpack(c))) next.add(c);
+            Optional<ResourceKey<Biome>> biome = clan.isBigPit(server) ? level.getBiome(pit.pos()).unwrapKey() : Optional.empty();
+            if (biome.isPresent()) next.addAll(Territory.fill(centre, TERRITORY_MAX, c -> Territory.surfaceBiome(level, c).is(biome.get()), blocked));
+        }
+        if (next.equals(clan.territory)) return; // keepPitsLoaded recomputes often: don't dirty the save for nothing
         clan.territory.clear();
+        clan.territory.addAll(next);
         setDirty();
-        if (clan.pit.isEmpty()) return;
-        GlobalPos pit = clan.pit.get();
-        ServerLevel level = server.getLevel(pit.dimension());
-        if (level == null) return;
-        Set<Long> others = new HashSet<>();
-        for (Clan c : clans) if (c != clan && c.pit.isPresent() && c.pit.get().dimension() == pit.dimension()) others.addAll(c.territory);
-        Predicate<ChunkPos> blocked = c -> others.contains(c.pack()) || npcLand(level, c);
-        ChunkPos centre = ChunkPos.containing(pit.pos());
-        for (long c : Territory.square(centre, LOAD_RADIUS)) if (!blocked.test(ChunkPos.unpack(c))) clan.territory.add(c);
-        if (!clan.isBigPit(server)) return;
-        Optional<ResourceKey<Biome>> biome = level.getBiome(pit.pos()).unwrapKey();
-        if (biome.isPresent()) clan.territory.addAll(Territory.fill(centre, TERRITORY_MAX, c -> Territory.surfaceBiome(level, c).is(biome.get()), blocked));
+    }
+
+    /** The first other tribe holding any chunk of the 5x5 round {@code pit}, or null: a new pit there would overlap its land. */
+    Clan blockingTribe(GlobalPos pit) {
+        for (long c : Territory.square(ChunkPos.containing(pit.pos()), LOAD_RADIUS)) {
+            Clan o = owner(pit.dimension(), ChunkPos.unpack(c));
+            if (o != null) return o;
+        }
+        return null;
+    }
+
+    /** Tells the player which way the tribe that blocks a new pit at {@code pit} lies (compass word from pit to its pit). */
+    private static void tooClose(ServerPlayer player, GlobalPos pit, Clan other) {
+        BlockPos o = other.pit.get().pos();
+        int dir = Math.floorMod(Math.round((float) Math.toDegrees(Math.atan2(o.getX() - pit.pos().getX(), pit.pos().getZ() - o.getZ())) / 45), 8);
+        player.sendSystemMessage(Component.translatable("message.mechanical.clan.too_close", other.name,
+                Component.translatable("message.mechanical.clan.dir." + new String[] {"n", "ne", "e", "se", "s", "sw", "w", "nw"}[dir])));
     }
 
     private static boolean npcLand(ServerLevel level, ChunkPos c) {

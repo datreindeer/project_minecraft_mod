@@ -111,6 +111,20 @@ public final class TerritoryTest {
         check(h, a.territory().size() == 25 && !b.territory().isEmpty() && b.territory().stream().noneMatch(a.territory()::contains), "two tribes never overlap");
         check(h, data.owner(level.dimension(), pc) == a && data.owner(level.dimension(), new ChunkPos(pc.x() + 4, pc.z())) == b, "owner of a chunk");
 
+        // no overlap: a pit 4 chunks from a lone tribe is blocked by it, 5 chunks is free, and found() refuses and creates nothing
+        Clans lone = new Clans(List.of());
+        Clans.Clan only = tribe(h, lone, pitPos);
+        lone.recomputeTerritory(server, only);
+        var dim = level.dimension();
+        check(h, lone.blockingTribe(GlobalPos.of(dim, pitPos.east(64))) == only, "pit 4 chunks away is blocked");
+        check(h, lone.blockingTribe(GlobalPos.of(dim, pitPos.east(80))) == null, "pit 5 chunks away is free");
+        BlockPos near = pitPos.east(64);
+        level.setBlock(near, FirePit.FIRE_PIT.get().defaultBlockState(), 3);
+        var player = net.neoforged.neoforge.common.util.FakePlayerFactory.getMinecraft(level);
+        player.setPos(near.getX() + 0.5, near.getY() + 1, near.getZ() + 0.5);
+        check(h, !lone.found(player, "newcomers") && lone.clans.size() == 1, "found next to another tribe's land is refused");
+        level.setBlock(near, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+
         // a big pit with tribe B 3 chunks east: all its own 5x5 B doesn't hold, none of B's, nothing past the cap
         level.setBlock(pitPos, FirePit.FIRE_PIT.get().defaultBlockState().setValue(FirePitBlock.BIG, true), 2);
         check(h, a.isBigPit(server), "the pit is big");

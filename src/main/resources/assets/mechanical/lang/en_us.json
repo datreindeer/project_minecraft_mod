@@ -5592,5 +5592,14 @@
   "advancements.mechanical.folklore.moonwort_lock.title": "The Key-Herb",
   "advancements.mechanical.folklore.moonwort_lock.description": "Hold Moonwort to an Iron Door or Iron Trapdoor: it springs open without redstone, and the herb is spent",
   "mechanical.configuration.blendEdges": "Blend Block Edges",
-  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam"
+  "mechanical.configuration.blendEdges.tooltip": "Related neighbouring blocks (ground, stone, planks) fray into each other on their top faces instead of meeting in a straight seam",
+  "message.mechanical.clan.too_close": "Too close to %s's land (to the %s). Tribes' lands may not overlap: find a Fire Pit farther away.",
+  "message.mechanical.clan.dir.n": "north",
+  "message.mechanical.clan.dir.ne": "northeast",
+  "message.mechanical.clan.dir.e": "east",
+  "message.mechanical.clan.dir.se": "southeast",
+  "message.mechanical.clan.dir.s": "south",
+  "message.mechanical.clan.dir.sw": "southwest",
+  "message.mechanical.clan.dir.w": "west",
+  "message.mechanical.clan.dir.nw": "northwest"
 }
