@@ -28,6 +28,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -120,9 +121,14 @@ public final class TerritoryTest {
         check(h, lone.blockingTribe(GlobalPos.of(dim, pitPos.east(80))) == null, "pit 5 chunks away is free");
         BlockPos near = pitPos.east(64);
         level.setBlock(near, FirePit.FIRE_PIT.get().defaultBlockState(), 3);
-        var player = net.neoforged.neoforge.common.util.FakePlayerFactory.getMinecraft(level);
+        var player = FakePlayerFactory.getMinecraft(level);
         player.setPos(near.getX() + 0.5, near.getY() + 1, near.getZ() + 0.5);
         check(h, !lone.found(player, "newcomers") && lone.clans.size() == 1, "found next to another tribe's land is refused");
+        Clans.Clan hopeful = new Clans.Clan(UUID.randomUUID(), "h", Optional.empty(),
+                List.of(new Clans.Member(player.getUUID(), "me", Clans.LEADER, 0, 0)), List.of(), Optional.empty(), Optional.empty());
+        lone.clans.add(hopeful);
+        check(h, !lone.claimPit(player) && hopeful.pit.isEmpty(), "claimPit next to another tribe's land is refused");
+        lone.clans.remove(hopeful);
         level.setBlock(near, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
 
         // a big pit with tribe B 3 chunks east: all its own 5x5 B doesn't hold, none of B's, nothing past the cap

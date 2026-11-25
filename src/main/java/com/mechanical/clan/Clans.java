@@ -607,6 +607,7 @@ public final class Clans extends SavedData {
         for (Clan c : data.clans) {
             if (c.pit.isPresent() && c.pit.get().equals(old)) {
                 c.pit = Optional.of(GlobalPos.of(level.dimension(), to.immutable()));
+                data.setDirty(); // the pit moved even if the territory didn't
                 data.recomputeTerritory(level.getServer(), c); // it is big now: its biome joins
             }
         }
