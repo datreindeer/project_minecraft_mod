@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-/** What one {@link FeedingTroughBlock} holds: drinks of water and one stack of fodder. The blockstate mirrors it for the model. */
+/** What one {@link FeedingTroughBlock} holds: its share of the row's water and one stack of fodder. The blockstates mirror the row. */
 public class FeedingTroughBlockEntity extends BlockEntity {
     /** A bucket fills a trough with this many drinks (each lasts an animal {@link Husbandry#WATER_TICKS}). */
     public static final int WATER_CAP = 16;
@@ -55,18 +56,37 @@ public class FeedingTroughBlockEntity extends BlockEntity {
         return out;
     }
 
+    /** Sets the share without evening the row out ({@link FeedingTroughBlock#level} does that). */
+    void store(int water) {
+        if (water == this.water) return;
+        this.water = water;
+        setChanged();
+    }
+
     private void changed() {
         setChanged();
-        if (level == null || level.isClientSide()) return;
-        BlockState s = getBlockState();
-        BlockState shown = s.setValue(FeedingTroughBlock.WATER, water == 0 ? 0 : 1 + (water - 1) * 3 / WATER_CAP)
-                .setValue(FeedingTroughBlock.FOOD, !food.isEmpty());
-        if (shown != s) level.setBlock(worldPosition, shown, Block.UPDATE_CLIENTS);
+        if (level != null && !level.isClientSide()) FeedingTroughBlock.level(level, worldPosition);
+    }
+
+    /** Rows saved before the water was pooled (uneven) even out when loaded. */
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && !level.isClientSide()) level.scheduleTick(worldPosition, getBlockState().getBlock(), 1);
     }
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-        if (level != null && !food.isEmpty()) Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, food);
+        if (level == null) return;
+        if (!food.isEmpty()) Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, food);
+        // its water runs into the troughs it was joined to, as far as there is room
+        for (Direction d : Direction.Plane.HORIZONTAL) {
+            for (FeedingTroughBlockEntity t : FeedingTroughBlock.group(level, pos.relative(d), pos)) {
+                int n = Math.min(water, WATER_CAP - t.water());
+                t.store(t.water() + n);
+                water -= n;
+            }
+        }
     }
 
     @Override

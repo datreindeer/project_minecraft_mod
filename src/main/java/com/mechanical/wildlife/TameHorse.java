@@ -43,7 +43,7 @@ import net.minecraft.world.phys.Vec3;
  * A tamed {@link WildHorse}: a vanilla horse underneath (riding, jumping, inventory, horse armour, breeding) that keeps
  * the wild horse's looks (client/wildlife/TameHorseRenderer). Ridden bareback it is steered without a saddle but goes at
  * {@link #BAREBACK_SPEED} and jumps {@link #BAREBACK_JUMP} as high; the Hide Saddle Blanket (saddle slot) gives the full
- * speed and jump. Bred with sheaves or hay bales ({@link Carting#HORSE_BREEDING_FEED}); foals of two tame horses are tame.
+ * speed and jump. Content ones breed by themselves (Husbandry); foals of two tame horses are tame.
  * Up to {@link #MAX_SATCHELS} Leather Satchels hang on its sides (right-click one on the horse: left side, then right;
  * shears take the last one off). Each adds its 3x3 as three columns of the horse's inventory: the satchel's contents
  * move into the horse when it is put on and back into the satchel when it comes off or the horse dies.
@@ -293,15 +293,11 @@ public class TameHorse extends Horse {
         return stack.is(Carting.HORSE_FEED) || super.isFood(stack);
     }
 
-    /** Vanilla's feeding, plus mod feed: heals a little, and sheaves or hay put a tame adult in love. */
+    /** Vanilla's feeding, plus mod feed, which heals a little. */
     @Override
     protected boolean handleEating(Player player, ItemStack stack) {
         boolean vanilla = super.handleEating(player, stack);
         boolean used = vanilla;
-        if (stack.is(Carting.HORSE_BREEDING_FEED) && !level().isClientSide() && isTamed() && getAge() == 0 && !isInLove()) {
-            setInLove(player);
-            used = true;
-        }
         if (!vanilla && stack.is(Carting.HORSE_FEED) && getHealth() < getMaxHealth()) {
             heal(2.0F);
             used = true;
@@ -313,7 +309,7 @@ public class TameHorse extends Horse {
         return used;
     }
 
-    /** Two tame horses foal a tame one (owned by whoever fed this one); with a vanilla horse or donkey, vanilla's rules. */
+    /** Two tame horses foal a tame one (owned by this one's owner); with a vanilla horse or donkey, vanilla's rules. */
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
         if (!(partner instanceof TameHorse)) return super.getBreedOffspring(level, partner);
@@ -321,7 +317,8 @@ public class TameHorse extends Horse {
         if (foal == null) return null;
         setOffspringAttributes(partner, foal);
         foal.setTamed(true);
-        if (getLoveCause() != null) foal.setOwner(getLoveCause());
+        net.minecraft.world.entity.LivingEntity owner = getOwner(); // nobody fed them into love: the foal is her owner's
+        if (owner != null) foal.setOwner(owner);
         return foal;
     }
 

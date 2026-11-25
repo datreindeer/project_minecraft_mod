@@ -63,7 +63,7 @@ Kod: `wildlife/desert/` (DesertFauna, DesertScorpion, FennecFox, TameFennec, Wil
 
 **Tämjning** exakt som onagern: smyg fram med hästfoder (`mechanical:horse_feed`), handmata (en gång per 10 s), **Rope Halter** vid förtroende 3, tam vid 7. Skadar du den försvinner förtroendet.
 
-**Tame Camel** (tämjd kamel, vanilla-åsna under ytan som den tämjda onagern): rids barbacka, 28–34 liv, fart 0,17–0,22, hopp 0,4–0,5. **Pack Baskets** ger en packning med 15 platser (remmen går över puckeln). Drar **Cart**. Två tämjda kameler som får kärvar eller hö får en tam kalv (inte med onager eller häst). **Klarar öknen utan vatten:**
+**Tame Camel** (tämjd kamel, vanilla-åsna under ytan som den tämjda onagern): rids barbacka, 28–34 liv, fart 0,17–0,22, hopp 0,4–0,5. **Pack Baskets** ger en packning med 15 platser (remmen går över puckeln). Drar **Cart**. Två nöjda tämjda kameler vid ett Feeding Trough får en tam kalv av sig själva (inte med onager eller häst). **Klarar öknen utan vatten:**
 - arbetsorken (HorseWork) töms **hälften så fort** per gånget block som hästens (`CAMEL_DRAIN` 0,5): kamelen går dubbelt så långt innan den blir trött;
 - en drink från tråget (Husbandry) räcker **fyra gånger så länge** (`CAMEL_WATER` 4: 8 dagar i stället för 2).
 - Vanilla-kameler (från ökenbyarna) får samma fördelar.

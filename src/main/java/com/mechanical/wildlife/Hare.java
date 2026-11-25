@@ -46,7 +46,7 @@ public class Hare extends WildAnimal {
     @Override
     public void aiStep() {
         super.aiStep();
-        if (level().isClientSide() || !onGround()) return;
+        if (level().isClientSide() || !onGround() || isTamed()) return;
         Vec3 v = getDeltaMovement();
         double speed = v.horizontalDistance();
         if (speed > 0.15 && random.nextInt(4) == 0) {

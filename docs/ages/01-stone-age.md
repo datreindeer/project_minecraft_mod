@@ -1074,7 +1074,7 @@ brinnande eld. Högst en flock per spelare och 15 sekunder (4 i minuten), och al
 Tiderna sparas med världen (`WildlifeRestock.java`).
 
 ### Vilda djur (skog)
-Spawnar i skogsbiomer (`#minecraft:is_forest`). Förökar sig inte. Alla har egna modeller och texturer, flådda
+Spawnar i skogsbiomer (`#minecraft:is_forest`). Vilda förökar sig inte (tämjda gör det, se *Tämja vilda djur*). Alla har egna modeller och texturer, flådda
 texturer och fungerar med kroppar, styckning, blod och rädsla.
 
 | Djur | Liv | Beteende | Omgång 1 | Omgång 2 |
@@ -1690,24 +1690,65 @@ Rökning går fortare och ger lite mer mat; torkning kräver ingen eld men bara 
   (vanilla-hagar, hästar) finns kvar.
 
 ### Mat och vatten åt tamdjuren (Feeding Trough)
-- **Vilka:** Cow (och Mooshroom), Sheep, Pig, Chicken, Goat och tämjda hästar (Horse, Donkey, Mule, Llama, Tame Horse).
-  Viltet räknas inte.
+- **Vilka:** Cow (och Mooshroom), Sheep, Pig, Chicken, Goat, tämjda hästar (Horse, Donkey, Mule, Llama, Tame Horse) och
+  tämjda vilda djur (se *Tämja vilda djur* nedan). Otämjt vilt räknas inte.
 - **Behov:** ett mål mat räcker **en dag** (24 000 ticks), en klunk vatten **två dagar**. När något tar slut dör djuret
-  inte, men det blir **trött**: går i halv fart, hänger med huvudet och **parar sig inte** (inget kärleksläge, ingen unge).
+  inte, men det blir **trött**: går i halv fart (tamboskapen hänger med huvudet) och **parar sig inte**.
   Under halva tiden kvar letar det själv efter mat eller vatten.
 - **Bete:** betande djur (Cow, Sheep, Goat, hästar) som står på ett Grass Block äter gräset när de är hungriga, med huvudet
   nere en stund. Var tredje gång blir gräset bar **Dirt**, som gräset sedan växer tillbaka över. Pig och Chicken betar inte.
-- **Hand:** ett hungrigt djur äter sin mat ur handen (vete, morötter, frön …) i stället för att bli kärt. Mätt djur blir
-  kära som vanligt.
+- **Hand:** ett hungrigt djur äter sin mat ur handen (vete, morötter, frön …). Ett mätt, vuxet djur tar den inte:
+  **att mata ur handen startar aldrig avel** (ungar växer fortfarande av mat, en skadad häst läker av guldmat).
+- **Naturlig avel:** ett vuxet djur är **nöjt** när det varken är hungrigt, törstigt eller trött, det finns **vatten**
+  och **mat det äter** i Feeding Troughs inom 12 block, det inte är **vinter** och det inte vilar efter en unge (hästar
+  måste dessutom vara helt friska). Två nöjda av samma art inom 8 block blir då kära av sig själva (i snitt efter en
+  halv minut) och får en unge. Föräldrarna vilar sedan **två dagar** (48 000 ticks). Finns **10 eller fler** av arten
+  (ungar inräknade) inom 16 block blir det inga fler. Bete på gräs räcker inte för avel: maten måste finnas i tråg.
+- **Hur mår djuret:** högerklicka med **tom hand** så står det vid hotbaren: nöjt, hungrigt, vill ha vatten i ett tråg,
+  för trångt och så vidare. Ett otämjt tämjbart djur visar vad det gillar.
 - **Feeding Trough:** recept `[Planks][ ][Planks]` / `[Planks][Planks][Planks]` → 1. Ett lågt planktråg (10 px, så får,
   kor och grisar kliver inte upp i det). **Water Bucket** (även Clay och Bronze) fyller det med **16 klunkar** och hinken
   blir tom. **Foder** (det någon tamdjursart äter: Wheat, Carrot, Potato, Beetroot, frön, Hay Bale, Apple …) läggs i med
   högerklick, hela högen; tom hand tar ut fodret. Ett tråg har en hög foder av en sort.
-- **Flera tråg bredvid varandra blir ett:** kanterna mellan dem försvinner, vatten och foder fyller nästa tråg när det
-  första är fullt, och djuren äter och dricker ur hela raden (upp till 16 tråg).
+- **Flera tråg bredvid varandra blir ett:** kanterna mellan dem försvinner och raden **delar vattnet**: en hink ger 16
+  klunkar till hela raden, jämnt fördelat, så alla tråg visar samma nivå (raden rymmer 16 klunkar per tråg). Bryts ett
+  tråg rinner dess vatten över i grannarna så långt det får plats. Foder ligger kvar i en hög per tråg (nästa tråg
+  tar överskottet eller en annan sort), men hela raden visar att det finns foder och tom hand tar ut det från vilken ände
+  som helst.
 - **Djuren vid tråget:** inom 12 block går ett hungrigt eller törstigt djur till tråget, sänker huvudet en stund och tar en
   klunk vatten och/eller ett foder som just den arten äter. Vattnet räcker länge: 16 klunkar är 32 djurdagar.
 - Ett trött djur som fått mat och vatten blir piggt igen inom en sekund.
+
+### Tämja vilda djur
+Gårdsvänliga vilda djur kan tämjas med sin favoritmat. **Smyg med maten i handen** (då skyr de inte, och vildsvin,
+myskoxar och jättehjort går inte till anfall) och högerklicka. En matning räknas var 5:e sekund. Står man upp innan
+halva förtroendet är vunnet flyr djuret; därefter får man stå, bara man inte springer. Skadar man det börjar man om.
+Ett tamt djur flyr inte, anfaller aldrig människor, **följer den som håller dess mat**, försvinner aldrig, klättrar
+inte ur hagen, jagas inte av stammarnas jägare (rovdjur tar det fortfarande) och är tamdjur: mat, vatten och naturlig
+avel (ungen föds tam). Hästar, onagrer, kameler och fennekräv tämjs som förut. Rovdjur kan inte tämjas.
+
+| Djur | Matningar | Favoritmat |
+|---|---|---|
+| Wild Boar | 5 | Carrot, Potato, Beetroot, Apple, Wild Carrot, Turnip, Hazelnuts, Beechnuts, Chestnuts, Walnuts |
+| Mouflon | 4 | Wheat, Barley/Oat/Einkorn/Emmer Grain |
+| Ibex | 5 | Wheat, Barley/Oat/Einkorn/Emmer Grain |
+| Chamois | 4 | Wheat, Barley/Oat/Einkorn/Emmer Grain |
+| Bighorn Sheep | 5 | Wheat, Barley/Oat/Einkorn/Emmer Grain |
+| Aurochs | 6 | Wheat, Sheaf, Hay Bale |
+| Steppe Bison | 6 | Wheat, Sheaf, Hay Bale |
+| Water Buffalo | 6 | Wheat, Sheaf, Hay Bale |
+| Musk Ox | 6 | Wheat, Sheaf, Hay Bale |
+| Roe Deer | 4 | Apple, Crab Apple, Pears, Chestnuts |
+| Red Deer | 5 | Apple, Crab Apple, Pears, Chestnuts |
+| Giant Deer | 8 | Apple, Crab Apple, Pears, Chestnuts |
+| Reindeer | 5 | Brown/Red Mushroom, Glow Lichen |
+| Moose | 6 | Willow Bark, Turnip, Apple |
+| Gazelle | 4 | Wheat, Sheaf |
+| Saiga | 4 | Wheat, Sheaf |
+| Hare | 3 | Carrot, Wild Carrot, Dandelion |
+| Desert Hare | 3 | Carrot, Wild Carrot, Dandelion |
+
+Advancements: **Won Over** (tämj ett djur) och **Born in the Pen** (var nära när en unge föds av sig själv).
 
 ### Hagar trampas sönder
 Där minst **4 tamdjur** går inom 5 block (en hage) kan varje nytt block en hov kliver på (1 på 40) slitas ett steg:

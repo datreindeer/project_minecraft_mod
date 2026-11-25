@@ -25,7 +25,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
  * A tamed {@link Onager}: a vanilla donkey underneath (riding, the pack inventory, breeding, pulling the Cart, which takes
  * any tamed horse) that keeps the onager's looks (client/wildlife/warm/TameOnagerRenderer). Ridden bareback (no saddle
  * needed) at {@link #BAREBACK_SPEED}. Its pack is a pair of Pack Baskets ({@link WarmFauna#PACK_BASKETS}) instead of a
- * chest: right-click it with them (they come off again when it dies). Bred with sheaves or hay; two tame onagers foal a
+ * chest: right-click it with them (they come off again when it dies). Content ones breed by themselves (Husbandry); two tame onagers foal a
  * tame one.
  */
 public class TameOnager extends Donkey {
@@ -97,15 +97,11 @@ public class TameOnager extends Donkey {
         super.dropEquipment(level);
     }
 
-    /** Mod feed heals a little; sheaves or hay put a tame adult in love. */
+    /** Mod feed heals a little. */
     @Override
     protected boolean handleEating(Player player, ItemStack stack) {
         boolean vanilla = super.handleEating(player, stack);
         boolean used = vanilla;
-        if (stack.is(Carting.HORSE_BREEDING_FEED) && !level().isClientSide() && isTamed() && getAge() == 0 && !isInLove()) {
-            setInLove(player);
-            used = true;
-        }
         if (!vanilla && stack.is(Carting.HORSE_FEED) && getHealth() < getMaxHealth()) {
             heal(2.0F);
             used = true;
@@ -123,13 +119,14 @@ public class TameOnager extends Donkey {
         return partner != this && partner.getType() == getType() && partner instanceof TameOnager other && canParent() && other.canParent();
     }
 
-    /** Two tame onagers foal a tame one (camels a camel), owned by whoever fed this one. */
+    /** Two tame onagers foal a tame one (camels a camel), owned by this one's owner. */
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
         if (!(getType().create(level, EntitySpawnReason.BREEDING) instanceof TameOnager foal)) return null;
         setOffspringAttributes(partner, foal);
         foal.setTamed(true);
-        if (getLoveCause() != null) foal.setOwner(getLoveCause());
+        net.minecraft.world.entity.LivingEntity owner = getOwner(); // nobody fed them into love: the foal is her owner's
+        if (owner != null) foal.setOwner(owner);
         return foal;
     }
 

@@ -8,24 +8,35 @@ import java.util.EnumSet;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mechanical.wildlife.Wildlife;
+import com.mechanical.wildlife.WildAnimal;
+import com.mechanical.wildlife.Taming;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.equine.Llama;
+import net.minecraft.world.entity.animal.camel.Camel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.animal.chicken.Chicken;
 import net.minecraft.world.entity.animal.cow.AbstractCow;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
@@ -36,6 +47,7 @@ import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -44,6 +56,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -55,8 +68,9 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 /**
- * Living-world plan D6 (and the grazing of A10): livestock (cows, sheep, pigs, chickens, goats and tamed horses) need food
- * and water. Kept as two "lasts until" game times, so nothing counts down: food lasts {@link #FOOD_TICKS}, a drink
+ * Living-world plan D6 (and the grazing of A10): livestock (cows, sheep, pigs, chickens, goats, tamed horses and the tamed
+ * wild animals of {@link com.mechanical.wildlife.Taming}) need food and water. They breed by themselves, never from the
+ * hand: a content adult with a stocked Feeding Trough in range and a content partner near falls in love ({@link #lack}). Kept as two "lasts until" game times, so nothing counts down: food lasts {@link #FOOD_TICKS}, a drink
  * {@link #WATER_TICKS}. Run out of either and the animal doesn't die but is tired: it walks at half speed, droops its head
  * (client: LivestockPose) and won't breed. Grazers (cows, sheep, goats, horses) standing on grass eat it when hungry,
  * now and then leaving bare dirt (grass grows back over it); the rest eat from a {@link FeedingTroughBlock} or the hand.
@@ -74,6 +88,11 @@ public final class Husbandry {
     static final int GRAZE_ONE_IN = 3, BARE_ONE_IN = 3, CHECK = 20;
     /** How far animals look for a trough. */
     static final int TROUGH_RANGE = 12;
+    /** A partner this near; no young with this many of the kind (young included) within {@link #CROWD_RANGE}. */
+    static final int PARTNER_RANGE = 8, CROWD_RANGE = 16, CROWD_CAP = 10;
+    /** A parent rests this long (two days) after young; each check a ready pair falls in love with this chance. */
+    static final int BREED_COOLDOWN = 48000, BREED_ONE_IN = 30;
+    static final Identifier NATURAL_BIRTH = Identifier.fromNamespaceAndPath(MODID, "stone_age/born_in_the_pen");
     static final Identifier TIRED_ID = Identifier.fromNamespaceAndPath(MODID, "tired");
     private static final AttributeModifier TIRED = new AttributeModifier(TIRED_ID, -0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
@@ -111,6 +130,12 @@ public final class Husbandry {
             .sync(Needs.STREAM)
             .build());
 
+    /** Game time until which a parent rests. */
+    public static final Supplier<AttachmentType<Long>> RESTING = Mechanical.ATTACHMENTS.register("livestock_resting", () -> AttachmentType
+            .builder(() -> 0L)
+            .serialize(com.mojang.serialization.Codec.LONG.fieldOf("until"))
+            .build());
+
     public static final DeferredBlock<FeedingTroughBlock> FEEDING_TROUGH = BLOCKS.registerBlock("feeding_trough", FeedingTroughBlock::new, p -> p
             .mapColor(MapColor.WOOD).strength(1.5F).sound(SoundType.WOOD).noOcclusion().ignitedByLava());
     public static final DeferredItem<BlockItem> FEEDING_TROUGH_ITEM = ITEMS.registerSimpleBlockItem("feeding_trough", FEEDING_TROUGH);
@@ -119,21 +144,23 @@ public final class Husbandry {
 
     public static void init() {}
 
-    /** Kept animals: the farm animals and tamed horses (the mod's wild game is not). */
+    /** Kept animals: the farm animals, tamed horses and tamed wild animals. */
     public static boolean livestock(Entity e) {
         return e instanceof AbstractCow || e instanceof Sheep || e instanceof Pig || e instanceof Chicken || e instanceof Goat
+                || e instanceof WildAnimal w && w.isTamed()
                 || e instanceof AbstractHorse h && h.isTamed() && !(h instanceof SkeletonHorse) && !(h instanceof ZombieHorse);
     }
 
     /** Livestock that eat grass. */
     public static boolean grazer(Entity e) {
-        return e instanceof AbstractCow || e instanceof Sheep || e instanceof Goat || e instanceof AbstractHorse;
+        return e instanceof AbstractCow || e instanceof Sheep || e instanceof Goat || e instanceof AbstractHorse
+                || e instanceof WildAnimal w && w.isTamed() && w.getType() != Wildlife.WILD_BOAR.get(); // boars root, they don't graze
     }
 
     /** Can some livestock eat this (what a trough takes)? */
     public static boolean fodder(ItemStack s) {
         return s.is(ItemTags.COW_FOOD) || s.is(ItemTags.SHEEP_FOOD) || s.is(ItemTags.PIG_FOOD) || s.is(ItemTags.CHICKEN_FOOD)
-                || s.is(ItemTags.GOAT_FOOD) || s.is(ItemTags.HORSE_FOOD) || s.is(ItemTags.LLAMA_FOOD);
+                || s.is(ItemTags.GOAT_FOOD) || s.is(ItemTags.HORSE_FOOD) || s.is(ItemTags.LLAMA_FOOD) || s.is(Taming.ANY_FEED);
     }
 
     /** The animal's needs; the first time it is seen it counts as just fed and watered. */
@@ -162,6 +189,7 @@ public final class Husbandry {
         Needs n = needs(a);
         a.setData(NEEDS, food ? new Needs(now + FOOD_TICKS, n.watered(), now + EAT_TICKS) : new Needs(n.fed(), now + waterTicks(a), now + EAT_TICKS));
         a.getNavigation().stop();
+        if (a instanceof WildAnimal w) w.showEating();
         a.level().playSound(null, a.blockPosition(), food ? SoundEvents.GENERIC_EAT.value() : SoundEvents.GENERIC_DRINK.value(), SoundSource.NEUTRAL, 0.6F, 0.8F);
     }
 
@@ -187,6 +215,7 @@ public final class Husbandry {
             else speed.removeModifier(TIRED_ID);
         }
         if (tired && a.isInLove()) a.resetLove();
+        if (a.getRandom().nextInt(BREED_ONE_IN) == 0) tryBreed(a);
         if (grazer(a) && n.hungry(now) && !n.eating(now) && a.onGround() && !a.isVehicle() && a.getRandom().nextInt(GRAZE_ONE_IN) == 0) graze(a);
     }
 
@@ -212,15 +241,115 @@ public final class Husbandry {
         if (event.getParentA() instanceof Animal a && tired(a) || event.getParentB() instanceof Animal b && tired(b)) event.setCanceled(true);
     }
 
-    /** A hungry animal eats what it likes from the hand (instead of going into love). */
+    /**
+     * What keeps this one from breeding, as the end of a "message.mechanical.husbandry.*" key; null when it is content and
+     * ready (a partner aside: {@link #partner}).
+     */
+    public static String lack(Animal a) {
+        long now = a.level().getGameTime();
+        Needs n = needs(a);
+        if (n.tired(now)) return now >= n.fed() ? now >= n.watered() ? "starved_and_parched" : "starved" : "parched";
+        if (a.isBaby()) return "young";
+        if (findTrough(a, false, true) == null) return "no_water";
+        if (findTrough(a, true, false) == null) return "no_food";
+        if (n.hungry(now)) return "hungry";
+        if (n.thirsty(now)) return "thirsty";
+        if (WinterAnimals.winter(a.level())) return "winter";
+        if (a.getAge() != 0 || now < a.getData(RESTING)) return "resting";
+        if (a instanceof AbstractHorse h && h.getHealth() < h.getMaxHealth()) return "hurt";
+        if (a.level().getEntitiesOfClass(Animal.class, a.getBoundingBox().inflate(CROWD_RANGE), o -> o.getType() == a.getType() && livestock(o)).size() >= CROWD_CAP)
+            return "crowded";
+        return null;
+    }
+
+    /** The nearest ready one of its kind, or null. */
+    static Animal partner(Animal a) {
+        return a.level().getEntitiesOfClass(Animal.class, a.getBoundingBox().inflate(PARTNER_RANGE),
+                        o -> o != a && o.getType() == a.getType() && o.isAlive() && livestock(o) && !o.isInLove() && lack(o) == null)
+                .stream().min(java.util.Comparator.comparingDouble(a::distanceToSqr)).orElse(null);
+    }
+
+    /** Server: if this one and a partner are ready, both fall in love (the vanilla breeding goal does the rest). */
+    static boolean tryBreed(Animal a) {
+        if (a.isInLove() || lack(a) != null) return false;
+        Animal other = partner(a);
+        if (other == null) return false;
+        a.setInLove(null);
+        other.setInLove(null);
+        return true;
+    }
+
+    /** What a click with an empty hand tells: what it likes (still wild) or how it is doing; null for other animals. */
+    public static Component status(Animal a) {
+        if (!livestock(a)) {
+            Taming.Diet diet = a instanceof WildAnimal w ? Taming.diet(w.getType()) : null;
+            if (diet == null) return null;
+            MutableComponent foods = Component.empty();
+            int i = 0;
+            for (var item : BuiltInRegistries.ITEM.getTagOrEmpty(diet.food())) {
+                if (i++ > 0) foods.append(", ");
+                if (i > 4) {
+                    foods.append("...");
+                    break;
+                }
+                foods.append(new ItemStack(item).getHoverName());
+            }
+            return Component.translatable("message.mechanical.husbandry.wild", a.getDisplayName(), foods, ((WildAnimal) a).tameTrust(), diet.feeds());
+        }
+        String lack = lack(a);
+        if (lack == null) lack = a.isInLove() || partner(a) != null ? "content" : "no_partner";
+        return Component.translatable("message.mechanical.husbandry." + (a instanceof WildAnimal || a instanceof AbstractHorse ? "tame" : "kept"),
+                a.getDisplayName(), Component.translatable("message.mechanical.husbandry." + lack));
+    }
+
+    /** Young born: both parents rest; one born without a player's help counts for Born in the Pen. */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    static void onBorn(BabyEntitySpawnEvent event) {
+        if (!(event.getParentA() instanceof Animal a) || !(event.getParentB() instanceof Animal b) || !livestock(a)) return;
+        long until = a.level().getGameTime() + BREED_COOLDOWN;
+        a.setData(RESTING, until);
+        b.setData(RESTING, until);
+        for (ServerPlayer player : a.level().getEntitiesOfClass(ServerPlayer.class, a.getBoundingBox().inflate(24))) Kettle.award(player, NATURAL_BIRTH);
+    }
+
+    /** What would put this horse in love if fed to it (vanilla's rules); everything else it eats only heals. */
+    private static boolean loveFood(AbstractHorse h, ItemStack stack) {
+        if (h instanceof Camel) return h.isFood(stack);
+        if (h instanceof Llama) return stack.is(Items.HAY_BLOCK);
+        return stack.is(Items.GOLDEN_APPLE) || stack.is(Items.ENCHANTED_GOLDEN_APPLE) || stack.is(Items.GOLDEN_CARROT);
+    }
+
+    /**
+     * From the hand: a hungry animal eats what it likes. Feeding never starts breeding: a grown one that isn't hungry
+     * leaves it (a hurt horse heals). Young still grow from it. An empty hand asks how it is.
+     */
     @SubscribeEvent
     static void onInteract(PlayerInteractEvent.EntityInteract event) {
-        if (!(event.getTarget() instanceof Animal a) || !livestock(a)) return;
+        if (!(event.getTarget() instanceof Animal a)) return;
         ItemStack stack = event.getItemStack();
-        if (!a.isFood(stack) || a.isBaby() || !needs(a).hungry(a.level().getGameTime())) return;
+        Player player = event.getEntity();
+        if (stack.isEmpty()) {
+            if (event.getHand() == InteractionHand.MAIN_HAND && player instanceof ServerPlayer sp) {
+                Component status = status(a);
+                if (status != null) sp.sendOverlayMessage(status);
+            }
+            return;
+        }
+        if (!livestock(a) || a.isBaby()) return;
+        boolean hungry = a.isFood(stack) && needs(a).hungry(a.level().getGameTime());
+        boolean love = a instanceof AbstractHorse h ? loveFood(h, stack) : a.isFood(stack);
+        if (!hungry && !love) return;
         if (!a.level().isClientSide()) {
-            stack.consume(1, event.getEntity());
-            feed(a, true);
+            if (hungry) {
+                stack.consume(1, player);
+                feed(a, true);
+            } else if (a.getHealth() < a.getMaxHealth()) {
+                stack.consume(1, player);
+                a.heal(4.0F);
+                feed(a, true);
+            } else if (player instanceof ServerPlayer sp) {
+                sp.sendOverlayMessage(status(a));
+            }
         }
         event.setCancellationResult(InteractionResult.SUCCESS);
         event.setCanceled(true);
@@ -228,7 +357,10 @@ public final class Husbandry {
 
     @SubscribeEvent
     static void onJoin(EntityJoinLevelEvent event) {
-        if (!event.getLevel().isClientSide() && event.getEntity() instanceof Animal a && livestock(a)) a.goalSelector.addGoal(2, new TroughGoal(a));
+        // horses and wild animals may be tamed later: the goal waits (TroughGoal.canUse)
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof Animal a
+                && (livestock(a) || a instanceof AbstractHorse || a instanceof WildAnimal w && Taming.diet(w.getType()) != null))
+            a.goalSelector.addGoal(2, new TroughGoal(a));
     }
 
     /** The nearest trough within range whose group has what the animal needs, or null. */
@@ -243,7 +375,8 @@ public final class Husbandry {
                     if (!(be instanceof FeedingTroughBlockEntity t)) continue;
                     BlockPos p = t.getBlockPos();
                     if (p.distSqr(at) > TROUGH_RANGE * TROUGH_RANGE || best != null && p.distSqr(at) >= best.distSqr(at)) continue;
-                    if (water && t.water() > 0 || food && a.isFood(t.food())) best = p;
+                    // a joined row shares its water: any of its troughs will do
+                    if (water && t.getBlockState().getValue(FeedingTroughBlock.WATER) > 0 || food && a.isFood(t.food())) best = p;
                 }
             }
         }
@@ -264,7 +397,7 @@ public final class Husbandry {
 
         @Override
         public boolean canUse() {
-            if ((a.tickCount + a.getId()) % 40 != 0 || a.isVehicle() || a.isLeashed()) return false;
+            if ((a.tickCount + a.getId()) % 40 != 0 || a.isVehicle() || a.isLeashed() || !livestock(a)) return false;
             long now = a.level().getGameTime();
             Needs n = needs(a);
             boolean food = n.hungry(now), water = n.thirsty(now);

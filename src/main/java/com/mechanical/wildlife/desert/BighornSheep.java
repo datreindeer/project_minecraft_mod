@@ -83,7 +83,7 @@ public class BighornSheep extends Ibex {
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         boolean hurt = super.hurtServer(level, source, damage);
-        if (hurt && isAlive() && isMale() && !isBaby() && source.getEntity() instanceof LivingEntity attacker && distanceTo(attacker) <= CHARGE_RANGE)
+        if (hurt && isAlive() && !isTamed() && isMale() && !isBaby() && source.getEntity() instanceof LivingEntity attacker && distanceTo(attacker) <= CHARGE_RANGE)
             chargeAt = attacker;
         return hurt;
     }

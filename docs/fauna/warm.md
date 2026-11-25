@@ -29,7 +29,7 @@ Kod: `wildlife/warm/` (WarmFauna, Onager, TameOnager, Tortoise, DesertLizard, Wa
 
 **Tämjning** (som vildhästen): smyg fram med hästfoder (`mechanical:horse_feed`) i handen – då står den still och tittar på dig – och handmata den (högerklick, en gång per 10 s). Står du upp innan den litar på dig flyr den. Vid förtroende 3 tar den en **Rope Halter**, vid 7 blir den en **tämjd onager** (ägd av dig). Skadar du den försvinner allt förtroende.
 
-**Tämjd onager** (vanilla-åsna under ytan): rids barbacka (ingen sadel, 85 % fart), 18–24 liv, fart 0,2–0,28, hopp 0,45–0,65. **Pack Baskets** (högerklick) ger en packning med 15 platser (smyg + högerklick öppnar den); en vanlig kista går inte. Korgarna faller av när den dör. Drar **Cart** som en häst. Två tämjda onagrer som får kärvar eller hö får ett tamt föl.
+**Tämjd onager** (vanilla-åsna under ytan): rids barbacka (ingen sadel, 85 % fart), 18–24 liv, fart 0,2–0,28, hopp 0,45–0,65. **Pack Baskets** (högerklick) ger en packning med 15 platser (smyg + högerklick öppnar den); en vanlig kista går inte. Korgarna faller av när den dör. Drar **Cart** som en häst. Två nöjda tämjda onagrer vid ett Feeding Trough får ett tamt föl av sig själva.
 
 - **Pack Baskets**: 2 Bark Basket + Scraped Hide + 2 Cordage (`CHC / B B`).
 
