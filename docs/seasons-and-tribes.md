@@ -116,7 +116,7 @@
     till grannar.
   - Clan/Lands följer territoriet (inte längre fasta 3x3).
 - **Adminpanel** (byggd, bara dedikerade servrar): en webbpanel inne i moddet på `http://localhost:8100`. Bara för
-  admin: begäran måste ha `Host` `localhost` eller `127.0.0.1`. Konfigureras i serverconfig (en LOCAL config med en
+  admin: begäran måste ha `Host` `localhost` eller `127.0.0.1`. Konfigureras i `config/mechanical-local.toml` (en LOCAL config med en
   av/på-flagga och port). Flikar: **Overview**, **Players**, **Tribes** och **Map**. Kartan ritas live av de chunks
   spelare laddar, med stammarnas territorier ovanpå; kartplattorna sparas i `<värld>/mechanical_map/`.
 - **Ranker:** **Leader** (en), **Elder** (högre rank, kan bjuda in), **Member** (vanlig) och **Newcomer** (ny medlem).

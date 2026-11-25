@@ -62,6 +62,11 @@ public final class DashboardTest {
 
     private static void test(GameTestHelper h) {
         MinecraftServer server = h.getLevel().getServer();
+        try {
+            Dashboard.guard("test", () -> { throw new IllegalStateException("expected by the test"); });
+        } catch (RuntimeException e) {
+            throw h.assertionException("dashboard: guard let an exception through");
+        }
 
         JsonObject status = JsonParser.parseString(Snapshot.status(server)).getAsJsonObject();
         for (String k : List.of("name", "version", "uptimeSec", "tps", "mspt", "online", "max", "memUsedMb", "memMaxMb", "loadedChunks", "entities",

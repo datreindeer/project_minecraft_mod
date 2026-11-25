@@ -24,7 +24,7 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 /**
- * The admin web dashboard: a small HTTP server inside the dedicated server, on 127.0.0.1 only (a login proxy sits in front, never the mod itself).
+ * The admin web dashboard: a small HTTP server inside the dedicated server, on 127.0.0.1 only (local only; if ever proxied, the proxy must send Host: 127.0.0.1:<port> and add its own login).
  * Serves the page from assets/mechanical/dashboard, the JSON {@link Snapshot} rebuilt once a second on the server thread, and the {@link MapTiles} PNGs.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -54,7 +54,22 @@ public final class Dashboard {
 
     @SubscribeEvent
     static void onTick(ServerTickEvent.Post event) {
-        if (http != null && event.getServer().getTickCount() % 20 == 0) latest = Snapshot.build(event.getServer());
+        if (http != null && event.getServer().getTickCount() % 20 == 0) guard("snapshot", () -> latest = Snapshot.build(event.getServer()));
+    }
+
+    private static final java.util.Map<String, Long> LAST_LOG = new java.util.concurrent.ConcurrentHashMap<>();
+
+    /** Runs dashboard work on the server thread: whatever it throws is logged (once a minute per site, with the exception) and dropped, so the dashboard can never crash the server. */
+    static void guard(String site, Runnable r) {
+        try {
+            r.run();
+        } catch (RuntimeException e) {
+            long now = System.currentTimeMillis();
+            if (now - LAST_LOG.getOrDefault(site, 0L) >= 60_000) {
+                LAST_LOG.put(site, now);
+                LOGGER.error("Mechanical dashboard: {} failed, skipped (logged at most once a minute)", site, e);
+            }
+        }
     }
 
     /** Starts listening; a port in use is one warning, never a crash. Public for the game test (the test server isn't dedicated). */

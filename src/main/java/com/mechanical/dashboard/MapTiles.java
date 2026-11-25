@@ -153,7 +153,7 @@ public final class MapTiles {
         synchronized (PENDING) {
             PENDING.remove(ChunkPos.pack(pos.x(), pos.z()));
         }
-        submit(pos, colours(chunk));
+        Dashboard.guard("map chunk unload", () -> submit(pos, colours(chunk)));
     }
 
     @SubscribeEvent
@@ -167,7 +167,7 @@ public final class MapTiles {
         ServerLevel level = event.getServer().overworld();
         for (long key : keys) {
             LevelChunk chunk = level.getChunkSource().getChunkNow(ChunkPos.getX(key), ChunkPos.getZ(key));
-            if (chunk != null) submit(chunk.getPos(), colours(chunk));
+            if (chunk != null) Dashboard.guard("map chunk", () -> submit(chunk.getPos(), colours(chunk)));
         }
     }
 

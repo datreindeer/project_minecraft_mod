@@ -668,7 +668,10 @@ public final class Clans extends SavedData {
             ChunkPos centre = ChunkPos.containing(pit.pos());
             for (long c : Territory.square(centre, LOAD_RADIUS)) if (!blocked.test(ChunkPos.unpack(c))) next.add(c);
             Optional<ResourceKey<Biome>> biome = clan.isBigPit(server) ? level.getBiome(pit.pos()).unwrapKey() : Optional.empty();
-            if (biome.isPresent()) next.addAll(Territory.fill(centre, TERRITORY_MAX, c -> Territory.surfaceBiome(level, c).is(biome.get()), blocked));
+            if (biome.isPresent()) {
+                var biomeAt = Territory.surfaceBiome(level);
+                next.addAll(Territory.fill(centre, TERRITORY_MAX, c -> biomeAt.apply(c).is(biome.get()), blocked));
+            }
         }
         if (next.equals(clan.territory)) return; // keepPitsLoaded recomputes often: don't dirty the save for nothing
         clan.territory.clear();

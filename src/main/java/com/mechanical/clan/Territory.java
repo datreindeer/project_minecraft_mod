@@ -43,7 +43,7 @@ public final class Territory {
             for (int[] d : new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
                 ChunkPos n = new ChunkPos(c.x() + d[0], c.z() + d[1]);
                 if (Math.abs(n.x() - start.x()) > max || Math.abs(n.z() - start.z()) > max || out.contains(n.pack())) continue;
-                if (blocked.test(n) || !sameBiome.test(n)) continue;
+                if (!sameBiome.test(n) || blocked.test(n)) continue;
                 out.add(n.pack());
                 todo.add(n);
             }
@@ -56,12 +56,14 @@ public final class Territory {
      * (its biome source's resolver, so the mod's biome rules apply, at the generator's surface height), which never loads
      * or generates a chunk.
      */
-    public static Holder<Biome> surfaceBiome(ServerLevel level, ChunkPos c) {
-        int x = c.getMiddleBlockX(), z = c.getMiddleBlockZ();
-        if (level.hasChunk(c.x(), c.z())) return level.getBiome(new BlockPos(x, level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z), z));
+    public static java.util.function.Function<ChunkPos, Holder<Biome>> surfaceBiome(ServerLevel level) {
         var source = level.getChunkSource();
-        int y = source.getGenerator().getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, source.randomState());
-        return source.getGenerator().getBiomeSource().createUncachedResolver(source.randomState())
-                .getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z));
+        var resolver = source.getGenerator().getBiomeSource().createUncachedResolver(source.randomState()); // built once, not per chunk
+        return c -> {
+            int x = c.getMiddleBlockX(), z = c.getMiddleBlockZ();
+            if (level.hasChunk(c.x(), c.z())) return level.getBiome(new BlockPos(x, level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z), z));
+            int y = source.getGenerator().getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, source.randomState());
+            return resolver.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z));
+        };
     }
 }

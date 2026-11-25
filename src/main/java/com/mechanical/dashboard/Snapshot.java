@@ -234,7 +234,7 @@ public final class Snapshot {
                 pits.add(g.pos());
                 fires.add(fire(g.pos().getX(), g.pos().getZ(), c.isBigPit(server) ? "big_fire_pit" : "fire_pit", c.id()));
             });
-            if (c.territory().isEmpty()) continue;
+            if (c.territory().isEmpty() || c.pit().filter(g -> !g.dimension().equals(overworld.dimension())).isPresent()) continue;
             JsonObject t = new JsonObject();
             t.addProperty("id", c.id().toString());
             t.addProperty("name", c.name());
