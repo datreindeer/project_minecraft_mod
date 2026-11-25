@@ -41,29 +41,34 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 /**
  * The dashboard's map: overworld chunks are drawn as players load them, into 512x512 region PNGs (1 px per block) under
- * {@code <world>/mechanical_map}. Loaded and saved chunks (and all loaded ones when the map starts) wait in a de-duplicated queue and at most {@link #PER_TICK} are read per tick
- * on the server thread (256 columns each); merging into the region images and writing PNGs happens on one worker thread,
- * so fast travel never costs TPS. Runs only while the {@link Dashboard} does.
+ * {@code <world>/mechanical_map}. Loaded and saved chunks (and all loaded ones when the map starts) wait in a de-duplicated
+ * queue and at most {@link #PER_TICK} are read per tick on the server thread (256 columns each); merging into the region
+ * images and writing PNGs happens on one worker thread, so fast travel never costs TPS. Runs only while the {@link Dashboard} does.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class MapTiles {
     private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
     /** Chunks read per server tick, at most. */
     static final int PER_TICK = 8;
-    private static final int OPEN_REGIONS = 16;
+    static final int OPEN_REGIONS = 16;
+    /** Regions kept open past {@link #OPEN_REGIONS} because their write failed; beyond this the oldest is dropped (about 1 MB each). */
+    static final int KEPT_FAILED = 4;
     private static final long WRITE_EVERY_MS = 5000;
     /** Loaded chunks not yet read, packed ChunkPos; a set so a chunk queued twice is read once. */
     static final Set<Long> PENDING = new LinkedHashSet<>();
 
     private static volatile ScheduledExecutorService worker;
-    private static volatile Path folder;
-    /** Worker-thread only: open region images, least recently used first. */
-    private static final LinkedHashMap<Long, Region> OPEN = new LinkedHashMap<>(OPEN_REGIONS, 0.75f, true);
+    static volatile Path folder;
+    /** Test hook: every PNG write fails, as on a full disk. */
+    static volatile boolean failWrites;
+    /** Worker-thread only (or the game test while the map is off): open region images, least recently used first. */
+    static final LinkedHashMap<Long, Region> OPEN = new LinkedHashMap<>(OPEN_REGIONS, 0.75f, true);
 
     private static final class Region {
         final BufferedImage image;
         boolean dirty;
         long written;
+        int failures;
 
         Region(BufferedImage image) {
             this.image = image;
@@ -231,13 +236,14 @@ public final class MapTiles {
 
     private static void merge(int cx, int cz, int[] colours) {
         try {
-            mergeUnsafe(cx, cz, colours);
+            draw(cx, cz, colours);
         } catch (RuntimeException e) {
             LOGGER.warn("Mechanical map: could not draw chunk {} {}", cx, cz, e);
         }
     }
 
-    private static void mergeUnsafe(int cx, int cz, int[] colours) {
+    /** Draws one chunk into its region, opening it (and closing the least recently used one) as needed. */
+    static void draw(int cx, int cz, int[] colours) {
         long key = ChunkPos.pack(cx >> 5, cz >> 5);
         Region r = OPEN.get(key);
         if (r == null) {
@@ -245,7 +251,12 @@ public final class MapTiles {
             OPEN.put(key, r);
             if (OPEN.size() > OPEN_REGIONS) {
                 Map.Entry<Long, Region> eldest = OPEN.entrySet().iterator().next();
-                if (!eldest.getValue().dirty || write(eldest.getKey(), eldest.getValue())) OPEN.remove(eldest.getKey()); // a failed write stays open to retry
+                long k = eldest.getKey();
+                if (!eldest.getValue().dirty || write(k, eldest.getValue())) OPEN.remove(k);
+                else if (OPEN.size() > OPEN_REGIONS + KEPT_FAILED) { // a failed write stays open to retry, but only a few
+                    OPEN.remove(k);
+                    LOGGER.warn("Mechanical map: region {} {} could not be written, its unsaved edits are lost", ChunkPos.getX(k), ChunkPos.getZ(k));
+                }
             }
         }
         r.image.setRGB((cx & 31) * 16, (cz & 31) * 16, 16, 16, colours, 0, 16);
@@ -286,15 +297,18 @@ public final class MapTiles {
     private static boolean write(long key, Region r) {
         Path file = file(ChunkPos.getX(key), ChunkPos.getZ(key));
         try {
+            if (failWrites) throw new IOException("test: writes fail");
             Files.createDirectories(file.getParent());
             Path tmp = file.resolveSibling(file.getFileName() + ".tmp");
             ImageIO.write(r.image, "png", tmp.toFile());
             Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
             r.dirty = false;
+            r.failures = 0;
             r.written = System.currentTimeMillis();
             return true;
         } catch (IOException e) {
-            LOGGER.warn("Mechanical map: could not write {} ({}), trying again later", file, e.getMessage());
+            r.written = System.currentTimeMillis(); // next try in 5 s, not every second
+            if (r.failures++ == 0) LOGGER.warn("Mechanical map: could not write {} ({}), trying again later", file, e.getMessage()); // once per failure streak
             return false;
         }
     }

@@ -4,6 +4,7 @@ import static com.mechanical.Mechanical.MODID;
 
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.nio.file.Files;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -99,6 +100,7 @@ public final class DashboardTest {
         BlockPos here = h.absolutePos(BlockPos.ZERO);
         check(h, loaded.contains(ChunkPos.pack(here.getX() >> 4, here.getZ() >> 4)), "the map's start queues chunks that are already loaded");
         mapColours(h);
+        failingWritesStayBounded(h);
         h.succeed();
     }
 
@@ -113,6 +115,28 @@ public final class DashboardTest {
         check(h, colourAt(h, grass) == Blocks.GRASS_BLOCK.defaultBlockState().getMapColor(h.getLevel(), grass).calculateARGBColor(MapColor.Brightness.NORMAL), "flat grass is the grass map colour");
         check(h, colourAt(h, deep) == MapColor.WATER.calculateARGBColor(MapColor.Brightness.NORMAL), "water 3 deep is the normal water colour");
         check(h, colourAt(h, shallow) == MapColor.WATER.calculateARGBColor(MapColor.Brightness.HIGH), "water 1 deep is the bright water colour");
+    }
+
+    /** With every PNG write failing (full disk), exploring many regions keeps at most OPEN_REGIONS + KEPT_FAILED open. The map is off in game tests, so the worker never touches these. */
+    private static void failingWritesStayBounded(GameTestHelper h) {
+        try {
+            MapTiles.folder = Files.createTempDirectory("mechanical_map_test");
+            MapTiles.failWrites = true;
+            for (int i = 0; i < 40; i++) MapTiles.draw(i * 32, 0, new int[256]);
+            check(h, MapTiles.OPEN.size() <= MapTiles.OPEN_REGIONS + MapTiles.KEPT_FAILED, "failed writes keep at most " + (MapTiles.OPEN_REGIONS + MapTiles.KEPT_FAILED)
+                    + " regions open, not " + MapTiles.OPEN.size());
+        } catch (java.io.IOException e) {
+            throw h.assertionException("dashboard: " + e);
+        } finally {
+            MapTiles.OPEN.clear();
+            MapTiles.failWrites = false;
+            try {
+                if (MapTiles.folder != null) Files.deleteIfExists(MapTiles.folder);
+            } catch (java.io.IOException ignored) {
+                // temp dir, empty since every write failed
+            }
+            MapTiles.folder = null;
+        }
     }
 
     private static int colourAt(GameTestHelper h, BlockPos pos) {
