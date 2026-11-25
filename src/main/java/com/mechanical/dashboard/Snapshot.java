@@ -1,6 +1,9 @@
 package com.mechanical.dashboard;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -8,15 +11,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.mechanical.Calendar;
+import com.mechanical.CampAge;
+import com.mechanical.FirePit;
 import com.mechanical.Mechanical;
 import com.mechanical.WorldAge;
 import com.mechanical.clan.Clans;
 import com.mechanical.people.Tribe;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.ChunkPos;
 import net.neoforged.fml.ModList;
 
 /** The dashboard's JSON, built on the server thread (Dashboard rebuilds it every second) so the HTTP threads only hand out finished strings. */
@@ -34,7 +41,7 @@ public final class Snapshot {
     }
 
     public static Json build(MinecraftServer server) {
-        return new Json(status(server), players(server), tribes(server), "{}");
+        return new Json(status(server), players(server), tribes(server), map(server));
     }
 
     public static String status(MinecraftServer server) {
@@ -156,5 +163,104 @@ public final class Snapshot {
             out.add(o);
         }
         return out.toString();
+    }
+
+    /** A tribe's rings with the territory they were made from (size + hash), so they are only rebuilt when the land changes. */
+    private record Cached(int size, int hash, List<int[]> rings) {}
+
+    private static final Map<UUID, Cached> OUTLINES = new HashMap<>();
+
+    private static List<int[]> rings(Clans.Clan c) {
+        Set<Long> t = c.territory();
+        Cached k = OUTLINES.get(c.id());
+        if (k == null || k.size != t.size() || k.hash != t.hashCode()) OUTLINES.put(c.id(), k = new Cached(t.size(), t.hashCode(), Outline.of(t)));
+        return k.rings;
+    }
+
+    /** Centre (block coordinates) of the territory chunk nearest the territory's centroid, so the label always sits on the tribe's land. */
+    static int[] label(Set<Long> chunks) {
+        double cx = 0, cz = 0;
+        for (long c : chunks) {
+            cx += ChunkPos.getX(c);
+            cz += ChunkPos.getZ(c);
+        }
+        cx /= Math.max(chunks.size(), 1);
+        cz /= Math.max(chunks.size(), 1);
+        long best = 0;
+        double bd = Double.MAX_VALUE;
+        for (long c : chunks) {
+            double d = Math.pow(ChunkPos.getX(c) - cx, 2) + Math.pow(ChunkPos.getZ(c) - cz, 2);
+            if (d < bd) {
+                bd = d;
+                best = c;
+            }
+        }
+        return new int[] {ChunkPos.getX(best) * 16 + 8, ChunkPos.getZ(best) * 16 + 8};
+    }
+
+    private static JsonObject fire(int x, int z, String kind, UUID tribe) {
+        JsonObject f = new JsonObject();
+        f.addProperty("x", x);
+        f.addProperty("z", z);
+        f.addProperty("kind", kind);
+        if (tribe == null) f.add("tribe", JsonNull.INSTANCE);
+        else f.addProperty("tribe", tribe.toString());
+        return f;
+    }
+
+    /** /api/map: overworld players, fires (tribe pits and the mod's tracked camps, no world scan) and tribe outlines. */
+    public static String map(MinecraftServer server) {
+        Clans clans = Clans.get(server);
+        ServerLevel overworld = server.overworld();
+        JsonObject o = new JsonObject();
+        JsonArray players = new JsonArray();
+        for (ServerPlayer p : overworld.players()) {
+            JsonObject j = new JsonObject();
+            j.addProperty("name", p.getGameProfile().name());
+            j.addProperty("x", Math.round(p.getX() * 10) / 10.0);
+            j.addProperty("z", Math.round(p.getZ() * 10) / 10.0);
+            j.addProperty("yaw", Math.round(p.getYRot()));
+            Clans.Clan c = clans.clanOf(p.getUUID());
+            if (c == null) j.add("tribe", JsonNull.INSTANCE);
+            else j.addProperty("tribe", c.id().toString());
+            players.add(j);
+        }
+        o.add("players", players);
+        JsonArray fires = new JsonArray(), tribes = new JsonArray();
+        List<BlockPos> pits = new java.util.ArrayList<>();
+        OUTLINES.keySet().removeIf(id -> clans.all().stream().noneMatch(c -> c.id().equals(id)));
+        for (Clans.Clan c : clans.all()) {
+            c.pit().filter(g -> g.dimension().equals(overworld.dimension())).ifPresent(g -> {
+                pits.add(g.pos());
+                fires.add(fire(g.pos().getX(), g.pos().getZ(), c.isBigPit(server) ? "big_fire_pit" : "fire_pit", c.id()));
+            });
+            if (c.territory().isEmpty()) continue;
+            JsonObject t = new JsonObject();
+            t.addProperty("id", c.id().toString());
+            t.addProperty("name", c.name());
+            t.addProperty("colour", String.format("#%06x", DyeColor.byId(c.colour()).getTextureDiffuseColor() & 0xFFFFFF));
+            JsonArray rings = new JsonArray();
+            for (int[] r : rings(c)) {
+                JsonArray a = new JsonArray();
+                for (int v : r) a.add(v);
+                rings.add(a);
+            }
+            t.add("rings", rings);
+            int[] l = label(c.territory());
+            JsonObject lo = new JsonObject();
+            lo.addProperty("x", l[0]);
+            lo.addProperty("z", l[1]);
+            t.add("label", lo);
+            tribes.add(t);
+        }
+        for (CampAge.Camp camp : CampAge.get(overworld).camps()) {
+            BlockPos at = camp.centre;
+            if (pits.stream().anyMatch(p -> Math.abs(p.getX() - at.getX()) <= 2 && Math.abs(p.getY() - at.getY()) <= 2 && Math.abs(p.getZ() - at.getZ()) <= 2)) continue;
+            boolean pit = overworld.isLoaded(at) && FirePit.isPit(overworld.getBlockState(at));
+            fires.add(fire(at.getX(), at.getZ(), pit ? "fire_pit" : "campfire", null));
+        }
+        o.add("fires", fires);
+        o.add("tribes", tribes);
+        return o.toString();
     }
 }

@@ -74,6 +74,13 @@ public final class DashboardTest {
             JsonObject t = tribes.get(tribes.size() - 1).getAsJsonObject();
             check(h, t.get("chunks").getAsInt() == 25, "a tribe holds 5x5 chunks");
             check(h, t.get("colour").getAsString().matches("^#[0-9a-f]{6}$"), "colour is #rrggbb");
+            JsonObject m = JsonParser.parseString(Snapshot.map(server)).getAsJsonObject();
+            JsonArray mt = m.getAsJsonArray("tribes");
+            JsonObject mine = mt.get(mt.size() - 1).getAsJsonObject();
+            check(h, mine.getAsJsonArray("rings").size() == 1 && mine.getAsJsonArray("rings").get(0).getAsJsonArray().size() == 8, "a 5x5 tribe is one ring of 4 corners");
+            int lx = mine.getAsJsonObject("label").get("x").getAsInt() >> 4, lz = mine.getAsJsonObject("label").get("z").getAsInt() >> 4;
+            check(h, Clans.get(server).all().stream().anyMatch(c -> c.territory().contains(ChunkPos.pack(lx, lz))), "the label is inside a tribe's land");
+            check(h, m.getAsJsonArray("fires").size() >= 1 && m.has("players"), "the map lists the tribe's pit");
         } finally {
             remove.run();
         }
@@ -99,9 +106,27 @@ public final class DashboardTest {
         MapTiles.queueLoaded(h.getLevel(), loaded);
         BlockPos here = h.absolutePos(BlockPos.ZERO);
         check(h, loaded.contains(ChunkPos.pack(here.getX() >> 4, here.getZ() >> 4)), "the map's start queues chunks that are already loaded");
+        outlines(h);
         mapColours(h);
         failingWritesStayBounded(h);
         h.succeed();
+    }
+
+    private static Set<Long> chunks(int... xz) {
+        Set<Long> s = new java.util.HashSet<>();
+        for (int i = 0; i < xz.length; i += 2) s.add(ChunkPos.pack(xz[i], xz[i + 1]));
+        return s;
+    }
+
+    /** One chunk is a square; a ring of 8 has a hole; an L has 6 corners; chunks touching only at a corner stay two rings. */
+    private static void outlines(GameTestHelper h) {
+        List<int[]> sq = Outline.of(chunks(0, 0));
+        check(h, sq.size() == 1 && sq.get(0).length == 8, "one chunk is one ring of 4 corners");
+        check(h, Outline.of(chunks(0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 2, 1, 2, 2, 2)).size() == 2, "a 3x3 with the middle missing has an outer ring and a hole");
+        List<int[]> l = Outline.of(chunks(0, 0, 0, 1, 1, 1));
+        check(h, l.size() == 1 && l.get(0).length == 12, "an L has 6 corners");
+        List<int[]> diag = Outline.of(chunks(0, 0, 1, 1));
+        check(h, diag.size() == 2 && diag.stream().allMatch(r -> r.length == 8), "chunks touching at a corner are two rings");
     }
 
     /** A flat grass patch draws grass at normal brightness; water 3 deep draws darker than water 1 deep. */
