@@ -941,7 +941,7 @@ def person(role, i):
         L.wrinkles = True
         L.top, L.top_kind, L.sleeves = [FUR_BROWN, HIDE_RED, HIDE_DARK, FUR_BROWN][i], "robe", 12
         L.skirt_to = 21
-        L.fur, L.fur_kind = pick(r, [FUR_WHITE, FUR_GREY]), "cape"
+        pick(r, [FUR_WHITE, FUR_GREY])  # (keeps the random sequence, so the rest of the skin stays as it was)
         L.necklace = pick(r, ["amber", "teeth"])
         L.legs, L.boots = None, FUR_WHITE
         L.belt = CORD
@@ -1050,7 +1050,6 @@ def dress(L, zone, i):
     L.top_mat = "hide"
     if role == "elder":
         L.top, L.top_kind = (HIDE_LIGHT, "wrap") if woman else (None, "vest")
-        L.fur, L.fur_kind = FEATHERS[1], "cape"  # a cloak of parrot feathers
         L.skirt, L.skirt_mat, L.skirt_to = DYE, "hide", 20
         L.trim = None
     elif woman:
@@ -1281,6 +1280,10 @@ def kind_person(kind, role, i):
             L.top_mat = "hide"
     if guard:
         L.band = None  # the armour covers the coat
+    if leader:  # his cape (scripts/gen_capes.py) has the shoulders and the back to itself
+        L.mantle = L.cloak = None
+        if L.pack:
+            L.pack, L.hips = None, ("satchel", "bundle")
     return L
 
 
@@ -1485,13 +1488,12 @@ def gear(L, zone, seed):
     elif L.feather:
         g.fill("feather", lambda face, x, y, fw, fh: hexc("3a3030") if y == 0 else (hexc("f0ece2") if y < fh - 1 else BONE))
     # ---- a fur mantle round the shoulders: everyone in the cold, the elders everywhere but the hot lands
+    caped = L.role in CAPED  # these wear a real cape (client/people/TribeCapeLayer): no flat mantle or cloak under it
     mantle = L.mantle
     if mantle is not None:
         pass
-    elif cold:
+    elif cold and not caped:
         mantle = L.fur if L.fur and L.fur not in FEATHERS else pick(g.r, [FUR_WHITE, FUR_GREY, FUR_BROWN, FUR_RED])
-    elif L.role == "elder" and not warm and not jungle:
-        mantle = L.fur or FUR_GREY
     elif L.role == "woodcutter" and zone == "temperate":
         mantle = FUR_BROWN if L.top != FUR_BROWN else FUR_GREY
     if mantle is not None:
@@ -1508,8 +1510,6 @@ def gear(L, zone, seed):
         pass
     elif L.role in ("hunter", "guard") and zone == "temperate":
         cloak = pick(g.r, [HIDE_DARK, HIDE_GREY, LEATHER, HIDE_RED])
-    elif warm and L.role == "elder":
-        cloak = LINEN
     if cloak is not None and mantle is None and not L.quiver:
         edge = FUR_GREY if not warm else shade(LINEN, 0.85)
 
@@ -1679,6 +1679,9 @@ def caravan_gear(g, L):
                     return CORD
                 return shade(hexc("8a8a4a") if (x + y) % 2 else hexc("6a6a3a"), side_shade(face))  # dried stalks
             g.fill(box, bundle)
+
+
+CAPED = ("elder", "trader", "oak_keeper")
 
 
 WOOD_HAFT = hexc("7a5434")

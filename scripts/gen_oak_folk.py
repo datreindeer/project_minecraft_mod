@@ -68,7 +68,6 @@ def oak_person(role, i):
         L.top, L.top_kind, L.top_mat, L.sleeves, L.skirt_to = LEAF_DK, "robe", "weave", 12, 21
         L.fine = True
         L.band, L.trim, L.belt = GOLD, GOLD, T.LEATHER
-        L.fur, L.fur_kind = T.FUR_WHITE, "cape"
         L.necklace = "amber"
         L.paint = (FERN, "dots")
         L.legs, L.boots = None, BARK
