@@ -169,6 +169,9 @@ public final class ClanTest {
         check(h, Lands.landAt(lands, level, me, pitC.add(48, 0, 0)) == null, "3 chunks out is the wild");
         check(h, Lands.landAt(lands, level, me, pitC.add(0, 0, -48)) == null, "and the same the other way");
 
+        // a Hermit's Hut: the placed hut names the land round it, also for a hermit from before huts were marked
+        com.mechanical.worldgen.HermitsHutTest.check(h, new Clans(List.of()));
+
         // the server list: the cached status JSON carries our field (MinecraftServerStatusMixin) and the client's codec reads it back
         String statusJson = server.getStatusJson();
         check(h, statusJson != null && statusJson.contains("\"" + ServerListInfo.KEY + "\""), "status JSON has the server list field");

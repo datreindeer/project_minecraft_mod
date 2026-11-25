@@ -182,9 +182,23 @@ public final class DashboardTest {
         h.setBlock(12, 2, 4, Blocks.STONE);
         h.setBlock(12, 3, 4, Blocks.WATER);
         BlockPos grass = h.absolutePos(new BlockPos(4, 1, 4)), deep = h.absolutePos(new BlockPos(10, 3, 4)), shallow = h.absolutePos(new BlockPos(12, 3, 4));
-        check(h, colourAt(h, grass) == Blocks.GRASS_BLOCK.defaultBlockState().getMapColor(h.getLevel(), grass).calculateARGBColor(MapColor.Brightness.NORMAL), "flat grass is the grass map colour");
-        check(h, colourAt(h, deep) == MapColor.WATER.calculateARGBColor(MapColor.Brightness.NORMAL), "water 3 deep is the normal water colour");
-        check(h, colourAt(h, shallow) == MapColor.WATER.calculateARGBColor(MapColor.Brightness.HIGH), "water 1 deep is the bright water colour");
+        check(h, colourAt(h, grass) == shade(MapTiles.Tint.GRASS, h, grass, MapColor.Brightness.NORMAL), "flat grass is its biome's grass colour");
+        check(h, colourAt(h, deep) == shade(MapTiles.Tint.WATER, h, deep, MapColor.Brightness.NORMAL), "water 3 deep is the normal water colour");
+        check(h, colourAt(h, shallow) == shade(MapTiles.Tint.WATER, h, shallow, MapColor.Brightness.HIGH), "water 1 deep is the bright water colour");
+        // the game's own colours per biome, from the bundled colormaps (a server has none of the game's)
+        var biomes = h.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+        var plains = biomes.getValueOrThrow(net.minecraft.world.level.biome.Biomes.PLAINS);
+        var savanna = biomes.getValueOrThrow(net.minecraft.world.level.biome.Biomes.SAVANNA);
+        var swamp = biomes.getValueOrThrow(net.minecraft.world.level.biome.Biomes.SWAMP);
+        int p = MapTiles.Tint.GRASS.colour(plains, 0, 0) & 0xFFFFFF, s = MapTiles.Tint.GRASS.colour(savanna, 0, 0) & 0xFFFFFF;
+        check(h, p == 0x91BD59 && s == 0xBFB755, "plains and savanna grass as in game: " + Integer.toHexString(p) + " " + Integer.toHexString(s));
+        check(h, MapTiles.Tint.FOLIAGE.colour(plains, 0, 0) != MapTiles.Tint.FOLIAGE.colour(savanna, 0, 0), "leaves differ between biomes");
+        check(h, MapTiles.Tint.WATER.colour(plains, 0, 0) != MapTiles.Tint.WATER.colour(swamp, 0, 0), "water differs between biomes");
+    }
+
+    private static int shade(MapTiles.Tint tint, GameTestHelper h, BlockPos pos, MapColor.Brightness b) {
+        int rgb = tint.colour(h.getLevel().getBiome(pos).value(), pos.getX(), pos.getZ());
+        return net.minecraft.util.ARGB.scaleRGB(net.minecraft.util.ARGB.opaque(rgb), b.modifier);
     }
 
     /** With every PNG write failing (full disk), exploring many regions keeps at most OPEN_REGIONS + KEPT_FAILED open. The map is off in game tests, so the worker never touches these. */

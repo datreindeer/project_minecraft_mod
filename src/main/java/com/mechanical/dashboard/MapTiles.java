@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import com.mechanical.EarthBlocks;
 import com.mechanical.Mechanical;
 import com.mojang.logging.LogUtils;
 
@@ -26,8 +27,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.ColorMapColorUtil;
+import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -219,10 +226,69 @@ public final class MapTiles {
             } else {
                 b = y > heights[x] ? MapColor.Brightness.HIGH : y < heights[x] ? MapColor.Brightness.LOW : MapColor.Brightness.NORMAL;
             }
-            out[z * 16 + x] = state.getMapColor(level, p).calculateARGBColor(b);
+            out[z * 16 + x] = colour(level, state, p, b);
             heights[x] = y;
         }
         return out;
+    }
+
+    /** One pixel: grass, foliage and water in their biome's colour, everything else in its map colour. */
+    private static int colour(Level level, BlockState state, BlockPos p, MapColor.Brightness b) {
+        Tint tint = Tint.of(state);
+        if (tint == null) return state.getMapColor(level, p).calculateARGBColor(b);
+        Biome biome = level.getBiome(p).value(); // never loads a chunk: missing neighbours come from the biome source
+        return ARGB.scaleRGB(ARGB.opaque(tint.colour(biome, p.getX(), p.getZ())), b.modifier);
+    }
+
+    /**
+     * The blocks the game tints by biome (not Worn Grass and Trodden Path: roads must stand out from the grass round them).
+     * No season tint: tiles are drawn whenever their chunk loads, so months would end up patched side by side.
+     */
+    enum Tint {
+        GRASS, FOLIAGE, DRY_FOLIAGE, BIRCH, SPRUCE, WATER;
+
+        // dedicated servers never load the game's colormaps (GrassColor.get is black there), so the mod carries copies
+        private static final int[] GRASS_MAP = colormap("grass"), FOLIAGE_MAP = colormap("foliage"), DRY_MAP = colormap("dry_foliage");
+
+        static Tint of(BlockState s) {
+            if (s.is(Blocks.WATER) || s.is(Blocks.BUBBLE_COLUMN)) return WATER;
+            if (s.is(Blocks.GRASS_BLOCK) || s.is(Blocks.SHORT_GRASS) || s.is(Blocks.TALL_GRASS) || s.is(Blocks.FERN) || s.is(Blocks.LARGE_FERN)
+                    || s.is(Blocks.BUSH) || s.is(Blocks.SUGAR_CANE) || s.is(EarthBlocks.TURF.get()) || s.is(EarthBlocks.TURF_SLAB.get())
+                    || s.is(EarthBlocks.TURF_STAIRS.get()) || s.is(EarthBlocks.GRASS_SLAB.get()) || s.is(EarthBlocks.GRASS_STAIRS.get())) return GRASS;
+            if (s.is(Blocks.OAK_LEAVES) || s.is(Blocks.JUNGLE_LEAVES) || s.is(Blocks.ACACIA_LEAVES) || s.is(Blocks.DARK_OAK_LEAVES)
+                    || s.is(Blocks.MANGROVE_LEAVES) || s.is(Blocks.VINE)) return FOLIAGE;
+            if (s.is(Blocks.LEAF_LITTER)) return DRY_FOLIAGE;
+            if (s.is(Blocks.BIRCH_LEAVES)) return BIRCH;
+            return s.is(Blocks.SPRUCE_LEAVES) ? SPRUCE : null;
+        }
+
+        /** The map's RGB at full brightness. Leaves are darkened so woods stand out from the grass, as their textures do in game. */
+        int colour(Biome biome, int x, int z) {
+            var effects = biome.getSpecialEffects();
+            var climate = biome.getModifiedClimateSettings();
+            double temp = Mth.clamp(climate.temperature(), 0.0F, 1.0F), rain = Mth.clamp(climate.downfall(), 0.0F, 1.0F);
+            return switch (this) {
+                case GRASS -> effects.grassColorModifier().modifyColor(x, z,
+                        effects.grassColorOverride().orElseGet(() -> ColorMapColorUtil.get(temp, rain, GRASS_MAP, 0)));
+                case FOLIAGE -> leaves(effects.foliageColorOverride().orElseGet(() -> ColorMapColorUtil.get(temp, rain, FOLIAGE_MAP, FoliageColor.FOLIAGE_DEFAULT)));
+                case DRY_FOLIAGE -> leaves(effects.dryFoliageColorOverride().orElseGet(() -> ColorMapColorUtil.get(temp, rain, DRY_MAP, 0xFF5A4A2A)));
+                case BIRCH -> leaves(FoliageColor.FOLIAGE_BIRCH);
+                case SPRUCE -> leaves(FoliageColor.FOLIAGE_EVERGREEN);
+                case WATER -> biome.getWaterColor();
+            };
+        }
+
+        private static int leaves(int rgb) {
+            return ARGB.scaleRGB(rgb, 190);
+        }
+
+        private static int[] colormap(String name) {
+            try (var in = MapTiles.class.getResourceAsStream("/assets/mechanical/dashboard/colormap/" + name + ".png")) {
+                return ImageIO.read(java.util.Objects.requireNonNull(in, name)).getRGB(0, 0, 256, 256, null, 0, 256);
+            } catch (IOException e) {
+                throw new java.io.UncheckedIOException(e);
+            }
+        }
     }
 
     /** Height of the top block with a map colour in a column (local x/z), leaving {@code p} on it. */

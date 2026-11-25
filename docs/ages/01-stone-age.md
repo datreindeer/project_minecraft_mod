@@ -645,6 +645,13 @@ Ancient Oak-block ...), även de som inte går att få i survival.
   byarnas hus).
 - **Smyg** för att hugga en enda log (ger 2 Firewood). Hus av logs fälls aldrig (placerade löv räknas inte som naturliga).
 
+### Akaciaträd (paraplyakacia)
+Vanillas Acacia har ny form, i nyskapad terräng och från Acacia Sapling (träd som redan står är orörda). Tre sorter:
+**ungt** träd med en tunn krokig stam och en liten krona, **grenat** träd med kort stam som delar sig i 2–3 grenar som
+klättrar utåt till tunna platta kronor på olika höjd (vanligast), och **gammalt** lutande träd med en bred krona och en
+lägre gren åt andra hållet. Fällning, ved och saplings fungerar som förut. Kod: `TreeShapes` (umbrella-placers),
+`scripts/gen_trees.py`.
+
 ### Fällda träd (Felled Log) och att dra hem stockar
 Ett fällt träd (av spelare, woodcutters, bävrar eller Giant Deer) landar som stockar där block bara sitter ihop **ände mot
 ände** längs fibrerna: stammen blir en stock, varje gren tvärs fallriktningen en egen, en gren längs fallriktningen svänger
@@ -1775,8 +1782,16 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Fishing Camp | Floder, stränder | 24 (letar upp en strandkant i chunken) | Torkställningar, brygga; krokar, fisk, sällan Crude Fishing Rod |
 | Flint Quarry | Slätt, flod, stony shore | 120 | Grus- och stengrop med Loose Flint; stenhuvuden, sällan Flint Knife |
 | Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
-| Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
+| Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker. Har namn efter eremiten, se *Namn på byar och hyddor* |
 | Elkwight Ruin | Scorched Barrens (bortom 2500 block) | mycket sällsynt | Stor raserad arena av Blackstone med **Rune Blackstone**, pelare, läktare, själveldar och tre kistor (lite guld och brons). Tät mörk dimma inne i ruinen så länge Elkwighten lever. Se *Scorched Barrens och Elkwight-ruinen* längre ned |
+
+### Namn på byar och hyddor ("now entering")
+- **Vanliga byar** (vanilla): går man in (inom 8 block från ett hus eller en gata) visas "You are now entering Oakford"
+  med "Village" under. Namnet är samma som på webbkartan och ändras aldrig. Framsteg: **Strangers in the Square**.
+- **Hermit's Hut:** inom 12 block från hyddan visas "You are now entering Wren's Hut" (eremitens namn) med "A hermit
+  lives here" under. Gäller så länge eremiten lever och är i närheten; hyddor i gamla världar känns igen på formen.
+  Framsteg: **Far From Anyone**.
+- Spelarstammars mark, stambyar och läger går före (se docs/seasons-and-tribes.md, Zontitel).
 
 ### Småsaker i landskapet (dekorationer)
 Små, vanliga saker som gör världen roligare att vandra i, byggs i nya chunks och läggs in i gamla orörda chunks (retrogen, nedan) (`scripts/gen_decorations.py`).
