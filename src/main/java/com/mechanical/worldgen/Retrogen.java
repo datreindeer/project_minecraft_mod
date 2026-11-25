@@ -125,6 +125,7 @@ public final class Retrogen {
 
     public static void init() {
         GemRegen.init();
+        Regen.init();
     }
 
     enum Result { CURRENT, NOT_READY, SKIPPED, UPDATED }
@@ -176,6 +177,7 @@ public final class Retrogen {
             mark(chunk, sets(level).current()); // generated now: already has every current feature
             GemRegen.markHasGems(chunk);
             GemRegen.markHasStones(chunk);
+            Regen.markNew(level, chunk);
             return;
         }
         // this chunk, and neighbours that were only waiting for it to load
@@ -222,6 +224,7 @@ public final class Retrogen {
         placedFeatures += place(level, chunk, around, FEATURES.stream().filter(f -> !have.contains(f)).toList());
         mark(chunk, current);
         GemRegen.markHasGems(chunk); // /regengems must not add them again
+        Regen.markRetrogenned(chunk); // nor /regen the flora
         for (LevelChunk c : around) c.markUnsaved(); // ores write sections directly, so make sure every touched chunk saves
         updated++;
         return Result.UPDATED;

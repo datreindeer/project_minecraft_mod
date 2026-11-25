@@ -92,7 +92,7 @@ public final class EquipmentTest {
         // the slots: after the vanilla ones, the main inventory moved down for the row under the player model
         h.assertTrue(menu.slots.size() == Equipment.MENU_START + Accessory.COUNT, "inventory menu has the accessory slots (" + menu.slots.size() + ")");
         Slot cloakSlot = menu.slots.get(Equipment.MENU_START + Accessory.CLOAK.ordinal());
-        h.assertTrue(cloakSlot instanceof AccessorySlot a && a.accessory == Accessory.CLOAK && cloakSlot.x == 77 && cloakSlot.y == 8, "cloak slot in place");
+        h.assertTrue(cloakSlot instanceof AccessorySlot a && a.accessory == Accessory.CLOAK && cloakSlot.x == 80 && cloakSlot.y == 8, "cloak slot in place");
         h.assertTrue(menu.slots.get(InventoryMenu.INV_SLOT_START).y == 84 + Equipment.SCREEN_EXTRA_HEIGHT, "main inventory moved down");
         ItemStack cape = new ItemStack(RiverFauna.OTTER_FUR_CAPE.get());
         ItemStack satchel = new ItemStack(Mechanical.LEATHER_SATCHEL.get());

@@ -39,6 +39,15 @@ public abstract class InventoryMenuMixin extends AbstractCraftingMenu {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void mechanical$accessorySlots(Inventory inventory, boolean active, Player owner, CallbackInfo ci) {
         for (Accessory accessory : Accessory.values()) addSlot(new AccessorySlot(owner, accessory, accessory.x, accessory.y));
+        // make room for the wider player box (InventoryScreenMixin): off hand in line with the accessory column, crafting aside
+        mechanical$moveX(InventoryMenu.SHIELD_SLOT, 3);
+        for (int i = InventoryMenu.CRAFT_SLOT_START; i < InventoryMenu.CRAFT_SLOT_END; i++) mechanical$moveX(i, 2);
+        mechanical$moveX(InventoryMenu.RESULT_SLOT, 1);
+    }
+
+    private void mechanical$moveX(int index, int by) {
+        Slot slot = slots.get(index);
+        ((SlotAccessor) slot).mechanical$setX(slot.x + by);
     }
 
     @Inject(method = "quickMoveStack", at = @At("HEAD"), cancellable = true)

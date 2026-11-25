@@ -16,6 +16,7 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -310,6 +311,16 @@ public final class RetrogenTest {
         lived.removeData(Retrogen.MARKER);
         lived.setInhabitedTime(Retrogen.MAX_INHABITED * 10);
         h.assertTrue(Retrogen.process(level, FAR, FAR + 9) == Retrogen.Result.SKIPPED, "a chunk players lived in is skipped");
+
+        // /regen: fresh chunks have everything; an old one gets it once, even lived in; a chunk by a build is left unmarked
+        h.assertTrue(fresh.getData(Regen.DONE).containsAll(Regen.features(level)), "a fresh chunk has the /regen features");
+        h.assertTrue(Regen.features(level).contains("pear_meadow"), "orchard trees are /regen features");
+        lived.removeData(Regen.DONE);
+        h.assertTrue(Regen.regen(level, new ChunkPos(FAR, FAR + 9), 0)[0] == 1, "/regen fills an old chunk players lived in");
+        h.assertTrue(Regen.regen(level, new ChunkPos(FAR, FAR + 9), 0)[1] == 1, "a second /regen adds nothing");
+        byChest.removeData(Regen.DONE);
+        h.assertTrue(Regen.regen(level, new ChunkPos(FAR, FAR + 6), 0)[2] == 1, "/regen leaves a chunk by a chest alone");
+        h.assertTrue(byChest.getData(Regen.DONE).isEmpty(), "and doesn't mark it");
         h.succeed();
     }
 

@@ -53,6 +53,7 @@
     "AbstractArrowMixin",
     "EnchantmentHelperMixin",
     "InventoryMenuMixin",
+    "SlotAccessor",
     "ItemEntityMixin",
     "ProjectileWeaponItemMixin",
     "ServerGamePacketListenerImplMixin",

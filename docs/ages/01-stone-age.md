@@ -2923,6 +2923,8 @@ Recept (crafting): `_A_ / TRT / P_P`. A = Sandstone, T = Twine, R = Tool Rod, P 
 
 Drops: malm → 1 Rough (Fortune), blocket självt med Silk Touch. Small Crystal → 1, Medium → 1–2, Large → 2–4 (Fortune). Kristallerna lyser svagt (Moonstone ljus 3/5/7). Lösa stenar ger 1–3 efter storlek. Gamla chunkar får stenarna via retrogen. Retrogen hoppar dock över land som spelare vistats på; där lägger en op till dem med **`/regengems <radie 0–16> [ores]`** (chunkar runt dig; `ores` = bara malmådrorna, inte kristaller och stenar i grottor). Varje chunk får dem bara en gång.
 
+**`/regen <radie 0–16>`** (op): lägger in det som kommit senare i chunkar runt dig som skapades innan det fanns: White Currant, Gooseberry, Cranberry, Grape Vine, Wild Maize och fruktträdgårdens 13 träd, plus en Waystone om en ska stå där. Fungerar även på land där spelare har varit, men hoppar över chunkar med byggen intill (de kan få det vid en senare körning). Varje chunk får det bara en gång. **`/regen waystones <block 0–20000>`** bygger alla Waystones inom så många block.
+
 ## Bergarter och byggsten (byggt, fas 1 av världsmaterialplanen)
 
 Sex nya bergarter i berget, var och en med en hel familj byggblock kopierad från en vanilla-familj (samma recept och

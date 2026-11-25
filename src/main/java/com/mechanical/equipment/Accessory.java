@@ -15,9 +15,9 @@ import net.minecraft.world.item.Item;
  * off hand).
  */
 public enum Accessory {
-    CLOAK("cloak", 77, 8, 127, 6),
-    NECK("neck", 77, 26, 145, 6),
-    BACK("back", 77, 44, 163, 6),
+    CLOAK("cloak", 80, 8, 127, 6),
+    NECK("neck", 80, 26, 145, 6),
+    BACK("back", 80, 44, 163, 6),
     RING_1("ring", 8, 84, 127, 24),
     RING_2("ring", 26, 84, 145, 24),
     HIP("hip", 44, 84, 9, 6),
