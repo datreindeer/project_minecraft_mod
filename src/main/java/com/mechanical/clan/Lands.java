@@ -64,9 +64,16 @@ public final class Lands {
         return npc == null ? null : tribe(npc);
     }
 
-    /** Is the centre of chunk {@code c} NPC land (a village's palisade or a camp's fire)? Clans keeps its territory off such chunks. */
+    /**
+     * Is the centre of chunk {@code c} NPC land (a village's palisade or a camp's fire)? Clans keeps its territory off such
+     * chunks. Never loads or generates a chunk (a big pit's fill asks about ~1000): an unloaded chunk counts as not NPC land
+     * (getStructureAt would generate it to structure references), and a loaded one is probed at its surface height, since
+     * villageAt checks 3D bounds.
+     */
     public static boolean npcLandAt(ServerLevel level, ChunkPos c) {
-        return npcTribeAt(level, new Vec3(c.getMinBlockX() + 8, level.getSeaLevel(), c.getMinBlockZ() + 8)) != null;
+        if (!level.hasChunk(c.x(), c.z())) return false;
+        int x = c.getMiddleBlockX(), z = c.getMiddleBlockZ();
+        return npcTribeAt(level, new Vec3(x, level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, x, z), z)) != null;
     }
 
     /** The NPC tribe whose village or camp covers {@code pos}, or null: villages first, then camps. */
