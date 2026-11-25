@@ -625,7 +625,7 @@ public final class Clans extends SavedData {
         if (level != null) {
             Set<Long> others = new HashSet<>();
             for (Clan c : clans) if (c != clan && c.pit.isPresent() && c.pit.get().dimension() == pit.dimension()) others.addAll(c.territory);
-            Predicate<ChunkPos> blocked = c -> others.contains(c.pack()) || npcLand(level, c);
+            Predicate<ChunkPos> blocked = c -> others.contains(c.pack()) || Lands.npcLandAt(level, c);
             ChunkPos centre = ChunkPos.containing(pit.pos());
             for (long c : Territory.square(centre, LOAD_RADIUS)) if (!blocked.test(ChunkPos.unpack(c))) next.add(c);
             Optional<ResourceKey<Biome>> biome = clan.isBigPit(server) ? level.getBiome(pit.pos()).unwrapKey() : Optional.empty();
@@ -652,10 +652,6 @@ public final class Clans extends SavedData {
         int dir = Math.floorMod(Math.round((float) Math.toDegrees(Math.atan2(o.getX() - pit.pos().getX(), pit.pos().getZ() - o.getZ())) / 45), 8);
         player.sendSystemMessage(Component.translatable("message.mechanical.clan.too_close", other.name,
                 Component.translatable("message.mechanical.clan.dir." + new String[] {"n", "ne", "e", "se", "s", "sw", "w", "nw"}[dir])));
-    }
-
-    private static boolean npcLand(ServerLevel level, ChunkPos c) {
-        return false; // Task 3: Lands.npcLandAt
     }
 
     /** The tribe whose territory holds chunk {@code c} of this level, or null (the map, Lands). */

@@ -145,7 +145,7 @@ public final class ClanTest {
         check(h, com.mechanical.WorldAge.npcAge(server, lagging) == 0 && com.mechanical.WorldAge.npcAge(server, keeping) == 1, "NPC tribes 0-1 behind");
         com.mechanical.WorldAge.set(server, before);
 
-        // lands: an NPC camp round its fire, a player tribe's 3x3 chunks round its pit (home for members), nothing far off
+        // lands: an NPC camp round its fire, a player tribe's territory, 5x5 chunks round its pit (home for members), nothing far off
         Clans lands = new Clans(List.of());
         BlockPos fire = h.absolutePos(new BlockPos(8, 1, 8));
         UUID group = UUID.randomUUID(), me = UUID.randomUUID();
@@ -156,15 +156,18 @@ public final class ClanTest {
         Lands.Land land = Lands.landAt(lands, level, me, near);
         check(h, land != null && land.kind() == Lands.TRIBE && group.equals(land.tribe()), "a camp's land round its fire");
         check(h, Lands.landAt(lands, level, me, far) == null, "the wild beyond it");
+        t.discard(); // the camp would hold the pit's own chunk back from the territory
         Clans.Clan mine = new Clans.Clan(UUID.randomUUID(), "Hearth", Optional.of(GlobalPos.of(level.dimension(), fire)),
                 List.of(new Clans.Member(me, "me", Clans.LEADER, 0, 0)), List.of(), Optional.empty(), Optional.of(3));
         lands.clans.add(mine);
-        land = Lands.landAt(lands, level, me, near);
-        check(h, land != null && land.kind() == Lands.HOME && land.colour() == 3, "your own tribe's land is home, before any camp");
-        land = Lands.landAt(lands, level, UUID.randomUUID(), near.add(16, 0, 0));
+        lands.recomputeTerritory(server, mine);
+        net.minecraft.world.phys.Vec3 pitC = net.minecraft.world.phys.Vec3.atCenterOf(fire);
+        land = Lands.landAt(lands, level, me, pitC.add(32, 0, 32));
+        check(h, land != null && land.kind() == Lands.HOME && land.colour() == 3, "your own tribe's land is home, 2 chunks out each way (5x5)");
+        land = Lands.landAt(lands, level, UUID.randomUUID(), pitC.add(16, 0, 16));
         check(h, land != null && land.kind() == Lands.CLAN && land.name().equals("Hearth"), "another player tribe's land, a chunk out");
-        check(h, Lands.landAt(lands, level, me, far) == null, "3x3 chunks only");
-        t.discard();
+        check(h, Lands.landAt(lands, level, me, pitC.add(48, 0, 0)) == null, "3 chunks out is the wild");
+        check(h, Lands.landAt(lands, level, me, pitC.add(0, 0, -48)) == null, "and the same the other way");
 
         // the server list: the cached status JSON carries our field (MinecraftServerStatusMixin) and the client's codec reads it back
         String statusJson = server.getStatusJson();

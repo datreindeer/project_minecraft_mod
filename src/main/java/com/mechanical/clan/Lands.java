@@ -10,7 +10,6 @@ import com.mechanical.people.Tribesperson;
 import com.mechanical.worldgen.TribeVillageStructure;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -18,6 +17,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -26,15 +26,13 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
- * Whose land a player stands on: a player tribe's 3x3 chunks round its Fire Pit (the planned forceload area), a tribe
+ * Whose land a player stands on: a player tribe's territory (Clans.owner: 5x5 chunks round its Fire Pit, more for a big one), a tribe
  * village inside its palisade, or an NPC camp round the fire its people call home. On stepping into one the server
  * sends an {@link Entered} once (client.clan.LandTitle shows "You are now entering X's land").
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Lands {
     public static final int HOME = 0, CLAN = 1, TRIBE = 2;
-    /** Chunks out from the Fire Pit's chunk (1: 3x3). */
-    public static final int PIT_CHUNKS = 1;
     /** A camp without a wall still reaches this far from its fire. */
     public static final int CAMP_LAND = 10;
     static final int CHECK_TICKS = 10;
@@ -60,19 +58,25 @@ public final class Lands {
 
     /** The land at {@code pos} for {@code player}: player tribes first, then villages, then camps; null in the wild. */
     public static Land landAt(Clans data, ServerLevel level, UUID player, Vec3 pos) {
-        int cx = SectionPos.blockToSectionCoord(pos.x), cz = SectionPos.blockToSectionCoord(pos.z);
-        for (Clans.Clan c : data.clans) {
-            if (c.pit.isEmpty() || c.pit.get().dimension() != level.dimension()) continue;
-            BlockPos pit = c.pit.get().pos();
-            if (Math.abs(SectionPos.blockToSectionCoord(pit.getX()) - cx) > PIT_CHUNKS || Math.abs(SectionPos.blockToSectionCoord(pit.getZ()) - cz) > PIT_CHUNKS) continue;
-            return new Land(c.member(player) != null ? HOME : CLAN, "clan:" + c.id, c.name, c.colour, null);
-        }
+        Clans.Clan owner = data.owner(level.dimension(), ChunkPos.containing(BlockPos.containing(pos)));
+        if (owner != null) return new Land(owner.member(player) != null ? HOME : CLAN, "clan:" + owner.id, owner.name, owner.colour, null);
+        UUID npc = npcTribeAt(level, pos);
+        return npc == null ? null : tribe(npc);
+    }
+
+    /** Is the centre of chunk {@code c} NPC land (a village's palisade or a camp's fire)? Clans keeps its territory off such chunks. */
+    public static boolean npcLandAt(ServerLevel level, ChunkPos c) {
+        return npcTribeAt(level, new Vec3(c.getMinBlockX() + 8, level.getSeaLevel(), c.getMinBlockZ() + 8)) != null;
+    }
+
+    /** The NPC tribe whose village or camp covers {@code pos}, or null: villages first, then camps. */
+    private static UUID npcTribeAt(ServerLevel level, Vec3 pos) {
         BlockPos at = BlockPos.containing(pos);
         TribeVillageStructure.Piece village = TribeVillageStructure.villageAt(level, at);
         if (village != null && flat(village.centre(), pos) <= TribeVillageStructure.WALL_R + 2)
-            return tribe(TribeVillageStructure.tribeOf(village.seed()));
+            return TribeVillageStructure.tribeOf(village.seed());
         for (Tribesperson t : level.getEntitiesOfClass(Tribesperson.class, new net.minecraft.world.phys.AABB(at).inflate(32)))
-            if (t.home() != null && flat(t.home(), pos) <= Math.max(CAMP_LAND, t.campRadius())) return tribe(t.group());
+            if (t.home() != null && flat(t.home(), pos) <= Math.max(CAMP_LAND, t.campRadius())) return t.group();
         return null;
     }
 
