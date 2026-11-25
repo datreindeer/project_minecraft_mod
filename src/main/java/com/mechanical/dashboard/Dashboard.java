@@ -113,7 +113,13 @@ public final class Dashboard {
                 else send(ex, 200, "application/json", body);
             } else if (path.startsWith("/tiles/")) {
                 Matcher m = TILE.matcher(path);
-                byte[] png = m.matches() ? MapTiles.tile(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2))) : null;
+                byte[] png;
+                try {
+                    png = m.matches() ? MapTiles.tile(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2))) : null;
+                } catch (IOException e) {
+                    send(ex, 500, "text/plain", "tile unreadable");
+                    return;
+                }
                 if (png == null) send(ex, 404, "text/plain", "not found");
                 else send(ex, 200, "image/png", png, "no-cache");
             } else {

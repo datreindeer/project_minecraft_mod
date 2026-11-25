@@ -35,12 +35,13 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.level.ChunkDataEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 /**
  * The dashboard's map: overworld chunks are drawn as players load them, into 512x512 region PNGs (1 px per block) under
- * {@code <world>/mechanical_map}. Loaded chunks wait in a de-duplicated queue and at most {@link #PER_TICK} are read per tick
+ * {@code <world>/mechanical_map}. Loaded and saved chunks (and all loaded ones when the map starts) wait in a de-duplicated queue and at most {@link #PER_TICK} are read per tick
  * on the server thread (256 columns each); merging into the region images and writing PNGs happens on one worker thread,
  * so fast travel never costs TPS. Runs only while the {@link Dashboard} does.
  */
@@ -82,6 +83,14 @@ public final class MapTiles {
         });
         exec.scheduleWithFixedDelay(() -> flush(false), 1, 1, TimeUnit.SECONDS);
         worker = exec;
+        synchronized (PENDING) {
+            queueLoaded(server.overworld(), PENDING); // spawn and force-loaded chunks (tribe pits) never fire Load again
+        }
+    }
+
+    /** Queues every chunk the level already holds in full. */
+    static void queueLoaded(ServerLevel level, Set<Long> queue) {
+        level.getChunkSource().chunkMap.forEachReadyToSendChunk(c -> queue.add(ChunkPos.pack(c.getPos().x(), c.getPos().z())));
     }
 
     /** Writes every changed region (waiting at most 10 s), then ends the worker; chunks still queued are drawn next time they load. */
@@ -117,7 +126,20 @@ public final class MapTiles {
         }
     }
 
-    /** A chunk leaving memory may have changed since it was drawn, and can't be read later: read it now. No cap here, it's a fraction of the chunk's own save. */
+    /** A saved chunk has changed since it was drawn (chunks that stay loaded only show edits this way); posted on the server thread by ChunkMap.save. */
+    @SubscribeEvent
+    static void onChunkSave(ChunkDataEvent.Save event) {
+        if (!running() || !(event.getLevel() instanceof ServerLevel level) || level.dimension() != Level.OVERWORLD || !(event.getChunk() instanceof LevelChunk)) return;
+        ChunkPos pos = event.getChunk().getPos();
+        synchronized (PENDING) {
+            PENDING.add(ChunkPos.pack(pos.x(), pos.z()));
+        }
+    }
+
+    /**
+     * A chunk leaving memory may have changed since it was drawn, and can't be read later: read it now. Posted on the server
+     * thread (ChunkMap.processUnloads runs the unload queue in the tick). No cap here, it's a fraction of the chunk's own save.
+     */
     @SubscribeEvent
     static void onChunkUnload(ChunkEvent.Unload event) {
         if (!running() || !(event.getLevel() instanceof ServerLevel level) || level.dimension() != Level.OVERWORLD) return;
@@ -208,6 +230,14 @@ public final class MapTiles {
     // ---------------------------------------------------------------- worker thread
 
     private static void merge(int cx, int cz, int[] colours) {
+        try {
+            mergeUnsafe(cx, cz, colours);
+        } catch (RuntimeException e) {
+            LOGGER.warn("Mechanical map: could not draw chunk {} {}", cx, cz, e);
+        }
+    }
+
+    private static void mergeUnsafe(int cx, int cz, int[] colours) {
         long key = ChunkPos.pack(cx >> 5, cz >> 5);
         Region r = OPEN.get(key);
         if (r == null) {
@@ -215,8 +245,7 @@ public final class MapTiles {
             OPEN.put(key, r);
             if (OPEN.size() > OPEN_REGIONS) {
                 Map.Entry<Long, Region> eldest = OPEN.entrySet().iterator().next();
-                if (eldest.getValue().dirty) write(eldest.getKey(), eldest.getValue());
-                OPEN.remove(eldest.getKey());
+                if (!eldest.getValue().dirty || write(eldest.getKey(), eldest.getValue())) OPEN.remove(eldest.getKey()); // a failed write stays open to retry
             }
         }
         r.image.setRGB((cx & 31) * 16, (cz & 31) * 16, 16, 16, colours, 0, 16);
@@ -229,7 +258,11 @@ public final class MapTiles {
         if (Files.exists(file)) {
             try {
                 BufferedImage old = ImageIO.read(file.toFile());
-                if (old != null) image.getGraphics().drawImage(old, 0, 0, null);
+                if (old != null) {
+                    var g = image.createGraphics();
+                    g.drawImage(old, 0, 0, null);
+                    g.dispose();
+                }
             } catch (IOException e) {
                 LOGGER.warn("Mechanical map: could not read {} ({}), drawing it anew", file, e.getMessage());
             }
@@ -237,16 +270,20 @@ public final class MapTiles {
         return image;
     }
 
-    /** Writes dirty regions: all of them, or only those not written in the last 5 s. */
+    /** Writes dirty regions: all of them, or only those not written in the last 5 s. Never throws: that would end the periodic flush. */
     private static void flush(boolean all) {
         long now = System.currentTimeMillis();
         OPEN.forEach((key, r) -> {
-            if (r.dirty && (all || now - r.written >= WRITE_EVERY_MS)) write(key, r);
+            try {
+                if (r.dirty && (all || now - r.written >= WRITE_EVERY_MS)) write(key, r);
+            } catch (RuntimeException e) {
+                LOGGER.warn("Mechanical map: could not write region {} {}", ChunkPos.getX(key), ChunkPos.getZ(key), e);
+            }
         });
     }
 
     /** Writes to a temp file and moves it in place, so the web server never reads half a PNG. */
-    private static void write(long key, Region r) {
+    private static boolean write(long key, Region r) {
         Path file = file(ChunkPos.getX(key), ChunkPos.getZ(key));
         try {
             Files.createDirectories(file.getParent());
@@ -255,8 +292,10 @@ public final class MapTiles {
             Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
             r.dirty = false;
             r.written = System.currentTimeMillis();
+            return true;
         } catch (IOException e) {
             LOGGER.warn("Mechanical map: could not write {} ({}), trying again later", file, e.getMessage());
+            return false;
         }
     }
 

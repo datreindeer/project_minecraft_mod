@@ -24,6 +24,7 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.MapColor;
@@ -93,6 +94,10 @@ public final class DashboardTest {
         check(h, MapTiles.drain(queue, MapTiles.PER_TICK).size() == MapTiles.PER_TICK && queue.size() == 100 - MapTiles.PER_TICK, "one tick reads only PER_TICK chunks");
         check(h, Dashboard.TILE.matcher("/tiles/-3.12.png").matches() && !Dashboard.TILE.matcher("/tiles/../x.png").matches()
                 && !Dashboard.TILE.matcher("/tiles/1.2.png/x").matches() && !Dashboard.TILE.matcher("/tiles/1e3.2.png").matches(), "tile names are two signed integers only");
+        Set<Long> loaded = new LinkedHashSet<>();
+        MapTiles.queueLoaded(h.getLevel(), loaded);
+        BlockPos here = h.absolutePos(BlockPos.ZERO);
+        check(h, loaded.contains(ChunkPos.pack(here.getX() >> 4, here.getZ() >> 4)), "the map's start queues chunks that are already loaded");
         mapColours(h);
         h.succeed();
     }
