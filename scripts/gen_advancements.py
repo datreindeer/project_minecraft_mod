@@ -350,7 +350,10 @@ TABS = {
         ("leather_satchel", "leatherworking_bench", "leather_satchel", T, "Satchel",
          "Sew 4 Leather into a Leather Satchel: 9 slots that go with you", has("leather_satchel")),
         ("leather_pouch", "leather_satchel", "leather_pouch", T, "Pouch",
-         "Tie a Leather Pouch: Cordage over Leather. 4 slots, worn at the hip in place of a quiver (B opens it)", has("leather_pouch")),
+         "Tie a Leather Pouch: Cordage over Leather. 4 slots, worn in one of the two Hip slots (B opens it)", has("leather_pouch")),
+        ("two_hip_bags", "leather_pouch", "leather_pouch", T, "Belt and Braces",
+         "Wear something in both Hip slots: two Leather Pouches, or a pouch beside your Quiver (never two quivers). "
+         "B opens them all; tools in worn bags work from an empty hand", by_code()),
         ("worn_satchel", "leather_satchel", "leather_satchel", T, "Shoulder Bag",
          "Put the Leather Satchel in the Back slot next to your player in the inventory, then press B to open it anywhere",
          by_code()),
@@ -395,7 +398,7 @@ TABS = {
         ("fire_arrow", "arrows", "fire_arrow", T, "Fire Arrow", "Fletching Table: Tallow + Arrow + Twine",
          has("fire_arrow")),
         ("quiver", "arrows", "quiver", T, "Quiver",
-         "Sew a Quiver at the Leatherworking Bench (2 Leather, thread) and wear it in the Hip slot: bows shoot from it, picked-up arrows go in",
+         "Sew a Quiver at the Leatherworking Bench (2 Leather, thread) and wear it in a Hip slot: bows shoot from it, picked-up arrows go in",
          by_code()),
         ("tusk_dagger", "leather", "tusk_dagger", T, "Hunter's Knife",
          "Butcher a Wild Boar for a Tusk. Tool Station: Tusk + Cordage + Leather makes a Tusk Dagger",
@@ -1593,6 +1596,9 @@ TABS["iron_age"] = ("minecraft:block/iron_block", [
      "Lay a blank and a cut gem on a Jeweler's Bench and set the stone with a chisel. Wear it in a ring or neck slot", by_code()),
     ("flawless_jewel", "jeweler", "gold_necklace", C, "Without Flaw",
      "Set a Flawless gem: its bonus is about four times a plain stone's", by_code()),
+    ("silver_jeweler", "jeweler", "silver_ring", T, "Sterling Setting",
+     "Cast Silver Ingots on the Steel Casting Table (silver melts at a lower heat than gold) and set a gem in silver: "
+     "a Silver Ring or Necklace gives half the bonus of gold", has("silver_ring", "silver_necklace")),
 ])
 
 # ---------------------------------------------------------------- Steel Age tab (docs/ages/04-steel-age.md): starts where
@@ -2440,7 +2446,7 @@ TABS["folklore"][1].extend([
 # constants in the Java code), so players keep what they earned: a tab is decided by the root an advancement hangs from.
 STEEL_AGE_MOVED = {
     "steel_tools", "flint_and_steel", "jasper_striker", "steel_quarry_hammer", "steel_armor", "steel_sickle", "steel_hammer",
-    "big_fire_pit", "whole_roast", "tool_loops", "steel_frame_pack", "gold_casting", "jeweler", "flawless_jewel",
+    "big_fire_pit", "whole_roast", "tool_loops", "steel_frame_pack", "gold_casting", "jeweler", "flawless_jewel", "silver_jeweler",
     "mortar", "sieve", "steel_pan", "pilaf", "gingerbread", "pickles", "knife_set", "sawmill",
 }
 

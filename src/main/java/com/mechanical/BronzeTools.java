@@ -385,12 +385,17 @@ public final class BronzeTools {
         if (event.getEntity().tickCount % BURN_INTERVAL == 0 && event.getEntity().level() instanceof ServerLevel level) scald(level, event.getEntity());
     }
 
-    /** Taking a fresh casting out of a Clay Mold: tongs lose 1, a bare hand gets burnt. */
+    /** Taking a fresh casting out of a Clay Mold: tongs (in a hand, or from a worn bag with an empty hand) lose 1, a bare hand gets burnt. */
     static void takeHotCasting(ServerLevel level, Player player) {
         if (player.isCreative()) return;
         if (holdsTongs(player)) {
             InteractionHand hand = player.getMainHandItem().is(TONGS) ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
             player.getItemInHand(hand).hurtAndBreak(1, player, hand);
+            return;
+        }
+        com.mechanical.equipment.WornTools.Found bagTongs = com.mechanical.equipment.WornTools.forEmptyHand(player, InteractionHand.MAIN_HAND, s -> s.is(TONGS));
+        if (bagTongs != null) {
+            bagTongs.hurt(1, player);
             return;
         }
         player.sendOverlayMessage(Component.translatable("message.mechanical.hot_metal.casting"));

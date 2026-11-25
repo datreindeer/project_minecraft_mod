@@ -123,6 +123,16 @@ public class DugoutBlankBlock extends Block {
             }
             return InteractionResult.SUCCESS;
         }
+        // the last stage with an empty hand: a knife from a worn bag scrapes it out (equipment.WornTools)
+        com.mechanical.equipment.WornTools.Found bagKnife = stack.isEmpty() && stage == LAST_STAGE ? com.mechanical.equipment.WornTools.forEmptyHand(player, hand, s -> s.is(Watercraft.KNIVES)) : null;
+        if (bagKnife != null) {
+            if (level instanceof ServerLevel server && TreeChopping.chop(server, player, hand, pos, state, KNIFE_STROKES, () -> bagKnife.hurt(1, player))) {
+                server.removeBlock(pos, false);
+                server.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 1.2F);
+                Block.popResource(server, pos, new ItemStack(Watercraft.DUGOUT_CANOE_ITEM.get()));
+            }
+            return InteractionResult.CONSUME;
+        }
         if (stack.is(Watercraft.KNIVES)) {
             if (stage != LAST_STAGE) {
                 if (!level.isClientSide()) player.sendOverlayMessage(Component.translatable(needsFire(stage)

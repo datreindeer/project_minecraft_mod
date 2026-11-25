@@ -110,6 +110,13 @@ public final class Jewelry {
     public static final DeferredItem<Item> GOLD_CHAIN = ITEMS.registerSimpleItem("gold_chain");
     public static final DeferredItem<Item> GOLD_RING = ITEMS.registerSimpleItem("gold_ring", p -> p.stacksTo(1));
     public static final DeferredItem<Item> GOLD_NECKLACE = ITEMS.registerSimpleItem("gold_necklace", p -> p.stacksTo(1));
+    /** The same pieces in silver (v0.211.0): cast from a Silver Ingot at silver's heat, set the same way, the gem's bonus at {@link #SILVER_STRENGTH}. */
+    public static final DeferredItem<Item> SILVER_RING_BLANK = ITEMS.registerSimpleItem("silver_ring_blank");
+    public static final DeferredItem<Item> SILVER_CHAIN = ITEMS.registerSimpleItem("silver_chain");
+    public static final DeferredItem<Item> SILVER_RING = ITEMS.registerSimpleItem("silver_ring", p -> p.stacksTo(1));
+    public static final DeferredItem<Item> SILVER_NECKLACE = ITEMS.registerSimpleItem("silver_necklace", p -> p.stacksTo(1));
+    /** A gem set in silver gives this share of what it gives in gold (the user's choice: same effects, weaker). */
+    public static final double SILVER_STRENGTH = 0.5;
     /** Ticks a Gold Ingot takes to melt and set on a Steel Casting Table beside a hot kiln. */
     public static final int CAST_TICKS = 200, TABLE_MAX_INGOTS = 8;
 
@@ -150,9 +157,18 @@ public final class Jewelry {
         return BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MODID, (jewel.flawless() ? "flawless_" : "") + jewel.gem()));
     }
 
-    /** What a blank becomes on the Jeweler's Bench: Gold Ring Blank -> Gold Ring, Gold Chain -> Gold Necklace; else null. */
+    /** What a blank becomes on the Jeweler's Bench: Ring Blank -> Ring, Chain -> Necklace, gold or silver; else null. */
     public static Item jewelFor(ItemStack blank) {
-        return blank.is(GOLD_RING_BLANK.get()) ? GOLD_RING.get() : blank.is(GOLD_CHAIN.get()) ? GOLD_NECKLACE.get() : null;
+        if (blank.is(GOLD_RING_BLANK.get())) return GOLD_RING.get();
+        if (blank.is(GOLD_CHAIN.get())) return GOLD_NECKLACE.get();
+        if (blank.is(SILVER_RING_BLANK.get())) return SILVER_RING.get();
+        if (blank.is(SILVER_CHAIN.get())) return SILVER_NECKLACE.get();
+        return null;
+    }
+
+    /** How much of a gem's bonus this piece gives: all in gold, {@link #SILVER_STRENGTH} in silver. */
+    public static double strength(Item piece) {
+        return piece == SILVER_RING.get() || piece == SILVER_NECKLACE.get() ? SILVER_STRENGTH : 1.0;
     }
 
     /** A finished piece with {@code jewel} set: its name, the gem's colour on the setting, and the bonus it gives worn. */
@@ -164,7 +180,7 @@ public final class Jewelry {
         stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of(), List.of(bonus.colour())));
         if (bonus.attribute() != null) {
             stack.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.builder().add(bonus.attribute(),
-                    new AttributeModifier(Identifier.fromNamespaceAndPath(MODID, "jewel/" + jewel.gem()), bonus.amount(jewel.flawless()), bonus.op()),
+                    new AttributeModifier(Identifier.fromNamespaceAndPath(MODID, "jewel/" + jewel.gem()), bonus.amount(jewel.flawless()) * strength(piece), bonus.op()),
                     EquipmentSlotGroup.ARMOR).build());
         }
         if (jewel.flawless()) {
@@ -179,7 +195,7 @@ public final class Jewelry {
         Jewel jewel = stack.get(JEWEL.get());
         if (jewel == null) return 0;
         Bonus bonus = BONUSES.get(jewel.gem());
-        return bonus != null && bonus.attribute() == null ? (float) bonus.amount(jewel.flawless()) : 0;
+        return bonus != null && bonus.attribute() == null ? (float) (bonus.amount(jewel.flawless()) * strength(stack.getItem())) : 0;
     }
 
     private Jewelry() {}

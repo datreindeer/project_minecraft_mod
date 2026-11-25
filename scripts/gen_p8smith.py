@@ -2,7 +2,7 @@
 
 - F9 Satchels.java: Tool Loops and Steel-Frame Pack items (flat pictures; recipes are Leatherworking Bench recipes in code),
   item tag mechanical:satchel_tools (what the tool loops take). The equipment/back tag is written by gen_equipment.py.
-- F10 Jewelry.java: Gold Ring Blank, Gold Chain; Gold Ring and Gold Necklace (two layers, the gem layer tinted by the
+- F10 Jewelry.java: Gold Ring Blank, Gold Chain; Gold Ring and Gold Necklace; the same four in silver (two layers, the gem layer tinted by the
   custom_model_data colour Jewelry.make sets); Steel Casting Table and Jeweler's Bench (block models turned by facing,
   loot, recipes, mineable tags); lang. equipment/ring and equipment/neck tags: gen_equipment.py.
 Textures: scripts/gen_p8_textures.py (items, block faces), scripts/gen_equipment_textures.py (the pack screens).
@@ -40,11 +40,11 @@ def flat(item):
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": M + f"item/{item}"}})
 
 
-for item in ("tool_loops", "steel_frame_pack", "gold_ring_blank", "gold_chain"):
+for item in ("tool_loops", "steel_frame_pack", "gold_ring_blank", "gold_chain", "silver_ring_blank", "silver_chain"):
     flat(item)
 
 # the set pieces: gold layer as is, gem layer tinted with the gem's colour (custom_model_data colour 0; white if unset)
-for item in ("gold_ring", "gold_necklace"):
+for item in ("gold_ring", "gold_necklace", "silver_ring", "silver_necklace"):
     w(A / f"models/item/{item}.json", {"parent": "minecraft:item/generated",
                                        "textures": {"layer0": M + f"item/{item}", "layer1": M + f"item/{item}_gem"}})
     w(A / f"items/{item}.json", {"model": {"type": "minecraft:model", "model": M + f"item/{item}", "tints": [
@@ -124,12 +124,19 @@ merge(A / "lang/en_us.json", {
     "item.mechanical.gold_ring.with": "Gold Ring with %s",
     "item.mechanical.gold_necklace": "Gold Necklace",
     "item.mechanical.gold_necklace.with": "Gold Necklace with %s",
+    "item.mechanical.silver_ring_blank": "Silver Ring Blank",
+    "item.mechanical.silver_chain": "Silver Chain",
+    "item.mechanical.silver_ring": "Silver Ring",
+    "item.mechanical.silver_ring.with": "Silver Ring with %s",
+    "item.mechanical.silver_necklace": "Silver Necklace",
+    "item.mechanical.silver_necklace.with": "Silver Necklace with %s",
+    "message.mechanical.casting.other_metal": "Take the %s off the table first: one metal at a time",
     "block.mechanical.steel_casting_table": "Steel Casting Table",
     "block.mechanical.jewelers_bench": "Jeweler's Bench",
-    "message.mechanical.casting.full": "The casting table holds %s Gold Ingots",
-    "message.mechanical.casting.needs_kiln": "The gold needs a Clay Kiln at %s° beside the table to melt",
+    "message.mechanical.casting.full": "The casting table holds %s ingots",
+    "message.mechanical.casting.needs_kiln": "The metal needs a Clay Kiln at %s° beside the table to melt",
     "message.mechanical.casting.mode": "Mould: %2$s × %1$s",
-    "message.mechanical.jewelers_bench.needs": "Lay a Gold Ring Blank or Gold Chain and a cut gem on the bench, then set it with a chisel",
+    "message.mechanical.jewelers_bench.needs": "Lay a Ring Blank or Chain (gold or silver) and a cut gem on the bench, then set it with a chisel",
     "message.mechanical.jewelers_bench.occupied": "There is already one on the bench",
 })
 print("p8smith ok")

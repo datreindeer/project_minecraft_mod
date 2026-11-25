@@ -60,7 +60,9 @@ public final class EquipmentClient {
     private static final ContextKey<Boolean> SATCHEL = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_satchel"));
     private static final ContextKey<Boolean> PACK = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_pack"));
     private static final ContextKey<Boolean> POUCH = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_pouch"));
-    private static final ContextKey<Integer> QUIVER =new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_quiver"));
+    private static final ContextKey<Boolean> POUCH_LEFT = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_pouch_left"));
+    private static final ContextKey<Integer> QUIVER = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_quiver"));
+    private static final ContextKey<Boolean> QUIVER_LEFT = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_quiver_left"));
     private static final ContextKey<Boolean> MINER_SACK = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "miner_sack"));
     private static final ContextKey<Identifier> TRIBE_GEAR = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "tribe_gear"));
     private static final ContextKey<Boolean> ARMORED = new ContextKey<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "chest_armored"));
@@ -137,9 +139,17 @@ public final class EquipmentClient {
             }
         }
         if (worn.get(Accessory.BACK).getItem() instanceof LeatherSatchelItem bag) state.setRenderData(bag.builtInLoops ? PACK : SATCHEL, true);
-        ItemStack quiver = worn.get(Accessory.HIP);
-        if (quiver.getItem() instanceof QuiverItem) state.setRenderData(QUIVER, Quiver.filledSlots(quiver));
-        if (quiver.getItem() instanceof com.mechanical.LeatherPouchItem) state.setRenderData(POUCH, true);
+        // the first Hip slot hangs at the right hip, the second at the left (a quiver behind either; a pouch in front on the
+        // right, behind on the left, clear of the satchel at the front-left)
+        ItemStack[] hips = Equipment.hips(player);
+        for (int i = 0; i < hips.length; i++) {
+            if (hips[i].getItem() instanceof QuiverItem) {
+                state.setRenderData(QUIVER, Quiver.filledSlots(hips[i]));
+                if (i == 1) state.setRenderData(QUIVER_LEFT, true);
+            } else if (hips[i].getItem() instanceof com.mechanical.LeatherPouchItem) {
+                state.setRenderData(i == 0 ? POUCH : POUCH_LEFT, true);
+            }
+        }
         state.setRenderData(ARMORED, isChestArmor(state.chestEquipment));
     }
 
@@ -161,8 +171,19 @@ public final class EquipmentClient {
         return state.getRenderData(PACK) != null;
     }
 
+    /** A pouch in the first Hip slot: at the front of the right hip. */
     static boolean pouch(AvatarRenderState state) {
         return state.getRenderData(POUCH) != null;
+    }
+
+    /** A pouch in the second Hip slot: behind the left hip. */
+    static boolean pouchLeft(AvatarRenderState state) {
+        return state.getRenderData(POUCH_LEFT) != null;
+    }
+
+    /** The quiver hangs behind the left hip (worn in the second Hip slot) instead of the right. */
+    static boolean quiverLeft(AvatarRenderState state) {
+        return state.getRenderData(QUIVER_LEFT) != null;
     }
 
     /** Quiver slots holding arrows, or -1 without a quiver. */
@@ -199,7 +220,7 @@ public final class EquipmentClient {
     static void onTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         for (Accessory slot : Accessory.values()) {
-            if (slot == Accessory.RING_2 || !Equipment.fits(slot, stack)) continue;
+            if (slot == Accessory.RING_2 || slot == Accessory.HIP_2 || !Equipment.fits(slot, stack)) continue;
             event.getToolTip().add(1, Component.translatable("tooltip.mechanical.worn_in",
                     Component.translatable("slot.mechanical." + slot.tag.location().getPath().substring("equipment/".length()))).withStyle(ChatFormatting.GRAY));
             return;
