@@ -74,8 +74,7 @@
   och `Tribe.addReputation` (handel, dialog, besök, räder, gåvor, zontiteln, relationsfliken).
 - **Zontitel** (byggd): när man går in på en stams mark visas en barkpanel en fjärdedel ned på skärmen i 5 s (tonar in
   och ut): "You are now entering X's land" med vimpel och namn i stammens färg, och under det relationen ("Friendly 45")
-  för NPC-stammar, "Home" på den egna stammens mark och inget mer på en annan spelarstams. Mark: en spelarstams 3x3
-  chunks runt Fire Pit:en (samma som den planerade forceloaden), en NPC-by innanför palissaden (radie 23 från mitten),
+  för NPC-stammar, "Home" på den egna stammens mark och inget mer på en annan spelarstams. Mark: en spelarstams territorium (se *Stammens mark* nedan: 5x5 chunks runt Fire Pit:en, för en stor Fire Pit även dess biome), en NPC-by innanför palissaden (radie 23 från mitten),
   och ett NPC-läger runt elden dess folk kallar hem (palissadens radie + 2, minst 10 block; gäller även bosättningar).
   Servern kollar var 10:e tick och skickar `Lands.Entered` en gång per inträde (inte igen förrän man gått ut eller in på
   annan mark). Första gången på en annan stams mark ger framsteget **Their Land** (wilderness). Kod: `clan/Lands`,
@@ -105,6 +104,21 @@
     visas det inskrivna namnet. Läses en gång när servern startat (ändring kräver omstart), bara på dedikerade
     servrar, högst 64 tecken. Moddet skriver inte in raden själv: vanilla sparar om filen från sin egen kopia och
     skulle kunna tappa en rad som lagts till under körning, så lägg in den för hand.
+- **Stammens mark** (byggd): en stams territorium sparas i stammen och räknas om när Fire Pit:en ändras eller byggs ut.
+  - **5x5 chunks** (`Clans.LOAD_RADIUS` = 2 åt varje håll) runt Fire Pit:en, liten som stor. Hela rutan är forceloadad, så
+    grödor och djur går vidare även när ingen är där.
+  - **Stor Fire Pit:** stammens mark växer också över sin Fire Pit:s **biome**, så långt biomen hänger ihop med Fire Pit:en,
+    högst 16 chunks åt varje håll (`Clans.TERRITORY_MAX`). Aldrig mindre än en liten Fire Pit:s 5x5. Det är marken som
+    visas som Lands (zontiteln) och på kartan; forceloaden är fortfarande bara 5x5.
+  - **Stammar överlappar aldrig.** Chunks en annan stam har, och NPC-land, tas inte. Att grunda en stam eller flytta
+    Fire Pit:en så att dess 5x5 skulle ta någon annans mark vägras med meddelandet "Too close to X's land (to the <väderstreck>).
+    Tribes' lands may not overlap: find a Fire Pit farther away." Chunks som frigörs när marken krymper delas inte ut
+    till grannar.
+  - Clan/Lands följer territoriet (inte längre fasta 3x3).
+- **Adminpanel** (byggd, bara dedikerade servrar): en webbpanel inne i moddet på `http://localhost:8100`. Bara för
+  admin: begäran måste ha `Host` `localhost` eller `127.0.0.1`. Konfigureras i serverconfig (en LOCAL config med en
+  av/på-flagga och port). Flikar: **Overview**, **Players**, **Tribes** och **Map**. Kartan ritas live av de chunks
+  spelare laddar, med stammarnas territorier ovanpå; kartplattorna sparas i `<värld>/mechanical_map/`.
 - **Ranker:** **Leader** (en), **Elder** (högre rank, kan bjuda in), **Member** (vanlig) och **Newcomer** (ny medlem).
   Ledaren får göra allt: bjuda in, kicka, befordra och degradera. En Elder får bjuda in och kicka en Newcomer. En
   Newcomer blir Member automatiskt efter **7 speldygn**. Speldygnen räknas även när servern är tom, för då går tiden
