@@ -1,5 +1,6 @@
 package com.mechanical.dashboard;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.mechanical.FirePit;
 import com.mechanical.Mechanical;
 import com.mechanical.WorldAge;
 import com.mechanical.clan.Clans;
+import com.mechanical.clan.Territory;
 import com.mechanical.people.Tribe;
 
 import net.minecraft.core.BlockPos;
@@ -177,8 +179,28 @@ public final class Snapshot {
         return k.rings;
     }
 
+    /** Village rings by the village record: a village never changes once recorded, so each is outlined once. */
+    private static final Map<Villages.Village, List<int[]>> VILLAGE_OUTLINES = new HashMap<>();
+
+    private static JsonArray json(List<int[]> rings) {
+        JsonArray out = new JsonArray();
+        for (int[] r : rings) {
+            JsonArray a = new JsonArray();
+            for (int v : r) a.add(v);
+            out.add(a);
+        }
+        return out;
+    }
+
+    private static JsonObject point(int[] xz) {
+        JsonObject p = new JsonObject();
+        p.addProperty("x", xz[0]);
+        p.addProperty("z", xz[1]);
+        return p;
+    }
+
     /** Centre (block coordinates) of the territory chunk nearest the territory's centroid, so the label always sits on the tribe's land. */
-    static int[] label(Set<Long> chunks) {
+    static int[] label(Collection<Long> chunks) {
         double cx = 0, cz = 0;
         for (long c : chunks) {
             cx += ChunkPos.getX(c);
@@ -208,7 +230,7 @@ public final class Snapshot {
         return f;
     }
 
-    /** /api/map: overworld players, fires (tribe pits and the mod's tracked camps, no world scan) and tribe outlines. */
+    /** /api/map: overworld players, fires (tribe pits and the mod's tracked camps, no world scan), tribe outlines with the chunks their pit keeps loaded, and vanilla villages. */
     public static String map(MinecraftServer server) {
         Clans clans = Clans.get(server);
         ServerLevel overworld = server.overworld();
@@ -239,18 +261,10 @@ public final class Snapshot {
             t.addProperty("id", c.id().toString());
             t.addProperty("name", c.name());
             t.addProperty("colour", String.format("#%06x", DyeColor.byId(c.colour()).getTextureDiffuseColor() & 0xFFFFFF));
-            JsonArray rings = new JsonArray();
-            for (int[] r : rings(c)) {
-                JsonArray a = new JsonArray();
-                for (int v : r) a.add(v);
-                rings.add(a);
-            }
-            t.add("rings", rings);
-            int[] l = label(c.territory());
-            JsonObject lo = new JsonObject();
-            lo.addProperty("x", l[0]);
-            lo.addProperty("z", l[1]);
-            t.add("label", lo);
+            t.add("rings", json(rings(c)));
+            // the pit is in the overworld here (other dimensions were skipped); its force-loaded square is a fixed 5x5, cheap to outline each time
+            t.add("loaded", json(c.pit().map(g -> Outline.of(Territory.square(ChunkPos.containing(g.pos()), Clans.LOAD_RADIUS))).orElse(List.of())));
+            t.add("label", point(label(c.territory())));
             tribes.add(t);
         }
         for (CampAge.Camp camp : CampAge.get(overworld).camps()) {
@@ -261,6 +275,17 @@ public final class Snapshot {
         }
         o.add("fires", fires);
         o.add("tribes", tribes);
+        JsonArray villages = new JsonArray();
+        for (Villages.Village v : Villages.get(overworld).all()) {
+            if (v.chunks().isEmpty()) continue;
+            JsonObject j = new JsonObject();
+            j.addProperty("name", v.name());
+            j.addProperty("kind", v.kind());
+            j.add("rings", json(VILLAGE_OUTLINES.computeIfAbsent(v, k -> Outline.of(k.chunks()))));
+            j.add("label", point(label(v.chunks())));
+            villages.add(j);
+        }
+        o.add("villages", villages);
         return o.toString();
     }
 }

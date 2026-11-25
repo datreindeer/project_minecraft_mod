@@ -263,9 +263,12 @@ const map = (() => {
   const hit = document.createElement("canvas").getContext("2d"); // identity transform, for point-in-territory tests in block space
   const REGION = 512, MIN = .25, MAX = 8, RELOAD = 10e3, RETRY = 30e3, FORGET = 180e3;
   const HALO = "rgba(18, 13, 9, .9)";
+  const SAND = "#e8dcc0"; // every village in one neutral colour, so villages never read as a tribe
+  /** The tribe colour mixed toward white: the kept-loaded heart of a territory, lighter than the land round it. */
+  const light = (c, f) => "#" + [1, 3, 5].map(i => Math.round(parseInt(c.slice(i, i + 2), 16) * (1 - f) + 255 * f).toString(16).padStart(2, "0")).join("");
   let w = 0, h = 0, dpr = 1;
   let cx = 0, cz = 0, s = 1, target = 1, anchor = null; // centre block, pixels per block, zoom goal, {sx, sy, bx, bz}
-  let mapData = {}, paths = new Map(), touched = false, dirty = false, mouse = null;
+  let mapData = {}, paths = new Map(), loadedPaths = new Map(), villagePaths = [], touched = false, dirty = false, mouse = null;
   const tiles = new Map(); // url -> {img, at, missingAt, loading, used}
   let sans = "";
 
@@ -284,18 +287,24 @@ const map = (() => {
   const toBlock = (sx, sy) => [(sx - w / 2) / s + cx, (sy - h / 2) / s + cz];
   const redraw = () => { if (!dirty) { dirty = true; requestAnimationFrame(frame); } };
 
+  function path(rings) {
+    const p = new Path2D();
+    for (const r of rings || []) {
+      p.moveTo(r[0], r[1]);
+      for (let i = 2; i < r.length; i += 2) p.lineTo(r[i], r[i + 1]);
+      p.closePath();
+    }
+    return p;
+  }
+
   function setData(d) {
     mapData = d || {};
-    paths = new Map();
+    paths = new Map(); loadedPaths = new Map();
     for (const t of mapData.tribes || []) {
-      const p = new Path2D();
-      for (const r of t.rings) {
-        p.moveTo(r[0], r[1]);
-        for (let i = 2; i < r.length; i += 2) p.lineTo(r[i], r[i + 1]);
-        p.closePath();
-      }
-      paths.set(t.id, p);
+      paths.set(t.id, path(t.rings));
+      if ((t.loaded || []).length) loadedPaths.set(t.id, path(t.loaded));
     }
+    villagePaths = (mapData.villages || []).map(v => path(v.rings));
     renderLegend();
     if (!touched && w) fitAll();
     redraw();
@@ -392,6 +401,7 @@ const map = (() => {
     for (const [url, t] of tiles) if (now - t.used > FORGET && !t.loading) tiles.delete(url); // regions not in view for 3 min, 404s too
 
     grid(bx0, bz0, bx1, bz1);
+    villages();
     territories();
     fires();
     players();
@@ -428,12 +438,36 @@ const map = (() => {
       ctx.strokeStyle = HALO; ctx.lineWidth = 12 / s; ctx.stroke(p); // half of each width shows inside: 3.5 px colour, 2.5 px dark seam
       ctx.strokeStyle = t.colour; ctx.lineWidth = 7 / s; ctx.stroke(p);
       ctx.restore();
+      const lp = loadedPaths.get(t.id);
+      if (lp) { // kept loaded: a paler wash and a thin dashed line just inside its edge (clipped, so only the inner half shows)
+        ctx.save();
+        blockSpace();
+        ctx.fillStyle = light(t.colour, .55); ctx.globalAlpha = .3; ctx.fill(lp);
+        ctx.globalAlpha = 1;
+        ctx.clip(lp);
+        ctx.setLineDash([6 / s, 4 / s]);
+        ctx.strokeStyle = light(t.colour, .7); ctx.lineWidth = 3 / s; ctx.stroke(lp);
+        ctx.restore();
+      }
       ctx.save();
       blockSpace();
       ctx.strokeStyle = HALO; ctx.lineWidth = 1.5 / s; ctx.stroke(p); // outer hairline so pale colours hold against snow or sand
       ctx.restore();
     }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  /* Villages under the tribes: a faint sand wash, a dark halo and a dashed sand edge, the same for every village. */
+  function villages() {
+    ctx.save();
+    blockSpace();
+    for (const p of villagePaths) {
+      ctx.globalAlpha = .14; ctx.fillStyle = SAND; ctx.fill(p, "evenodd");
+      ctx.globalAlpha = 1; ctx.lineJoin = "miter";
+      ctx.setLineDash([]); ctx.strokeStyle = HALO; ctx.lineWidth = 4.5 / s; ctx.stroke(p);
+      ctx.setLineDash([7 / s, 5 / s]); ctx.strokeStyle = SAND; ctx.lineWidth = 2 / s; ctx.stroke(p);
+    }
+    ctx.restore();
   }
 
   function flame(x, y, r) {
@@ -512,6 +546,12 @@ const map = (() => {
   /* Tribe names last, on top of everything: a pennant in the tribe colour and the name with a dark halo. */
   function labels() {
     const serif = '600 16px "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif';
+    // villages first and smaller, in italic sand, so a tribe's name wins where they meet
+    for (const v of mapData.villages || []) {
+      if (!v.label) continue;
+      const [x, y] = toScreen(v.label.x, v.label.z);
+      if (x > -100 && y > -20 && x < w + 100 && y < h + 20) halo(v.name, x, y, 'italic 500 14px "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif', SAND, "center");
+    }
     for (const t of mapData.tribes || []) {
       if (!t.label) continue;
       let [x, y] = toScreen(t.label.x, t.label.z);
@@ -532,23 +572,36 @@ const map = (() => {
     return null;
   }
 
+  function villageAt(bx, bz) {
+    const i = villagePaths.findIndex(p => hit.isPointInPath(p, bx, bz, "evenodd"));
+    return i < 0 ? null : mapData.villages[i];
+  }
+
   function readout() {
     if (!mouse) return;
     const [bx, bz] = toBlock(mouse[0], mouse[1]).map(Math.floor);
     $("ro-pos").textContent = `X ${bx}   Z ${bz}`;
-    const t = tribeAt(bx + .5, bz + .5);
-    setHTML($("ro-land"), t ? `<span class="swatch" style="background:${esc(t.colour)}"></span><b>${esc(t.name)}</b>` : "Unclaimed");
+    const t = tribeAt(bx + .5, bz + .5), v = t ? null : villageAt(bx + .5, bz + .5);
+    const kept = t && loadedPaths.has(t.id) && hit.isPointInPath(loadedPaths.get(t.id), bx + .5, bz + .5) ? `<span class="kept">kept loaded</span>` : "";
+    setHTML($("ro-land"), t ? `<span class="swatch" style="background:${esc(t.colour)}"></span><b>${esc(t.name)}</b>${kept}`
+      : v ? `<span class="swatch village"></span><b>${esc(v.name)}</b><span class="kept">village</span>` : "Unclaimed");
   }
 
   function renderLegend() {
-    const list = mapData.tribes || [];
-    $("legend").hidden = !list.length;
+    const list = mapData.tribes || [], vs = mapData.villages || [];
+    $("legend").hidden = !list.length && !vs.length;
     setHTML($("legend"), list.map(t => {
       const n = (data.tribes.find(d => d.id === t.id) || {}).chunks;
       return `<button type="button" data-id="${esc(t.id)}"><span class="swatch" style="background:${esc(t.colour)}"></span>${esc(t.name)}<span class="count">${n == null ? "" : fmt(n) + " ch"}</span></button>`;
-    }).join(""));
+    }).join("") + (list.some(t => (t.loaded || []).length) ? `<p class="key"><span class="swatch loaded"></span>Kept loaded (lives on while you're away)</p>` : "")
+      + (vs.length ? `<h3>Villages</h3>` + vs.map((v, i) => `<button type="button" data-village="${i}"><span class="swatch village"></span><i>${esc(v.name)}</i><span class="count">${esc(cap(v.kind))}</span></button>`).join("") : ""));
   }
-  $("legend").addEventListener("click", e => { const b = e.target.closest("button"); if (b) fitTribe(b.dataset.id); });
+  $("legend").addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    const v = b.dataset.village != null && (mapData.villages || [])[+b.dataset.village];
+    if (v) { touched = true; fit(bounds([v])); } else fitTribe(b.dataset.id);
+  });
 
   /* input */
   let drag = null;

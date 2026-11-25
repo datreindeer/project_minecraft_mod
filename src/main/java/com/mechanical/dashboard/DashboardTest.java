@@ -83,6 +83,15 @@ public final class DashboardTest {
             JsonArray mt = m.getAsJsonArray("tribes");
             JsonObject mine = mt.get(mt.size() - 1).getAsJsonObject();
             check(h, mine.getAsJsonArray("rings").size() == 1 && mine.getAsJsonArray("rings").get(0).getAsJsonArray().size() == 8, "a 5x5 tribe is one ring of 4 corners");
+            JsonArray loaded = mine.getAsJsonArray("loaded");
+            check(h, loaded.size() == 1 && loaded.get(0).getAsJsonArray().size() == 8, "the pit's kept-loaded chunks are one ring of 4 corners");
+            JsonArray lr = loaded.get(0).getAsJsonArray();
+            int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, minZ = Integer.MAX_VALUE, maxZ = Integer.MIN_VALUE;
+            for (int i = 0; i < 8; i += 2) {
+                minX = Math.min(minX, lr.get(i).getAsInt()); maxX = Math.max(maxX, lr.get(i).getAsInt());
+                minZ = Math.min(minZ, lr.get(i + 1).getAsInt()); maxZ = Math.max(maxZ, lr.get(i + 1).getAsInt());
+            }
+            check(h, maxX - minX == 80 && maxZ - minZ == 80, "the kept-loaded ring spans 5x5 chunks (80x80 blocks)");
             int lx = mine.getAsJsonObject("label").get("x").getAsInt() >> 4, lz = mine.getAsJsonObject("label").get("z").getAsInt() >> 4;
             check(h, Clans.get(server).all().stream().anyMatch(c -> c.territory().contains(ChunkPos.pack(lx, lz))), "the label is inside a tribe's land");
             check(h, m.getAsJsonArray("fires").size() >= 1 && m.has("players"), "the map lists the tribe's pit");
@@ -119,6 +128,7 @@ public final class DashboardTest {
                     check(h, loaded.contains(ChunkPos.pack(cx, cz)), "loaded chunk " + cx + "," + cz + " is queued at start");
             }
         outlines(h);
+        villages(h);
         mapColours(h);
         failingWritesStayBounded(h);
         h.succeed();
@@ -139,6 +149,29 @@ public final class DashboardTest {
         check(h, l.size() == 1 && l.get(0).length == 12, "an L has 6 corners");
         List<int[]> diag = Outline.of(chunks(0, 0, 1, 1));
         check(h, diag.size() == 2 && diag.stream().allMatch(r -> r.length == 8), "chunks touching at a corner are two rings");
+    }
+
+    /** Village names are the same for the same seed and chunk and mostly differ between chunks; a record covers its pieces' chunks; the map lists it. */
+    private static void villages(GameTestHelper h) {
+        check(h, Villages.name(42, new ChunkPos(3, -7), "desert").equals(Villages.name(42, new ChunkPos(3, -7), "desert")), "a village name is deterministic");
+        Set<String> names = new java.util.HashSet<>();
+        for (int i = 0; i < 20; i++) names.add(Villages.name(42, new ChunkPos(i * 37, -i * 11), Villages.KINDS[i % 5]));
+        check(h, names.size() >= 15, "village names mostly differ, " + names.size() + " of 20");
+        check(h, Villages.kind("village_snowy").equals("snowy") && Villages.kind("my_village").equals("plains"), "the kind comes from the structure id");
+        ChunkPos start = new ChunkPos(100_000, 100_000); // far off, no real village there
+        int bx = start.getMinBlockX(), bz = start.getMinBlockZ();
+        Villages.Village v = Villages.of(42, start, "taiga", List.of(new net.minecraft.world.level.levelgen.structure.BoundingBox(bx, 60, bz - 5, bx + 20, 70, bz + 10),
+                new net.minecraft.world.level.levelgen.structure.BoundingBox(bx + 100, 60, bz, bx + 110, 62, bz)));
+        check(h, v.chunks().equals(chunks(100_000, 99_999, 100_000, 100_000, 100_001, 99_999, 100_001, 100_000, 100_006, 100_000)), "a village covers the chunks of its pieces' boxes: " + v.chunks());
+        Villages data = Villages.get(h.getLevel());
+        check(h, data.add(v) && !data.add(v), "a village is recorded once");
+        try {
+            JsonArray list = JsonParser.parseString(Snapshot.map(h.getLevel().getServer())).getAsJsonObject().getAsJsonArray("villages");
+            check(h, list.asList().stream().map(j -> j.getAsJsonObject()).anyMatch(j -> j.get("name").getAsString().equals(v.name()) && j.get("kind").getAsString().equals("taiga")
+                    && j.getAsJsonArray("rings").size() == 2 && j.has("label")), "the map lists the village with its two rings");
+        } finally {
+            data.remove(v.start());
+        }
     }
 
     /** A flat grass patch draws grass at normal brightness; water 3 deep draws darker than water 1 deep. */

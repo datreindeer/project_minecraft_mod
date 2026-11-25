@@ -208,6 +208,14 @@ tr.away td { color: var(--ash); }
 .legend button { display: flex; align-items: center; width: 100%; gap: 0; padding: 5px 10px; background: none; border: 0; color: var(--bone); font: 14px var(--sans); text-align: left; cursor: pointer; border-radius: 4px; }
 .legend button:hover { background: rgba(214, 164, 78, .12); }
 .legend .count { margin-left: auto; padding-left: 14px; color: var(--ash); font-size: 13px; }
+.legend h3 { font-size: 14px; color: var(--ash); padding: 10px 10px 2px; margin-top: 6px; border-top: 1px solid var(--seam); }
+.legend .key { display: flex; align-items: center; padding: 6px 10px 2px; color: var(--ash); font-size: 13px; max-width: 250px; }
+.legend button i { font-family: var(--serif); }
+/* Legend keys drawn like the map: the kept-loaded wash with its dashed edge, a village's sand dashes on dark. */
+.swatch.loaded, .swatch.village { width: 14px; height: 14px; }
+.swatch.loaded { flex: none; background: rgba(236, 226, 207, .35); outline: 1.5px dashed var(--bone); outline-offset: -2px; }
+.swatch.village { flex: none; background: rgba(232, 220, 192, .18); outline: 1.5px dashed #e8dcc0; outline-offset: -2px; }
+#ro-land .kept { margin-left: 8px; font: italic 13px var(--serif); color: var(--ash); }
 .readout { left: 14px; bottom: 14px; padding: 8px 14px; display: flex; gap: 16px; align-items: center; font-size: 14px; min-height: 38px; }
 #ro-pos { white-space: pre; }
 #ro-land:empty { display: none; }
