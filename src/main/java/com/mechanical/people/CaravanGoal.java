@@ -99,10 +99,13 @@ class CaravanGoal extends Goal {
 
     /** A slow round on a wide ring about the leader, watching outwards at each point. */
     private void guard() {
-        if (!mob.getNavigation().isDone()) return;
+        Vec3 leader = centre(TribeRole.TRADER);
+        boolean strayed = mob.position().distanceToSqr(leader) > (GUARD_MAX + 2) * (GUARD_MAX + 2); // the leader walked on: close up now
+        if (strayed) wait = 0;
+        else if (!mob.getNavigation().isDone()) return;
         if (watch != null) mob.getLookControl().setLookAt(watch.x, mob.getEyeY(), watch.z);
         if (--wait > 0) return;
-        Vec3 c = centre(TribeRole.TRADER);
+        Vec3 c = leader;
         wait = GUARD_WATCH + mob.getRandom().nextInt(GUARD_WATCH);
         // the next point a quarter turn or so on round the ring from where it stands
         double now = Math.atan2(mob.getZ() - c.z, mob.getX() - c.x), a = now + (0.6 + mob.getRandom().nextDouble() * 0.9) * (mob.getId() % 2 == 0 ? 1 : -1);
