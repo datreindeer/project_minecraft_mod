@@ -35,6 +35,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.equine.Llama;
+import net.minecraft.world.entity.animal.equine.Donkey;
+import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.animal.chicken.Chicken;
@@ -262,10 +264,15 @@ public final class Husbandry {
         return null;
     }
 
+    /** The same kind, or a horse and a donkey (their young is a mule, as in vanilla). */
+    private static boolean pairs(Animal a, Animal o) {
+        return a.getType() == o.getType() || a instanceof Horse && o instanceof Donkey || a instanceof Donkey && o instanceof Horse;
+    }
+
     /** The nearest ready one of its kind, or null. */
     static Animal partner(Animal a) {
         return a.level().getEntitiesOfClass(Animal.class, a.getBoundingBox().inflate(PARTNER_RANGE),
-                        o -> o != a && o.getType() == a.getType() && o.isAlive() && livestock(o) && !o.isInLove() && lack(o) == null)
+                        o -> o != a && pairs(a, o) && o.isAlive() && livestock(o) && !o.isInLove() && lack(o) == null)
                 .stream().min(java.util.Comparator.comparingDouble(a::distanceToSqr)).orElse(null);
     }
 
