@@ -61,6 +61,11 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
      * smaller ~2 s with flint, a bear ~3.5 s, a moose 6 s, a mammoth 17 s (4 hunters with bronze knives: 2.5 s).
      */
     private static final int WORK_PER_SIZE = 60;
+    /** Too heavy to carry whatever their hitbox says (a pig is lower than a sheep and far heavier). */
+    private static final net.minecraft.tags.TagKey<EntityType<?>> DRAG_ONLY = net.minecraft.tags.TagKey.create(
+            net.minecraft.core.registries.Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Mechanical.MODID, "drag_only"));
+    /** The heaviest bulk (width squared x height) still carried: a sheep's (0.9 x 0.9 x 1.3). A cow (1.13) is already too much. */
+    private static final float CARRY_BULK = 1.06F;
     private static final double WORK_EXPONENT = 0.75;
 
     /** 0: whole (wool/hide/feathers still on), 1: skinned/sheared/plucked, only the meat left. Synced for the renderer. */
@@ -181,10 +186,14 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
         return Butchery.isColossal(animal);
     }
 
-    /** A large body is dragged (by its limbs, one player each); a smaller one goes on one player's shoulders. */
+    /**
+     * Too heavy for one player's shoulders (and never hung on a horse): dragged by its limbs, one player each. Large ones,
+     * anything bulkier than a sheep and the mechanical:drag_only animals (pig, wild boar); birds are always carried.
+     */
     @Override
     public boolean isDragged() {
-        return isLarge();
+        return isLarge() || !isLight() && (animal.builtInRegistryHolder().is(DRAG_ONLY)
+                || animal.getWidth() * animal.getWidth() * animal.getHeight() > CARRY_BULK);
     }
 
     @Override
@@ -276,6 +285,10 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
     /** Server: keeps it on its horse's flank; it falls off when the horse dies or is gone for 5 s. False: it isn't slung. */
     private boolean keepSlung(ServerLevel level) {
         if (slungHorse == null) return false;
+        if (isDragged()) { // hung before this size counted as too heavy: it comes down
+            unsling();
+            return false;
+        }
         if (level.getEntity(slungHorse) instanceof net.minecraft.world.entity.animal.equine.AbstractHorse horse && horse.isAlive()) {
             slungMissing = 0;
             if (entityData.get(SLUNG_ON) != horse.getId() * 2 + slungSide) entityData.set(SLUNG_ON, horse.getId() * 2 + slungSide);
@@ -535,7 +548,7 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
     @Override
     public boolean isPickable() {
         // carried on someone's shoulders it would sit in front of his eyes and catch every click
-        return tickCount >= HIDDEN_TICKS && (haulerId() < 0 || isLarge());
+        return tickCount >= HIDDEN_TICKS && (haulerId() < 0 || isDragged());
     }
 
     @Override

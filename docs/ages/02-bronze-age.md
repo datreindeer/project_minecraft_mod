@@ -1326,7 +1326,7 @@ fälgbitar med bronsspik), och två skaklar framåt. Hjulen rullar med farten. S
 - **Förråd:** **högerklicka på vagnen** med tom hand öppnar **18 platser** (2 rader), som en kista. Sparas med
   vagnen.
 - **Kärra med kista (storage cart):** högerklicka en **tom** vagn med en vanlig **Chest** så monteras kistan på flaket
-  (syns på vagnen). Högerklicka öppnar då **54 platser** (6 rader; förrådets 18 ingår). Kistan tar hela flaket:
+  (syns på vagnen). Högerklicka, med vad som helst i handen, öppnar då **54 platser** (6 rader; förrådets 18 ingår). Kistan tar hela flaket:
   inga kroppar ("The chest takes up the whole bed"). Ligger det kroppar på vagnen måste de av först. Kistan går inte att
   ta av; slå sönder vagnen så faller vagnen, kistan och allt innehåll ut. Hästen eller onagern drar den som vanligt.
 - Rovdjur: den som drar en lastad vagn (spelare eller häst) blir bytet, som med travoisen.
@@ -1394,7 +1394,12 @@ sig på bakbenen.
   vatten där den når botten utan att simma (+5 var halv sekund). Mätaren syns som en stapel ovanför rustningsraden
   medan du rider en häst eller sitter på en vagn (ett hästhjärta före varje stapel; grön, gul under hälften, röd när
   hästen är trött och blinkande mörkröd när den ligger). Advancement **Water Stop**: ge en trött häst vatten ur hink.
-- **Kroppar på sidorna:** bär du en kropp på axlarna (inte en stor som släpas) och högerklickar en tam, vuxen häst
+- **Förspänd häst:** en häst som drar något (Wheeled Cart, Wagon, plog) **vänder långsamt**: 40° i sekunden stillastående,
+  upp till 70° i sekunden i gång, så att ekipaget svänger i sin egen takt (du kan titta runt fritt, hästen kommer efter).
+  Riden går den högst ungefär 7 block i sekunden (fart 0,16). Gäller även en förspänd häst som en spelare leder i koppel.
+- **Spänn för från sadeln:** rid fram till en kärra, vagn eller plog (högst 4 block, eller titta på den): rutan vid
+  hårkorset visar **H Attach horse**, och greppnyckeln spänner för hästen du rider.
+- **Kroppar på sidorna:** bär du en kropp på axlarna (upp till ett fårs storlek; tyngre kan bara släpas) och högerklickar en tam, vuxen häst
   hänger den på hästens **vänstra** sida, nästa på den **högra**. Högst en per sida. Den hänger med huvudet nedåt mot
   flanken och följer med hästen (sparas över omladdning). Smyg + högerklicka kroppen med tom hand för att ta den på
   axlarna igen. Dör hästen faller kropparna av. De räknas som last för orken. Advancement **Pack Horse**: en på varje sida.

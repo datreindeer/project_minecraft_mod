@@ -49,7 +49,7 @@ public final class HaulingClient {
                 boolean mate = avatar instanceof Player player && com.mechanical.clan.Downed.carrying(player) != null;
                 if (c == null && !mate) return;
                 if (c == null) state.setRenderData(DRAGGING, false);
-                else if (c instanceof CarcassEntity body && body.isSlung() && !body.isLarge()) state.setRenderData(SLUNG, true);
+                else if (c instanceof CarcassEntity body && body.isSlung() && !body.isDragged()) state.setRenderData(SLUNG, true);
                 else state.setRenderData(DRAGGING, c.isDragged());
                 if (c != null && CarcassHauling.straining(c)) state.setRenderData(STRAIN, true);
                 state.rightHandItemState.clear();

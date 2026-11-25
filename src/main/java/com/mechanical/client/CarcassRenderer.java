@@ -274,7 +274,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
     /** Carried by the camera's player in first person: it would fill the screen. */
     private static boolean carriedByViewer(CarcassEntity carcass) {
         Minecraft mc = Minecraft.getInstance();
-        return !carcass.isLarge() && carcass.haulerId() >= 0 && mc.getCameraEntity() != null && carcass.haulerId() == mc.getCameraEntity().getId()
+        return !carcass.isDragged() && carcass.haulerId() >= 0 && mc.getCameraEntity() != null && carcass.haulerId() == mc.getCameraEntity().getId()
                 && mc.options.getCameraType().isFirstPerson();
     }
 
@@ -322,7 +322,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
             living.yBodyRot = living.yBodyRotO = living.yHeadRot = living.yHeadRotO = 180.0F;
             living.setYRot(180.0F);
         }
-        Entity hauler = carcass.isLarge() ? null : carcass.hauler();
+        Entity hauler = carcass.isDragged() ? null : carcass.hauler();
         LivingEntity horse = carcass.slungHorse();
         state.pose = horse != null ? Pose.HORSE : carcass.hungAt() != null ? Pose.HUNG : hauler != null ? (carcass.isSlung() ? Pose.SLUNG : Pose.CARRIED) : Pose.LYING;
         boolean skinned = carcass.stage() > 0;
@@ -332,7 +332,7 @@ public class CarcassRenderer extends EntityRenderer<CarcassEntity, CarcassRender
         // skinned/plucked: raw red flesh look (the vanilla hurt tint); a sheared sheep already looks bare
         // carried the legs hang stiff from the body; hung they hang from the hook (HUNG) instead of sagging sideways
         if (state.pose == Pose.LYING) state.animal.setRenderData(CARCASS, true);
-        if (state.pose == Pose.LYING && carcass.isLarge() && carcass.haulerId() >= 0) {
+        if (state.pose == Pose.LYING && carcass.isDragged() && carcass.haulerId() >= 0) {
             int held = 0;
             for (int i = 0; i < CarcassEntity.MAX_HAULERS; i++) if (carcass.haulerId(i) >= 0) held |= 1 << i;
             state.animal.setRenderData(GRIP, held);

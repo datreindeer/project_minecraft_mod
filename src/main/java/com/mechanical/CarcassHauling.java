@@ -41,8 +41,9 @@ import net.neoforged.neoforge.registries.DeferredItem;
 /**
  * Getting a kill back to camp, and butchering it properly there.
  * <ul>
- * <li>Sneak + right-click a carcass with an empty hand: a small or medium body goes on your shoulders (medium ones slow
- * you and stop you sprinting), a large one is dragged along behind you (slower still). Both hands are full: no item can be
+ * <li>Sneak + right-click a carcass with an empty hand: a body up to a sheep's size goes on your shoulders (all but small
+ * ones slow you and stop you sprinting), a heavier one (pig, cow and up, {@link CarcassEntity#isDragged}) is dragged
+ * along behind you (slower still). Both hands are full: no item can be
  * used or placed, nor used on an animal (only the Travois and the body itself react), an attack or a hard hit (4+ damage)
  * drops it, and right-clicking a block puts it down there. Right-click a dragged body again to let go. Players show it:
  * both arms up holding the body on the shoulders, or both hands on the dragged one's leg, tugging at every step
@@ -84,6 +85,15 @@ public final class CarcassHauling {
     static final double STRAIN_CREEP = 0.1, SLOW_STRAIN = 0.7;
     /** Most degrees a dragged body turns per tick towards its pullers (smooth, no snapping round). */
     static final float TURN_RATE = 8.0F;
+    /** Fastest a dragged body goes (blocks a tick, 5 a second): however far ahead its pullers are, it never leaps after them. */
+    static final double MAX_DRAG = 0.25;
+    /**
+     * Several pullers: it turns towards the middle of them, gently ({@link #MULTI_TURN_DAMPING} of what is left, at most
+     * {@link #MULTI_TURN_RATE} degrees a tick) and not at all within {@link #MULTI_TURN_SLACK} degrees, or while that middle is
+     * nearer than {@link #MULTI_TURN_REACH} (pullers on opposite sides: no way to face, turning there spun it round and round).
+     */
+    static final float MULTI_TURN_RATE = 3.0F, MULTI_TURN_DAMPING = 0.15F, MULTI_TURN_SLACK = 6.0F;
+    static final double MULTI_TURN_REACH = 1.5;
     static final Identifier MANY_HANDS = Identifier.fromNamespaceAndPath(MODID, "wilderness/many_hands"),
             MOVING_A_MOUNTAIN = Identifier.fromNamespaceAndPath(MODID, "wilderness/moving_a_mountain"),
             ALL_HANDS = Identifier.fromNamespaceAndPath(MODID, "wilderness/elkwight_all_hands");
@@ -228,6 +238,7 @@ public final class CarcassHauling {
         int need = c.pullersNeeded();
         double strength = pullStrength(c, n);
         if (pulling > 0) pull = pull.scale(strength / pulling);
+        if (pull.length() > MAX_DRAG) pull = pull.normalize().scale(MAX_DRAG);
         // in water it floats half under like a loose body (CarcassEntity#tick) instead of sinking
         boolean afloat = c.getFluidHeight(FluidTags.WATER) > c.getBbHeight() * 0.5;
         double fall = afloat ? Math.min(c.getDeltaMovement().y + 0.01, 0.06)
@@ -236,9 +247,11 @@ public final class CarcassHauling {
         c.setDeltaMovement(0, afloat || !c.onGround() ? fall : 0, 0);
         // head end round towards the pullers, a little each tick
         Vec3 to = centre.scale(1.0 / n).subtract(c.position()).multiply(1, 0, 1);
-        if (to.length() > 0.3) {
-            float target = (float) Math.toDegrees(Math.atan2(-to.x, to.z)), turn = (float) (TURN_RATE * strength);
-            c.setYRot(c.getYRot() + Mth.clamp(Mth.wrapDegrees(target - c.getYRot()), -turn, turn));
+        if (to.length() > (n > 1 ? MULTI_TURN_REACH : 0.3)) {
+            float target = (float) Math.toDegrees(Math.atan2(-to.x, to.z)), left = Mth.wrapDegrees(target - c.getYRot());
+            if (n > 1) left = Math.abs(left) < MULTI_TURN_SLACK ? 0 : left * MULTI_TURN_DAMPING;
+            float turn = (float) ((n > 1 ? MULTI_TURN_RATE : TURN_RATE) * strength);
+            c.setYRot(c.getYRot() + Mth.clamp(left, -turn, turn));
         }
         if (c instanceof CarcassEntity body) bleed(body, c.position(), true);
         if (c.tickCount % 40 == 0 && n < need && pulling > 0) tellPullers(c); // keeps telling them while they strain
@@ -255,12 +268,12 @@ public final class CarcassHauling {
     }
 
     /**
-     * Client, own player, after it moved: a body too heavy for its pullers holds him within {@link #GRIP_REACH} +
+     * Client, own player, after it moved: a body too heavy for its pullers, or dragged by several, holds him within {@link #GRIP_REACH} +
      * {@link #TETHER_SLACK} of his grip, like a rope (as TravoisEntity#tether; never pulled in from further than he was).
      */
     static void tether(Player mover, HeavyLoad c) {
         int slot = c.slotOf(mover);
-        if (slot < 0 || !straining(c)) return;
+        if (slot < 0 || c.haulerCount() < 2 && !straining(c)) return;
         Vec3 grip = c.gripPoint(slot, 1.0F);
         Vec3 off = mover.position().subtract(grip).multiply(1, 0, 1);
         double d = off.length(), max = GRIP_REACH + TETHER_SLACK;

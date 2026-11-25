@@ -64,11 +64,13 @@ merge(A / "lang/en_us.json", {f"item.mechanical.{k}": v for k, v in ITEMS.items(
     "message.mechanical.horse.resting": "The horse is too exhausted to ride. Let it rest, or give it water",
     "message.mechanical.horse.sides_full": "Both sides of the horse already carry a body",
     "message.mechanical.horse.slung": "The body hangs on the horse's side. Sneak + right-click it to take it back",
+    "message.mechanical.horse.too_heavy": "Too heavy to hang on a horse. Drag it, or load it on a travois, cart or wagon",
     "message.mechanical.wagon.unhitched": "Unhitched",
     # the grab key (HarnessClient) and its hint box (TravoisEntity#hints)
     "key.mechanical.harness": "Grab / Release Cart or Wagon",
     "message.mechanical.grab_hint": "Press %s to grab",
     "hint.mechanical.grab": "Grab",
+    "hint.mechanical.attach": "Attach horse",
     "hint.mechanical.release": "Release",
     "hint.mechanical.unhitch": "Unhitch",
     "hint.mechanical.hitch_horses": "Hitch horses",

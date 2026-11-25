@@ -40,6 +40,7 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
  * {@link #EXHAUSTED}: it stops, throws its rider and lies down (client/wildlife/TameHorseRenderer) until it has
  * rested back to {@link #RISE}. Standing still rests it; water fills it fast: a Water Bucket used on it, or standing in
  * water it can drink without swimming. A horse in a wagon team holds the whole team to the slower of the two.</li>
+ * <li>Hitched, it turns slowly (slowest standing) and its ridden speed is capped ({@link #riddenYaw}, {@link #riddenSpeed}).</li>
  * <li>Sneak + right-click a horse hitched to a wagon: it comes out of the team ({@link WagonEntity#release}).</li>
  * <li>Right-click a tamed horse while carrying a body on your shoulders: it hangs on the horse's side, one per side
  * ({@link CarcassEntity#slingOn}); sneak + right-click the body to take it back onto your shoulders.</li>
@@ -72,6 +73,38 @@ public final class HorseWork {
             .builder(() -> false).serialize(Codec.BOOL.fieldOf("value")).sync(ByteBufCodecs.BOOL).build());
     /** Server: where each horse was at its last check. */
     private static final java.util.Map<Entity, Vec3> LAST_POS = new java.util.WeakHashMap<>();
+
+    /**
+     * A hitched horse swings its vehicle round at the vehicle's pace: degrees a tick it turns standing and at a walk
+     * ({@link #WALKING} blocks a tick of velocity), and the most movement speed it uses under a rider (about 7 blocks a second).
+     */
+    static final float TURN_STANDING = 2.0F, TURN_WALKING = 3.5F, HITCHED_SPEED = 0.16F;
+    static final double WALKING = 0.15;
+
+    /** {@code from} turned towards {@code wanted} as far as a hitched {@code horse} turns in a tick. */
+    private static float hitchedTurn(AbstractHorse horse, float from, float wanted) {
+        float rate = net.minecraft.util.Mth.lerp((float) Math.min(1, horse.getDeltaMovement().horizontalDistance() / WALKING), TURN_STANDING, TURN_WALKING);
+        return from + net.minecraft.util.Mth.clamp(net.minecraft.util.Mth.wrapDegrees(wanted - from), -rate, rate);
+    }
+
+    /** Both sides (AbstractHorseMixin; the rider's client drives): the yaw a ridden horse takes this tick, {@code wanted} the rider's. */
+    public static float riddenYaw(AbstractHorse horse, float wanted) {
+        return TravoisEntity.pulling(horse) == null ? wanted : hitchedTurn(horse, horse.getYRot(), wanted);
+    }
+
+    /** Both sides (AbstractHorseMixin): a ridden horse's speed, capped while it is hitched. */
+    public static float riddenSpeed(AbstractHorse horse, float speed) {
+        return TravoisEntity.pulling(horse) == null ? speed : Math.min(speed, HITCHED_SPEED);
+    }
+
+    /** Server, after its tick: a hitched horse led on a lead turns at the same pace as a ridden one. */
+    @SubscribeEvent
+    static void turnSlowlyOnTheLead(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof AbstractHorse horse) || horse.level().isClientSide() || horse.getControllingPassenger() != null
+                || !(horse.getLeashHolder() instanceof Player) || TravoisEntity.pulling(horse) == null) return;
+        horse.setYRot(hitchedTurn(horse, horse.yRotO, horse.getYRot()));
+        horse.yBodyRot = hitchedTurn(horse, horse.yBodyRotO, horse.yBodyRot);
+    }
 
     public static void init() {
     }
@@ -242,7 +275,11 @@ public final class HorseWork {
 
     /** Server: {@code player} hangs the body on his shoulders on {@code horse}'s first free side. False: it can't take one. */
     static boolean sling(Player player, CarcassEntity carcass, AbstractHorse horse) {
-        if (carcass.isLarge() || !horse.isTamed() || horse.isBaby()) return false;
+        if (!horse.isTamed() || horse.isBaby()) return false;
+        if (carcass.isDragged()) {
+            if (!player.level().isClientSide()) player.sendOverlayMessage(Component.translatable("message.mechanical.horse.too_heavy"));
+            return false;
+        }
         if (player.level().isClientSide()) return true;
         int used = 0;
         for (CarcassEntity c : sideCarcasses(horse)) used |= 1 << c.slungSide();

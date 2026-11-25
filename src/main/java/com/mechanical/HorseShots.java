@@ -188,7 +188,7 @@ public final class HorseShots {
         HorseWork.setStamina(partner, 20);
         p.startRiding(lead, true, true);
         pack = horse(level, base.add(6, 0, 4), 0);
-        body(level, EntityTypes.PIG, pack, 0);
+        body(level, EntityTypes.SHEEP, pack, 0);
         body(level, EntityTypes.RABBIT, pack, 1);
         tired = horse(level, base.add(-6, 0, 4), 30);
         HorseWork.setStamina(tired, 0);
