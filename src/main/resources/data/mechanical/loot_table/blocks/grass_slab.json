@@ -5,22 +5,37 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "mechanical:dirt_slab",
-          "modifier": [
+          "type": "minecraft:alternatives",
+          "children": [
             {
-              "type": "minecraft:set_count",
-              "count": 2,
-              "condition": {
-                "type": "minecraft:match_block",
-                "blocks": "mechanical:grass_slab",
-                "state": {
-                  "type": "double"
+              "type": "minecraft:item",
+              "name": "mechanical:grass_slab",
+              "modifier": [
+                {
+                  "type": "minecraft:set_count",
+                  "count": 2,
+                  "condition": {
+                    "type": "minecraft:match_block",
+                    "blocks": "mechanical:grass_slab",
+                    "state": {
+                      "type": "double"
+                    }
+                  }
+                },
+                {
+                  "type": "minecraft:explosion_decay"
                 }
-              }
+              ],
+              "condition": "minecraft:tool/can_silk_touch"
             },
             {
-              "type": "minecraft:explosion_decay"
+              "type": "minecraft:item",
+              "name": "minecraft:dirt",
+              "modifier": [
+                {
+                  "type": "minecraft:explosion_decay"
+                }
+              ]
             }
           ]
         }

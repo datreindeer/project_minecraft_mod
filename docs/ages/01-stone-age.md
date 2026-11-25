@@ -2008,6 +2008,10 @@ framför bröstet, hårknut, flätor över axlarna, skägg ner på bröstet, fj�
   Crude Bow, 3 Tusk + 2 Cordage → Tusk Dagger, 2 Antler → 3 Bone Fish Hooks. Fylls på varje morgon. Ingen handel när de är arga.
   **Sällsynt:** 1 Elder av 8 (i en Traders-stam 1 av 3) har också **4 Leather + 1 Antler → 3 Potato**, en gång om dagen.
   Det är spelets enda källa till potatis (se `docs/farming.md`, Rotfrukter).
+  **Handelsrutan** är karavanernas egen (`CaravanTrade`, inte vanillas): varje byte är en rad under *For Sale* med varan,
+  hur många gånger till, och priset som små ikoner av bytesvarorna (och mynt om bytet kostar mynt). Ingen kassa (stammen
+  betalar alltid). Klick byter en gång; servern kontrollerar avstånd, ilska och att du har varorna. Samma ruta för Miner och
+  besökande stammars ledare (*Trade* i pratrutan). Ryktesrabatten gäller som förut.
 
 ### Lägerålder och räder
 Ju längre du håller eld vid liv på samma plats, desto mer syns lägret, och till slut kommer fientliga stammar på natten.
@@ -2280,6 +2284,18 @@ spawners, Hero of the Village-gåvor, fiske (även skräpet: inga spön, bågar 
 koppar …), ädelstenar, lapis, redstone, förtrollat, smithing templates, kompass/karta, hinkar, räls, crossbow m.m.
 Det som är kvar (mat, kol, facklor, ben, frön, skivor, name tags …) ligger kvar, och kistor får också 2–4 primitiva saker
 (sticks, flint, plant fibre, cordage, ben, twine, rocks, frön).
+
+**Fynd i gamla kistor** (`scripts/gen_data.py`, `mod_loot`): varje strukturkista får en pool till med modets saker efter
+hur djup eller farlig platsen är (inte arkeologi, tunnor, dispensers eller startkistan):
+- **Vanliga** (Shipwreck Supply/Map, Ruined Portal, Igloo, Outpost, Abandoned Camp, Underwater Ruin Small), 1–2 dragningar:
+  Flint Knife, Flint Axe, Bone Needle, Flax Seeds, Nettle Seeds, Raw Hide, 1–4 Copper Coin, ibland Rough Amber.
+- **Djupa** (Dungeon, Mineshaft, Desert/Jungle Temple, Shipwreck Treasure, Underwater Ruin Big, Nether Fortress, Bastion,
+  Trial Chambers), 1–3: 2–8 Copper Coin, Silver Coin, Tin Nugget, Bronze Nugget, ibland Bronze Ingot, Copper Knife, Rough
+  Garnet, Rough Amber, Amber.
+- **Skatter** (Stronghold, Ancient City, Bastion Treasure, End City, Woodland Mansion, Buried Treasure, Trial Chambers
+  Reward, Abandoned Camp hemlig kista), 1–3: Silver Coin, Gold Coin, Silver Ingot, Bronze Ingot, Garnet, Amber, Ruby,
+  Sapphire, Celestine, Gold Ring, Gold Necklace, Bronze Knife (och lite koppar).
+- **Byarnas kistor** har 1–3 Copper Coin och Flax Seeds där vanilla hade smaragder.
 
 ### Monstrens utrustning
 Monster spawnar **utan rustning av järn, guld, chainmail eller diamant**. Vapen de behöver för att slåss (skelettens
@@ -2941,16 +2957,18 @@ Bricks direkt.
 
 **Turf** (formlöst) → 1: `Dirt + Plant Fibre`
 
-**Dirt Slab** → 6: `[Dirt][Dirt][Dirt]`. Beter sig som jord: gräs från ett Grass Block eller en **Grass Slab** intill kryper
+**Dirt Slab** → 3: `[Dirt][Dirt][Dirt]` (en Dirt per slab, eftersom en bruten slab ger en hel Dirt). Beter sig som jord: gräs från ett Grass Block eller en **Grass Slab** intill kryper
 över på den (som på Dirt) så den blir en Grass Slab, och en Grass Slab sprider gräs till Dirt. Under ett tätt block (eller i
 vatten) dör gräset tillbaka till Dirt Slab. Shovel → **Dirt Path Slab** (behåller halv/hel). Grass Slab har gräsets
 årstidsfärg och blir **snötäckt** med snö ovanpå, och en nedre slab (som snö inte kan ligga på) när det snöar på den; den
-tinar när det är varmt nog att smälta snö. Alla tre släpper Dirt Slab (2 för en dubbel). Advancement: *Half a Field*.
+tinar när det är varmt nog att smälta snö. Alla tre släpper **en hel Dirt**, både halv och dubbel (en dubbel är ett block
+jord: två slabs för 2 Dirt ger 1 tillbaka, aldrig 2, så inget kan dupliceras); med **Silk Touch** slabben själv (2 för en dubbel). Advancement: *Half a Field*.
 
 **Markslabs och marktrappor** (terrängplanen fas 2): 3 i rad → 6 slabs, trappform → 4 trappor, av Dirt (**Dirt Stairs**),
 Coarse Dirt (**Coarse Dirt Slab/Stairs**), Podzol (**Podzol Slab**), Sand och Red Sand (**Sand/Red Sand Slab/Stairs**, faller
 inte), Gravel, Moss Block, Mud, Peat, Loess, Wood Ash och Burnt Soil (**... Slab**). Dirt Stairs växer till **Grass Stairs** som Dirt
-Slab (årstidsfärg, snöig, dör under tätt block, släpper Dirt Stairs); Podzol Slab släpper Dirt Slab utan Silk Touch.
+Slab (årstidsfärg, snöig, dör under tätt block, släpper Dirt Stairs); Podzol Slab görs 3 → 3 och släpper
+en hel Dirt utan Silk Touch (halv som dubbel), med Silk Touch sig själv.
 Worldgen lägger dem på varje 1-blockssteg (`docs/biomes.md`). Advancement: *Soft Slopes*.
 
 **Packed Ice Slab** → 6: `[Packed Ice][Packed Ice][Packed Ice]`, **Packed Ice Stairs** → 4 (trappform). Halkiga som Packed

@@ -86,7 +86,7 @@ import net.minecraft.world.phys.Vec3;
  * <p>
  * Friendly by default and greets players now and then. Hitting one angers its whole group (same {@link #group}) at
  * that player for a day; killing one makes the group hostile to that player for good. Elders and the Miner (Miners) barter
- * (vanilla merchant screen, item-for-item offers).
+ * (their offers shown in the caravans' trade screen, CaravanTrade: item-for-item, or coins).
  */
 public class Tribesperson extends PathfinderMob implements Merchant, RangedAttackMob, Npc {
     private static final EntityDataAccessor<Integer> ROLE = SynchedEntityData.defineId(Tribesperson.class, EntityDataSerializers.INT);
@@ -130,7 +130,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     Vec3 killPos;
     long killTime;
     boolean wantsHome, carryingWood;
-    private long nextFireTend, corneredAt = -1000, nextGift;
+    private long nextFireTend, corneredAt = -1000, nextGift, tradeUntil;
     /** Set for a raider (people.Raids): what the raid is, saved with the entity. */
     RaidGoal.State raid;
     /** Where the group is going to set up a new camp (SetUpCampGoal); since when it has had no fire. */
@@ -577,7 +577,6 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             raid.loot.forEach(s -> spawnAtLocation(level, s)); // the stolen food back
             raid.loot.clear();
         }
-        if (tradingPlayer != null) tradingPlayer.closeContainer();
         // a caravan leader's purse: what is left in it falls out as coins
         if (stock != null && stock.purse > 0 && level() instanceof ServerLevel level) {
             int[] coins = com.mechanical.Coins.split(stock.purse);
@@ -632,6 +631,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         }
         if (getTarget() == null) tendWounds(level);
         restock(level); // elders, and envoys of any role
+        if (tradingPlayer != null && (now > tradeUntil || !stillValid(tradingPlayer))) tradingPlayer = null; // the trade screen has no close packet
         if (getPose() == Pose.CROUCHING && !isWorking()) setPose(Pose.STANDING);
         if (getPose() == Pose.SLEEPING && !isSleeping()) setPose(Pose.STANDING);
         // the player's swimming pose while swimming somewhere (FloatGoal keeps the head above water, so nobody drowns)
@@ -875,7 +875,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             OakQuests.open(sp, this);
             return InteractionResult.SUCCESS_SERVER;
         }
-        if (isEnvoy() && hand == InteractionHand.MAIN_HAND && tradingPlayer == null && getTarget() == null && player instanceof net.minecraft.server.level.ServerPlayer sp) {
+        if (isEnvoy() && hand == InteractionHand.MAIN_HAND && getTarget() == null && player instanceof net.minecraft.server.level.ServerPlayer sp) {
             getNavigation().stop();
             getLookControl().setLookAt(player);
             TribeVisits.openDialog(sp, this);
@@ -885,7 +885,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             say(player, Component.translatable("chat.mechanical.tribesperson.no_trade_stranger"));
             return InteractionResult.CONSUME;
         }
-        if (!barters() || tradingPlayer != null || getTarget() != null) {
+        if (!barters() || getTarget() != null) {
             if (hand == InteractionHand.MAIN_HAND) say(player, Component.translatable("chat.mechanical.tribesperson.greet." + role().id() + "." + getRandom().nextInt(TribeRole.GREETINGS)));
             return InteractionResult.CONSUME;
         }
@@ -904,19 +904,22 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
                 || leader && visit == null && Settlements.of(this) != null; // a settled camp's leader talks roads (RoadBuilding)
     }
 
-    /** Opens the barter screen, prices following the player's standing (not while angry or busy, nor for strangers they won't trade with). */
+    /**
+     * Opens the trade screen (CaravanTrade, the caravans' own): a caravan leader's goods and purse, or everyone else's barter
+     * offers, prices following the player's standing (not while angry or busy, nor for strangers they won't trade with).
+     */
     void openTrade(Player player) {
-        if (stock != null && player instanceof net.minecraft.server.level.ServerPlayer sp) { // a caravan leader: his own screen
-            getNavigation().stop();
-            CaravanTrade.open(sp, this);
-            return;
-        }
-        if (tradingPlayer != null || getTarget() != null || isAngryAt(player) || tribe() != null && !tribe().trades(player)) return;
+        if (!(player instanceof net.minecraft.server.level.ServerPlayer sp)) return;
         getNavigation().stop();
-        for (MerchantOffer offer : getOffers())
-            offer.setSpecialPriceDiff(tribe() != null && !Caravans.isExchange(offer) ? tribe().priceDiff(player, offer.getBaseCostA().getCount()) : 0);
-        setTradingPlayer(player);
-        openTradingScreen(player, getDisplayName(), 1);
+        CaravanTrade.open(sp, this);
+    }
+
+    /** {@code player} has the trade screen open: stand still for a while (refreshed on every trade). */
+    void trading(Player player) {
+        tradingPlayer = player;
+        tradeUntil = level().getGameTime() + 600;
+        getNavigation().stop();
+        getLookControl().setLookAt(player);
     }
 
     /** One elder in this many offers seed potatoes (in a trading tribe one in {@link #POTATO_ODDS_TRADERS}). */
@@ -985,10 +988,15 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
 
     @Override
     public void notifyTrade(MerchantOffer offer) {
+        if (tradingPlayer != null) traded(tradingPlayer, offer);
+    }
+
+    /** {@code player} took {@code offer} once (CaravanTrade): used up once, standing and advancements. */
+    void traded(Player player, MerchantOffer offer) {
         offer.increaseUses();
-        if (tradingPlayer != null && tribe() != null) tribe().addReputation(tradingPlayer, Tribe.TRADE);
-        if (tradingPlayer instanceof net.minecraft.server.level.ServerPlayer sp && Caravans.isGem(offer.getBaseCostA())) TribeVisits.award(sp, "caravan_gem");
-        if (tradingPlayer instanceof net.minecraft.server.level.ServerPlayer sp && role() == TribeRole.MINER) TribeVisits.award(sp, "miner_trade");
+        if (tribe() != null) tribe().addReputation(player, Tribe.TRADE);
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp && Caravans.isGem(offer.getBaseCostA())) TribeVisits.award(sp, "caravan_gem");
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp && role() == TribeRole.MINER) TribeVisits.award(sp, "miner_trade");
     }
 
     @Override

@@ -113,4 +113,16 @@ fortfarande (vanillas handlare ersätts, storvilt på vagnen).
 
 ## Kvar / inte gjort
 - Flankvakterna och ledaren går på sina platser bredvid och bakom djurhållaren, inte på stigen själv.
-- Rabatt efter rykte (som stammarnas byteshandel) gäller inte i den nya rutan; handel höjer ryktet som förut.
+- Rabatt efter rykte gäller inte för karavaner; handel höjer ryktet som förut.
+
+## E. Stammarnas handel i samma ruta (v0.211.0)
+Elders, Miner och besökande stammars ledare (*Trade* i pratrutan) använder nu också `CaravanTradeScreen` i stället för
+vanillas handelsmeny. Deras `MerchantOffer`s blir `CaravanTrade.Deal`s, en per erbjudande i samma ordning
+(`CaravanTrade.barterDeal`):
+- Varor mot mynt → köp (*They Buy*), priset i koppar. Annars en försäljning (*For Sale*): mynt i kostnaden blir priset,
+  andra varor blir `Deal.cost` (bytesvaror), ritade som små ikoner med antal före mynten.
+- Ingen kassa (`purse` -1, döljs): stammen betalar alltid. Lagret = erbjudandets användningar kvar; fylls på varje morgon.
+- Ryktesrabatten (`Tribe.priceDiff`) gäller fortfarande på bytesvarorna.
+- Servern bestämmer: varje klick kontrolleras (`canTrade`: lever, inom 8 block, inte arg, inget mål, stammen handlar med
+  dig; index inom listan; varor och mynt finns) och svaret är det nya läget. Flera spelare kan handla samtidigt.
+  Stammedlemmen står still medan någon handlar (30 s efter senaste klicket eller tills spelaren går bort).

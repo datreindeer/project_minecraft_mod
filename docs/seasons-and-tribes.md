@@ -21,7 +21,7 @@
 | Stamchatt, gemensamma kistor, hemplats | Väntar. |
 | Världsålder | Den högsta åldern bland alla stammar. Sjunker aldrig. |
 | NPC-stammar | Följer världsåldern, men 0–1 ålder efter. När en NPC-stam går upp en ålder river den sina gamla byggnader, bygger nya och byter utrustning. |
-| Handel | **Byggd (2026-11-23).** All byteshandel med bybor går i **mynt** (koppar billigt, silver dyrare, guld värdefullt). **Handelskaravaner** kommer i sorter (trä, gruva, smycken, jakt, örter, samlande) med 4–5 personer, egen last och egen handelsruta med kassa och lager. Se [traders-plan.md](traders-plan.md). |
+| Handel | **Byggd (2026-11-23).** All byteshandel med bybor går i **mynt** (koppar billigt, silver dyrare, guld värdefullt). **Handelskaravaner** kommer i sorter (trä, gruva, smycken, jakt, örter, samlande) med 4–5 personer, egen last och egen handelsruta med kassa och lager. Stammarnas Elders, Miner och besökande ledare byter i **samma ruta** (bytesvaror som ikoner, ingen kassa, v0.211.0). Se [traders-plan.md](traders-plan.md). |
 | Dygn | 60 min: i snitt 30 min dag + 30 min natt. Längden på dag och natt varierar med säsongen. |
 | Kalender | 30 dagar/månad, 3 månader/säsong, 4 säsonger/år (360 dagar). En säsong = 90 h, ett år = 360 h. |
 | Start | Mitt i våren (dag 15 i vårens andra månad). |

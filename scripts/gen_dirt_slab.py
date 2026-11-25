@@ -2,14 +2,15 @@
 stairs of the terrain plan phase 2 (worldgen/SmoothGround lays them on 1-block steps).
 
 Blockstates and models on vanilla textures (the Grass Slab on grassy_slab like Turf, tinted by season, and a snowy look
-with snow on top and grass_block_snow sides), loot (all three drop Dirt Slabs, 2 for a double), the recipe 3 Dirt -> 6,
+with snow on top and grass_block_snow sides), loot (all three drop one full Dirt, half or double alike; Silk Touch gives
+the slab itself, 2 for a double), the recipe 3 Dirt -> 3 (one Dirt per slab, so breaking one for a Dirt can't dupe),
 the shovel's block transformer (vanilla's dirt path rule plus Dirt/Grass Slab -> Dirt Path Slab, type kept), tags, lang.
 Bottom slabs show the top half of the side texture (ground_slab / grassy_ground_slab), so grass, podzol and snow keep
 their fringe along the slab's top edge.
 
 Phase 2: Dirt/Grass Stairs (grass creeps on and off), Coarse Dirt Slab/Stairs, Podzol Slab, Sand and Red Sand Slab/Stairs
 (not falling), Gravel, Moss, Mud, Peat, Loess, Wood Ash and Burnt Soil Slabs: models, loot (itself; Grass Stairs -> Dirt Stairs,
-Podzol Slab -> Dirt Slab unless silk touch), recipes (3 in a row -> 6, stairs -> 4), shovel tag, slabs/stairs tags, lang.
+Podzol Slab -> Dirt unless silk touch, its recipe 3 -> 3 like the Dirt Slab's), recipes (3 in a row -> 6, stairs -> 4), shovel tag, slabs/stairs tags, lang.
 
 Generator order: after gen_earth.py (grassy_slab models), before gen_block_items.py, gen_unlocks.py, gen_advancements.py
 and gen_loot_format.py. Run: python scripts/gen_dirt_slab.py
@@ -133,8 +134,17 @@ def self_loot(b, drop):
                                                   "entries": [{"type": "minecraft:item", "name": M + drop}]}], "random_sequence": f"mechanical:blocks/{b}"}
 
 
+def dirt_loot(b):
+    """One full Dirt for a half or a double slab (a double is one block of earth: two crafted slabs, 2 Dirt, give 1 back, never
+    2), the slab itself with Silk Touch (2 for a double)."""
+    silk = {**slab_loot(b, b)["pools"][0]["entries"][0], "condition": "minecraft:tool/can_silk_touch"}
+    return {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:alternatives", "children": [
+        silk, {"type": "minecraft:item", "name": "minecraft:dirt", "modifier": [{"type": "minecraft:explosion_decay"}]}]}]}],
+        "random_sequence": f"mechanical:blocks/{b}"}
+
+
 for b in ("dirt_slab", "grass_slab", "dirt_path_slab"):
-    w(D / f"mechanical/loot_table/blocks/{b}.json", slab_loot(b, "dirt_slab"))
+    w(D / f"mechanical/loot_table/blocks/{b}.json", dirt_loot(b))
 
 
 def recipe(name, pattern, base, count):
@@ -142,7 +152,7 @@ def recipe(name, pattern, base, count):
                                               "key": {"#": base}, "result": {"id": M + name, "count": count}})
 
 
-recipe("dirt_slab", ["###"], "minecraft:dirt", 6)
+recipe("dirt_slab", ["###"], "minecraft:dirt", 3)  # 1:1, as a slab breaks into a full Dirt
 
 # ---- phase 2: ground slabs and stairs. name stem -> (base item for the recipe, textures, double-slab model)
 def cube(tex):
@@ -180,13 +190,9 @@ for stem, (base, tex, double) in GROUND.items():
                                                     "type=double": turned([d for _, d in kinds])}})
     else:
         w(A / f"blockstates/{b}.json", {"variants": slab_variants(b, double)})
-    recipe(b, ["###"], base, 6)
-    if stem == "podzol":  # like vanilla podzol: dirt unless silk touch
-        loot = slab_loot(b, "dirt_slab")
-        entry = loot["pools"][0]["entries"][0]
-        loot["pools"][0]["entries"] = [{"type": "minecraft:alternatives", "children": [
-            {**entry, "name": M + b, "condition": "minecraft:tool/can_silk_touch"}, entry]}]
-        w(D / f"mechanical/loot_table/blocks/{b}.json", loot)
+    recipe(b, ["###"], base, 3 if stem == "podzol" else 6)  # podzol 1:1: it breaks into a full Dirt
+    if stem == "podzol":  # like vanilla podzol: Dirt unless silk touch
+        w(D / f"mechanical/loot_table/blocks/{b}.json", dirt_loot(b))
     else:
         w(D / f"mechanical/loot_table/blocks/{b}.json", slab_loot(b, b))
     if stem in STAIRS:
