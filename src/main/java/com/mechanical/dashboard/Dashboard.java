@@ -28,7 +28,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class Dashboard {
     private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
-    private static HttpServer http;
+    private static volatile HttpServer http;
     private static volatile Snapshot.Json latest = new Snapshot.Json("{}", "[]", "[]", "{}");
 
     private Dashboard() {}
@@ -37,6 +37,7 @@ public final class Dashboard {
     static void onStarted(ServerStartedEvent event) {
         MinecraftServer server = event.getServer();
         if (!server.isDedicatedServer() || server instanceof net.minecraft.gametest.framework.GameTestServer || !ServerConfig.DASHBOARD.get()) return;
+        Snapshot.started();
         bind(ServerConfig.DASHBOARD_PORT.get());
     }
 
@@ -69,6 +70,15 @@ public final class Dashboard {
         }
     }
 
+    static boolean isRunning() {
+        return http != null;
+    }
+
+    /** Only our own loopback names may talk to us: a web page that rebinds its domain to 127.0.0.1 sends its own Host and gets 403 (DNS rebinding). */
+    static boolean allowedHost(String host, int port) {
+        return host != null && (host.equals("127.0.0.1:" + port) || host.equals("localhost:" + port) || host.equals("[::1]:" + port));
+    }
+
     public static synchronized void stop() {
         if (http == null) return;
         http.stop(0);
@@ -79,7 +89,9 @@ public final class Dashboard {
     private static void handle(HttpExchange ex) throws IOException {
         try (ex) {
             String path = ex.getRequestURI().getPath();
-            if (!ex.getRequestMethod().equals("GET")) {
+            if (!allowedHost(ex.getRequestHeaders().getFirst("Host"), ex.getLocalAddress().getPort())) {
+                send(ex, 403, "text/plain", "forbidden");
+            } else if (!ex.getRequestMethod().equals("GET")) {
                 send(ex, 405, "text/plain", "method not allowed");
             } else if (path.startsWith("/api/")) {
                 Snapshot.Json j = latest;
@@ -94,7 +106,7 @@ public final class Dashboard {
                 else send(ex, 200, "application/json", body);
             } else {
                 String file = path.equals("/") ? "index.html" : path.substring(1);
-                if (file.contains("..") || file.contains("\\")) {
+                if (file.contains("..") || file.contains("\\") || file.endsWith("/")) {
                     send(ex, 404, "text/plain", "not found");
                     return;
                 }

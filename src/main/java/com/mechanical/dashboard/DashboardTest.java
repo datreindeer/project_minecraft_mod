@@ -74,11 +74,14 @@ public final class DashboardTest {
 
         try (ServerSocket busy = new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
             Dashboard.bind(busy.getLocalPort()); // must only warn
+            check(h, !Dashboard.isRunning(), "an occupied port leaves the dashboard off");
         } catch (java.io.IOException e) {
             throw h.assertionException("dashboard: " + e);
         } finally {
             Dashboard.stop();
         }
+        check(h, Dashboard.allowedHost("127.0.0.1:8100", 8100) && Dashboard.allowedHost("localhost:8100", 8100) && Dashboard.allowedHost("[::1]:8100", 8100), "loopback hosts pass");
+        check(h, !Dashboard.allowedHost("evil.example:8100", 8100) && !Dashboard.allowedHost(null, 8100) && !Dashboard.allowedHost("127.0.0.1:9999", 8100), "other hosts are refused");
         h.succeed();
     }
 }

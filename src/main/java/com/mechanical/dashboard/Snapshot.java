@@ -24,9 +24,14 @@ public final class Snapshot {
     /** One rebuild: the strings /api/status|players|tribes|map serve. */
     public record Json(String status, String players, String tribes, String map) {}
 
-    private static final long START = System.currentTimeMillis();
+    private static volatile long start = System.currentTimeMillis();
 
     private Snapshot() {}
+
+    /** Uptime counts from here (ServerStartedEvent), not from class load. */
+    static void started() {
+        start = System.currentTimeMillis();
+    }
 
     public static Json build(MinecraftServer server) {
         return new Json(status(server), players(server), tribes(server), "{}");
@@ -37,7 +42,7 @@ public final class Snapshot {
         var info = ModList.get().getModContainerById(Mechanical.MODID).orElseThrow().getModInfo();
         o.addProperty("name", info.getDisplayName());
         o.addProperty("version", info.getVersion().toString());
-        o.addProperty("uptimeSec", (System.currentTimeMillis() - START) / 1000);
+        o.addProperty("uptimeSec", (System.currentTimeMillis() - start) / 1000);
         float mspt = server.getAverageTickTimeNanos() / 1_000_000f;
         o.addProperty("tps", Math.round(Math.min(server.tickRateManager().tickrate(), 1000f / Math.max(mspt, 0.001f)) * 10) / 10f);
         o.addProperty("mspt", Math.round(mspt * 10) / 10f);
@@ -49,7 +54,7 @@ public final class Snapshot {
         int chunks = 0, entities = 0;
         for (ServerLevel level : server.getAllLevels()) {
             chunks += level.getChunkSource().getLoadedChunksCount();
-            for (var e : level.getAllEntities()) entities++;
+            entities += (int) java.util.stream.StreamSupport.stream(level.getAllEntities().spliterator(), false).count();
         }
         o.addProperty("loadedChunks", chunks);
         o.addProperty("entities", entities);
@@ -104,6 +109,11 @@ public final class Snapshot {
         else o.addProperty("tribe", c.name());
     }
 
+    /** Readable tribe name without lang files (a dedicated server has none of the mod's): the totem animal, as the lang line "%s Tribe" makes it. */
+    private static String tribeName(Tribe t) {
+        return t.oak() ? "Children of the Oak" : Character.toUpperCase(t.totem.charAt(0)) + t.totem.substring(1) + " Tribe";
+    }
+
     public static String tribes(MinecraftServer server) {
         Clans clans = Clans.get(server);
         JsonArray out = new JsonArray();
@@ -137,7 +147,7 @@ public final class Snapshot {
             JsonObject rep = new JsonObject();
             c.reputation().forEach((k, v) -> {
                 try {
-                    rep.addProperty(Tribe.of(UUID.fromString(k)).name().getString(), v);
+                    rep.addProperty(tribeName(Tribe.of(UUID.fromString(k))), v);
                 } catch (IllegalArgumentException e) {
                     // not a tribe id
                 }
