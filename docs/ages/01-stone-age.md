@@ -1923,7 +1923,7 @@ gruppen **en gång** när trädets omgivning först laddas (sparas i altaret, ä
 - **Worshippers**: har var sin plats runt stammen, sitter och ber med händerna lyfta mot trädet.
 - **Light-Bearers**: går långsamt runt eken med ett tänt ljus i varje hand (lågor, och de lyser upp omgivningen med
   dynamiskt ljus).
-- **Keeper** (ledaren): krona av giant deer-horn (Antler Crown), guldkantad mörkgrön dräkt med vit pälscape och
+- **Keeper** (ledaren): krona av giant deer-horn (Antler Crown), guldkantad mörkgrön dräkt med lövmantel och
   **Verdant Staff** med gröna partiklar och sken. Högerklick öppnar **questlinjen**.
 
 **Relation:** de är en stam som andra NPC-stammar (*Children of the Oak*, fridsamma, start 15) och syns på
@@ -1968,6 +1968,13 @@ ansiktet och pälsmantel i kylan, hudkappa på ryggen, stora halsband av tänder
 framför bröstet, hårknut, flätor över axlarna, skägg ner på bröstet, fjäderkrona i djungeln. Två av fyra i varje roll
 (tempererat) bär en tunika i stammens färg mot hudbyxor och mörkt bälte.
 
+- **Mantlar** (bara utseende; `scripts/gen_capes.py`, `client/people/TribeCapeLayer`): **Elder**, handelskaravanens **Trader**
+  (ledaren) och ekfolkets **Keeper** bär en mantel som höjer sig över axlarna, med skulpterade axelstycken, krage och spännen och
+  ett märke på ryggen. Tyget faller i veck, fladdrar bakåt när de går, viker undan för armar och ben och ligger på marken när de
+  sitter. Elder: stammens färg, ett hjortskallemärke, päls (varmt: ljust växttyg, djungel: papegojfjädrar), benplattor, hornspetsar
+  och bärnsten. Trader: karavanslagets tyg och märke, flätband, tofsar och mässingsspännen. Keeper: mossa, eklöv, bark, ekollon
+  och den gamla eken i guld. De ersätter den platta pälsmanteln och hudkappan på de tre.
+
 - **Klimat (v0.71.0):** varje stam bygger och klär sig efter klimatet där den bor, valt från biomet vid lägrets/byns mitt
   (ett jaktlag: där det föddes). Biomtaggar först, sedan temperatur:
   - **Kallt:** snöiga biom (`c:is_snowy`) och allt med bastemperatur under 0,15 (snöig slätt och taiga, Ice Spikes, Grove,
@@ -1976,13 +1983,13 @@ framför bröstet, hårknut, flätor över axlarna, skägg ner på bröstet, fj�
   - **Djungel:** djungel, gles djungel, bambudjungel, träsk, mangroveträsk och Willow Fen (`#is_jungle`, `c:is_swamp`).
   - **Tempererat:** allt annat.
 - **Kläder per klimat** (egna skins, rollens detaljer ovanpå: jägarens koger, rem, tandhalsband och krigsmålning, samlarens
-  förkläde och pung, fiskarens fiskbenshalsband, vedhuggarens armskydd, den äldstes mantel och bärnsten):
+  förkläde och pung, fiskarens fiskbenshalsband, vedhuggarens armskydd, den äldstes bärnsten):
   - *Kallt:* pälshuva med vit pälskant runt ansiktet (variant 4: huvan nere, pälskrage och pannband), lång hudrock till knät
     med pälskant och långa ärmar, pälsbyxor, pälsstövlar och ibland vantar. Ljusare hy.
   - *Tempererat:* som förut (hud, läder, flätade förkläden).
   - *Varmt:* lätta svepningar och kjolar av linne (växtfiber), bar överkropp för jägare och fiskare, huvudduk, sandaler. Mörkare hy.
   - *Djungel:* höftskynke (män) eller gräskjol och bröstsvepning (kvinnor), barfota, fjäderskrud på huvudet och nedför
-    nacken, armband, kroppsmålning i lera, ockra eller kol; den äldste bär en mantel av papegojfjädrar.
+    nacken, armband, kroppsmålning i lera, ockra eller kol; den äldstes mantel har papegojfjädrar.
   - **Stammens färg:** pannband, skärp, rockband och manschetter, huvudduk, höftskynken, fjäderspetsar och fållar färgas i
     stammens banderollfärg (skinnet har en grå mask som klienten färgar). Folk från före v0.71.0 klär sig tempererat.
 

@@ -36,6 +36,8 @@ public final class TribeIdlePoses {
             if (t.role() == com.mechanical.people.TribeRole.TRADER && t.caravanKind() != null) state.setRenderData(OLD, true);
             // the Miner's sack (EquipmentLayer) is render data too: set here, where it survives
             if (t.role() == com.mechanical.people.TribeRole.MINER && t.getPose() == Pose.STANDING) com.mechanical.client.EquipmentClient.wearMinerSack(state);
+            TribeCapeLayer.Cape cape = TribeCapeLayer.of(t);
+            if (cape != null) state.setRenderData(TribeCapeLayer.CAPE, cape);
             Identifier gear = gear(t.texture());
             if (gear != null) com.mechanical.client.EquipmentClient.wearTribeGear(state, gear);
         });
