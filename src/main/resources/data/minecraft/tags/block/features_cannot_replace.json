@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#mechanical:ancient_oak"
+    "#mechanical:ancient_oak",
+    "mechanical:waystone"
   ]
 }

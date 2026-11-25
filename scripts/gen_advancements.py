@@ -1862,6 +1862,10 @@ TABS["wilderness"][1].extend([
     ("burnt_hall", "into_the_ashes", "rune_blackstone", C, "The Burnt Hall",
      "Step into an Elkwight ruin in the Scorched Barrens: a Blackstone arena with glowing Rune Blackstone, thick with dark fog while its master lives",
      visit("elkwight_ruin")),
+    # Waystones (worldgen/Waystones, gen_waystone.py): linked pairs of rune stones, granted when one sends you to its twin
+    ("waystone", "chalk_downs", "waystone", G, "The Old Ways",
+     "Find a Waystone, a carved standing stone with glowing runes, rare in every land, and right-click it: you stand at once "
+     "beside its twin, 1000 to 10000 blocks away. Right-click that one to go back", by_code()),
 ])
 # nature that changes with time (docs/terrain-plan.md phases 5-7, worldgen/NatureClock and friends)
 TABS["wilderness"][1].extend([

@@ -1,0 +1,319 @@
+{
+  "variants": {
+    "facing=north,look=mossy,part=lower": {
+      "model": "mechanical:block/waystone_mossy_lower"
+    },
+    "facing=north,look=sand,part=lower": {
+      "model": "mechanical:block/waystone_sand_lower"
+    },
+    "facing=north,look=frost,part=lower": {
+      "model": "mechanical:block/waystone_frost_lower"
+    },
+    "facing=north,look=red,part=lower": {
+      "model": "mechanical:block/waystone_red_lower"
+    },
+    "facing=north,look=dark,part=lower": {
+      "model": "mechanical:block/waystone_dark_lower"
+    },
+    "facing=north,look=chalk,part=lower": {
+      "model": "mechanical:block/waystone_chalk_lower"
+    },
+    "facing=north,look=grey,part=lower": {
+      "model": "mechanical:block/waystone_grey_lower"
+    },
+    "facing=north,look=mossy,part=middle": {
+      "model": "mechanical:block/waystone_mossy_middle"
+    },
+    "facing=north,look=sand,part=middle": {
+      "model": "mechanical:block/waystone_sand_middle"
+    },
+    "facing=north,look=frost,part=middle": {
+      "model": "mechanical:block/waystone_frost_middle"
+    },
+    "facing=north,look=red,part=middle": {
+      "model": "mechanical:block/waystone_red_middle"
+    },
+    "facing=north,look=dark,part=middle": {
+      "model": "mechanical:block/waystone_dark_middle"
+    },
+    "facing=north,look=chalk,part=middle": {
+      "model": "mechanical:block/waystone_chalk_middle"
+    },
+    "facing=north,look=grey,part=middle": {
+      "model": "mechanical:block/waystone_grey_middle"
+    },
+    "facing=north,look=mossy,part=upper": {
+      "model": "mechanical:block/waystone_mossy_upper"
+    },
+    "facing=north,look=sand,part=upper": {
+      "model": "mechanical:block/waystone_sand_upper"
+    },
+    "facing=north,look=frost,part=upper": {
+      "model": "mechanical:block/waystone_frost_upper"
+    },
+    "facing=north,look=red,part=upper": {
+      "model": "mechanical:block/waystone_red_upper"
+    },
+    "facing=north,look=dark,part=upper": {
+      "model": "mechanical:block/waystone_dark_upper"
+    },
+    "facing=north,look=chalk,part=upper": {
+      "model": "mechanical:block/waystone_chalk_upper"
+    },
+    "facing=north,look=grey,part=upper": {
+      "model": "mechanical:block/waystone_grey_upper"
+    },
+    "facing=east,look=mossy,part=lower": {
+      "model": "mechanical:block/waystone_mossy_lower",
+      "y": 90
+    },
+    "facing=east,look=sand,part=lower": {
+      "model": "mechanical:block/waystone_sand_lower",
+      "y": 90
+    },
+    "facing=east,look=frost,part=lower": {
+      "model": "mechanical:block/waystone_frost_lower",
+      "y": 90
+    },
+    "facing=east,look=red,part=lower": {
+      "model": "mechanical:block/waystone_red_lower",
+      "y": 90
+    },
+    "facing=east,look=dark,part=lower": {
+      "model": "mechanical:block/waystone_dark_lower",
+      "y": 90
+    },
+    "facing=east,look=chalk,part=lower": {
+      "model": "mechanical:block/waystone_chalk_lower",
+      "y": 90
+    },
+    "facing=east,look=grey,part=lower": {
+      "model": "mechanical:block/waystone_grey_lower",
+      "y": 90
+    },
+    "facing=east,look=mossy,part=middle": {
+      "model": "mechanical:block/waystone_mossy_middle",
+      "y": 90
+    },
+    "facing=east,look=sand,part=middle": {
+      "model": "mechanical:block/waystone_sand_middle",
+      "y": 90
+    },
+    "facing=east,look=frost,part=middle": {
+      "model": "mechanical:block/waystone_frost_middle",
+      "y": 90
+    },
+    "facing=east,look=red,part=middle": {
+      "model": "mechanical:block/waystone_red_middle",
+      "y": 90
+    },
+    "facing=east,look=dark,part=middle": {
+      "model": "mechanical:block/waystone_dark_middle",
+      "y": 90
+    },
+    "facing=east,look=chalk,part=middle": {
+      "model": "mechanical:block/waystone_chalk_middle",
+      "y": 90
+    },
+    "facing=east,look=grey,part=middle": {
+      "model": "mechanical:block/waystone_grey_middle",
+      "y": 90
+    },
+    "facing=east,look=mossy,part=upper": {
+      "model": "mechanical:block/waystone_mossy_upper",
+      "y": 90
+    },
+    "facing=east,look=sand,part=upper": {
+      "model": "mechanical:block/waystone_sand_upper",
+      "y": 90
+    },
+    "facing=east,look=frost,part=upper": {
+      "model": "mechanical:block/waystone_frost_upper",
+      "y": 90
+    },
+    "facing=east,look=red,part=upper": {
+      "model": "mechanical:block/waystone_red_upper",
+      "y": 90
+    },
+    "facing=east,look=dark,part=upper": {
+      "model": "mechanical:block/waystone_dark_upper",
+      "y": 90
+    },
+    "facing=east,look=chalk,part=upper": {
+      "model": "mechanical:block/waystone_chalk_upper",
+      "y": 90
+    },
+    "facing=east,look=grey,part=upper": {
+      "model": "mechanical:block/waystone_grey_upper",
+      "y": 90
+    },
+    "facing=south,look=mossy,part=lower": {
+      "model": "mechanical:block/waystone_mossy_lower",
+      "y": 180
+    },
+    "facing=south,look=sand,part=lower": {
+      "model": "mechanical:block/waystone_sand_lower",
+      "y": 180
+    },
+    "facing=south,look=frost,part=lower": {
+      "model": "mechanical:block/waystone_frost_lower",
+      "y": 180
+    },
+    "facing=south,look=red,part=lower": {
+      "model": "mechanical:block/waystone_red_lower",
+      "y": 180
+    },
+    "facing=south,look=dark,part=lower": {
+      "model": "mechanical:block/waystone_dark_lower",
+      "y": 180
+    },
+    "facing=south,look=chalk,part=lower": {
+      "model": "mechanical:block/waystone_chalk_lower",
+      "y": 180
+    },
+    "facing=south,look=grey,part=lower": {
+      "model": "mechanical:block/waystone_grey_lower",
+      "y": 180
+    },
+    "facing=south,look=mossy,part=middle": {
+      "model": "mechanical:block/waystone_mossy_middle",
+      "y": 180
+    },
+    "facing=south,look=sand,part=middle": {
+      "model": "mechanical:block/waystone_sand_middle",
+      "y": 180
+    },
+    "facing=south,look=frost,part=middle": {
+      "model": "mechanical:block/waystone_frost_middle",
+      "y": 180
+    },
+    "facing=south,look=red,part=middle": {
+      "model": "mechanical:block/waystone_red_middle",
+      "y": 180
+    },
+    "facing=south,look=dark,part=middle": {
+      "model": "mechanical:block/waystone_dark_middle",
+      "y": 180
+    },
+    "facing=south,look=chalk,part=middle": {
+      "model": "mechanical:block/waystone_chalk_middle",
+      "y": 180
+    },
+    "facing=south,look=grey,part=middle": {
+      "model": "mechanical:block/waystone_grey_middle",
+      "y": 180
+    },
+    "facing=south,look=mossy,part=upper": {
+      "model": "mechanical:block/waystone_mossy_upper",
+      "y": 180
+    },
+    "facing=south,look=sand,part=upper": {
+      "model": "mechanical:block/waystone_sand_upper",
+      "y": 180
+    },
+    "facing=south,look=frost,part=upper": {
+      "model": "mechanical:block/waystone_frost_upper",
+      "y": 180
+    },
+    "facing=south,look=red,part=upper": {
+      "model": "mechanical:block/waystone_red_upper",
+      "y": 180
+    },
+    "facing=south,look=dark,part=upper": {
+      "model": "mechanical:block/waystone_dark_upper",
+      "y": 180
+    },
+    "facing=south,look=chalk,part=upper": {
+      "model": "mechanical:block/waystone_chalk_upper",
+      "y": 180
+    },
+    "facing=south,look=grey,part=upper": {
+      "model": "mechanical:block/waystone_grey_upper",
+      "y": 180
+    },
+    "facing=west,look=mossy,part=lower": {
+      "model": "mechanical:block/waystone_mossy_lower",
+      "y": 270
+    },
+    "facing=west,look=sand,part=lower": {
+      "model": "mechanical:block/waystone_sand_lower",
+      "y": 270
+    },
+    "facing=west,look=frost,part=lower": {
+      "model": "mechanical:block/waystone_frost_lower",
+      "y": 270
+    },
+    "facing=west,look=red,part=lower": {
+      "model": "mechanical:block/waystone_red_lower",
+      "y": 270
+    },
+    "facing=west,look=dark,part=lower": {
+      "model": "mechanical:block/waystone_dark_lower",
+      "y": 270
+    },
+    "facing=west,look=chalk,part=lower": {
+      "model": "mechanical:block/waystone_chalk_lower",
+      "y": 270
+    },
+    "facing=west,look=grey,part=lower": {
+      "model": "mechanical:block/waystone_grey_lower",
+      "y": 270
+    },
+    "facing=west,look=mossy,part=middle": {
+      "model": "mechanical:block/waystone_mossy_middle",
+      "y": 270
+    },
+    "facing=west,look=sand,part=middle": {
+      "model": "mechanical:block/waystone_sand_middle",
+      "y": 270
+    },
+    "facing=west,look=frost,part=middle": {
+      "model": "mechanical:block/waystone_frost_middle",
+      "y": 270
+    },
+    "facing=west,look=red,part=middle": {
+      "model": "mechanical:block/waystone_red_middle",
+      "y": 270
+    },
+    "facing=west,look=dark,part=middle": {
+      "model": "mechanical:block/waystone_dark_middle",
+      "y": 270
+    },
+    "facing=west,look=chalk,part=middle": {
+      "model": "mechanical:block/waystone_chalk_middle",
+      "y": 270
+    },
+    "facing=west,look=grey,part=middle": {
+      "model": "mechanical:block/waystone_grey_middle",
+      "y": 270
+    },
+    "facing=west,look=mossy,part=upper": {
+      "model": "mechanical:block/waystone_mossy_upper",
+      "y": 270
+    },
+    "facing=west,look=sand,part=upper": {
+      "model": "mechanical:block/waystone_sand_upper",
+      "y": 270
+    },
+    "facing=west,look=frost,part=upper": {
+      "model": "mechanical:block/waystone_frost_upper",
+      "y": 270
+    },
+    "facing=west,look=red,part=upper": {
+      "model": "mechanical:block/waystone_red_upper",
+      "y": 270
+    },
+    "facing=west,look=dark,part=upper": {
+      "model": "mechanical:block/waystone_dark_upper",
+      "y": 270
+    },
+    "facing=west,look=chalk,part=upper": {
+      "model": "mechanical:block/waystone_chalk_upper",
+      "y": 270
+    },
+    "facing=west,look=grey,part=upper": {
+      "model": "mechanical:block/waystone_grey_upper",
+      "y": 270
+    }
+  }
+}
