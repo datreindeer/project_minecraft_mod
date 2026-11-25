@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import com.mechanical.Calendar;
 import com.mechanical.CampAge;
@@ -32,6 +33,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
@@ -74,8 +76,10 @@ public final class Clans extends SavedData {
     public static final String[] AGES = com.mechanical.WorldAge.AGES;
     static final Identifier FOUNDED = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/found_tribe");
     static final Identifier GREW = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/grow_tribe");
-    /** Chunks a tribe's Fire Pit keeps loaded each way from its own: 1 is 3x3, which covers the camp zone (CampAge.RADIUS). */
-    public static final int LOAD_RADIUS = 1;
+    /** Chunks a tribe's Fire Pit (small or big) keeps loaded and holds as territory each way from its own: 2 is 5x5. */
+    public static final int LOAD_RADIUS = 2;
+    /** How far (chunks, each way) a big Fire Pit's territory may spread over its biome ({@link #recomputeTerritory}). */
+    public static final int TERRITORY_MAX = 16;
     static final TicketController PIT_TICKETS = new TicketController(Identifier.fromNamespaceAndPath(Mechanical.MODID, "tribe_pit"), Clans::validateTickets);
 
     public static final class Member {
@@ -130,14 +134,17 @@ public final class Clans extends SavedData {
         final Map<String, Integer> reputation;
         /** Members whose own standings are folded into {@link #reputation} ({@link #pool}); older saves fold members in as they show up. */
         final Set<UUID> pooled;
+        /** The chunks the tribe holds ({@link ChunkPos#pack}) in its pit's dimension ({@link #recomputeTerritory}); empty without a pit. */
+        final Set<Long> territory;
 
         Clan(UUID id, String name, Optional<GlobalPos> pit, List<Member> members, List<Identifier> advancements, Optional<Vote> vote,
              Optional<Integer> colour) {
-            this(id, name, pit, members, advancements, vote, colour, Map.of(), List.of());
+            this(id, name, pit, members, advancements, vote, colour, Map.of(), List.of(), List.of());
         }
 
         Clan(UUID id, String name, Optional<GlobalPos> pit, List<Member> members, List<Identifier> advancements, Optional<Vote> vote,
-             Optional<Integer> colour, Map<String, Integer> reputation, List<UUID> pooled) {
+             Optional<Integer> colour, Map<String, Integer> reputation, List<UUID> pooled, List<Long> territory) {
+            this.territory = new HashSet<>(territory);
             this.reputation = new HashMap<>(reputation);
             this.pooled = new HashSet<>(pooled);
             this.id = id;
@@ -157,7 +164,8 @@ public final class Clans extends SavedData {
                 Vote.CODEC.optionalFieldOf("vote").forGetter(c -> c.vote),
                 Codec.INT.optionalFieldOf("colour").forGetter(c -> Optional.of(c.colour)),
                 Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("reputation", Map.of()).forGetter(c -> c.reputation),
-                UUIDUtil.CODEC.listOf().optionalFieldOf("pooled", List.of()).forGetter(c -> List.copyOf(c.pooled))).apply(i, Clan::new));
+                UUIDUtil.CODEC.listOf().optionalFieldOf("pooled", List.of()).forGetter(c -> List.copyOf(c.pooled)),
+                Codec.LONG.listOf().optionalFieldOf("territory", List.of()).forGetter(c -> List.copyOf(c.territory))).apply(i, Clan::new));
 
         public String name() {
             return name;
@@ -186,6 +194,11 @@ public final class Clans extends SavedData {
             return colour;
         }
 
+        /** The chunks the tribe holds, packed ({@link ChunkPos#pack}), in its pit's dimension. Read only. */
+        public Set<Long> territory() {
+            return java.util.Collections.unmodifiableSet(territory);
+        }
+
         /**
          * A4: folds a member's own standings into the tribe's, which become the average over all members folded in so far
          * (decided: merging takes the average). A tribe missing on either side counts at that tribe's starting standing.
@@ -208,13 +221,8 @@ public final class Clans extends SavedData {
             return true;
         }
 
-        /** Chunks the Fire Pit keeps loaded each way: LOAD_RADIUS (3x3), or 2 (5x5) for a big Fire Pit (F12). */
-        int loadRadius(ServerLevel level) {
-            return isBigPit(level.getServer()) ? FirePit.BIG_LOAD_RADIUS : LOAD_RADIUS;
-        }
-
         /**
-         * Is the tribe's centre a big (3x3) Fire Pit? Gives 5x5 force-loading, more visiting bands at once (people.TribeVisits),
+         * Is the tribe's centre a big (3x3) Fire Pit? Gives territory over its biome ({@link Clans#recomputeTerritory}), more visiting bands at once (people.TribeVisits),
          * and later tribe features ask for it. False while the pit's chunk isn't loaded.
          */
         public boolean isBigPit(net.minecraft.server.MinecraftServer server) {
@@ -317,6 +325,7 @@ public final class Clans extends SavedData {
         Clan clan = new Clan(UUID.randomUUID(), name, Optional.of(pit),
                 List.of(new Member(player.getUUID(), player.getGameProfile().name(), LEADER, today, today)), List.of(), Optional.empty(), Optional.empty());
         clans.add(clan);
+        recomputeTerritory(player.level().getServer(), clan);
         invites.remove(player.getUUID());
         mergeIn(player, clan);
         award(player, FOUNDED);
@@ -335,6 +344,7 @@ public final class Clans extends SavedData {
         GlobalPos pit = freePitNear(player);
         if (pit == null) return false;
         clan.pit = Optional.of(pit);
+        recomputeTerritory(player.level().getServer(), clan);
         tell(player.level().getServer(), clan, Component.translatable("message.mechanical.clan.new_centre", player.getName()));
         setDirty();
         return true;
@@ -520,9 +530,13 @@ public final class Clans extends SavedData {
                 tell(server, clan, Component.translatable("message.mechanical.clan.disbanded", clan.name));
                 for (Member m : clan.members) keepStandings(server, clan, m.id);
                 clans.remove(clan);
+                clan.territory.clear();
                 refreshLocator(server);
             }
-            case VOTE_MOVE -> clan.pit = Optional.empty();
+            case VOTE_MOVE -> {
+                clan.pit = Optional.empty();
+                clan.territory.clear();
+            }
             case VOTE_LEADER -> {
                 if (candidate == null) return;
                 clan.leader().rank = ELDER;
@@ -536,9 +550,10 @@ public final class Clans extends SavedData {
     // ---------------------------------------------------------------- the camp lives on (docs/living-world-plan.md A2, A3)
 
     /**
-     * Each tribe's Fire Pit force-loads its chunk and the ones round it ({@link Clan#loadRadius}), so crops, animals and
+     * Each tribe's Fire Pit force-loads its chunk and the ones round it ({@link #LOAD_RADIUS}), so crops, animals and
      * furnaces carry on with nobody there; pits no tribe has any more (disbanded, moved, broken) are let go. A pit that is
-     * gone (only commands can do that) leaves the tribe without a centre, as a move vote does.
+     * gone (only commands can do that) leaves the tribe without a centre or territory, as a move vote does. A tribe with a
+     * pit but no territory (saves from before territories) gets it here, in save order, so the oldest tribe keeps contested chunks.
      */
     void keepPitsLoaded(MinecraftServer server) {
         Map<GlobalPos, Integer> want = new HashMap<>();
@@ -549,10 +564,13 @@ public final class Clans extends SavedData {
             if (level == null) continue;
             if (level.isLoaded(pit.pos()) && !FirePit.isPit(level.getBlockState(pit.pos()))) {
                 c.pit = Optional.empty();
+                c.territory.clear();
                 setDirty();
                 continue;
             }
-            want.put(pit, level.isLoaded(pit.pos()) ? c.loadRadius(level) : loaded.getOrDefault(pit, LOAD_RADIUS));
+            // only while the pit's chunk is loaded, so a big pit is seen as big; old radius-1 tickets are swapped for 5x5 below
+            if (c.territory.isEmpty() && level.isLoaded(pit.pos())) recomputeTerritory(server, c);
+            want.put(pit, LOAD_RADIUS);
         }
         for (var e : List.copyOf(loaded.entrySet())) {
             if (e.getValue().equals(want.get(e.getKey()))) continue;
@@ -579,9 +597,45 @@ public final class Clans extends SavedData {
         for (Clan c : data.clans) {
             if (c.pit.isPresent() && c.pit.get().equals(old)) {
                 c.pit = Optional.of(GlobalPos.of(level.dimension(), to.immutable()));
-                data.setDirty();
+                data.recomputeTerritory(level.getServer(), c); // it is big now: its biome joins
             }
         }
+    }
+
+    /**
+     * Works out a tribe's territory afresh: none without a pit; else the 5x5 round the pit, and for a big pit also the chunks
+     * of the pit's biome joined to it within {@link #TERRITORY_MAX} (so it is never less than a small pit's). Chunks another
+     * tribe holds, and NPC land, are never taken; chunks this frees are not handed to neighbours.
+     */
+    void recomputeTerritory(MinecraftServer server, Clan clan) {
+        clan.territory.clear();
+        setDirty();
+        if (clan.pit.isEmpty()) return;
+        GlobalPos pit = clan.pit.get();
+        ServerLevel level = server.getLevel(pit.dimension());
+        if (level == null) return;
+        Set<Long> others = new HashSet<>();
+        for (Clan c : clans) if (c != clan && c.pit.isPresent() && c.pit.get().dimension() == pit.dimension()) others.addAll(c.territory);
+        Predicate<ChunkPos> blocked = c -> others.contains(c.pack()) || npcLand(level, c);
+        ChunkPos centre = ChunkPos.containing(pit.pos());
+        for (long c : Territory.square(centre, LOAD_RADIUS)) if (!blocked.test(ChunkPos.unpack(c))) clan.territory.add(c);
+        if (!clan.isBigPit(server)) return;
+        Optional<ResourceKey<Biome>> biome = level.getBiome(pit.pos()).unwrapKey();
+        if (biome.isPresent()) clan.territory.addAll(Territory.fill(centre, TERRITORY_MAX, c -> Territory.surfaceBiome(level, c).is(biome.get()), blocked));
+    }
+
+    private static boolean npcLand(ServerLevel level, ChunkPos c) {
+        return false; // Task 3: Lands.npcLandAt
+    }
+
+    /** The tribe whose territory holds chunk {@code c} of this level, or null (the map, Lands). */
+    public static Clan ownerOf(ServerLevel level, ChunkPos c) {
+        return get(level.getServer()).owner(level.dimension(), c);
+    }
+
+    Clan owner(ResourceKey<Level> dimension, ChunkPos c) {
+        for (Clan clan : clans) if (clan.pit.isPresent() && clan.pit.get().dimension() == dimension && clan.territory.contains(c.pack())) return clan;
+        return null;
     }
 
     /** Is any tribe's Fire Pit in this level within r blocks of pos (each way)? Retrogen keeps off their land (worldgen.SmoothGround). */

@@ -174,7 +174,7 @@ public final class ClanTest {
         var info = status.flatMap(net.minecraft.network.protocol.status.ServerStatus::players).map(ServerListInfo::of);
         check(h, info.isPresent() && info.get().shown().size() <= info.get().tribes(), "server list field read back");
 
-        // the Fire Pit force-loads 3x3 chunks while the tribe has it, and lets them go when it hasn't (no leaked tickets)
+        // the Fire Pit force-loads 5x5 chunks while the tribe has it, and lets them go when it hasn't (no leaked tickets)
         Clans camp = new Clans(List.of());
         BlockPos pitPos = h.absolutePos(new BlockPos(2, 1, 2));
         level.setBlock(pitPos, com.mechanical.FirePit.FIRE_PIT.get().defaultBlockState(), 3);
@@ -184,9 +184,9 @@ public final class ClanTest {
         camp.clans.add(home);
         camp.keepPitsLoaded(server);
         net.minecraft.world.level.ChunkPos pc = net.minecraft.world.level.ChunkPos.containing(pitPos);
-        check(h, Integer.valueOf(1).equals(camp.loaded.get(homePit)), "pit noted as loaded, radius 1");
-        // adding a ticket that is already there changes nothing (returns false): all 9 are there
-        for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++)
+        check(h, Integer.valueOf(2).equals(camp.loaded.get(homePit)), "pit noted as loaded, radius 2");
+        // adding a ticket that is already there changes nothing (returns false): all 25 are there
+        for (int x = -2; x <= 2; x++) for (int z = -2; z <= 2; z++)
             check(h, !Clans.PIT_TICKETS.forceChunk(level, pitPos, pc.x() + x, pc.z() + z, true, false), "ticket on chunk " + x + "," + z);
         // A3: a member in the zone is home; a stranger in it or a member outside isn't; a camp that is no tribe's takes anyone
         var member = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
@@ -204,7 +204,7 @@ public final class ClanTest {
         camp.clans.remove(home);
         camp.keepPitsLoaded(server);
         check(h, camp.loaded.isEmpty(), "disbanded pit no longer loaded");
-        for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++)
+        for (int x = -2; x <= 2; x++) for (int z = -2; z <= 2; z++)
             check(h, !Clans.PIT_TICKETS.forceChunk(level, pitPos, pc.x() + x, pc.z() + z, false, false), "ticket released on chunk " + x + "," + z);
         // a broken pit lets them go too, and leaves the tribe without a centre
         camp.clans.add(home);

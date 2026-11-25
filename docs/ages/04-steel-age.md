@@ -54,7 +54,7 @@ p8_satchel, p8_jewelry).
 | **Elden** | Brinner som med galler (takt 1) **med eller utan galler**, varje vedträ räcker 1,5× så länge, rymmer **32** Firewood, glöden räcker 6 min. Ljus, värme och avstånd för monster 2× en Campfires (liten grop 1,5×). Rökpelaren är ungefär dubbelt så tät och bred och stiger fortare. Vedhög intill matar den upp till 3 block bort |
 | **Modeller** | Hela gropen, gallret, Tripod och Bronze Kettle har större modeller (1,5×). Tripoden ställs bara över mittblocket |
 | **Hel stek** | Bär (haul) en **flådd** kropp till en stor grop och högerklicka på den. Den hänger över elden och steks på **2 min** brinnande eld till **2 × djurets mesta kött**, stekt (ett ruttet kadaver blir Rotten Flesh). Tom hand tar steken. Rivs gropen under tiden släpps köttet rått |
-| **Stamfördelar** | En stams stora Fire Pit forceladdar **5×5** chunks (`Clan.loadRadius`), **två band** kan besöka lägret samtidigt (`TribeVisits.visitCap`, aldrig samma stam två gånger), och `Clan.isBigPit()` finns för senare stamfunktioner |
+| **Stamfördelar** | En stams stora Fire Pit får hela sin biom som område (flood fill, högst ±16 chunks, `Clans.recomputeTerritory`), **två band** kan besöka lägret samtidigt (`TribeVisits.visitCap`, aldrig samma stam två gånger), och `Clan.isBigPit()` finns för senare stamfunktioner |
 | **Rivs** | Fire Pit + Steel Hearth Ring (+ galler) tillbaka |
 
 **Väskor**

@@ -43,7 +43,7 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 - **A2** (`Clans.keepPitsLoaded`, var 5:e s): varje stams Fire Pit forceladdar 3x3 chunks med NeoForges `TicketController`
   (`mechanical:tribe_pit`, ägare = pit-positionen). Biljetterna sparas av NeoForge; vid start släpps de som inte hör till
   någon stams pit (`Clans.validateTickets`). Släpps när stammen upplöses, Fire Pit:en flyttas eller försvinner (då står
-  stammen utan centrum, som efter en flytt-röstning). Radien är `Clan.loadRadius()` (1, eller 2 = 5x5 för en stor Fire Pit, F12).
+  stammen utan centrum, som efter en flytt-röstning). Radien är `Clans.LOAD_RADIUS` (2 = 5x5, både vanlig och stor Fire Pit).
   Ingen naturlig mob-spawn i chunksen.
 - **A3** (`Clans.someoneHome`): besök och räder hoppar över ett läger där ingen medlem av stammen vars Fire Pit ligger i
   lägret står inom 24 block. Ett läger som ingen stam har kräver någon spelare inom 24 block.

@@ -76,8 +76,8 @@ public final class FirePit {
     public static final double BIG_REACH = 2.0;
     /** A skinned carcass hung over a big pit roasts in this many lit ticks into {@link #ROAST_MEAT} times its most meat, cooked. */
     public static final int ROAST_TICKS = 2400, ROAST_MEAT = 2;
-    /** Chunks a big tribe pit force-loads each way (5x5, Clans.Clan#loadRadius) and bands that may visit its camp at once (TribeVisits). */
-    public static final int BIG_LOAD_RADIUS = 2, BIG_VISITS = 2;
+    /** Bands that may visit a big tribe pit's camp at once (TribeVisits). */
+    public static final int BIG_VISITS = 2;
 
     public static void init() {}
 
