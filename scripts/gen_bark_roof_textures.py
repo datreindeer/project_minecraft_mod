@@ -6,11 +6,12 @@
 import os
 import sys
 from PIL import Image
+from orchard_table import ORCHARD
 
 src, out = sys.argv[1:3]
 prev = sys.argv[3] if len(sys.argv) > 3 else None
 WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
-         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]
+         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"] + ORCHARD
 ROW_WIDTHS = [[5, 6, 5], [6, 5, 5], [5, 5, 6], [6, 5, 5]]  # shingle widths per row, each row sums to 16
 ROW_SHIFT = [0, 3, 1, 4]
 

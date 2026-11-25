@@ -1,0 +1,139 @@
+{
+  "variants": {
+    "facing=north,flat=false,shape=straight": {
+      "model": "mechanical:block/walnut_bark_roof_straight"
+    },
+    "facing=north,flat=false,shape=inner_left": {
+      "model": "mechanical:block/walnut_bark_roof_inner",
+      "y": 270
+    },
+    "facing=north,flat=false,shape=inner_right": {
+      "model": "mechanical:block/walnut_bark_roof_inner"
+    },
+    "facing=north,flat=false,shape=outer_left": {
+      "model": "mechanical:block/walnut_bark_roof_outer"
+    },
+    "facing=north,flat=false,shape=outer_right": {
+      "model": "mechanical:block/walnut_bark_roof_outer",
+      "y": 90
+    },
+    "facing=east,flat=false,shape=straight": {
+      "model": "mechanical:block/walnut_bark_roof_straight",
+      "y": 90
+    },
+    "facing=east,flat=false,shape=inner_left": {
+      "model": "mechanical:block/walnut_bark_roof_inner"
+    },
+    "facing=east,flat=false,shape=inner_right": {
+      "model": "mechanical:block/walnut_bark_roof_inner",
+      "y": 90
+    },
+    "facing=east,flat=false,shape=outer_left": {
+      "model": "mechanical:block/walnut_bark_roof_outer",
+      "y": 90
+    },
+    "facing=east,flat=false,shape=outer_right": {
+      "model": "mechanical:block/walnut_bark_roof_outer",
+      "y": 180
+    },
+    "facing=south,flat=false,shape=straight": {
+      "model": "mechanical:block/walnut_bark_roof_straight",
+      "y": 180
+    },
+    "facing=south,flat=false,shape=inner_left": {
+      "model": "mechanical:block/walnut_bark_roof_inner",
+      "y": 90
+    },
+    "facing=south,flat=false,shape=inner_right": {
+      "model": "mechanical:block/walnut_bark_roof_inner",
+      "y": 180
+    },
+    "facing=south,flat=false,shape=outer_left": {
+      "model": "mechanical:block/walnut_bark_roof_outer",
+      "y": 180
+    },
+    "facing=south,flat=false,shape=outer_right": {
+      "model": "mechanical:block/walnut_bark_roof_outer",
+      "y": 270
+    },
+    "facing=west,flat=false,shape=straight": {
+      "model": "mechanical:block/walnut_bark_roof_straight",
+      "y": 270
+    },
+    "facing=west,flat=false,shape=inner_left": {
+      "model": "mechanical:block/walnut_bark_roof_inner",
+      "y": 180
+    },
+    "facing=west,flat=false,shape=inner_right": {
+      "model": "mechanical:block/walnut_bark_roof_inner",
+      "y": 270
+    },
+    "facing=west,flat=false,shape=outer_left": {
+      "model": "mechanical:block/walnut_bark_roof_outer",
+      "y": 270
+    },
+    "facing=west,flat=false,shape=outer_right": {
+      "model": "mechanical:block/walnut_bark_roof_outer"
+    },
+    "facing=north,flat=true,shape=straight": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=north,flat=true,shape=inner_left": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=north,flat=true,shape=inner_right": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=north,flat=true,shape=outer_left": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=north,flat=true,shape=outer_right": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=east,flat=true,shape=straight": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=east,flat=true,shape=inner_left": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=east,flat=true,shape=inner_right": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=east,flat=true,shape=outer_left": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=east,flat=true,shape=outer_right": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=south,flat=true,shape=straight": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=south,flat=true,shape=inner_left": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=south,flat=true,shape=inner_right": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=south,flat=true,shape=outer_left": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=south,flat=true,shape=outer_right": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=west,flat=true,shape=straight": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=west,flat=true,shape=inner_left": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=west,flat=true,shape=inner_right": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=west,flat=true,shape=outer_left": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    },
+    "facing=west,flat=true,shape=outer_right": {
+      "model": "mechanical:block/walnut_bark_roof_flat"
+    }
+  }
+}

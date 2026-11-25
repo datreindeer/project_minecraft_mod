@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "sawn_planks",
+  "ingredients": [
+    "#mechanical:clementine_logs",
+    "#mechanical:saws"
+  ],
+  "result": {
+    "id": "mechanical:clementine_planks",
+    "count": 4
+  }
+}

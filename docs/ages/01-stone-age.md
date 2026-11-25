@@ -2522,6 +2522,28 @@ Advancements **Fruit of the Trees** och **A Taste of Every Tree** (Food & Farmin
 | Date Palm (dadelpalm, plantan tar rot i sand) | ökenoaser och Gypsum Flats vid vatten, mycket sällsynt annars | blom / omogna / mogna / mogna | Dates (3 hunger, torkas) |
 | Bitter Orange (pomerans, vintergrön, flora3) | sällsynt: Marble Gorge, vid vatten på savannen | vit blom / gröna / orange / orange | Bitter Oranges (1 hunger, beska; håller 10 dagar). **Plantan växer bara i varmt land** (biomens temperatur ≥ 0,95: savann, öken, Marble Gorge, djungel); den östra karavanen säljer plantor. Advancement **Oranges in the South** |
 
+| Pear (päron, fruktträdgården) | Hazel Meadow, sällsynt på slätter och i skog | vit blom med röda ståndare / omogna / gula päron / kal | Pears (3 hunger, håller 3 dagar); Pear Pie |
+| Sweet Cherry (sötkörsbär, inte häggen) | Deciduous Forest, sällsynt i Forest, Flower Forest, Birch Forest | vit blom / röda körsbär / kal / kal | Sweet Cherries (2 hunger, 2 dagar, torkas); Cherry Jam |
+| Walnut (valnöt) | Deciduous Forest, sällsynt på slätter och ängar | hängen / gröna skal / bruna, spruckna / kal | Walnuts (2 hunger, förskäms inte); Walnut Oil |
+| Chestnut (äkta kastanj, grov 2x2-stam) | Deciduous Forest, Dark Forest, sällsynt i Forest och Soapstone Valley | blad / gräddvita hängen / taggiga skal med nötter / kal | Chestnuts (1 hunger rå); **Roasted Chestnuts** på Campfire eller Fire Pit (4 hunger), advancement **Chestnuts Roasting** |
+| Quince (kvitten) | Chalk Downs, Hazel Meadow | ljusrosa blommor / gröngrå / gyllene / kal | Quinces (1 hunger, hårda, 10 dagar); Quince Paste |
+| Medlar (mispel) | Hazel Meadow, Deciduous Forest | vit blom / omogna / rostbruna / kal | Medlars (2 hunger, 3 dagar) |
+| Mulberry (mullbär) | Marble Gorge, sällsynt vid vatten på savann och slätter | gröna ax / röda / kal / kal | Mulberries (2 hunger, 2 dagar, torkas) |
+| Peach (persika) | vid vatten på savannen, Marble Gorge | rosa blom / mogna / mogna / kal | Peaches (3 hunger, 2 dagar); Peach Pie |
+| Apricot (aprikos) | savannplatån, Marble Gorge | vitrosa blom / mogna / kal / kal | Apricots (2 hunger, 2 dagar, torkas) |
+| Almond (mandel) | savannplatån, Marble Gorge, sällsynt Limestone Karst | ljusrosa blom / gröna skal / spruckna skal / kal | Almonds (2 hunger, förskäms inte); Almond Oil |
+| Lemon (citron, vintergrön) | Marble Gorge, vid vatten på savannen | lila-vit blom / gröna / gula / gula | Lemons (1 hunger, sura, 10 dagar); Pickled Lemons. **Plantan växer bara i varmt land** |
+| Clementine (klementin, vintergrön) | Marble Gorge, vid vatten på savannplatån | vit blom / gröna / gröna / orange | Clementines (3 hunger, mogna på vintern, 10 dagar). **Plantan växer bara i varmt land** |
+| Pomegranate (granatäpple) | Marble Gorge, sällsynt Ochre Badlands och savannplatån | blad / scharlakansröda blommor / röda / kal | Pomegranates (3 hunger, 10 dagar). **Plantan växer bara i varmt land** |
+
+**Fruktträdgården (v0.211.0):** tretton nya frukt- och nötträd, byggda precis som träden ovan: helt träslag (plankor, dörr,
+lucka, staket, stubbe, Fallen Log, Rough Log, Firewood, Bark, Bark Roof, lövströ), löv som följer säsongen och plockas mogna.
+De lövfällande står kala på vintern och knoppas på våren (päron, körsbär och mispel vitt, kvitten och aprikos ljusrosa, persika och
+mandel rosa); citron och klementin är vintergröna. Citron, klementin och granatäpple tar bara rot där det är varmt (som pomeransen);
+mandel, persika och aprikos växer var som helst om man planterar dem. Sötkörsbär, mullbär och aprikoser torkas på torkstället till
+Dried Berries som dadlar; valnötter, mandlar och kastanjer duger som nöt i Berry Mash. Advancements **The Orchard**, **Every Tree in
+the Orchard** (alla tretton) och **Chestnuts Roasting** (Food & Farming).
+
 **Ympat äpple (flora3):** en **Apple Scion** (bönder nivå 4: 2 för 8 Copper Coin) ympas på en planterad Wild Apple Sapling:
 högerklicka plantan med kvisten och **en kniv i andra handen**. Den blir en **Apple Sapling** (samma tillväxt) som växer till ett
 äppelträd på vildapelns stam, med fylligare krona och riktiga **äpplen** (rosavit blom / omogna / röda / kal). En kniv på ett

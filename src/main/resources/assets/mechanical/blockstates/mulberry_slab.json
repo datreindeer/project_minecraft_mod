@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/mulberry_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/mulberry_planks"
+    },
+    "type=top": {
+      "model": "mechanical:block/mulberry_slab_top"
+    }
+  }
+}

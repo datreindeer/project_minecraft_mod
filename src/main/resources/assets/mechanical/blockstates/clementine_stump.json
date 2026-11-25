@@ -1,0 +1,336 @@
+{
+  "multipart": [
+    {
+      "apply": [
+        {
+          "model": "mechanical:block/clementine_stump",
+          "y": 0
+        },
+        {
+          "model": "mechanical:block/clementine_stump",
+          "y": 90
+        },
+        {
+          "model": "mechanical:block/clementine_stump",
+          "y": 180
+        },
+        {
+          "model": "mechanical:block/clementine_stump",
+          "y": 270
+        }
+      ]
+    },
+    {
+      "when": {
+        "log": "1"
+      },
+      "apply": {
+        "model": "mechanical:block/oak_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "2"
+      },
+      "apply": {
+        "model": "mechanical:block/spruce_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "3"
+      },
+      "apply": {
+        "model": "mechanical:block/birch_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "4"
+      },
+      "apply": {
+        "model": "mechanical:block/jungle_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "5"
+      },
+      "apply": {
+        "model": "mechanical:block/acacia_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "6"
+      },
+      "apply": {
+        "model": "mechanical:block/dark_oak_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "7"
+      },
+      "apply": {
+        "model": "mechanical:block/mangrove_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "8"
+      },
+      "apply": {
+        "model": "mechanical:block/cherry_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "9"
+      },
+      "apply": {
+        "model": "mechanical:block/pale_oak_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "10"
+      },
+      "apply": {
+        "model": "mechanical:block/poplar_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "11"
+      },
+      "apply": {
+        "model": "mechanical:block/aspen_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "12"
+      },
+      "apply": {
+        "model": "mechanical:block/alder_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "13"
+      },
+      "apply": {
+        "model": "mechanical:block/beech_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "14"
+      },
+      "apply": {
+        "model": "mechanical:block/linden_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "15"
+      },
+      "apply": {
+        "model": "mechanical:block/willow_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "16"
+      },
+      "apply": {
+        "model": "mechanical:block/ash_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "17"
+      },
+      "apply": {
+        "model": "mechanical:block/hazel_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "18"
+      },
+      "apply": {
+        "model": "mechanical:block/pine_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "19"
+      },
+      "apply": {
+        "model": "mechanical:block/yew_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "20"
+      },
+      "apply": {
+        "model": "mechanical:block/rowan_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "21"
+      },
+      "apply": {
+        "model": "mechanical:block/bird_cherry_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "22"
+      },
+      "apply": {
+        "model": "mechanical:block/wild_apple_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "23"
+      },
+      "apply": {
+        "model": "mechanical:block/plum_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "24"
+      },
+      "apply": {
+        "model": "mechanical:block/olive_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "25"
+      },
+      "apply": {
+        "model": "mechanical:block/date_palm_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "26"
+      },
+      "apply": {
+        "model": "mechanical:block/bitter_orange_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "27"
+      },
+      "apply": {
+        "model": "mechanical:block/pear_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "28"
+      },
+      "apply": {
+        "model": "mechanical:block/sweet_cherry_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "29"
+      },
+      "apply": {
+        "model": "mechanical:block/lemon_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "30"
+      },
+      "apply": {
+        "model": "mechanical:block/clementine_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "31"
+      },
+      "apply": {
+        "model": "mechanical:block/walnut_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "32"
+      },
+      "apply": {
+        "model": "mechanical:block/chestnut_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "33"
+      },
+      "apply": {
+        "model": "mechanical:block/quince_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "34"
+      },
+      "apply": {
+        "model": "mechanical:block/mulberry_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "35"
+      },
+      "apply": {
+        "model": "mechanical:block/medlar_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "36"
+      },
+      "apply": {
+        "model": "mechanical:block/peach_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "37"
+      },
+      "apply": {
+        "model": "mechanical:block/apricot_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "38"
+      },
+      "apply": {
+        "model": "mechanical:block/almond_upright_log"
+      }
+    },
+    {
+      "when": {
+        "log": "39"
+      },
+      "apply": {
+        "model": "mechanical:block/pomegranate_upright_log"
+      }
+    }
+  ]
+}

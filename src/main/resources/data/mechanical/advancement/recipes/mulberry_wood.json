@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:mulberry_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:mulberry_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:mulberry_planks",
+      "mechanical:mulberry_wood",
+      "mechanical:stripped_mulberry_wood",
+      "mechanical:mulberry_slab",
+      "mechanical:mulberry_stairs",
+      "mechanical:mulberry_fence",
+      "mechanical:mulberry_fence_gate",
+      "mechanical:mulberry_door",
+      "mechanical:mulberry_trapdoor",
+      "mechanical:mulberry_button",
+      "mechanical:mulberry_pressure_plate"
+    ]
+  }
+}

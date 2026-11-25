@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "mechanical:block/pear_leaves_blossom_2"
+  }
+}

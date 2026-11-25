@@ -16,6 +16,19 @@
     "mechanical:olive_button",
     "mechanical:date_palm_button",
     "mechanical:bitter_orange_button",
+    "mechanical:pear_button",
+    "mechanical:sweet_cherry_button",
+    "mechanical:lemon_button",
+    "mechanical:clementine_button",
+    "mechanical:walnut_button",
+    "mechanical:chestnut_button",
+    "mechanical:quince_button",
+    "mechanical:mulberry_button",
+    "mechanical:medlar_button",
+    "mechanical:peach_button",
+    "mechanical:apricot_button",
+    "mechanical:almond_button",
+    "mechanical:pomegranate_button",
     "mechanical:bog_oak_button"
   ]
 }

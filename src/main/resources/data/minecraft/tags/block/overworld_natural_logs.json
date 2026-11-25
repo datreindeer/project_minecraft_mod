@@ -15,6 +15,19 @@
     "mechanical:plum_log",
     "mechanical:olive_log",
     "mechanical:date_palm_log",
-    "mechanical:bitter_orange_log"
+    "mechanical:bitter_orange_log",
+    "mechanical:pear_log",
+    "mechanical:sweet_cherry_log",
+    "mechanical:lemon_log",
+    "mechanical:clementine_log",
+    "mechanical:walnut_log",
+    "mechanical:chestnut_log",
+    "mechanical:quince_log",
+    "mechanical:mulberry_log",
+    "mechanical:medlar_log",
+    "mechanical:peach_log",
+    "mechanical:apricot_log",
+    "mechanical:almond_log",
+    "mechanical:pomegranate_log"
   ]
 }

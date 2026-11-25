@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "planks",
+  "ingredients": [
+    "#mechanical:quince_logs"
+  ],
+  "result": {
+    "id": "mechanical:quince_planks",
+    "count": 2
+  }
+}

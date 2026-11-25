@@ -18,6 +18,7 @@ import json
 import shutil
 import zipfile
 from pathlib import Path
+from orchard_table import ORCHARD, ORCHARD_FRUIT
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "src/main/resources"
@@ -202,7 +203,7 @@ BERRIES = ["raspberries", "blueberries", "lingonberries", "wild_strawberries", "
            "white_currants", "gooseberries", "cranberries", "grapes"]
 T, G, C = "task", "goal", "challenge"
 BARK_WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
-              "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]  # Mechanical.WOODS
+              "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"] + ORCHARD  # Mechanical.WOODS
 
 # (id, parent, icon, frame, title, description, criteria). The first row of a tab is its root.
 TABS = {
@@ -2457,6 +2458,31 @@ TABS["folklore"][1].extend([
      "Follow a Will-o'-Wisp with a Will-o'-Wisp Lily in your hand: the lily answers its light, and it leads you true", by_code()),
     ("moonwort_lock", "moonwort", "minecraft:iron_door", G, "The Key-Herb",
      "Hold Moonwort to an Iron Door or Iron Trapdoor: it springs open without redstone, and the herb is spent", by_code()),
+])
+
+
+# the orchard (orchard_table.py, Trees.FRUIT_KINDS; Kitchen orchard dishes)
+ORCHARD_FRUITS = [f for f, _ in ORCHARD_FRUIT.values()]
+TABS["food"][1].extend([
+    ("orchard_fruit", "tree_fruit", "pears", T, "The Orchard",
+     "Pick fruit from an orchard tree: Pear, Sweet Cherry, Walnut, Chestnut, Quince, Medlar or Mulberry in the temperate woods and "
+     "meadows; Peach, Apricot, Almond, Lemon, Clementine or Pomegranate in the warm south", has(*ORCHARD_FRUITS)),
+    ("orchard_all", "orchard_fruit", "pomegranates", C, "Every Tree in the Orchard",
+     "Gather the fruit of all thirteen orchard trees. Lemon, Clementine and Pomegranate saplings take only in a warm land",
+     has_all(*ORCHARD_FRUITS)),
+    ("roasted_chestnuts", "orchard_fruit", "roasted_chestnuts", T, "Chestnuts Roasting",
+     "Roast Chestnuts on a Campfire or a Fire Pit: raw they are hard and dry, roasted sweet and filling", has("roasted_chestnuts")),
+])
+TABS["bronze_age"][1].extend([
+    ("orchard_preserves", "marmalade", "quince_paste", T, "Paste and Jam",
+     "Boil three Quinces or three Sweet Cherries with honey in the Bronze Kettle into Quince Paste or Cherry Jam", has("quince_paste", "cherry_jam")),
+])
+TABS["iron_age"][1].extend([
+    ("nut_oil", "pressed_oil", "walnut_oil", T, "Nut Oil",
+     "Press four Walnuts or four Almonds in the Cheese Press into Walnut Oil or Almond Oil", has("walnut_oil", "almond_oil")),
+    ("pickled_lemons", "pickled_olives", "pickled_lemons", T, "Lemons in Salt",
+     "Pack three Lemons with Salt in a Fermenting Barrel into Pickled Lemons", has("pickled_lemons")),
+    ("orchard_pie", "pie", "pear_pie", T, "Orchard Pie", "Bake a Pear Pie or a Peach Pie in the Clay Kiln", has("pear_pie", "peach_pie")),
 ])
 
 

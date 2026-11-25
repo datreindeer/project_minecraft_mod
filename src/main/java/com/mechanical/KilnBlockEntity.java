@@ -96,6 +96,8 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Kitchen.RAW_PIES.get("plum").get()), 1, () -> Kitchen.PIES.get("plum").get(), 500, 200),
             new Recipe(s -> s.is(Kitchen.RAW_PIES.get("rowan").get()), 1, () -> Kitchen.PIES.get("rowan").get(), 500, 200),
             new Recipe(s -> s.is(Kitchen.RAW_PIES.get("bird_cherry").get()), 1, () -> Kitchen.PIES.get("bird_cherry").get(), 500, 200),
+            new Recipe(s -> s.is(Kitchen.RAW_PIES.get("pear").get()), 1, () -> Kitchen.PIES.get("pear").get(), 500, 200),
+            new Recipe(s -> s.is(Kitchen.RAW_PIES.get("peach").get()), 1, () -> Kitchen.PIES.get("peach").get(), 500, 200),
             new Recipe(s -> s.is(Kitchen.RAW_GINGERBREAD.get()), 1, () -> Kitchen.GINGERBREAD.get(), 300, 200),
             new Recipe(s -> s.is(Casting.UNFIRED_CLAY_TUYERE.get()), 1, () -> Casting.CLAY_TUYERE.get(), 400, 600),
             new Recipe(s -> s.is(Casting.UNFIRED_CLAY_INGOT_MOLD.get()), 1, () -> Casting.CLAY_INGOT_MOLD_ITEM.get(), 400, 600),

@@ -1,6 +1,7 @@
 # Generates the mod's JSON resources (recipes, models, loot, tags, lang). usage: python scripts/gen_data.py src/main/resources
 import json, sys
 from pathlib import Path
+from orchard_table import ORCHARD
 
 R = Path(sys.argv[1])
 A, D = R / "assets/mechanical", R / "data"
@@ -142,7 +143,7 @@ shaped("double_stone_pickaxe_head", ["HKH"], {"H": "mechanical:stone_pickaxe_hea
 shaped("tool_station", ["ATK", "PCP"], {"A": "mechanical:flint_axe", "T": "mechanical:twine", "K": "mechanical:flint_pickaxe", "P": "#minecraft:planks", "C": "minecraft:crafting_table"}, "mechanical:tool_station")
 
 # Our own tree species (Trees.java): full wood sets in the mechanical namespace; also in WOODS (stumps, fallen logs, firewood).
-NEW_WOODS = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]  # features for the last five: gen_trees.py
+NEW_WOODS = ["aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"] + ORCHARD  # features for the last five: gen_trees.py
 wns = lambda wood: "mechanical" if wood in NEW_WOODS else "minecraft"  # namespace of a wood's vanilla-style blocks and textures
 
 # Planks: 2 per log until there is a saw.
@@ -1175,7 +1176,7 @@ print("trees ok")
 
 # ---- fresh leaf litter: one per leaf type, leaf-coloured, dries into vanilla leaf litter (textures: gen_leaf_litter_textures.py) ----
 LITTER_LEAVES = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "yellow_poplar",
-                 "orange_poplar", "red_poplar", "azalea", "flowering_azalea", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]
+                 "orange_poplar", "red_poplar", "azalea", "flowering_azalea", "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"] + ORCHARD
 _ljar = zipfile.ZipFile(JAR)
 _lstate = _ljar.read("assets/minecraft/blockstates/leaf_litter.json").decode()
 _lloot = _ljar.read("data/minecraft/loot_table/blocks/leaf_litter.json").decode()

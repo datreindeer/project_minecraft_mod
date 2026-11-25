@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:pomegranate_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:pomegranate_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:pomegranate_planks",
+      "mechanical:pomegranate_wood",
+      "mechanical:stripped_pomegranate_wood",
+      "mechanical:pomegranate_slab",
+      "mechanical:pomegranate_stairs",
+      "mechanical:pomegranate_fence",
+      "mechanical:pomegranate_fence_gate",
+      "mechanical:pomegranate_door",
+      "mechanical:pomegranate_trapdoor",
+      "mechanical:pomegranate_button",
+      "mechanical:pomegranate_pressure_plate"
+    ]
+  }
+}

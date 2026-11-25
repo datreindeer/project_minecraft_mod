@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "mechanical:block/almond_planks",
+    "side": "mechanical:block/almond_planks",
+    "top": "mechanical:block/almond_planks"
+  }
+}

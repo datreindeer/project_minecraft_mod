@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:deciduous_forest"
+  ],
+  "features": "mechanical:sweet_cherry_forest",
+  "step": "vegetal_decoration"
+}

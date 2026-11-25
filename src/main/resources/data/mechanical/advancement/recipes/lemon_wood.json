@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:lemon_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:lemon_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:lemon_planks",
+      "mechanical:lemon_wood",
+      "mechanical:stripped_lemon_wood",
+      "mechanical:lemon_slab",
+      "mechanical:lemon_stairs",
+      "mechanical:lemon_fence",
+      "mechanical:lemon_fence_gate",
+      "mechanical:lemon_door",
+      "mechanical:lemon_trapdoor",
+      "mechanical:lemon_button",
+      "mechanical:lemon_pressure_plate"
+    ]
+  }
+}

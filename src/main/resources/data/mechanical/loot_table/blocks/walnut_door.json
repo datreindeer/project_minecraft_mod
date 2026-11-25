@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:walnut_door",
+            "state": {
+              "half": "lower"
+            }
+          },
+          "name": "mechanical:walnut_door"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "mechanical:blocks/walnut_door"
+}

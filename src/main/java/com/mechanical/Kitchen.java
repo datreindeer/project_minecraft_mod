@@ -143,7 +143,7 @@ public final class Kitchen {
     public static final DeferredItem<Item> CIDER = drink("cider", 3);
     public static final DeferredItem<Item> ALE = drink("ale", 4);
     /** Pies: raw (crafted) and baked in the Clay Kiln (KilnBlockEntity.RECIPES), one per fruit of the fruit trees. */
-    public static final List<String> PIE_FRUITS = List.of("apple", "plum", "rowan", "bird_cherry");
+    public static final List<String> PIE_FRUITS = List.of("apple", "plum", "rowan", "bird_cherry", "pear", "peach");
     public static final Map<String, DeferredItem<Item>> RAW_PIES = new LinkedHashMap<>(), PIES = new LinkedHashMap<>();
     static {
         for (String f : PIE_FRUITS) {
@@ -172,6 +172,12 @@ public final class Kitchen {
     public static final DeferredItem<Item> FRIED_ROOTS = dish("fried_roots", 7);
     public static final DeferredItem<Item> PICKLED_OLIVES = dish("pickled_olives", 3);
     public static final DeferredItem<Item> BITTER_ORANGE_MARMALADE = dish("bitter_orange_marmalade", 4);
+    // the orchard: nut oils from the Cheese Press, preserves in the kettle and the barrel
+    public static final DeferredItem<Item> WALNUT_OIL = ITEMS.registerSimpleItem("walnut_oil");
+    public static final DeferredItem<Item> ALMOND_OIL = ITEMS.registerSimpleItem("almond_oil");
+    public static final DeferredItem<Item> QUINCE_PASTE = dish("quince_paste", 5);
+    public static final DeferredItem<Item> CHERRY_JAM = dish("cherry_jam", 4);
+    public static final DeferredItem<Item> PICKLED_LEMONS = dish("pickled_lemons", 2);
 
     // ---- effects: Tipsy (ale and cider) and Frost Ward (Frost Lily Tea) ----
     static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, MODID);
@@ -232,7 +238,7 @@ public final class Kitchen {
     private static final Ing MILK = of("minecraft:milk_bucket", "mechanical:bronze_milk_bucket");
     private static final Ing HERB = of("#mechanical:culinary_herbs");
     /** Frying fat: the pressed oils, or lard as before. */
-    private static final Ing FAT = of("mechanical:olive_oil", "mechanical:rapeseed_oil", "mechanical:lard");
+    private static final Ing FAT = of("mechanical:olive_oil", "mechanical:rapeseed_oil", "mechanical:walnut_oil", "mechanical:almond_oil", "mechanical:lard");
     private static final Ing PICKLING_VEG = of("mechanical:onion", "mechanical:wild_onion", "mechanical:turnip", "mechanical:parsnip", "minecraft:carrot",
             "minecraft:beetroot", "mechanical:cabbage", "mechanical:celery");
 
@@ -241,7 +247,7 @@ public final class Kitchen {
             new Dish("nettle_soup", Tool.POT, 0, List.of(of("mechanical:nettle_stalks"), of("mechanical:nettle_stalks"), ALLIUM), NETTLE_SOUP, 3),
             new Dish("root_pottage", Tool.POT, 0, List.of(ROOT, ROOT, ALLIUM), ROOT_POTTAGE, 3),
             new Dish("berry_mash", Tool.POT, 0, List.of(of("#mechanical:dryable_berries"), of("#mechanical:dryable_berries"),
-                    of("mechanical:hazelnuts", "mechanical:beechnuts")), BERRY_MASH, 2),
+                    of("mechanical:hazelnuts", "mechanical:beechnuts", "mechanical:walnuts", "mechanical:almonds", "mechanical:chestnuts")), BERRY_MASH, 2),
             new Dish("herbal_tea", Tool.POT, 0, List.of(of("mechanical:chamomile_flowers", "mechanical:mint_leaves", "mechanical:yarrow_leaves",
                     "mechanical:meadowsweet_flowers")), HERBAL_TEA, 2),
             new Dish("frost_lily_tea", Tool.POT, 0, List.of(of("mechanical:frost_lily")), FROST_LILY_TEA, 2),
@@ -255,6 +261,10 @@ public final class Kitchen {
                     ELDERBERRY_SYRUP, 2),
             new Dish("bitter_orange_marmalade", Tool.POT, 1, List.of(of("mechanical:bitter_oranges"), of("mechanical:bitter_oranges"),
                     of("mechanical:bitter_oranges"), HONEY), BITTER_ORANGE_MARMALADE, 2),
+            new Dish("quince_paste", Tool.POT, 1, List.of(of("mechanical:quinces"), of("mechanical:quinces"), of("mechanical:quinces"), HONEY),
+                    QUINCE_PASTE, 2),
+            new Dish("cherry_jam", Tool.POT, 1, List.of(of("mechanical:sweet_cherries"), of("mechanical:sweet_cherries"), of("mechanical:sweet_cherries"),
+                    HONEY), CHERRY_JAM, 2),
             new Dish("sloe_jam", Tool.POT, 1, List.of(of("mechanical:sloes"), of("mechanical:sloes"), of("mechanical:sloes"), HONEY), SLOE_JAM, 2),
             new Dish("flatbread", Tool.PAN, 1, List.of(of("mechanical:dough")), FLATBREAD, 2),
             new Dish("oatcakes", Tool.PAN, 1, List.of(of("mechanical:oat_grain"), of("mechanical:oat_grain"), HONEY), OATCAKES, 3),
@@ -277,6 +287,12 @@ public final class Kitchen {
                     of("minecraft:potato", "mechanical:turnip", "mechanical:parsnip"), FAT, ALLIUM), FRIED_ROOTS, 2),
             new Dish("pickled_olives", Tool.BARREL, 2, List.of(of("mechanical:olives"), of("mechanical:olives"), of("mechanical:olives"), of("mechanical:salt")),
                     PICKLED_OLIVES, 3),
+            new Dish("walnut_oil", Tool.PRESS, 2, List.of(of("mechanical:walnuts"), of("mechanical:walnuts"), of("mechanical:walnuts"),
+                    of("mechanical:walnuts")), WALNUT_OIL, 1),
+            new Dish("almond_oil", Tool.PRESS, 2, List.of(of("mechanical:almonds"), of("mechanical:almonds"), of("mechanical:almonds"),
+                    of("mechanical:almonds")), ALMOND_OIL, 1),
+            new Dish("pickled_lemons", Tool.BARREL, 2, List.of(of("mechanical:lemons"), of("mechanical:lemons"), of("mechanical:lemons"), of("mechanical:salt")),
+                    PICKLED_LEMONS, 3),
             new Dish("roast_with_herbs", Tool.PAN, 2, List.of(MEAT, MEAT, HERB, HERB), ROAST_WITH_HERBS, 2),
             new Dish("cider", Tool.BARREL, 2, List.of(APPLE, APPLE, APPLE, APPLE), CIDER, 3),
             // wine: wild grapes (flora 4, Vineyard)

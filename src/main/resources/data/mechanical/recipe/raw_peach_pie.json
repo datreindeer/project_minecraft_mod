@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mechanical:flour",
+    "mechanical:flour",
+    [
+      "mechanical:lard",
+      "mechanical:olive_oil",
+      "mechanical:rapeseed_oil",
+      "mechanical:walnut_oil",
+      "mechanical:almond_oil"
+    ],
+    "mechanical:peaches",
+    "mechanical:peaches",
+    "mechanical:peaches"
+  ],
+  "result": {
+    "id": "mechanical:raw_peach_pie"
+  }
+}

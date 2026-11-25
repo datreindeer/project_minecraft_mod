@@ -685,10 +685,10 @@ def stamp_shadowed(img, sprite, x0, y0, cols, shadow):
         for q in (((x + 1) % 16, y), (x, (y + 1) % 16)):
             if q not in mask and img.getpixel(q)[3]: put(img, q[0], q[1], shadow)
 
-def rowan_leaves(p):
+def rowan_leaves(p, seed="rowan_pinnate"):
     """pinnate leaves: a rachis with paired leaflets (lit above, shaded below) laid over a dark under-crown"""
     c = p["leaf"]; img = remap(van("oak_leaves"), [c["D"], c["D"], c["S"], c["S"], c["M"]], 0.0, 1.0)
-    r = random.Random("rowan_pinnate"); pts = []
+    r = random.Random(seed); pts = []
     for _ in range(4000):
         q = (r.randrange(16), r.randrange(16))
         if all(min((q[0] - o[0]) % 16, (o[0] - q[0]) % 16) ** 2 + min((q[1] - o[1]) % 16, (o[1] - q[1]) % 16) ** 2 >= 26 for o in pts):
@@ -716,7 +716,7 @@ def olive_leaves(p):
 
 def fruit_leaves(name, p):
     """plain leaves plus three variants of each fruit stage"""
-    base = {"rowan": rowan_leaves, "olive": olive_leaves}.get(name, lambda p: leaves(name, p))(p)
+    base = {"rowan": rowan_leaves, "olive": olive_leaves, **FRUIT_LEAVES_FN}.get(name, lambda p: leaves(name, p))(p)
     f = FRUIT[name]; out = {"": base}; dark = p["leaf"]["S" if name == "olive" else "D"]  # olive: soft shadow on the silver
     for st, key in ((1, "_blossom"), (2, "_unripe"), (3, "_ripe")):
         cols = dict(f["stages"][st], s=(112, 116, 96) if name == "olive" else TWIG)
@@ -893,6 +893,627 @@ ITEM_DOORS.update({
     "bitter_orange": _item_door(["pp..pp", "p.kk.p", "pkkkkp", "p.kk.p", "pppppp", "pkpkpk"], ["pdpdpd", "pkpkpk", "pdpdpd", "pdpdpd", "pkpkpk"]),
 })
 
+# ------------------------------------------------------------------ the orchard (orchard_table.py): 13 more fruit and nut trees
+# Same recipe as the fruit trees above: a palette per species, a bark painter, a vanilla leaf structure remapped, one fruit
+# sprite per tree recoloured through blossom -> unripe -> ripe, a sapling, a door, a trapdoor and an item door.
+SPECIES.update({
+    "pear": dict(          # fine pinkish-brown pearwood, dark grey bark broken into small square plates, glossy dark leaves
+        wood=[(150, 104, 86), (164, 117, 97), (177, 129, 108), (189, 141, 118), (200, 152, 129), (210, 163, 140), (219, 175, 152)],
+        stripped_base="stripped_cherry_log", stripped_range=(1.4, 6.3),
+        leaf=dict(D=(20, 52, 24), S=(30, 74, 32), M=(44, 100, 42), L=(64, 128, 54), H=(110, 168, 82)),
+        bark=[(30, 28, 26), (46, 43, 40), (64, 60, 55), (82, 77, 70), (100, 94, 86), (120, 113, 103)],
+        metal=((44, 44, 46), (128, 128, 132))),
+    "sweet_cherry": dict(  # warm red-brown cherrywood, glossy mahogany bark ringed with pale lenticel bands, fresh green leaves
+        wood=[(130, 64, 46), (146, 76, 54), (160, 88, 62), (173, 99, 70), (185, 111, 80), (196, 123, 90), (207, 136, 102)],
+        stripped_base="stripped_cherry_log", stripped_range=(1.2, 6.2),
+        leaf=dict(D=(28, 70, 22), S=(42, 96, 30), M=(62, 126, 40), L=(88, 156, 54), H=(136, 194, 86)),
+        bark=[(40, 18, 18), (62, 28, 26), (86, 42, 36), (110, 58, 46), (136, 78, 60), (166, 104, 82)],
+        metal=((150, 110, 40), (214, 174, 76))),
+    "lemon": dict(         # pale primrose wood, smooth grey-brown bark with thorns, glossy mid-green evergreen leaves
+        wood=[(186, 168, 108), (198, 180, 118), (209, 192, 129), (219, 203, 140), (228, 213, 151), (236, 223, 163), (244, 233, 176)],
+        stripped_base="stripped_birch_log", stripped_range=(1.5, 6.4),
+        leaf=dict(D=(20, 52, 22), S=(32, 76, 30), M=(50, 104, 40), L=(78, 136, 54), H=(160, 204, 110)),
+        bark=[(60, 56, 46), (84, 78, 64), (106, 100, 82), (126, 119, 99), (146, 139, 117), (168, 161, 139)],
+        metal=((40, 40, 42), (120, 120, 124))),
+    "clementine": dict(    # honey-pale wood, smooth olive-grey bark, small dense very dark glossy leaves
+        wood=[(180, 150, 96), (192, 162, 106), (203, 174, 116), (213, 185, 127), (222, 196, 138), (231, 207, 150), (240, 218, 163)],
+        stripped_base="stripped_birch_log", stripped_range=(1.5, 6.4),
+        leaf=dict(D=(10, 34, 18), S=(18, 54, 26), M=(30, 78, 34), L=(52, 108, 46), H=(134, 184, 96)),
+        bark=[(48, 52, 40), (70, 74, 58), (92, 96, 76), (112, 116, 94), (132, 136, 112), (154, 158, 134)],
+        metal=((40, 40, 42), (120, 120, 124))),
+    "walnut": dict(        # deep chocolate walnut wood, pale silver-grey bark in a net of dark diamond furrows, big pinnate leaves
+        wood=[(66, 42, 30), (80, 52, 37), (94, 63, 44), (108, 74, 52), (122, 86, 61), (136, 99, 71), (151, 113, 83)],
+        stripped_base="stripped_dark_oak_log", stripped_range=(1.0, 6.2),
+        leaf=dict(D=(26, 58, 24), S=(38, 80, 32), M=(56, 108, 42), L=(80, 136, 56), H=(124, 172, 82)),
+        bark=[(52, 50, 48), (78, 76, 72), (106, 104, 98), (132, 130, 123), (154, 152, 145), (176, 174, 167)],
+        metal=((150, 110, 40), (214, 174, 76))),
+    "chestnut": dict(      # golden-brown chestnut wood, grey-brown bark with deep furrows twisting round the trunk, long glossy leaves
+        wood=[(136, 92, 52), (151, 104, 60), (165, 116, 68), (178, 128, 77), (190, 140, 86), (201, 152, 96), (212, 164, 107)],
+        stripped_base="stripped_oak_log", stripped_range=(1.3, 6.3),
+        leaf=dict(D=(22, 56, 22), S=(34, 80, 30), M=(50, 108, 40), L=(74, 138, 52), H=(120, 178, 76)),
+        bark=[(36, 30, 26), (56, 48, 41), (78, 68, 58), (100, 88, 75), (122, 109, 93), (146, 132, 113)],
+        metal=((44, 44, 46), (128, 128, 132))),
+    "quince": dict(        # pinkish-yellow wood, bark flaking in patches of grey, fawn and fresh orange, dull grey-green felted leaves
+        wood=[(166, 126, 92), (179, 138, 102), (191, 150, 112), (202, 161, 122), (212, 172, 133), (221, 183, 144), (230, 195, 156)],
+        stripped_base="stripped_cherry_log", stripped_range=(1.4, 6.3),
+        leaf=dict(D=(40, 62, 36), S=(58, 84, 50), M=(80, 110, 66), L=(108, 136, 86), H=(152, 172, 122)),
+        bark=[(52, 46, 40), (74, 66, 57), (98, 88, 76), (122, 110, 95), (146, 133, 115), (170, 157, 137)],
+        metal=((48, 48, 50), (136, 136, 140))),
+    "mulberry": dict(      # golden yellow mulberry wood, orange-brown furrowed bark, big glossy heart leaves
+        wood=[(156, 120, 50), (170, 133, 58), (183, 145, 66), (195, 157, 75), (206, 168, 84), (216, 179, 94), (226, 191, 106)],
+        stripped_base="stripped_oak_log", stripped_range=(1.4, 6.3),
+        leaf=dict(D=(30, 72, 22), S=(46, 98, 30), M=(68, 128, 40), L=(96, 158, 54), H=(150, 200, 90)),
+        bark=[(52, 32, 20), (78, 48, 28), (104, 66, 38), (130, 84, 48), (156, 104, 62), (182, 128, 80)],
+        metal=((44, 44, 46), (128, 128, 132))),
+    "medlar": dict(        # pinkish-brown dense wood, grey-brown finely fissured bark, long dull leaves going yellow-green
+        wood=[(146, 104, 82), (160, 116, 92), (173, 128, 102), (185, 139, 112), (196, 150, 122), (206, 161, 133), (216, 173, 145)],
+        stripped_base="stripped_cherry_log", stripped_range=(1.3, 6.2),
+        leaf=dict(D=(40, 66, 26), S=(58, 88, 34), M=(80, 114, 44), L=(108, 140, 58), H=(150, 174, 84)),
+        bark=[(40, 34, 30), (60, 52, 46), (82, 72, 63), (104, 92, 80), (126, 113, 98), (150, 136, 118)],
+        metal=((48, 48, 50), (136, 136, 140))),
+    "peach": dict(         # rosy red-brown wood, dark glossy reddish bark with lenticels and amber gum, long narrow leaves
+        wood=[(138, 72, 54), (153, 84, 62), (167, 96, 71), (180, 108, 80), (192, 120, 90), (203, 132, 100), (214, 145, 112)],
+        stripped_base="stripped_acacia_log", stripped_range=(1.3, 6.2),
+        leaf=dict(D=(30, 74, 22), S=(46, 100, 30), M=(68, 132, 40), L=(98, 164, 54), H=(150, 204, 88)),
+        bark=[(38, 20, 20), (58, 32, 30), (78, 46, 40), (98, 60, 50), (120, 78, 64), (146, 100, 82)],
+        metal=((150, 110, 40), (214, 174, 76))),
+    "apricot": dict(       # warm orange-brown wood, reddish-brown bark cracking into long strips, broad round bright leaves
+        wood=[(150, 88, 50), (165, 100, 58), (178, 112, 66), (190, 123, 75), (201, 135, 84), (211, 147, 94), (221, 159, 106)],
+        stripped_base="stripped_acacia_log", stripped_range=(1.4, 6.2),
+        leaf=dict(D=(32, 76, 24), S=(48, 102, 32), M=(70, 134, 42), L=(100, 164, 56), H=(152, 204, 90)),
+        bark=[(42, 26, 22), (64, 40, 32), (86, 56, 44), (108, 72, 56), (130, 90, 70), (156, 112, 88)],
+        metal=((48, 48, 50), (136, 136, 140))),
+    "almond": dict(        # pale tan wood, very dark bark cracked into small blocks, narrow light grey-green leaves
+        wood=[(176, 148, 112), (188, 160, 123), (199, 172, 134), (209, 182, 144), (218, 192, 154), (227, 202, 165), (236, 213, 177)],
+        stripped_base="stripped_birch_log", stripped_range=(1.4, 6.4),
+        leaf=dict(D=(42, 70, 40), S=(62, 94, 56), M=(88, 122, 76), L=(120, 152, 102), H=(170, 194, 148)),
+        bark=[(20, 18, 18), (32, 29, 28), (46, 42, 40), (62, 57, 53), (80, 74, 68), (102, 95, 88)],
+        metal=((44, 44, 46), (120, 120, 124))),
+    "pomegranate": dict(   # yellowish fine wood, grey-brown twisted fluted bark, small glossy bright leaves
+        wood=[(172, 140, 88), (184, 152, 98), (196, 164, 108), (206, 175, 118), (215, 185, 129), (224, 195, 140), (233, 206, 152)],
+        stripped_base="stripped_birch_log", stripped_range=(1.4, 6.3),
+        leaf=dict(D=(24, 60, 22), S=(36, 86, 30), M=(54, 116, 40), L=(80, 148, 54), H=(140, 196, 90)),
+        bark=[(46, 40, 34), (68, 60, 51), (92, 82, 70), (114, 103, 89), (136, 124, 108), (160, 148, 130)],
+        metal=((150, 110, 40), (214, 174, 76))),
+})
+
+
+def plates(seed, b, n, squash, crack=0.42, lit=(1.6, 2.6)):
+    """bark broken into plates (wrapped Voronoi cells, squash < 1 makes them tall), lit at the top, dark cracks between"""
+    r = random.Random(seed)
+    pts = [(r.uniform(0, 16), r.uniform(0, 16), r.uniform(0.3, 0.9)) for _ in range(n)]
+    img = new()
+    for y in range(16):
+        for x in range(16):
+            ds = []
+            for px, py, t in pts:
+                dx = min(abs(x - px), 16 - abs(x - px)); dy = min(abs(y - py), 16 - abs(y - py)) * squash
+                ds.append((dx * dx + dy * dy, py, t))
+            ds.sort(); (d0, py, t), d1 = ds[0], ds[1][0]
+            gap = math.sqrt(d1) - math.sqrt(d0)
+            if gap < crack: put(img, x, y, b[0] if gap < crack / 2 else b[1]); continue
+            up = (py - y + 8) % 16 - 8
+            put(img, x, y, ramp_at(b, lit[0] + lit[1] * t + 0.3 * up))
+    return img
+
+
+def bark_pear(p):
+    """pear's checkered bark: many small near-square plates, a few pale lichen spots"""
+    img = plates("pear_plates", p["bark"], 26, 0.85, 0.5, (1.4, 2.8))
+    return scatter(img, "pear_lichen", 3, {1: (128, 134, 112), 2: (100, 106, 88)}, [[(0, 0, 1), (1, 0, 2)], [(0, 0, 1)]], 6, opaque_only=True)
+
+
+def bark_sweet_cherry(p):
+    """glossy mahogany bark: soft noise, horizontal bands of pale lenticels, a sheen running down, a strip peeling sideways"""
+    b = p["bark"]; img = smooth_bark("sweet_cherry", b, 0.2, 0.8); r = random.Random("scherry_band")
+    for x in (2, 3, 10):
+        for y in range(16): put(img, x, y, mix(img.getpixel((x, y)), b[5], 0.4 if x == 3 else 0.25))
+    for y0 in (1, 6, 11):          # lenticel bands: broken pale dashes all round the trunk, shadow under them
+        x = r.randrange(16)
+        while x < 32:
+            n = r.randint(2, 4)
+            for k in range(n):
+                put(img, x + k, y0, (190, 150, 130)); put(img, x + k, y0 + 1, b[0])
+            x += n + r.randint(1, 3)
+    for x in range(6, 10): put(img, x, 14, b[5]); put(img, x, 15, b[1])   # a peeling ribbon of bark
+    return img
+
+
+def citrus_bark(name, p, thorns):
+    """smooth citrus bark: soft mottling, fine pale streaks wavering down the stem, a few lichen flecks and pale thorns"""
+    b = p["bark"]; img = smooth_bark(name, b, 0.15, 0.9); r = random.Random(name + "_streak")
+    for x0 in (2, 7, 12):
+        ph, y = r.uniform(0, 6.28), 0
+        while y < 16:
+            n = r.randint(3, 6)
+            for k in range(n):
+                yy = (y + k) % 16; x = x0 + round(0.6 * math.sin(ph + yy * 0.5))
+                put(img, x, yy, mix(img.getpixel((x % 16, yy)), b[5], 0.45))
+                put(img, x + 1, yy, mix(img.getpixel(((x + 1) % 16, yy)), b[0], 0.3))
+            y += n + r.randint(1, 3)
+    scatter(img, name + "_lichen", 3, {1: (126, 140, 100), 2: (100, 114, 80)}, [[(0, 0, 1), (1, 0, 2)], [(0, 0, 1), (0, 1, 2)]], 5)
+    if thorns:
+        scatter(img, name + "_thorn", thorns, {1: (200, 194, 156), 2: (150, 146, 114), 3: (40, 38, 30)},
+                [[(0, 0, 2), (1, 0, 1), (0, 1, 3), (1, 1, 3)], [(0, 0, 2), (-1, 0, 1), (0, 1, 3), (-1, 1, 3)]], 7)
+    return img
+
+
+def bark_walnut(p):
+    """pale silver bark in long interlacing ridges (tall plates), dark narrow furrows between, a few fresh cracks"""
+    img = plates("walnut_ridges", p["bark"], 11, 0.32, 0.55, (2.0, 2.6))
+    return scatter(img, "walnut_crack", 3, {1: p["bark"][0], 2: p["bark"][5]}, [[(0, 0, 1), (0, 1, 1), (1, 0, 2)]], 6, opaque_only=True)
+
+
+def bark_chestnut(p):
+    """deep furrows twisting round the trunk: steep diagonal fissures, the ridge between lit on its upper side"""
+    b = p["bark"]; img = smooth_bark("chestnut", b, 0.35, 0.9); r = random.Random("chestnut_twist")
+    for x0 in (0, 4, 8, 12):
+        wob = r.uniform(0, 6.28)
+        for y in range(16):
+            x = x0 + y // 3 + round(0.5 * math.sin(wob + y * 0.8))       # leans right as it climbs: the spiral grain
+            put(img, x, y, b[0]); put(img, x + 1, y, b[1]); put(img, x - 1, y, b[4])
+    return scatter(img, "chestnut_knot", 1, {1: b[0], 2: b[2], 3: b[5]},
+                   [[(0, 0, 1), (1, 0, 1), (-1, 0, 2), (2, 0, 2), (0, -1, 3), (1, -1, 3), (0, 1, 2), (1, 1, 2)]], 8)
+
+
+def bark_quince(p):
+    """flaking bark: grey plates with fallen-away patches in fawn and fresh orange-brown, like a plane tree's"""
+    img = plates("quince_plates", p["bark"], 12, 0.6, 0.36, (1.8, 2.6))
+    return scatter(img, "quince_flake", 6, {1: (196, 140, 86), 2: (168, 112, 64), 3: (214, 176, 126)},
+                   [[(0, 0, 1), (1, 0, 3), (0, 1, 2), (1, 1, 1)], [(0, 0, 3), (1, 0, 1), (2, 0, 2)], [(0, 0, 1), (0, 1, 2)]], 5, opaque_only=True)
+
+
+def bark_peach(p):
+    """dark glossy reddish bark like the plum's, rough at the seams, with drops of amber gum oozing from it"""
+    b = p["bark"]; img = smooth_bark("peach", b, 0.15, 0.75)
+    for y in range(16):
+        for x in (5, 6, 13): put(img, x, y, mix(img.getpixel((x, y)), b[5], 0.5 if x == 6 else 0.3))
+    dashes(img, "peach_l", 6, {1: (170, 128, 108), 2: b[0]})
+    return scatter(img, "peach_gum", 2, {1: (250, 190, 80), 2: (200, 120, 30), 3: (130, 66, 14)},
+                   [[(0, 0, 1), (1, 0, 2), (0, 1, 2), (1, 1, 3)], [(0, 0, 1), (0, 1, 2), (0, 2, 3)]], 8)
+
+
+def bark_apricot(p):
+    """reddish bark cracking into long vertical strips, a lenticel here and there"""
+    img = plates("apricot_strips", p["bark"], 9, 0.3, 0.4, (1.5, 2.8))
+    return dashes(img, "apricot_l", 4, {1: (176, 132, 108), 2: p["bark"][0]}, 6)
+
+
+def bark_almond(p):
+    """almost black bark split into small blocks, the odd block catching the light"""
+    img = plates("almond_blocks", p["bark"], 22, 0.7, 0.55, (1.2, 3.2))
+    return scatter(img, "almond_lit", 4, {1: p["bark"][5]}, [[(0, 0, 1), (1, 0, 1)], [(0, 0, 1)]], 5, opaque_only=True)
+
+
+def bark_pomegranate(p):
+    """twisted fluting: smooth grey-brown bark with soft ridges spiralling gently up, lit on one flank"""
+    b = p["bark"]; img = smooth_bark("pomegranate", b, 0.3, 0.85)
+    for y in range(16):
+        for x in range(16):
+            t = math.sin(2 * math.pi * (x + y * 0.25) / 5.33)
+            if t > 0.75: put(img, x, y, mix(img.getpixel((x, y)), b[5], 0.45))
+            elif t < -0.7: put(img, x, y, mix(img.getpixel((x, y)), b[0], 0.5))
+    return img
+
+
+BARK.update({"pear": bark_pear, "sweet_cherry": bark_sweet_cherry, "lemon": lambda p: citrus_bark("lemon", p, 3),
+             "clementine": lambda p: citrus_bark("clementine", p, 1), "walnut": bark_walnut, "chestnut": bark_chestnut,
+             "quince": bark_quince, "peach": bark_peach, "apricot": bark_apricot, "almond": bark_almond, "pomegranate": bark_pomegranate,
+             "mulberry": lambda p: remap(van("oak_log"), p["bark"], 0.05, 0.95, 0.9),
+             "medlar": lambda p: dashes(remap(van("spruce_log"), p["bark"], 0.05, 0.95, 0.8), "medlar_l", 3, {1: (150, 136, 118), 2: p["bark"][0]}, 7)})
+
+LEAF_BASE.update({"pear": "oak_leaves", "sweet_cherry": "oak_leaves", "lemon": "azalea_leaves", "clementine": "azalea_leaves",
+                  "walnut": "oak_leaves", "chestnut": "jungle_leaves", "quince": "azalea_leaves", "mulberry": "jungle_leaves",
+                  "medlar": "oak_leaves", "peach": "birch_leaves", "apricot": "oak_leaves", "almond": "birch_leaves",
+                  "pomegranate": "azalea_leaves"})
+
+# fruit sprites: same letters through the stages (1 blossom, 2 unripe, 3 ripe); bloom = the blossom's own sprite
+FRUIT.update({
+    # a pear: narrow neck, round belly; blossom white with dark red anthers (as pear blossom has)
+    "pear": dict(sprite=[".s.", ".hP", "hPP", "PPd"], bloom=[".W.", "WrW", ".W."],
+                 stages={1: dict(W=(252, 252, 246), r=(150, 30, 50)),
+                         2: dict(h=(196, 224, 120), P=(130, 172, 62), d=(80, 120, 38)),
+                         3: dict(h=(250, 240, 150), P=(214, 196, 72), d=(164, 116, 44))}),
+    # a pair of cherries hanging from one stalk
+    "sweet_cherry": dict(sprite=["..s..", ".s.s.", "hC.hC", "CD.CD"], bloom=[".W.", "WyW", ".W."],
+                         stages={1: dict(W=(255, 255, 250), y=(220, 210, 110)),
+                                 2: dict(h=(232, 236, 150), C=(196, 200, 90), D=(130, 150, 50)),
+                                 3: dict(h=(255, 150, 150), C=(200, 22, 38), D=(108, 8, 22))}),
+    # a lemon: an oval with a little nipple at the tip; blossom white, flushed purple outside
+    "lemon": dict(sprite=[".s.", "hYY", "YYd", "YYd", ".d."], bloom=[".W.", "WyP", ".P."],
+                  stages={1: dict(W=(255, 252, 252), P=(214, 178, 214), y=(240, 214, 90)),
+                          2: dict(h=(170, 212, 96), Y=(96, 150, 48), d=(56, 100, 30)),
+                          3: dict(h=(255, 252, 176), Y=(246, 222, 44), d=(190, 156, 18))}),
+    # a clementine: small, flattened, deep orange-red; waxy white star blossom
+    "clementine": dict(sprite=[".s.", "hOO", "OOd"], bloom=[".W.", "WyP", ".P."],
+                       stages={1: dict(W=(255, 255, 250), P=(228, 230, 216), y=(244, 206, 80)),
+                               2: dict(h=(140, 192, 78), O=(74, 130, 40), d=(42, 86, 26)),
+                               3: dict(h=(255, 196, 96), O=(244, 112, 12), d=(186, 62, 6))}),
+    # a walnut in its green husk (browning and splitting when ripe); flowers: a hanging catkin
+    "walnut": dict(sprite=[".s.", "hGG", "GGd"], bloom=["s", "c", "C", "c", "C"],
+                   stages={1: dict(c=(196, 186, 96), C=(146, 136, 64)),
+                           2: dict(h=(176, 214, 104), G=(96, 146, 54), d=(54, 94, 32)),
+                           3: dict(h=(186, 156, 100), G=(116, 86, 48), d=(62, 42, 24))}),
+    # a spiny burr, splitting to show the glossy nut; flowers: long cream catkins
+    "chestnut": dict(sprite=["g.g", "hGd", "gdg"], bloom=["c.c", "C.C", "c.c", ".C."],
+                     stages={1: dict(c=(246, 236, 176), C=(214, 200, 128)),
+                             2: dict(g=(156, 204, 84), h=(186, 224, 116), G=(110, 160, 52), d=(66, 108, 30)),
+                             3: dict(g=(176, 150, 78), h=(176, 112, 60), G=(118, 64, 30), d=(60, 34, 16))}),
+    # a quince: big, golden, lumpy; large single pale pink flowers
+    "quince": dict(sprite=[".s.", "hQQ", "QQQ", "dQd"], bloom=[".P.", "PWP", ".P."],
+                   stages={1: dict(P=(246, 200, 206), W=(255, 244, 240)),
+                           2: dict(h=(196, 208, 150), Q=(150, 170, 96), d=(100, 116, 60)),
+                           3: dict(h=(255, 244, 150), Q=(232, 196, 44), d=(166, 128, 22))}),
+    # a mulberry: a little elongated cluster of drupelets, white -> red -> black; flowers tiny green spikes
+    "mulberry": dict(sprite=["s.", "hM", "Mm", "mM"], bloom=["s", "g", "G"],
+                     stages={1: dict(g=(176, 206, 110), G=(130, 166, 70)),
+                             2: dict(h=(250, 150, 140), M=(206, 46, 56), m=(142, 22, 34)),
+                             3: dict(h=(156, 116, 176), M=(62, 20, 52), m=(30, 8, 26))}),
+    # a medlar: russet with the open crown of sepals at its end; big single white flowers
+    "medlar": dict(sprite=[".s.", "hRR", "RRR", "c.c"], bloom=[".W.", "WyW", ".W."],
+                   stages={1: dict(W=(255, 254, 248), y=(214, 190, 96)),
+                           2: dict(h=(178, 188, 112), R=(124, 136, 66), c=(78, 92, 40)),
+                           3: dict(h=(184, 128, 80), R=(124, 76, 42), c=(70, 48, 28))}),
+    # a peach: round, fuzzy, a red blush on gold; pink blossom with a deep pink heart
+    "peach": dict(sprite=[".s.", "hBY", "BYd"], bloom=[".P.", "PpP", ".P."],
+                  stages={1: dict(P=(248, 168, 196), p=(200, 70, 120)),
+                          2: dict(h=(206, 222, 150), B=(150, 180, 90), Y=(136, 170, 80), d=(92, 120, 50)),
+                          3: dict(h=(255, 214, 160), B=(230, 84, 66), Y=(250, 182, 84), d=(184, 86, 48))}),
+    # an apricot: small and round, orange with a faint blush; blossom white touched with pink
+    "apricot": dict(sprite=["s.", "hA", "Ad"], bloom=[".W.", "WpW", ".W."],
+                    stages={1: dict(W=(255, 244, 244), p=(220, 120, 140)),
+                            2: dict(h=(206, 226, 130), A=(150, 186, 70), d=(96, 132, 42)),
+                            3: dict(h=(255, 222, 130), A=(244, 150, 40), d=(198, 96, 30))}),
+    # an almond in its velvety hull, split and grey-brown when ripe; the first blossom of spring, pale pink
+    "almond": dict(sprite=[".s", "hG", "Gd"], bloom=[".W.", "WpW", ".W."],
+                   stages={1: dict(W=(252, 234, 240), p=(208, 88, 128)),
+                           2: dict(h=(196, 216, 156), G=(132, 164, 98), d=(84, 112, 60)),
+                           3: dict(h=(222, 202, 156), G=(150, 130, 90), d=(96, 80, 52))}),
+    # a pomegranate: round and red with its little crown below; scarlet trumpet flowers
+    "pomegranate": dict(sprite=[".s.", "hRR", "RRd", "c.c"], bloom=[".F.", "FfF", ".o."],
+                        stages={1: dict(F=(246, 70, 36), f=(204, 34, 22), o=(150, 44, 30)),
+                                2: dict(h=(226, 220, 130), R=(196, 176, 70), d=(150, 104, 44), c=(140, 90, 40)),
+                                3: dict(h=(255, 150, 120), R=(196, 30, 40), d=(118, 10, 24), c=(150, 46, 34))}),
+})
+
+LEAF_SPRITES.update({
+    "pear": [[".L.", "LHM", "LMS", ".S."], ["LL.", "LMS", ".S."]],                     # glossy ovals
+    "sweet_cherry": [[".L.", "LHM", "LHM", "MMS", ".S."], ["LM.", "LMS", ".SS"]],     # long, drooping, toothed
+    "lemon": [[".L.", "LHM", "MMS", "MS.", ".S."], ["LH", "MS"], [".L.", "LHS", ".S."]],
+    "clementine": [["LH", "MS"], [".L.", "LHS", ".S."], ["L.", "MS"]],                # small and dense
+    "walnut": [["L.L.L", "MHMHM", ".S.S."], ["L.L", "HMH", "S.S"]],                    # leaflets in pairs
+    "chestnut": [["L..", "LH.", ".MM", "..S"], ["..L", ".HM", "MS.", "S.."]],          # long, slanting, serrated
+    "quince": [[".LL.", "LHMS", "LMMS", ".SS."], ["LL.", "LMS", ".S."]],              # round, felty
+    "mulberry": [["L.L.", "LHMM", "LMMS", ".MS.", "..S."], [".L.", "LHM", "MMS", ".S."]],  # big hearts
+    "medlar": [["L.", "LH", "MM", "MS", ".S"], [".L", "LM", "MS"]],                    # long narrow
+    "peach": [["L.", "LH", "MM", ".S"], [".L", "LM", "MS", "S."], ["L", "M", "S"]],    # narrow lances, drooping
+    "apricot": [[".LL.", "LHMS", "LMMS", ".SS."], [".L.", "LMS", ".S."]],             # broad rounds
+    "almond": [["L.", "HM", ".S"], [".L", "LM", "S."], ["L", "M", "S"]],               # slim
+    "pomegranate": [["LH", "MS"], [".L", "LM", "S."], ["L", "S"]],                     # small glossy
+})
+
+SAPLINGS.update({
+    "pear": ([(7, 9, 5, 5, 2), (8, 8, 10, 4, 2), (7, 11, 10, 9, 2)],
+             [(0, 4, 2), (0, 9, 1), (1, 6, 0), (1, 1, 6), (0, 10, 6), (1, 7, 4)], 2, 12),
+    "sweet_cherry": ([(7, 10, 3, 7, 2), (8, 9, 12, 6, 2), (7, 6, 5, 3, 2)],
+                     [(0, 1, 4), (0, 10, 3), (1, 4, 0), (1, 2, 8), (0, 11, 6), (1, 7, 2)], 3, 12),
+    "lemon": ([(7, 10, 4, 7, 1), (8, 9, 11, 6, 1), (7, 6, 6, 3, 1)],
+              [(0, 2, 4), (0, 10, 3), (1, 5, 1), (2, 7, 2), (1, 11, 7), (0, 3, 8), (2, 9, 9)], 3, 12),
+    "clementine": ([(7, 11, 4, 8, 1), (8, 10, 11, 7, 1), (7, 8, 7, 4, 1)],
+                   [(0, 3, 6), (1, 5, 4), (2, 10, 5), (0, 9, 3), (1, 6, 2), (2, 3, 9), (0, 11, 8), (1, 8, 7)], 4, 12),
+    "walnut": ([(7, 10, 4, 7, 2), (8, 8, 11, 5, 2)], [(0, 1, 5), (0, 9, 3), (1, 5, 0), (1, 2, 1), (1, 10, 0), (0, 5, 3)], 2, 12),
+    "chestnut": ([(7, 10, 3, 8, 1), (8, 9, 12, 7, 1), (7, 6, 4, 3, 1), (8, 5, 11, 2, 1)],
+                 [(0, 1, 5), (1, 11, 4), (0, 3, 1), (1, 9, 0), (0, 6, 2), (1, 12, 8)], 2, 12),
+    "quince": ([(7, 10, 3, 7, 1), (8, 8, 12, 6, 1), (7, 6, 6, 3, 1)],
+               [(0, 0, 4), (0, 10, 3), (1, 5, 0), (1, 2, 8), (1, 11, 7)], 3, 12),
+    "mulberry": ([(7, 10, 3, 8, 1), (8, 9, 12, 7, 1), (7, 7, 7, 4, 1)],
+                 [(0, 0, 4), (0, 11, 3), (1, 5, 0), (1, 2, 9), (1, 11, 8)], 4, 12),
+    "medlar": ([(7, 11, 4, 8, 2), (4, 8, 3, 5, 2), (8, 9, 11, 6, 2)],
+               [(0, 2, 3), (1, 4, 5), (0, 10, 3), (1, 12, 5), (0, 6, 1), (1, 8, 4)], 6, 13),
+    "peach": ([(7, 9, 4, 7, 2), (8, 7, 11, 5, 2)],
+              [(2, 3, 5), (0, 2, 7), (1, 10, 4), (2, 12, 6), (0, 6, 1), (1, 8, 1), (2, 4, 10), (1, 10, 9)], 2, 12),
+    "apricot": ([(7, 10, 4, 7, 1), (8, 8, 11, 5, 1), (7, 6, 6, 3, 1)],
+                [(0, 2, 5), (0, 10, 3), (1, 5, 1), (0, 7, 2), (1, 11, 6), (1, 3, 8)], 3, 12),
+    "almond": ([(7, 9, 4, 6, 3), (8, 7, 11, 4, 3), (7, 11, 10, 9, 3)],
+               [(0, 2, 3), (0, 10, 1), (1, 5, 0), (2, 3, 7), (2, 11, 6), (1, 8, 3), (0, 11, 8)], 1, 12),
+    "pomegranate": ([(7, 12, 4, 7, 2), (8, 12, 11, 6, 2), (7, 9, 6, 3, 2)],
+                    [(0, 2, 5), (0, 9, 4), (1, 4, 1), (1, 11, 6), (2, 6, 3), (0, 5, 8), (2, 12, 9)], 5, 13),
+})
+
+
+def _diag(n=12):
+    """a diagonal brace across an n x n panel (light edge, face, shadow), the rest boards"""
+    return ["".join("153"[x - (n - 2 - y)] if 0 <= x - (n - 2 - y) < 3 else "p" for x in range(n)) for y in range(n)]
+
+
+SLATS = ["pdppdppdppdp"]
+PANEL = ["p5llllllll2p"]
+DOORS.update({
+    # pear: two arched windows over a long raised panel
+    "pear": _door([P12, "ppp.pppp.ppp"] + ["pp...pp...pp"] * 4 + ["pp44pppp44pp", P12, "p5555555553p", "p5llllllll2p", "p3222222222p", P12],
+                  ("ppppppppppp", "p5555555553"), PANEL * 5 + ["p3222222222p", "p5555555553p"] + PANEL * 4 + ["p3222222222p"]),
+    # sweet cherry: a diamond window, slatted boards
+    "sweet_cherry": _door([P12, "ppppp..ppppp", "pppp....pppp", "ppp......ppp", "pp........pp", "ppp......ppp", "pppp....pppp",
+                           "ppppp..ppppp", P12, "pdpdpdpdpdpd", P12, P12], ("ppppppppppp", "pdppdppdppd"), SLATS * 12),
+    # lemon: an arched window with a light grille, a framed panel under it
+    "lemon": _door([P12, "pppp....pppp", "ppp......ppp"] + ["pp..k..k..pp"] * 4 + ["pp44444444pp", P12, "pp55555553pp", "pp5llllll2pp", "pp32222222pp"],
+                   ("ppppppppppp", "pp555555553"), ["pp5llllll2pp"] * 11 + ["pp32222222pp"]),
+    # clementine: shutters, louvres all the way down
+    "clementine": _door([P12] + ["pp44444444pp", "pp........pp"] * 4 + [P12] * 3, ("qqqqqqqqqqq", "ccccccccccc"),
+                        ["qqqqqqqqqqqq", "cccccccccccc"] * 6),
+    # walnut: a rich door of raised panels, two small panes at the top
+    "walnut": _door([P12, "p5553pp5553p", "p5..2pp5..2p", "p5..2pp5..2p", "p5ll2pp5ll2p", "p3222pp3222p", P12, "p5553pp5553p",
+                     "p5ll2pp5ll2p", "p5ll2pp5ll2p", "p3222pp3222p", P12],
+                    ("ppppppppppp", "p5553pp5553"), ["p5ll2pp5ll2p"] * 4 + ["p3222pp3222p", P12, "p5553pp5553p"] + ["p5ll2pp5ll2p"] * 4
+                    + ["p3222pp3222p"]),
+    # chestnut: heavy boards, iron strap hinges, a peep window
+    "chestnut": _door([P12, "kkkkkkkppdpp", "pdppdppdppdp", "pdpp....pdpp", "pdpp....pdpp", "pdppdppdppdp", "pdppdppdppdp", "kkkkkkkppdpp"]
+                      + SLATS * 4, ("pdppdppdppd", "pdppdppdppd"), SLATS * 3 + ["kkkkkkkppdpp"] + SLATS * 6 + ["kkkkkkkppdpp", "pdppdppdppdp"]),
+    # quince: a round window with a cross, horizontal boards below
+    "quince": _door([P12, "pppp....pppp", "ppp......ppp", "pp...44...pp", "pp..4444..pp", "pp...44...pp", "ppp......ppp", "pppp....pppp",
+                     P12, "qqqqqqqqqqqq", "cccccccccccc", P12],
+                    ("qqqqqqqqqqq", "ccccccccccc"), ["qqqqqqqqqqqq", "qqqqqqqqqqqq", "cccccccccccc"] * 4),
+    # mulberry: woven panels in a mulberry frame
+    "mulberry": _door([P12, "pp........pp", "pp........pp", "pp44444444pp"] + ["pp" + r + "pp" for r in weave(8, 7)] + [P12],
+                      ("ppppppppppp", "pp555555553"), ["pp5" + r + "2pp" for r in weave(6, 11)] + ["pp32222222pp"]),
+    # medlar: a cottage door, two small panes, a diagonal brace below
+    "medlar": _door([P12] + ["pp..pppp..pp"] * 3 + [P12, "444444444444", "333333333333"] + SLATS * 5,
+                    ("ppppppppppp", "44444444444"), _diag()),
+    # peach: two wide arched windows, studded boards
+    "peach": _door([P12, "ppp..pp..ppp", "pp...pp...pp", "pp...pp...pp", "pp...pp...pp", "pp444pp444pp", P12, "pkppppppppkp"] + [P12] * 4,
+                   ("ppppppppppp", "pkppppppppk"), [P12] * 4 + ["pkppppppppkp"] + [P12] * 6 + ["pkppppppppkp"]),
+    # apricot: a stable door: an open upper half framed in rails, a cross-braced lower half
+    "apricot": _door([P12] + ["pp........pp"] * 6 + ["444444444444", "333333333333"] + [P12] * 3,
+                     ("ppppppppppp", "44444444444"), ["ppp4pppp4ppp"] * 5 + ["444444444444"] + ["ppp4pppp4ppp"] * 5
+                     + ["444444444444"]),
+    # almond: dark-seamed boards with a little diamond window
+    "almond": _door([P12, "pdpdp..pdpdp", "pdpd....dpdp", "pdpdp..pdpdp"] + ["pdpdpdpdpdpd"] * 8, ("pdpdpdpdpdp", "pdpdpdpdpdp"),
+                    ["pdpdpdpdpdpd"] * 12),
+    # pomegranate: a keyhole arch behind an iron grille, studded boards
+    "pomegranate": _door([P12, "ppppp..ppppp", "pppp....pppp", "ppp..kk..ppp", "ppp..kk..ppp", "ppp.kkkk.ppp", "ppp..kk..ppp", "ppp......ppp",
+                          "pp44444444pp", P12, "pkpkpkpkpkpk", P12],
+                         ("pkppkppkppk", "ppppppppppp"), SLATS * 5 + ["pkppkppkppkp"] + SLATS * 5 + ["pkppkppkppkp"]),
+})
+TRAPDOORS.update({
+    "pear": [P12, "p5555555553p"] + PANEL * 3 + ["p3222222222p", "p5555555553p"] + PANEL * 3 + ["p3222222222p", P12],
+    "sweet_cherry": [P12, "ppppp..ppppp", "pppp....pppp", "ppp......ppp", "pp........pp", "pp........pp", "ppp......ppp", "pppp....pppp",
+                     "ppppp..ppppp", P12, P12, P12],
+    "lemon": [P12, "pppp....pppp", "ppp......ppp"] + ["pp..k..k..pp"] * 6 + ["ppp......ppp", "pppp....pppp", P12],
+    "clementine": ["pp44444444pp", "pp........pp"] * 6,
+    "walnut": [P12, "p5553pp5553p", "p5ll2pp5ll2p", "p5ll2pp5ll2p", "p3222pp3222p", P12, P12, "p5553pp5553p", "p5ll2pp5ll2p", "p5ll2pp5ll2p",
+               "p3222pp3222p", P12],
+    "chestnut": ["kkkkkkkppdpp"] + SLATS * 4 + ["pdpp....pdpp"] * 2 + SLATS * 4 + ["kkkkkkkppdpp"],
+    "quince": ["qqqqqqqqqqqq", "qqqqqqqqqqqq", "cccccccccccc"] * 4,
+    "mulberry": ["p" + r + "p" for r in weave(10, 12)],
+    "medlar": _diag(),
+    "peach": [P12, "pkppppppppkp", P12, "ppp..pp..ppp", "pp...pp...pp", "pp...pp...pp", "pp...pp...pp", "pp...pp...pp", "ppp..pp..ppp", P12,
+              "pkppppppppkp", P12],
+    "apricot": ["ppp4pppp4ppp"] * 5 + ["444444444444", "333333333333"] + ["ppp4pppp4ppp"] * 5,
+    "almond": ["pdpdpdpdpdpd"] * 3 + ["pdpdp..pdpdp", "pdpd....dpdp", "pdp......pdp", "pdp......pdp", "pdpd....dpdp", "pdpdp..pdpdp"]
+              + ["pdpdpdpdpdpd"] * 3,
+    "pomegranate": [P12, "pkppkppkppkp", "ppppp..ppppp", "pppp.kk.pppp", "ppp..kk..ppp", "ppp.kkkk.ppp", "ppp..kk..ppp", "ppp......ppp",
+                    "pppp....pppp", "pkppkppkppkp", P12, P12],
+})
+ITEM_DOORS.update({
+    "pear": _item_door(["pppppp", "p.pp.p", "p.pp.p", "p.pp.p", "p4pp4p", "pppppp"], ["5llll2"] * 4 + ["322222"]),
+    "sweet_cherry": _item_door(["pp..pp", "p....p", "p....p", "pp..pp", "pppppp", "pdpdpd"], ["pdpdpd"] * 5),
+    "lemon": _item_door(["pp..pp", "p.kk.p", "p.kk.p", "p4444p", "pppppp", "p5ll2p"], ["p5ll2p"] * 4 + ["p3222p"]),
+    "clementine": _item_door(["444444", "p....p", "444444", "p....p", "444444", "pppppp"], ["qqqqqq", "cccccc", "qqqqqq", "cccccc", "qqqqqq"]),
+    "walnut": _item_door(["pppppp", "5.25.2", "5l25l2", "322322", "pppppp", "5l25l2"], ["5l25l2"] * 4 + ["322322"]),
+    "chestnut": _item_door(["kkkkpp", "pdpdpd", "pd..pd", "pdpdpd", "kkkkpp", "pdpdpd"], ["pdpdpd", "kkkkpp", "pdpdpd", "pdpdpd", "kkkkpp"]),
+    "quince": _item_door(["pp..pp", "p.44.p", "p4444p", "p.44.p", "pp..pp", "cccccc"], ["qqqqqq", "cccccc", "qqqqqq", "cccccc", "qqqqqq"]),
+    "mulberry": _item_door(["p....p", "p....p", "p4444p", "pllccp", "pccllp", "pllccp"], ["5" + r + "2" for r in weave(4, 4)] + ["322222"]),
+    "medlar": _item_door(["pppppp", "p.pp.p", "p.pp.p", "pppppp", "444444", "pdpdpd"], ["pppp15", "pp153p", "p153pp", "153ppp", "53pppp"]),
+    "peach": _item_door(["pppppp", "p.pp.p", "p.pp.p", "p.pp.p", "pppppp", "pkppkp"], ["pppppp", "pppppp", "pkppkp", "pppppp", "pppppp"]),
+    "apricot": _item_door(["pppppp", "p....p", "p....p", "p....p", "444444", "pppppp"], ["p4pp4p", "p4pp4p", "444444", "p4pp4p", "p4pp4p"]),
+    "almond": _item_door(["pdpdpd", "pd..pd", "p....d", "pd..pd", "pdpdpd", "pdpdpd"], ["pdpdpd"] * 5),
+    "pomegranate": _item_door(["pp..pp", "p.kk.p", "pkkkkp", "p.kk.p", "p4444p", "pkpkpk"], ["pdpdpd", "pdpdpd", "pkpkpk", "pdpdpd", "pdpdpd"]),
+})
+FRUIT_LEAVES_FN = {"walnut": lambda p: rowan_leaves(p, "walnut_pinnate")}   # walnut: big pinnate leaves like the rowan's
+
+
+# ---- orchard fruit items: painted at 16x16, lit from the upper left like the berry and orange items ----
+def body(img, cx, cy, rx, ry, pal, seed=0, speckle=0.0, taper=0.0):
+    """a rounded fruit: pal = highlight, light, body, shade, dark rim; taper narrows the top (pears); speckle = pits/fuzz"""
+    rnd = random.Random(seed)
+    for y in range(16):
+        for x in range(16):
+            dy = (y + 0.5 - cy) / ry
+            w = rx * (1 - taper * max(0.0, -dy)) if taper else rx
+            dx = (x + 0.5 - cx) / max(0.5, w)
+            d = math.hypot(dx, dy)
+            if d > 1: continue
+            t = 0.55 * d + 0.3 * (dx + dy) / 2 + 0.25
+            k = 0 if t < 0.14 else 1 if t < 0.34 else 2 if t < 0.64 else 3 if d < 0.86 else 4
+            if speckle and 0 < k < 4 and rnd.random() < speckle: k += 1
+            put(img, x, y, pal[k])
+
+
+def px(img, pts, col):
+    for x, y in pts: put(img, x, y, col)
+
+
+STALK, STALK_D = (104, 76, 44), (66, 46, 26)
+
+
+def ellipse(cx, cy, rx, ry):
+    return [(x, y) for y in range(16) for x in range(16) if ((x + 0.5 - cx) / rx) ** 2 + ((y + 0.5 - cy) / ry) ** 2 <= 1]
+
+
+LEAF_UP = ["..HL", ".LMS", "LMS.", "s..."]   # a small leaf rising to the right from its stalk end (bottom left)
+
+
+def leaf(img, x, y, dx, dy, n, lit, dark, mid=None):
+    """a small filled leaf whose stalk end is (x, y), leaning right (dx 1) or left (dx -1); lit tip, shaded underside"""
+    cols = {"H": tuple(min(255, v + 40) for v in lit), "L": lit, "M": mid or lit, "S": dark, "s": STALK}
+    for j, row in enumerate(LEAF_UP):
+        for i, ch in enumerate(row):
+            if ch != ".": put(img, x + dx * i, y - 3 + j, cols[ch])
+
+
+def orchard_items():
+    out = {}
+    G = ((150, 200, 90), (60, 110, 40), (90, 150, 56))  # leaf lit, dark, mid
+    # pears: one big pear and a smaller one behind, a stalk and a leaf
+    img = new()
+    PEAR = ((252, 244, 168), (226, 214, 96), (196, 184, 64), (150, 128, 44), (92, 70, 26))
+    body(img, 11.2, 8.0, 3.0, 4.6, PEAR, 31, 0.05, 0.45)
+    body(img, 6.6, 10.0, 3.8, 5.2, PEAR, 32, 0.05, 0.5)
+    px(img, [(6, 3), (6, 4), (7, 2)], STALK); put(img, 7, 3, STALK_D)
+    px(img, [(7, 12), (8, 11), (9, 12)], (206, 120, 62))    # russet blush
+    leaf(img, 8, 3, 1, -1, 4, *G)
+    put(img, 4, 7, (255, 252, 214))
+    out["pears"] = img
+    # sweet cherries: two pairs on joined stalks
+    img = new()
+    CH = ((255, 168, 168), (226, 46, 56), (186, 18, 34), (120, 8, 22), (64, 4, 14))
+    for cx, cy, sx in ((4.6, 12.0, 7), (9.2, 12.6, 7), (10.6, 8.0, 11), (14.0, 9.6, 11)):
+        body(img, cx, cy, 2.3, 2.3, CH, int(cx * 10))
+    for (x0, y0), (x1, y1) in (((5, 10), (7, 3)), ((9, 10), (7, 3)), ((10, 6), (11, 1)), ((13, 8), (11, 1))):
+        line(img, x0, y0, x1, y1, STALK)
+    put(img, 7, 3, STALK_D); put(img, 11, 1, STALK_D)
+    leaf(img, 6, 3, -1, -1, 4, *G)
+    px(img, [(3, 11), (8, 11), (9, 7), (13, 8)], (255, 230, 230))
+    out["sweet_cherries"] = img
+    # lemons: two pointed ovals, a glossy leaf
+    img = new()
+    LEM = ((255, 252, 196), (250, 232, 80), (232, 204, 34), (184, 152, 16), (112, 88, 8))
+    body(img, 10.4, 6.8, 4.2, 3.0, LEM, 41, 0.08)
+    px(img, [(14, 7), (15, 7)], LEM[3])
+    body(img, 6.2, 10.6, 5.0, 3.6, LEM, 42, 0.08)
+    px(img, [(1, 11), (0, 11)], LEM[3]); put(img, 11, 10, LEM[3])
+    leaf(img, 4, 6, 1, -1, 5, *G)
+    put(img, 3, 9, (255, 255, 230))
+    out["lemons"] = img
+    # clementines: three little flat oranges, one with a leaf on its stalk
+    img = new()
+    CL = ((255, 206, 120), (250, 140, 30), (234, 106, 12), (176, 62, 6), (104, 30, 4))
+    body(img, 11.0, 6.0, 3.4, 3.0, CL, 51, 0.08)
+    body(img, 4.6, 8.6, 3.6, 3.2, CL, 52, 0.08)
+    body(img, 9.2, 11.6, 3.9, 3.4, CL, 53, 0.08)
+    px(img, [(9, 8), (10, 8)], STALK_D)
+    leaf(img, 10, 7, 1, -1, 5, (60, 120, 44), (24, 60, 22), (40, 90, 32))
+    px(img, [(3, 7), (8, 10)], (255, 236, 180))
+    out["clementines"] = img
+    # walnuts: a whole nut, round, ridged seam and deep wrinkles; a half shell beside it with the folded kernel
+    img = new()
+    SH = ((224, 192, 140), (194, 156, 102), (160, 120, 72), (118, 82, 46), (66, 44, 22))
+    body(img, 6.0, 7.2, 4.6, 4.8, SH, 61, 0.1)
+    rnd = random.Random("walnut_wrinkle")
+    for _ in range(9):   # short dark wrinkles
+        x, y = rnd.randint(3, 9), rnd.randint(4, 11)
+        if img.getpixel((x, y))[3] and img.getpixel((x + 1, y + 1))[3]:
+            put(img, x, y, SH[3]); put(img, x + rnd.choice((-1, 1)), y + 1, SH[4] if rnd.random() < 0.4 else SH[3])
+    for y in range(3, 12): put(img, 6 + (1 if 5 <= y <= 9 else 0), y, SH[4]); put(img, 5 + (1 if 5 <= y <= 9 else 0), y, SH[1])  # the seam ridge
+    for x, y in ellipse(11.4, 11.2, 3.8, 3.4): put(img, x, y, SH[3] if math.hypot(x + 0.5 - 11.4, y + 0.5 - 11.2) > 2.6 else SH[2])
+    for x, y in ((10, 10), (11, 10), (12, 10), (10, 11), (12, 11), (11, 12), (10, 12), (12, 12), (11, 11), (13, 11)):   # the kernel
+        put(img, x, y, (238, 214, 160) if (x * 3 + y) % 4 else (186, 148, 92))
+    put(img, 3, 5, (246, 226, 186))
+    out["walnuts"] = img
+    # chestnuts: two glossy nuts with pale bases and a little tuft, a piece of spiny burr
+    img = new()
+    CN = ((240, 170, 120), (170, 92, 48), (130, 64, 32), (88, 40, 18), (46, 20, 8))
+    body(img, 6.0, 9.6, 4.4, 4.0, CN, 71)
+    body(img, 11.4, 7.2, 3.4, 3.4, CN, 72)
+    for x in range(3, 10): put(img, x, 12 + (x in (3, 9)), (214, 188, 140))   # the pale scar at the base
+    for x in range(9, 14): put(img, x, 10, (214, 188, 140))
+    px(img, [(6, 5), (11, 3)], (230, 220, 190))   # tufts
+    burr = (150, 190, 80)
+    for x, y in ((12, 13), (14, 12), (13, 14), (15, 14), (14, 15), (11, 15), (12, 15)):
+        put(img, x, y, burr if (x + y) % 2 else (100, 140, 50))
+    out["chestnuts"] = img
+    # quinces: one big golden lumpy quince with downy grey on its shoulder, a felted leaf
+    img = new()
+    QU = ((255, 246, 170), (240, 210, 70), (214, 176, 40), (160, 120, 20), (96, 68, 10))
+    body(img, 8.0, 9.4, 5.6, 5.2, QU, 81, 0.04, 0.15)
+    px(img, [(6, 5), (7, 5), (5, 6)], (220, 220, 196))   # down
+    px(img, [(8, 14), (7, 14)], QU[4]); put(img, 8, 13, (120, 96, 40))  # the calyx dimple
+    px(img, [(8, 4), (8, 3)], STALK)
+    leaf(img, 9, 3, 1, -1, 5, (170, 190, 140), (90, 110, 70), (130, 150, 100))
+    put(img, 5, 7, (255, 255, 220))
+    out["quinces"] = img
+    # mulberries: elongated drupelet clusters, dark, with highlights on each bead
+    img = new()
+    MU = [(40, 10, 34), (70, 20, 56), (110, 50, 90), (180, 140, 190)]
+    for bx, by in ((4, 5), (9, 7), (6, 10)):
+        put(img, bx + 1, by - 1, (110, 150, 60)); put(img, bx + 1, by - 2, (80, 110, 40))
+        for j in range(5):
+            for i in range(3):
+                if (i, j) in ((0, 4), (2, 4)): continue
+                put(img, bx + i, by + j, MU[(i + j) % 2 + (1 if i == 0 else 0)])
+            put(img, bx + (j % 2), by + j, MU[3] if j < 3 else MU[2])
+    out["mulberries"] = img
+    # medlars: russet fruits, the big one seen end-on with its open eye ringed by five leafy sepals
+    img = new()
+    ME = ((214, 160, 108), (170, 110, 64), (136, 84, 44), (96, 56, 28), (56, 32, 16))
+    body(img, 11.0, 5.8, 3.4, 3.2, ME, 91, 0.12)
+    px(img, [(11, 9), (10, 9), (12, 9)], (120, 110, 60))
+    body(img, 6.4, 10.0, 4.8, 4.6, ME, 92, 0.12)
+    SEP, SEPD = (150, 140, 80), (96, 90, 46)
+    for dx, dy in ((0, -2), (2, -1), (2, 1), (-2, 1), (-2, -1)):   # sepals round the open eye
+        put(img, 6 + dx, 10 + dy, SEP); put(img, 6 + dx + (dx > 0) - (dx < 0), 10 + dy + (dy > 0) - (dy < 0), SEPD)
+    for x, y in ((6, 10), (5, 10), (6, 11), (7, 10)): put(img, x, y, (44, 26, 12))
+    put(img, 3, 7, (240, 200, 150)); put(img, 9, 4, (240, 200, 150))
+    out["medlars"] = img
+    # peaches: two fuzzy peaches, red blush over gold, a crease, a narrow leaf
+    img = new()
+    for cx, cy, r, s in ((10.8, 7.0, 3.6, 101), (6.2, 10.6, 4.8, 102)):
+        PE = ((255, 220, 170), (250, 184, 96), (236, 112, 72), (176, 64, 48), (100, 30, 24))
+        body(img, cx, cy, r, r, PE, s, 0.1)
+    for y in range(7, 15): put(img, 7 + (y > 11), y, (190, 70, 50))   # the crease
+    leaf(img, 6, 5, 1, -1, 5, *G)
+    put(img, 4, 8, (255, 236, 200))
+    out["peaches"] = img
+    # apricots: three small orange fruits, one halved showing its stone
+    img = new()
+    AP = ((255, 226, 140), (250, 172, 60), (236, 134, 34), (186, 88, 24), (110, 50, 14))
+    body(img, 11.0, 6.4, 3.0, 3.0, AP, 111)
+    body(img, 5.0, 8.0, 3.2, 3.2, AP, 112)
+    body(img, 9.6, 11.4, 3.6, 3.4, AP, 113)
+    for x, y in ((9, 11), (10, 11), (9, 12), (10, 12)): put(img, x, y, (140, 76, 36))   # the stone in the cut half
+    px(img, [(8, 10), (11, 10)], (255, 200, 110))
+    put(img, 4, 6, (255, 246, 210)); put(img, 10, 5, (255, 246, 210))
+    out["apricots"] = img
+    # almonds: three pointed teardrop nuts in pitted tan shells, tips up
+    img = new()
+    AL = ((236, 212, 166), (210, 174, 120), (176, 136, 86), (128, 94, 56), (78, 54, 30))
+    for cx, cy, s_ in ((4.6, 7.0, 121), (10.4, 6.2, 122), (7.6, 11.6, 123)):
+        body(img, cx, cy, 2.4, 3.6, AL, s_, 0.0, 0.85)
+        x0, y0 = int(cx), int(cy - 3.6)
+        put(img, x0, y0, AL[3])                              # the pointed tip
+        rnd = random.Random(s_)
+        for _ in range(4):                                   # pits in the shell
+            x, y = int(cx + rnd.uniform(-1.4, 1.2)), int(cy + rnd.uniform(-1.6, 2.2))
+            if img.getpixel((x, y))[3]: put(img, x, y, AL[3])
+        put(img, int(cx - 1), int(cy - 1), AL[0])
+    out["almonds"] = img
+    # pomegranates: a whole red fruit with its crown, and a split one full of ruby seeds
+    img = new()
+    PO = ((255, 160, 130), (220, 60, 50), (186, 30, 38), (120, 12, 24), (70, 6, 14))
+    body(img, 10.4, 7.0, 4.4, 4.4, PO, 131)
+    px(img, [(9, 2), (11, 2), (10, 3)], (150, 46, 34)); put(img, 10, 2, (110, 30, 20))   # the crown
+    body(img, 5.6, 11.0, 4.6, 4.2, PO, 132)
+    for y in range(9, 14):
+        for x in range(4, 9):
+            if math.hypot(x + 0.5 - 6.2, y + 0.5 - 11.2) < 2.4:
+                put(img, x, y, (250, 90, 110) if (x + y) % 2 else (200, 20, 60))   # the arils
+    px(img, [(5, 10), (7, 12)], (255, 210, 220)); px(img, [(6, 9), (4, 11)], (240, 220, 170))   # glints, pith
+    put(img, 8, 5, (255, 220, 210))
+    out["pomegranates"] = img
+    # roasted chestnuts: shells split open in a cross, golden flesh showing, scorched
+    img = new()
+    RC = ((180, 110, 70), (110, 54, 28), (78, 34, 16), (48, 20, 8), (24, 10, 4))
+    body(img, 5.6, 8.4, 4.2, 4.0, RC, 141)
+    body(img, 11.0, 10.6, 3.8, 3.6, RC, 142)
+    for cx, cy in ((5, 8), (11, 10)):
+        for d in (-1, 0, 1):
+            put(img, cx + d, cy, (240, 206, 120)); put(img, cx, cy + d, (240, 206, 120))
+        put(img, cx, cy, (255, 236, 170)); put(img, cx + 1, cy + 1, (200, 156, 80))
+    px(img, [(3, 6), (12, 13)], (30, 14, 6))   # char
+    out["roasted_chestnuts"] = img
+    for name, im in out.items(): save(im, f"item/{name}.png")
+
+
 # ------------------------------------------------------------------ tree extras: beechnuts, roasted beechnuts, pine resin
 def item_sprite(rows, cols):
     assert len(rows) == 16 and all(len(r) == 16 for r in rows), [len(r) for r in rows]
@@ -965,6 +1586,7 @@ img = sapling("apple", apple)
 for x, y, c in ((7, 11, (222, 196, 120)), (8, 11, (176, 150, 92)), (7, 12, (196, 170, 104))): put(img, x, y, c)
 save(img, "block/apple_sapling.png")
 extras()
+orchard_items()
 
 if prev:
     S, per = 8, 11

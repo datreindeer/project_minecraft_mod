@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:sweet_cherry_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:sweet_cherry_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:sweet_cherry_planks",
+      "mechanical:sweet_cherry_wood",
+      "mechanical:stripped_sweet_cherry_wood",
+      "mechanical:sweet_cherry_slab",
+      "mechanical:sweet_cherry_stairs",
+      "mechanical:sweet_cherry_fence",
+      "mechanical:sweet_cherry_fence_gate",
+      "mechanical:sweet_cherry_door",
+      "mechanical:sweet_cherry_trapdoor",
+      "mechanical:sweet_cherry_button",
+      "mechanical:sweet_cherry_pressure_plate"
+    ]
+  }
+}

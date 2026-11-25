@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "B ",
+    "BB"
+  ],
+  "key": {
+    "B": "mechanical:peach_bark"
+  },
+  "result": {
+    "id": "mechanical:peach_bark_roof",
+    "count": 4
+  }
+}

@@ -20,6 +20,7 @@ import zipfile
 from pathlib import Path
 
 from PIL import Image
+from orchard_table import ORCHARD
 
 ROOT = Path(__file__).resolve().parent.parent
 TEX = ROOT / "src/main/resources/assets/mechanical/textures"
@@ -28,7 +29,7 @@ JAR = sorted(glob.glob(str(ROOT / "build/moddev/artifacts/minecraft-patched-*-me
 assert JAR, "no merged minecraft jar (run a gradle build first)"
 _jar = zipfile.ZipFile(JAR[0])
 WOODS = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "poplar",
-         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]
+         "aspen", "alder", "beech", "linden", "willow", "ash", "hazel", "pine", "yew", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"] + ORCHARD
 
 
 def h(x, y, salt):

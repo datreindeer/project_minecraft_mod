@@ -1,0 +1,7 @@
+{
+  "parent": "mechanical:block/stump",
+  "textures": {
+    "side": "mechanical:block/quince_log",
+    "top": "mechanical:block/quince_log_top"
+  }
+}

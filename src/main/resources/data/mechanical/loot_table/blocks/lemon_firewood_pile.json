@@ -1,0 +1,127 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lemon_firewood",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:lemon_firewood_pile",
+            "state": {
+              "layers": "1"
+            }
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lemon_firewood",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:lemon_firewood_pile",
+            "state": {
+              "layers": "2"
+            }
+          },
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": 2
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lemon_firewood",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:lemon_firewood_pile",
+            "state": {
+              "layers": "3"
+            }
+          },
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": 3
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lemon_firewood",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:lemon_firewood_pile",
+            "state": {
+              "layers": "4"
+            }
+          },
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": 4
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lemon_firewood",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:lemon_firewood_pile",
+            "state": {
+              "layers": "5"
+            }
+          },
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": 5
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lemon_firewood",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:lemon_firewood_pile",
+            "state": {
+              "layers": "6"
+            }
+          },
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": 6
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lemon_firewood",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:lemon_firewood_pile",
+            "state": {
+              "layers": "7"
+            }
+          },
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": 7
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "mechanical:lemon_firewood",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mechanical:lemon_firewood_pile",
+            "state": {
+              "layers": "8"
+            }
+          },
+          "modifier": {
+            "type": "minecraft:set_count",
+            "count": 8
+          }
+        }
+      ]
+    }
+  ],
+  "random_sequence": "mechanical:blocks/lemon_firewood_pile"
+}

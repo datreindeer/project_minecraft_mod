@@ -24,6 +24,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from orchard_table import ORCHARD
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "src/main/resources"
@@ -41,7 +42,7 @@ G, S, P = 1, 2, 4  # groups: ground, stone, planks. A block frays over a weaker 
 # bases from EarthBlocks.java, so a new stone, wood or ground slab joins on the next run; check() fails on anything missed.
 JAVA = ROOT / "src/main/java/com/mechanical"
 WOOD_ORDER = ["dark_oak", "bog_oak", "spruce", "mangrove", "jungle", "acacia", "oak", "birch", "cherry", "pale_oak", "poplar",
-              "crimson", "warped", "pine", "yew", "alder", "ash", "aspen", "beech", "hazel", "linden", "willow", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"]
+              "crimson", "warped", "pine", "yew", "alder", "ash", "aspen", "beech", "hazel", "linden", "willow", "rowan", "bird_cherry", "wild_apple", "plum", "olive", "date_palm", "bitter_orange"] + ORCHARD
 VANILLA_RAW = ["stone", "andesite", "granite", "diorite", "tuff", "calcite", "deepslate"]
 VANILLA_POLISHED = ["smooth_stone", "polished_andesite", "polished_granite", "polished_diorite", "polished_tuff", "polished_deepslate"]
 # ground that is not a stone family: above the stones (living ground) and below them (bare ground)

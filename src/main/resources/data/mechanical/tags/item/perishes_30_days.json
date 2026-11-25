@@ -28,6 +28,11 @@
     "mechanical:rapeseed_oil",
     "mechanical:pickled_olives",
     "mechanical:bitter_orange_marmalade",
-    "mechanical:raisins"
+    "mechanical:raisins",
+    "mechanical:walnut_oil",
+    "mechanical:almond_oil",
+    "mechanical:quince_paste",
+    "mechanical:cherry_jam",
+    "mechanical:pickled_lemons"
   ]
 }

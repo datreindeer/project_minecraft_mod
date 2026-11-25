@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:limestone_karst",
+    "minecraft:windswept_savanna"
+  ],
+  "features": "mechanical:almond_karst",
+  "step": "vegetal_decoration"
+}

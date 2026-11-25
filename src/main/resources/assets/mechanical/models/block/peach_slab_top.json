@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "mechanical:block/peach_planks",
+    "side": "mechanical:block/peach_planks",
+    "top": "mechanical:block/peach_planks"
+  }
+}

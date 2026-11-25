@@ -1,0 +1,8 @@
+{
+  "parent": "mechanical:block/rough_log_piece_1",
+  "textures": {
+    "particle": "mechanical:block/mulberry_log",
+    "side": "mechanical:block/mulberry_log",
+    "end": "mechanical:block/mulberry_log_top"
+  }
+}

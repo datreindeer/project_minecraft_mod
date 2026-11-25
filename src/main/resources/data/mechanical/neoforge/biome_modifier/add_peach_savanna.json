@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:savanna"
+  ],
+  "features": "mechanical:peach_savanna",
+  "step": "vegetal_decoration"
+}

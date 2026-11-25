@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:quince_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:quince_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:quince_planks",
+      "mechanical:quince_wood",
+      "mechanical:stripped_quince_wood",
+      "mechanical:quince_slab",
+      "mechanical:quince_stairs",
+      "mechanical:quince_fence",
+      "mechanical:quince_fence_gate",
+      "mechanical:quince_door",
+      "mechanical:quince_trapdoor",
+      "mechanical:quince_button",
+      "mechanical:quince_pressure_plate"
+    ]
+  }
+}

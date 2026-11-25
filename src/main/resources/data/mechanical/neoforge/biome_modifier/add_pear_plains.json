@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:forest",
+    "mechanical:chalk_downs"
+  ],
+  "features": "mechanical:pear_plains",
+  "step": "vegetal_decoration"
+}

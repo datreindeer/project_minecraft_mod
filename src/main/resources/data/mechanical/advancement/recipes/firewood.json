@@ -46,7 +46,20 @@
       "mechanical:plum_log_from_firewood",
       "mechanical:olive_log_from_firewood",
       "mechanical:date_palm_log_from_firewood",
-      "mechanical:bitter_orange_log_from_firewood"
+      "mechanical:bitter_orange_log_from_firewood",
+      "mechanical:pear_log_from_firewood",
+      "mechanical:sweet_cherry_log_from_firewood",
+      "mechanical:lemon_log_from_firewood",
+      "mechanical:clementine_log_from_firewood",
+      "mechanical:walnut_log_from_firewood",
+      "mechanical:chestnut_log_from_firewood",
+      "mechanical:quince_log_from_firewood",
+      "mechanical:mulberry_log_from_firewood",
+      "mechanical:medlar_log_from_firewood",
+      "mechanical:peach_log_from_firewood",
+      "mechanical:apricot_log_from_firewood",
+      "mechanical:almond_log_from_firewood",
+      "mechanical:pomegranate_log_from_firewood"
     ]
   }
 }

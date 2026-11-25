@@ -7,7 +7,9 @@
     [
       "mechanical:lard",
       "mechanical:olive_oil",
-      "mechanical:rapeseed_oil"
+      "mechanical:rapeseed_oil",
+      "mechanical:walnut_oil",
+      "mechanical:almond_oil"
     ],
     "mechanical:rowan_berries",
     "mechanical:rowan_berries",

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "mechanical:block/medlar_slab"
+    },
+    "type=double": {
+      "model": "mechanical:block/medlar_planks"
+    },
+    "type=top": {
+      "model": "mechanical:block/medlar_slab_top"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "mechanical:deciduous_forest"
+  ],
+  "features": "mechanical:walnut_forest",
+  "step": "vegetal_decoration"
+}

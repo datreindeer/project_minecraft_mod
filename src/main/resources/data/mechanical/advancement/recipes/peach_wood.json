@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_logs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:peach_logs"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:peach_planks"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_logs",
+      "has_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:peach_planks",
+      "mechanical:peach_wood",
+      "mechanical:stripped_peach_wood",
+      "mechanical:peach_slab",
+      "mechanical:peach_stairs",
+      "mechanical:peach_fence",
+      "mechanical:peach_fence_gate",
+      "mechanical:peach_door",
+      "mechanical:peach_trapdoor",
+      "mechanical:peach_button",
+      "mechanical:peach_pressure_plate"
+    ]
+  }
+}

@@ -46,12 +46,32 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:crab_apple"
+            "items": "mechanical:walnut_oil"
           }
         ]
       }
     },
     "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:almond_oil"
+          }
+        ]
+      }
+    },
+    "has_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:crab_apple"
+          }
+        ]
+      }
+    },
+    "has_7": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -76,6 +96,8 @@
       "has_3",
       "has_4",
       "has_5",
+      "has_6",
+      "has_7",
       "has_the_recipe"
     ]
   ],
