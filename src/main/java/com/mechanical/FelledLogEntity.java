@@ -368,10 +368,23 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
      * {@code base}; the tree tips over towards {@code direction}: height becomes distance along the fall line, the root
      * end just past the stump. Blocks hold together only end to end along their grain (a log's top to the next one's
      * bottom), never side to side or corner to corner: the trunk is one log, each branch across the fall line its own,
-     * a branch along the fall line swings down to lie along it. A block landing where another already lies goes one
-     * block to the side, or splinters into Sticks.
+     * a branch along the fall line swings down to lie along it. A thick (2x2) trunk lies 2 wide and 2 high: its back half
+     * comes down on top of its front half. A block landing where another already lies goes one block to the side, or
+     * splinters into Sticks. Each log rests on what really lies in its path (see {@link #dropLine}).
      */
     public static void land(ServerLevel level, BlockPos base, Direction direction, List<BlockPos> offsets, List<BlockState> logStates) {
+        for (Run run : layout(level, base, direction, offsets, logStates, true)) dropLine(level, base, direction, run);
+    }
+
+    /** A straight log as a felled tree lays it out: its root block's bottom middle (x, z), the way it lies, its blocks and its layer (1: on top of another). */
+    record Run(Vec3 root, float yaw, List<BlockState> states, int layer) {
+        int size() {
+            return states.size();
+        }
+    }
+
+    /** The logs {@link #land} lays out, the ground layer first; Sticks for blocks with no room if {@code splinter}. */
+    static List<Run> layout(ServerLevel level, BlockPos base, Direction direction, List<BlockPos> offsets, List<BlockState> logStates, boolean splinter) {
         float yaw = direction.toYRot();
         Direction.Axis sideAxis = direction.getClockWise().getAxis();
         Vec3 side = new Vec3(1, 0, 0).yRot(-yaw * Mth.DEG_TO_RAD), origin = Vec3.atBottomCenterOf(base);
@@ -380,6 +393,10 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         // the trunk first (upright logs), then by height
         java.util.Arrays.sort(order, Comparator.comparingInt((Integer i) -> grainAxis(logStates.get(i)) == Direction.Axis.Y ? 0 : 1)
                 .thenComparingInt(i -> offsets.get(i).getY()));
+        // a thick trunk tips over its front edge: what stood further back comes down a layer higher
+        int front = Integer.MIN_VALUE;
+        for (int i = 0; i < offsets.size(); i++)
+            if (offsets.get(i).getY() == 0 && grainAxis(logStates.get(i)) == Direction.Axis.Y) front = Math.max(front, forward(offsets.get(i), direction));
         Map<BlockPos, BlockState> landed = new HashMap<>();
         Map<BlockPos, Boolean> across = new HashMap<>(); // grain across the fall line (else along it)
         for (int i : order) {
@@ -387,18 +404,20 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             Direction.Axis grain = grainAxis(logStates.get(i));
             int x = (int) Math.round(o.getX() * side.x + o.getZ() * side.z), z = o.getY() + 1;
             boolean isAcross = grain == sideAxis;
-            if (grain.isHorizontal() && !isAcross) z += o.getX() * direction.getStepX() + o.getZ() * direction.getStepZ();
-            BlockPos c = new BlockPos(x, 0, z);
+            if (grain.isHorizontal() && !isAcross) z += forward(o, direction);
+            int layer = grain == Direction.Axis.Y && front != Integer.MIN_VALUE ? Mth.clamp(front - forward(o, direction), 0, 1) : 0;
+            BlockPos c = new BlockPos(x, layer, z);
             if (landed.containsKey(c)) c = !landed.containsKey(c.east()) ? c.east() : !landed.containsKey(c.west()) ? c.west() : null;
             if (c == null) {
                 Vec3 w = origin.add(new Vec3(x, 0, z).yRot(-yaw * Mth.DEG_TO_RAD));
-                Block.popResource(level, BlockPos.containing(w.add(0, 1, 0)), new ItemStack(Items.STICK, 2));
+                if (splinter) Block.popResource(level, BlockPos.containing(w.add(0, 1, 0)), new ItemStack(Items.STICK, 2));
                 continue;
             }
             landed.put(c, logStates.get(i));
             across.put(c, isAcross);
         }
         // runs end to end along the grain: along the fall line (local z) or across it (local x)
+        List<Run> runs = new ArrayList<>();
         java.util.Set<BlockPos> done = new java.util.HashSet<>();
         for (BlockPos start : landed.keySet()) {
             if (done.contains(start)) continue;
@@ -412,8 +431,15 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
                 done.add(c);
             }
             Vec3 root = origin.add(new Vec3(first.getX(), 0, first.getZ()).yRot(-yaw * Mth.DEG_TO_RAD));
-            dropLine(level, root, isAcross ? yaw - 90 : yaw, run);
+            runs.add(new Run(root, isAcross ? yaw - 90 : yaw, run, first.getY()));
         }
+        runs.sort(Comparator.comparingInt(Run::layer)); // the lower layer first, so the upper one comes to rest on it
+        return runs;
+    }
+
+    /** How far {@code o} lies towards {@code direction}. */
+    private static int forward(BlockPos o, Direction direction) {
+        return o.getX() * direction.getStepX() + o.getZ() * direction.getStepZ();
     }
 
     /** The way a log block's grain runs (upright if it has none). */
@@ -421,24 +447,108 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         return state.hasProperty(BlockStateProperties.AXIS) ? state.getValue(BlockStateProperties.AXIS) : Direction.Axis.Y;
     }
 
-    /** Server: a straight log of {@code run}, its root block's bottom middle at {@code root} (x, z), lying along {@code yaw}, set down on the ground there. */
-    private static void dropLine(ServerLevel level, Vec3 root, float yaw, List<BlockState> run) {
+    /** A log not yet in the world: {@code run} with its root block's bottom middle at {@code root}. */
+    private static FelledLogEntity unplaced(ServerLevel level, Run run, Vec3 root) {
         FelledLogEntity log = new FelledLogEntity(Mechanical.FELLED_LOG.get(), level);
         List<BlockPos> line = new ArrayList<>();
         for (int i = 0; i < run.size(); i++) line.add(new BlockPos(0, 0, i));
-        log.setShape(line, run);
-        log.setYRot(yaw);
-        Vec3 pos = root.add(Vec3.directionFromRotation(0, yaw).scale((run.size() - 1) / 2.0));
-        int y = level.getMinY(); // high enough that no block is in the ground; it settles from there
-        for (int i = 0; i < log.size(); i++) {
-            Vec3 w = log.world(i, pos, log.getYRot());
-            y = Math.max(y, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(w.x), Mth.floor(w.z)));
+        log.setShape(line, run.states());
+        log.setYRot(run.yaw());
+        Vec3 pos = root.add(Vec3.directionFromRotation(0, run.yaw()).scale((run.size() - 1) / 2.0));
+        log.setPos(pos.x, root.y, pos.z);
+        return log;
+    }
+
+    /**
+     * Server: would the trunk of a tree cut at {@code base} come to rest where it falls towards {@code direction}, with
+     * nothing in its path it can't lie over (a wall, another tree's trunk, a hill steeper than it lies)? Checked while the
+     * tree's own blocks are gone.
+     */
+    public static boolean trunkLands(ServerLevel level, BlockPos base, Direction direction, List<BlockPos> offsets, List<BlockState> logStates) {
+        List<Run> runs = layout(level, base, direction, offsets, logStates, false);
+        int longest = runs.stream().filter(r -> r.layer() == 0).mapToInt(Run::size).max().orElse(0);
+        for (Run run : runs) if (run.layer() == 0 && run.size() == longest && !unplaced(level, run, run.root()).restOn(level, base)) return false;
+        return true;
+    }
+
+    /**
+     * Server: a straight log of {@code run} comes down along its line. It rests on what lies under it there (ground, water,
+     * the logs that came down before it), tilted along a slope; leaves give way. With something in the way it can't lie over,
+     * it comes down short of it, its root end further back past the stump. Only if it fits nowhere does it come down on
+     * the highest ground under it, as before.
+     */
+    private static void dropLine(ServerLevel level, BlockPos base, Direction direction, Run run) {
+        Vec3 back = Vec3.atLowerCornerOf(direction.getOpposite().getUnitVec3i());
+        FelledLogEntity log = null;
+        for (int s = 0; s <= Math.max(4, run.size()) && log == null; s++) {
+            FelledLogEntity at = unplaced(level, run, run.root().add(back.scale(s)));
+            if (at.restOn(level, base)) log = at;
         }
-        int lift = 0; // on top of a log already lying there
-        while (lift < 4 && !log.fits(level, new Vec3(pos.x, y + lift, pos.z), log.getYRot())) lift++;
-        log.setPos(pos.x, y + lift, pos.z);
-        for (int i = 0; i < log.size(); i++) crush(level, log.cellPos(i));
+        if (log == null) { // shortcut: no clear spot within its length back; it lies on the highest ground under it as before, maybe in something
+            log = unplaced(level, run, run.root());
+            int y = level.getMinY();
+            for (int i = 0; i < log.size(); i++) {
+                Vec3 w = log.world(i);
+                y = Math.max(y, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(w.x), Mth.floor(w.z)));
+            }
+            int lift = 0; // on top of a log already lying there
+            while (lift < 4 && !log.fits(level, new Vec3(log.getX(), y + lift, log.getZ()), log.getYRot())) lift++;
+            log.setPos(log.getX(), y + lift, log.getZ());
+        }
+        for (int i = 0; i < log.size(); i++) crush(level, BlockPos.containing(log.world(i).add(0, 0.5 + log.liftOffset(i), 0)));
         level.addFreshEntity(log);
+    }
+
+    /**
+     * Server, a log not yet in the world: sets it down at its (x, z) along the lowest line over what lies under it, as
+     * {@link #settleOnSlope} would rest it, looking no higher than a tree cut at {@code base} could reach there (beyond
+     * MAX_TILT it can't lie over it). False if it doesn't fit there.
+     */
+    private boolean restOn(ServerLevel level, BlockPos base) {
+        double reach = 0;
+        for (boolean root : new boolean[] {true, false}) reach = Math.max(reach, endPoint(root).subtract(Vec3.atBottomCenterOf(base)).horizontalDistance());
+        double top = base.getY() + 1 + MAX_TILT * reach;
+        entityData.set(TILT, 0.0F);
+        setPos(getX(), top, getZ());
+        // the highest top under each stretch of it (a block's stretch ends are only a skin apart, so this keeps a few points a block)
+        Map<Long, double[]> highest = new HashMap<>();
+        for (double[] p : supports(level, strips(0).get(0), top, 0, LAND_DEPTH)) highest.merge(Math.round(p[0] * 20), p, (a, b) -> a[1] >= b[1] ? a : b);
+        List<double[]> under = new ArrayList<>(highest.values());
+        if (under.isEmpty()) return fits(level, position(), getYRot(), 0); // nothing under it for a long way: it falls from here
+        double[] line = restLine(under, size());
+        if (line == null) { // held on one side of its middle only: level on the highest, it tips off that way as it settles
+            line = new double[] {0, -Double.MAX_VALUE};
+            for (double[] p : under) line[1] = Math.max(line[1], p[1]);
+        }
+        entityData.set(TILT, (float) line[0]);
+        setPos(getX(), line[1], getZ());
+        return fits(level, position(), getYRot(), line[0]);
+    }
+
+    /** How far under the highest a felled tree could reach its logs look for ground; past that they fall down to it. */
+    static final double LAND_DEPTH = 24;
+
+    /**
+     * The lowest line over the supports (local z, top) with one on each side of the middle (the bridge of their lower
+     * hull), its tilt within MAX_TILT, as {tilt, height at the middle}; null if one side has none. A single block lies level.
+     */
+    static double[] restLine(List<double[]> supports, int n) {
+        double bestK = 0, bestMid = Double.MAX_VALUE;
+        for (double[] l : supports) {
+            if (l[0] >= -0.02) continue;
+            for (double[] r : supports) {
+                if (r[0] <= 0.02) continue;
+                double k = n == 1 || r[0] - l[0] < 1.0E-6 ? 0 : (r[1] - l[1]) / (r[0] - l[0]);
+                k = Mth.clamp(k, -MAX_TILT, MAX_TILT);
+                double mid = -Double.MAX_VALUE;
+                for (double[] p : supports) mid = Math.max(mid, p[1] - k * p[0]);
+                if (mid < bestMid - 1.0E-6) {
+                    bestMid = mid;
+                    bestK = k;
+                }
+            }
+        }
+        return bestMid == Double.MAX_VALUE ? null : new double[] {bestK, bestMid};
     }
 
     /** Server: a straight log of {@code n} blocks of {@code state}, its root block standing on {@code root} (bottom centre), lying along {@code yaw} (tests). */
@@ -453,9 +563,10 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         return log;
     }
 
-    /** Flowers, saplings and bushes where a log comes down are crushed (they drop what they drop). */
+    /** Flowers, saplings, bushes and leaves where a log comes down are crushed (they drop what they drop). */
     private static void crush(ServerLevel level, BlockPos pos) {
-        if (level.getBlockState(pos).getBlock() instanceof net.minecraft.world.level.block.VegetationBlock) level.destroyBlock(pos, true);
+        BlockState there = level.getBlockState(pos);
+        if (there.getBlock() instanceof net.minecraft.world.level.block.VegetationBlock || there.is(BlockTags.LEAVES)) level.destroyBlock(pos, true);
     }
 
     /** Groups of cells joined end to end along the grain (local z): side by side or corner to corner never holds. Breadth-first from the first cell in list order. */
@@ -907,23 +1018,8 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
             if (top > getY() && fits(level, new Vec3(getX(), top, getZ()), getYRot(), 0)) setPos(getX(), top, getZ());
             return false;
         }
-        // the lowest line over the supports with one on each side of the middle (the bridge of their lower hull)
-        double bestK = 0, bestMid = Double.MAX_VALUE;
-        for (double[] l : supports) {
-            if (l[0] >= -0.02) continue;
-            for (double[] r : supports) {
-                if (r[0] <= 0.02) continue;
-                double k = n == 1 || r[0] - l[0] < 1.0E-6 ? 0 : (r[1] - l[1]) / (r[0] - l[0]); // a single block lies level
-                k = Mth.clamp(k, -MAX_TILT, MAX_TILT);
-                double mid = -Double.MAX_VALUE;
-                for (double[] p : supports) mid = Math.max(mid, p[1] - k * p[0]);
-                if (mid < bestMid - 1.0E-6) {
-                    bestMid = mid;
-                    bestK = k;
-                }
-            }
-        }
-        double k = bestK, mid = bestMid;
+        double[] line = restLine(supports, n); // the lowest line over them with one on each side of the middle
+        double k = line[0], mid = line[1];
         boolean moved = false;
         if (Math.abs(k - k0) > 1.0E-4 && !fits(level, new Vec3(getX(), Math.max(mid, getY() - fallSpeed), getZ()), getYRot(), k)) k = k0; // it can't turn that way (something over it)
         if (mid < getY() - 0.01) { // coming down onto it

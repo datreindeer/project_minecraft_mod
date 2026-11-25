@@ -629,7 +629,13 @@ Ancient Oak-block ...), även de som inte går att få i survival.
   - Yxan slits 1 per log. Räcker den inte går den sönder, men trädet faller ändå.
   - Trädet faller som en animation bort från spelaren och **blir liggande där det landar**: stockarna blir en
     **Felled Log** (entity `felled_log`, se *Fällda träd* nedan) som ligger längs fallriktningen med rotänden precis
-    bakom stubben. Gräs, blommor, plantor, buskar och svamp där stockarna landar krossas (och släpper sina vanliga drops). Löven släpper saplings, sticks och äpplen som innan och
+    bakom stubben. Stockarna lägger sig på det som verkligen ligger i fallvägen: marken (lutande längs en backe),
+    vatten eller stockar som redan landat, aldrig inne i block eller svävande i luften. Står en **vägg, ett annat träds
+    stam eller en för brant backe** i vägen (något stammen inte kan ligga över, brantare än ~37°) faller trädet åt sidan
+    i stället (aldrig tillbaka mot den som högg); går ingen sida landar stammen kort framför hindret med rotänden bakom
+    stubben. En grov stam på **2x2** (Dark Oak, jättegran, jättedjungelträd) landar som en stam 2 bred och 2 hög: fyra
+    stockar, den bakre halvan ovanpå den främre, var och en lika lång som trädet var högt. Gräs, blommor, plantor,
+    buskar, svamp och **löv** där stockarna landar krossas (och släpper sina vanliga drops). Löven släpper saplings, sticks och äpplen som innan och
     blir **Leaf Litter** på marken där de landar (flera löv på samma ställe ger tjockare lager). Varje lövsort har sin
     egen **färska leaf litter** i lövens färg (18 sorter, även poppelns gula/orange/röda och azalea); den **torkar** med
     tiden till vanlig brun Leaf Litter. Bryter man den får man vanlig Leaf Litter (tändmaterial).

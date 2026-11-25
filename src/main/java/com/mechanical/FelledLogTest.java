@@ -51,6 +51,9 @@ public final class FelledLogTest {
         TEST_FUNCTIONS.register("felled_log_slide", () -> FelledLogTest::slide);
         TEST_FUNCTIONS.register("felled_log_old_world", () -> FelledLogTest::oldWorld);
         TEST_FUNCTIONS.register("felled_log_drag", () -> FelledLogTest::drag);
+        TEST_FUNCTIONS.register("felled_tree_slope", () -> FelledLogTest::slope);
+        TEST_FUNCTIONS.register("felled_tree_blocked", () -> FelledLogTest::blocked);
+        TEST_FUNCTIONS.register("felled_tree_thick", () -> FelledLogTest::thick);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -70,6 +73,9 @@ public final class FelledLogTest {
                 new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_old_world")), TestArea.of(env, 100, true)));
         event.registerTest(Identifier.fromNamespaceAndPath(MODID, "felled_log_drag"),
                 new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, "felled_log_drag")), TestArea.of(env, 120, true)));
+        for (String name : List.of("felled_tree_slope", "felled_tree_blocked", "felled_tree_thick"))
+            event.registerTest(Identifier.fromNamespaceAndPath(MODID, name),
+                    new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, name)), TestArea.of(env, 120, true)));
     }
 
     private static List<FelledLogEntity> logs(GameTestHelper h) {
@@ -516,6 +522,140 @@ public final class FelledLogTest {
             h.assertTrue(fell.isAlive() && fell.getY() < h.absoluteVec(new Vec3(0, 2.6, 0)).y, "a log with its middle past a ledge doesn't hang there: it went over (y " + fell.getY() + ", tilt " + fell.tilt() + ")");
             h.assertTrue(Math.abs(held[1].getY() - start[1]) < 0.01 && Math.abs(held[1].getZ() - h.absoluteVec(new Vec3(0, 0, 5.5)).z) < 0.01, "and stays put over it (" + held[1].position() + ")");
             for (FelledLogEntity l : logs(h)) l.discard();
+            h.succeed();
+        });
+    }
+    /** A natural tree: a trunk of {@code height} {@code log} blocks from {@code foot} up, a few leaves round its top. */
+    private static void tree(GameTestHelper h, BlockPos foot, int height, BlockState log, BlockState leaves) {
+        for (int y = 0; y < height; y++) h.setBlock(foot.above(y), log);
+        BlockState leaf = leaves.setValue(LeavesBlock.DISTANCE, 1).setValue(LeavesBlock.PERSISTENT, false);
+        BlockPos top = foot.above(height - 1);
+        for (BlockPos p : List.of(top.east(), top.west(), top.north(), top.south(), top.above())) h.setBlock(p, leaf);
+    }
+
+    /** Fells the tree standing at relative {@code foot} towards {@code direction}. */
+    private static void fell(GameTestHelper h, BlockPos foot, Direction direction) {
+        BlockPos cut = h.absolutePos(foot);
+        TreeFelling.Tree tree = TreeFelling.find(h.getLevel(), cut);
+        h.assertTrue(tree != null, "a natural tree at " + foot);
+        TreeFelling.fell(h.getLevel(), cut, tree, direction, h.makeMockPlayer(GameType.SURVIVAL), new ItemStack(Mechanical.FLINT_AXE.get()));
+    }
+
+    /**
+     * Does the log lie on something (a block's shape or another log) on both sides of its middle, right under its bottom?
+     * Sampled along its underside, apart from the log's own physics.
+     */
+    private static boolean rests(ServerLevel level, FelledLogEntity log) {
+        boolean lo = false, hi = false;
+        double half = log.size() / 2.0;
+        for (double z = -half + 0.1; z <= half - 0.1 + 1.0E-6; z += 0.2) {
+            Vec3 w = log.toWorld(new Vec3(0, log.tilt() * z - 0.08, z));
+            BlockPos p = BlockPos.containing(w);
+            boolean under = FelledLogEntity.inOtherLog(level, w, log)
+                    || level.getBlockState(p).getCollisionShape(level, p).toAabbs().stream().anyMatch(b -> b.move(p).inflate(1.0E-3).contains(w));
+            if (under && z < 0) lo = true;
+            if (under && z > 0) hi = true;
+        }
+        return lo && hi;
+    }
+
+    /** Each landed log: solid in nothing, resting on something under both its halves. */
+    private static void assertLanded(GameTestHelper h, List<FelledLogEntity> logs, String what) {
+        for (FelledLogEntity l : logs) {
+            String p = pokes(h.getLevel(), l);
+            h.assertTrue(p == null, what + ": nothing of it in a block: " + p);
+            h.assertTrue(rests(h.getLevel(), l), what + ": it rests on the ground, not in the air (" + h.relativeVec(l.position()) + ", tilt " + l.tilt() + ", size " + l.size() + ")");
+        }
+    }
+
+    /**
+     * Trees on a hillside (the ground drops a block every two): one felled downhill, one uphill. Each trunk lies along the
+     * slope, tilted with it, on the ground under both its halves and in no block.
+     */
+    private static void slope(GameTestHelper h) {
+        for (FelledLogEntity l : logs(h)) l.discard();
+        for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) {
+            int top = Math.max(1, 9 - z / 2);
+            for (int y = 0; y <= 16; y++) h.setBlock(new BlockPos(x, y, z), y < top ? Blocks.STONE : Blocks.AIR);
+        }
+        BlockState oak = Blocks.OAK_LOG.defaultBlockState(), leaves = Blocks.OAK_LEAVES.defaultBlockState();
+        tree(h, new BlockPos(3, 8, 3), 6, oak, leaves); // ground top 8 at z 2..3: falls downhill (south)
+        tree(h, new BlockPos(12, 4, 11), 5, oak, leaves); // ground top 4 at z 10..11: falls uphill (north)
+        fell(h, new BlockPos(3, 8, 3), Direction.SOUTH);
+        fell(h, new BlockPos(12, 4, 11), Direction.NORTH);
+        h.runAfterDelay(FallingTreeEntity.FALL_TICKS + 50, () -> {
+            List<FelledLogEntity> logs = logs(h);
+            h.assertTrue(logs.stream().map(FelledLogEntity::size).sorted().toList().equals(List.of(5, 6)), "two trunks of 5 and 6 (" + logs.stream().map(FelledLogEntity::size).toList() + ")");
+            assertLanded(h, logs, "a trunk felled on a slope");
+            for (FelledLogEntity l : logs) h.assertTrue(Math.abs(l.tilt()) > 0.2, "it lies tilted along the slope (" + l.tilt() + ")");
+            for (FelledLogEntity l : logs) l.discard();
+            h.succeed();
+        });
+    }
+
+    /**
+     * Trees with something in their way: one felled south at another tree's trunk, one felled south at a high wall. Each
+     * turns aside and lies clear of it: in no block (nor the other trunk), resting on the ground.
+     */
+    private static void blocked(GameTestHelper h) {
+        for (FelledLogEntity l : logs(h)) l.discard();
+        for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) {
+            h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+            for (int y = 1; y <= 12; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+        }
+        BlockState oak = Blocks.OAK_LOG.defaultBlockState(), leaves = Blocks.OAK_LEAVES.defaultBlockState();
+        tree(h, new BlockPos(8, 1, 2), 5, oak, leaves);
+        for (int y = 1; y <= 10; y++) h.setBlock(new BlockPos(8, y, 5), Blocks.SPRUCE_LOG); // a standing trunk 3 blocks south
+        tree(h, new BlockPos(8, 1, 10), 5, oak, leaves);
+        for (int x = 0; x <= 16; x++) for (int y = 1; y <= 6; y++) h.setBlock(new BlockPos(x, y, 13), Blocks.STONE_BRICKS); // a wall 3 blocks south
+        fell(h, new BlockPos(8, 1, 2), Direction.SOUTH);
+        fell(h, new BlockPos(8, 1, 10), Direction.SOUTH);
+        h.runAfterDelay(FallingTreeEntity.FALL_TICKS + 50, () -> {
+            List<FelledLogEntity> logs = logs(h);
+            h.assertTrue(logs.stream().map(FelledLogEntity::size).sorted().toList().equals(List.of(5, 5)), "two trunks of 5 (" + logs.stream().map(FelledLogEntity::size).toList() + ")");
+            assertLanded(h, logs, "a trunk felled at a tree or a wall");
+            for (FelledLogEntity l : logs) {
+                Vec3 at = h.relativeVec(l.position());
+                h.assertTrue(at.z < 12.9 && l.getY() < h.absoluteVec(new Vec3(0, 2, 0)).y, "it lies on the ground on this side of the wall, not on it or past it (" + at + ")");
+            }
+            h.assertTrue(h.getBlockState(new BlockPos(8, 10, 5)).is(Blocks.SPRUCE_LOG), "the other tree still stands");
+            for (FelledLogEntity l : logs) l.discard();
+            h.succeed();
+        });
+    }
+
+    /**
+     * A thick (2x2) dark oak felled south lies 2 wide and 2 high: two logs on the ground side by side, two on top of them,
+     * each as long as the trunk is tall, every block still there.
+     */
+    private static void thick(GameTestHelper h) {
+        for (FelledLogEntity l : logs(h)) l.discard();
+        for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) {
+            h.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
+            for (int y = 1; y <= 12; y++) h.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+        }
+        BlockState log = Blocks.DARK_OAK_LOG.defaultBlockState();
+        for (int x = 7; x <= 8; x++) for (int z = 2; z <= 3; z++) for (int y = 1; y <= 6; y++) h.setBlock(new BlockPos(x, y, z), log);
+        BlockState leaf = Blocks.DARK_OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.DISTANCE, 1).setValue(LeavesBlock.PERSISTENT, false);
+        for (int x = 7; x <= 8; x++) for (int z = 2; z <= 3; z++) h.setBlock(new BlockPos(x, 7, z), leaf);
+        fell(h, new BlockPos(7, 1, 2), Direction.SOUTH);
+        h.runAfterDelay(FallingTreeEntity.FALL_TICKS + 50, () -> {
+            List<FelledLogEntity> logs = logs(h);
+            h.assertTrue(logs.size() == 4 && logs.stream().allMatch(l -> l.size() == 6 && l.straight()), "four straight logs of 6 (" + logs.stream().map(FelledLogEntity::size).toList() + ")");
+            double floor = h.absoluteVec(new Vec3(0, 1, 0)).y;
+            java.util.Set<String> spots = new java.util.HashSet<>();
+            for (FelledLogEntity l : logs) {
+                Vec3 at = h.relativeVec(l.position());
+                h.assertTrue(Math.abs(l.tilt()) < 1.0E-4 && Math.abs(Mth.wrapDegrees(l.getYRot())) < 0.01, "it lies level along the fall line (" + l.tilt() + ", " + l.getYRot() + ")");
+                int layer = (int) Math.round(l.getY() - floor);
+                h.assertTrue(Math.abs(l.getY() - floor - layer) < 0.01 && (layer == 0 || layer == 1), "on the ground or on a log (y " + at.y + ")");
+                h.assertTrue(Math.abs(at.x - 7.5) < 0.01 || Math.abs(at.x - 8.5) < 0.01, "in one of the trunk's two rows (x " + at.x + ")");
+                h.assertTrue(Math.abs(at.z - 6.0) < 0.01, "from just past the stump south (z " + at.z + ")");
+                spots.add(Math.round(at.x - 0.5) + "," + layer);
+            }
+            h.assertTrue(spots.size() == 4, "2 wide and 2 high, no two in one place (" + spots + ")");
+            assertLanded(h, logs, "a thick trunk");
+            for (FelledLogEntity l : logs) l.discard();
             h.succeed();
         });
     }

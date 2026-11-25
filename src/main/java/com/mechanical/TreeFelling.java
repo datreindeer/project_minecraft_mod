@@ -30,7 +30,8 @@ import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 /**
  * Chopping a log of a natural tree (logs with non-persistent leaves) with an axe fells the whole tree:
- * chopping takes longer per log, the axe loses one durability per log, and the tree falls away from the player.
+ * chopping takes longer per log, the axe loses one durability per log, and the tree falls away from the player (or to
+ * a side if a wall or another tree stands in its way).
  * Sneaking chops a single log.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -125,11 +126,12 @@ public final class TreeFelling {
         List<BlockPos> falling = new ArrayList<>(tree.logs());
         falling.addAll(tree.leaves());
         FallingTreeEntity entity = FallingTreeEntity.create(level, cut, direction, falling, feller, tool);
-        level.addFreshEntity(entity);
         for (BlockPos pos : falling) level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         String log = BuiltInRegistries.BLOCK.getKey(cutState.getBlock()).getPath();
         var stump = Mechanical.STUMPS.get(log.replace("_log", ""));
         if (stump != null) level.setBlock(cut, stump.get().defaultBlockState(), Block.UPDATE_ALL);
+        entity.clearPath(level); // with the tree gone: a wall or another tree in the way turns it aside
+        level.addFreshEntity(entity);
         return entity;
     }
 

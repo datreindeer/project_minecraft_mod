@@ -58,6 +58,24 @@ public class FallingTreeEntity extends Entity implements IEntityWithComplexSpawn
         return tree;
     }
 
+    /**
+     * Server, before it is added and once the tree's blocks are gone: if its trunk couldn't come to rest towards its
+     * direction (a wall, another tree, a steep hill in the way), it falls to a side where it can, never back at the feller.
+     */
+    void clearPath(ServerLevel level) {
+        List<BlockPos> logOffsets = new ArrayList<>();
+        List<BlockState> logStates = new ArrayList<>();
+        for (int i = 0; i < offsets.size(); i++) if (states.get(i).is(net.minecraft.tags.BlockTags.LOGS)) {
+            logOffsets.add(offsets.get(i));
+            logStates.add(states.get(i));
+        }
+        for (Direction d : new Direction[] {direction, direction.getClockWise(), direction.getCounterClockWise()})
+            if (FelledLogEntity.trunkLands(level, blockPosition(), d, logOffsets, logStates)) {
+                direction = d;
+                return;
+            }
+    }
+
     public List<BlockPos> offsets() {
         return offsets;
     }
