@@ -15,20 +15,21 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.resources.Identifier;
 
 /**
- * The Leather Pouch worn in the Hip slot: a small drawstring bag hanging from the waist belt at the front of the right
- * hip (the satchel hangs on the left). Parts of the body, so it follows crouching; moved out over chest armour. Textured
+ * The Leather Pouches worn in the Hip slots: a small drawstring bag hanging from the waist belt at the front of the right
+ * hip (the satchel hangs on the left) for the first slot, and one behind the left hip for the second. Parts of the body, so it follows crouching; moved out over chest armour. Textured
  * by scripts/gen_equipment_textures.py (entity/worn/leather_pouch.png, 32x32; belt as the quiver's).
  */
 public class WornPouchModel extends HumanoidModel<AvatarRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_pouch"), "main");
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/worn/leather_pouch.png");
-    private static final float POUCH_Z = -2.6F;
+    private static final float POUCH_Z = -2.6F, BACK_POUCH_Z = 2.6F;
 
-    private final ModelPart pouch, belt, beltArmored;
+    private final ModelPart pouch, backPouch, belt, beltArmored;
 
     public WornPouchModel(ModelPart root) {
         super(root);
         this.pouch = body.getChild("pouch");
+        this.backPouch = body.getChild("back_pouch");
         this.belt = body.getChild("belt");
         this.beltArmored = body.getChild("belt_armored");
     }
@@ -47,6 +48,11 @@ public class WornPouchModel extends HumanoidModel<AvatarRenderState> {
         body.addOrReplaceChild("pouch", CubeListBuilder.create()
                 .texOffs(0, 0).addBox(-1.5F, 1.0F, -1.0F, 3, 3, 2)
                 .texOffs(0, 6).addBox(-1.0F, 0.0F, -0.5F, 2, 1, 1), PartPose.offsetAndRotation(-2.3F, 10.4F, POUCH_Z, -0.08F, 0.0F, 0.06F));
+        // the second Hip slot's pouch: behind the left hip, turned round (its front faces backwards), hanging straight so it
+        // stays inside the line of the left arm (x 1..4 of the body's 4) and clear of a quiver behind the right hip
+        body.addOrReplaceChild("back_pouch", CubeListBuilder.create()
+                .texOffs(0, 0).addBox(-1.5F, 1.0F, -1.0F, 3, 3, 2)
+                .texOffs(0, 6).addBox(-1.0F, 0.0F, -0.5F, 2, 1, 1), PartPose.offsetAndRotation(2.5F, 10.4F, BACK_POUCH_Z, -0.08F, (float) Math.PI, 0.0F));
 
         for (String limb : new String[] {"right_arm", "left_arm", "right_leg", "left_leg"}) {
             root.addOrReplaceChild(limb, CubeListBuilder.create(), PartPose.ZERO);
@@ -57,10 +63,15 @@ public class WornPouchModel extends HumanoidModel<AvatarRenderState> {
     @Override
     public void setupAnim(AvatarRenderState state) {
         super.setupAnim(state);
-        boolean armored = EquipmentClient.chestArmored(state);
+        boolean armored = EquipmentClient.chestArmored(state), cloak = EquipmentClient.cloak(state) != null;
+        pouch.visible = EquipmentClient.pouch(state);
+        backPouch.visible = EquipmentClient.pouchLeft(state);
         pouch.z = POUCH_Z - (armored ? 1.0F : 0.0F);
-        belt.visible = !armored;
-        beltArmored.visible = armored;
+        backPouch.z = BACK_POUCH_Z + (armored ? 1.0F : 0.0F) + (cloak ? 1.25F : 0.0F); // out over armour, behind a cape like the quiver
+        // one belt: a worn quiver draws the same one (two would flicker in each other)
+        boolean quiver = EquipmentClient.quiverArrows(state) >= 0;
+        belt.visible = !armored && !quiver;
+        beltArmored.visible = armored && !quiver;
         if (HoldPoses.rummagingWorn(state)) { // lifted off the belt towards the hands, its neck tipped open
             pouch.z -= 2.0F;
             pouch.y -= 1.5F;

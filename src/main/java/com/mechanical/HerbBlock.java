@@ -50,12 +50,15 @@ public class HerbBlock extends WildPlantBlock {
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!stack.isEmpty() && !stack.is(Watercraft.KNIVES)) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (state.getValue(CUT)) return InteractionResult.PASS;
+        // a bare hand picks, unless a knife rides in a worn bag (equipment.WornTools)
+        com.mechanical.equipment.WornTools.Found bagKnife = stack.isEmpty() ? com.mechanical.equipment.WornTools.forEmptyHand(player, hand, s -> s.is(Watercraft.KNIVES)) : null;
         if (level instanceof ServerLevel server) {
-            boolean knife = stack.is(Watercraft.KNIVES);
+            boolean knife = stack.is(Watercraft.KNIVES) || bagKnife != null;
             popResource(server, pos, cut(server.getRandom(), knife));
             server.setBlock(pos, state.setValue(CUT, true), Block.UPDATE_ALL);
             server.playSound(null, pos, knife ? SoundEvents.SHEEP_SHEAR : SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 0.7F, 1.3F);
-            if (knife) stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+            if (bagKnife != null) bagKnife.hurt(1, player);
+            else if (knife) stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
         }
         return InteractionResult.SUCCESS;
     }

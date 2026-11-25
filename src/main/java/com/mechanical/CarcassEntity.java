@@ -415,7 +415,9 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (tickCount < HIDDEN_TICKS) return InteractionResult.PASS;
-        if (isCaravanProperty() && (player.getItemInHand(hand).getItem() instanceof KnifeItem
+        // an empty hand with a knife in a worn bag cuts with that knife (equipment.WornTools)
+        com.mechanical.equipment.WornTools.Found bagKnife = com.mechanical.equipment.WornTools.forEmptyHand(player, hand, s -> s.getItem() instanceof KnifeItem);
+        if (isCaravanProperty() && (player.getItemInHand(hand).getItem() instanceof KnifeItem || bagKnife != null
                 || hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && player.isShiftKeyDown())) {
             if (!level().isClientSide()) {
                 player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.carcass.caravan"));
@@ -440,6 +442,7 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
             }
             return InteractionResult.SUCCESS;
         }
+        if (bagKnife != null) return butcherFromBag(player, bagKnife); // before the look at a hung body: a knife at hand means cutting
         if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty() && hungAt() != null) {
             // a look at the body on the rack: how long it has hung and how long it keeps
             if (!level().isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable(
@@ -448,15 +451,32 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
             return InteractionResult.SUCCESS;
         }
         if (!(player.getItemInHand(hand).getItem() instanceof KnifeItem knife)) return InteractionResult.PASS;
-        int needed = Butchery.requiredKnifeTier(animal);
-        if (knife.tier() < needed) {
-            // past iron/steel (the Elkwight's hide): only a knife of the top tier cuts it
-            if (!level().isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable(
-                    needed > KnifeItem.IRON ? "message.mechanical.knife_too_weak_hide" : "message.mechanical.knife_too_weak"));
-            return InteractionResult.FAIL;
-        }
+        if (!sharpEnough(player, knife)) return InteractionResult.FAIL;
         player.startUsingItem(hand);
         return InteractionResult.CONSUME;
+    }
+
+    /** Past iron/steel (the Elkwight's hide) only a knife of the top tier cuts; says so when this one is too weak. */
+    private boolean sharpEnough(Player player, KnifeItem knife) {
+        int needed = Butchery.requiredKnifeTier(animal);
+        if (knife.tier() >= needed) return true;
+        if (!level().isClientSide()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable(
+                needed > KnifeItem.IRON ? "message.mechanical.knife_too_weak_hide" : "message.mechanical.knife_too_weak"));
+        return false;
+    }
+
+    /**
+     * Butchering with a knife from a worn bag and an empty hand: there is no held item to keep using, so the work comes from
+     * the repeated clicks while the button is held on the body (every 4 ticks), each worth the ticks since the last one.
+     */
+    private InteractionResult butcherFromBag(Player player, com.mechanical.equipment.WornTools.Found bagKnife) {
+        KnifeItem knife = (KnifeItem) bagKnife.tool().getItem();
+        if (!sharpEnough(player, knife)) return InteractionResult.FAIL;
+        if (level() instanceof ServerLevel server) {
+            int ticks = com.mechanical.equipment.WornTools.held(player, this, server.getGameTime()).delta();
+            if (ticks > 0) butcher(server, player, knife, ticks, () -> bagKnife.hurt(1, player));
+        }
+        return InteractionResult.SUCCESS;
     }
 
     /** Blood let while butchering: into the kettle under the rack while it has room, the rest onto the ground around the body. */
@@ -467,21 +487,26 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
 
     /** One tick of butchering by {@code player} with a knife of the given speed. Server side. Players cutting at once all add to the same work: two finish in half the time. */
     public void butcher(ServerLevel level, Player player, KnifeItem knife) { // public for people.OakFolkTest
+        butcher(level, player, knife, 1, () -> player.getUseItem().hurtAndBreak(1, player, player.getUsedItemHand()));
+    }
+
+    /** {@code ticks} ticks of butchering at once (a knife from a worn bag, see {@link #butcherFromBag}); {@code wear} wears the knife per finished cut. */
+    public void butcher(ServerLevel level, Player player, KnifeItem knife, int ticks, Runnable wear) {
         if (isCaravanProperty()) {
             player.stopUsingItem();
             return;
         }
-        work += knife.speed();
-        if (tickCount % 4 == 0) {
+        work += knife.speed() * ticks;
+        if (tickCount % 4 < ticks) {
             Vec3 c = getBoundingBox().getCenter();
             level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, Butchery.yieldFor(animal).meat().get()), c.x, c.y, c.z, 3, 0.2, 0.1, 0.2, 0.05);
             Blood.spray(level, c.x, c.y, c.z, 4);
-            if (tickCount % 20 == 0) spill(level, 1, 1); // fills up around the body while you work
+            if (tickCount % 20 < ticks) spill(level, 1, 1); // fills up around the body while you work
             level.playSound(null, getX(), getY(), getZ(), SoundEvents.SLIME_SQUISH_SMALL, SoundSource.PLAYERS, 0.6F, 0.7F + random.nextFloat() * 0.3F);
         }
         if (work < workNeeded()) return;
         work = 0;
-        player.getUseItem().hurtAndBreak(1, player, player.getUsedItemHand());
+        wear.run();
         if (player instanceof net.minecraft.server.level.ServerPlayer sp) Butchery.awardButchered(sp, animal);
         if (stage() == 0 && !Butchery.yieldFor(animal).outer().isEmpty()) {
             // first pass: wool sheared / hide skinned / feathers plucked; keep holding to go on with the meat

@@ -74,9 +74,22 @@ public final class TreeChopping {
         ItemStack stack = event.getItemStack();
         boolean axe = stack.is(ItemTags.AXES);
 
+        com.mechanical.equipment.WornTools.Found bagSaw;
         if (state.getBlock() instanceof FallenLogBlock && stack.getItem() instanceof SawItem) {
             take(event, InteractionResult.CONSUME);
             SawItem.startSawing(player, event.getHand(), pos);
+        } else if (state.getBlock() instanceof FallenLogBlock
+                && (bagSaw = com.mechanical.equipment.WornTools.forEmptyHand(player, event.getHand(), s -> s.getItem() instanceof SawItem)) != null) {
+            // a saw from a worn bag and an empty hand: a stroke for every stroke-time the button is held on the log
+            take(event, InteractionResult.SUCCESS);
+            if (level instanceof ServerLevel server) {
+                int strokeTicks = ((SawItem) bagSaw.tool().getItem()).strokeTicks;
+                com.mechanical.equipment.WornTools.Hold hold = com.mechanical.equipment.WornTools.held(player, pos.immutable(), server.getGameTime());
+                int strokes = hold.total() / strokeTicks, before = (hold.total() - hold.delta()) / strokeTicks;
+                com.mechanical.equipment.WornTools.Found saw = bagSaw;
+                for (int n = before + 1; n <= strokes && level.getBlockState(pos).getBlock() instanceof FallenLogBlock; n++)
+                    sawStroke(server, player, pos, level.getBlockState(pos), n % 2 == 1, () -> saw.hurt(1, player));
+            }
         } else if (state.getBlock() instanceof FallenLogBlock && axe) {
             take(event, InteractionResult.CONSUME);
             if (level instanceof ServerLevel server && chop(server, player, event.getHand(), pos, state, stack)) finishFallenLog(server, pos, state, stack, player);
@@ -134,6 +147,11 @@ public final class TreeChopping {
 
     /** As above with a given number of chops for the stage (the Dugout Blank's stages are longer; see {@link DugoutBlankBlock}). */
     static boolean chop(ServerLevel level, Player player, InteractionHand hand, BlockPos at, BlockState state, ItemStack axe, int needed) {
+        return chop(level, player, hand, at, state, needed, () -> axe.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
+    }
+
+    /** As above, {@code wear} wearing the tool when the stage completes (a held tool, or a knife from a worn bag). */
+    static boolean chop(ServerLevel level, Player player, InteractionHand hand, BlockPos at, BlockState state, int needed, Runnable wear) {
         if (!swing(level, player, hand, at, state)) return false;
         Map<BlockPos, Integer> progress = PROGRESS.computeIfAbsent(level, l -> new HashMap<>());
         int done = progress.merge(at.immutable(), 1, Integer::sum);
@@ -143,7 +161,7 @@ public final class TreeChopping {
         }
         progress.remove(at);
         level.destroyBlockProgress(player.getId(), at, -1);
-        axe.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        wear.run();
         return true;
     }
 
@@ -216,6 +234,11 @@ public final class TreeChopping {
      * kerf one stroke deeper; the last stroke cuts the log up.
      */
     static void sawStroke(ServerLevel level, Player player, InteractionHand hand, BlockPos pos, BlockState state, ItemStack saw, boolean push) {
+        sawStroke(level, player, pos, state, push, () -> saw.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
+    }
+
+    /** As above, {@code wear} wearing the saw on the last stroke (a held saw, or one in a worn bag). */
+    static void sawStroke(ServerLevel level, Player player, BlockPos pos, BlockState state, boolean push, Runnable wear) {
         RandomSource random = level.getRandom();
         int sawn = state.getValue(FallenLogBlock.SAWN) + 1;
         double top = state.getShape(level, pos).max(net.minecraft.core.Direction.Axis.Y);
@@ -230,7 +253,7 @@ public final class TreeChopping {
             return;
         }
         sawFallenLog(level, pos, state, player);
-        saw.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        wear.run();
         player.stopUsingItem();
     }
 

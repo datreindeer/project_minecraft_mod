@@ -13,7 +13,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 /**
- * {@link PackMenu}: the satchel's 3x3 and/or the 2x2 of the quiver or pouch at the hip, each under its own (item) name, on a background drawn
+ * {@link PackMenu}: the satchel's 3x3 and/or the 2x2s of the quiver or pouches at the hip, each under its own (item) name (two hip bags under "Belt"), on a background drawn
  * for that layout by scripts/gen_equipment_textures.py. The B key closes it again, like E closes the inventory.
  */
 public class PackScreen extends AbstractContainerScreen<PackMenu> {
@@ -26,6 +26,7 @@ public class PackScreen extends AbstractContainerScreen<PackMenu> {
         // the Steel-Frame Pack's 5x5 (pack, pack_both) and a satchel with tool loops (satchel_tools, both_tools) have their own
         if (menu.columns > 3) layout = menu.hasHip ? "pack_both" : "pack";
         else if (menu.tools > 0) layout += "_tools";
+        if (menu.hipCount == 2) layout += "_2"; // both Hip slots: two 2x2s (pack_quiver_2, pack_both_2, pack_both_tools_2, pack_pack_both_2)
         background = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/gui/container/pack_" + layout + ".png");
     }
 
@@ -37,14 +38,16 @@ public class PackScreen extends AbstractContainerScreen<PackMenu> {
 
     @Override
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        // two hip bags share one label ("Belt"); which is the quiver shows by what it holds
+        Component hipName = menu.hipCount == 2 ? Component.translatable("container.mechanical.belt") : menu.hasHip ? menu.hipNames.get(0) : Component.empty();
         if (menu.hasSatchel && menu.hasHip) {
             // the hip bag's name, right-aligned, may use whatever room the satchel's name leaves ("Leather Pouch" doesn't fit over its 2x2)
             int satchelWidth = Math.min(font.width(menu.satchelName), 104);
             label(graphics, menu.satchelName, 8, menu.tools > 0 ? 100 : 104);
             int room = imageWidth - 8 - (8 + satchelWidth + 8);
-            label(graphics, menu.hipName, imageWidth - 8 - Math.min(font.width(menu.hipName), room), room);
+            label(graphics, hipName, imageWidth - 8 - Math.min(font.width(hipName), room), room);
         } else {
-            label(graphics, menu.hasSatchel ? menu.satchelName : menu.hipName, 8, imageWidth - 16);
+            label(graphics, menu.hasSatchel ? menu.satchelName : hipName, 8, imageWidth - 16);
         }
         graphics.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, LABEL_COLOR, false);
     }

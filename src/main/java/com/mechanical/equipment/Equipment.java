@@ -43,7 +43,7 @@ import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
- * Accessory slots in the player inventory ({@link Accessory}): Cloak, Neck, Back, two Rings, Hip and Charm, beside and
+ * Accessory slots in the player inventory ({@link Accessory}): Cloak, Neck, Back, two Rings, two Hips and Charm, beside and
  * under the player model (InventoryMenuMixin adds them to the inventory menu after the vanilla slots, from index
  * {@link #MENU_START}; InventoryScreenMixin draws the taller screen, CreativeModeInventoryScreenMixin places them in the
  * creative inventory tab).
@@ -55,7 +55,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * <li>A cloak counts as a fifth armour piece: it wears down when armour does (PlayerMixin), and its enchantments work as
  * if it were on the chest (EnchantmentHelperMixin).</li>
  * <li>On death the slots drop like the inventory, unless keepInventory (Curse of Vanishing items are destroyed).</li>
- * <li>Back and Hip hold the Leather Satchel and the {@link QuiverItem}; B opens them ({@link PackMenu}).</li>
+ * <li>Back holds the Leather Satchel; the two Hip slots a Leather Pouch each, or a pouch and one {@link QuiverItem} (never
+ * two quivers, {@link #canWear}). B opens them all ({@link PackMenu}); tools in them work from an empty hand ({@link WornTools}).</li>
  * </ul>
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -117,11 +118,31 @@ public final class Equipment {
         return stack.is(slot.tag);
     }
 
+    /** The other of the two Hip slots (HIP for HIP_2 and back), or null for any other slot. */
+    public static @Nullable Accessory otherHip(Accessory slot) {
+        return slot == Accessory.HIP ? Accessory.HIP_2 : slot == Accessory.HIP_2 ? Accessory.HIP : null;
+    }
+
+    /**
+     * Can this player put this item into that slot now? As {@link #fits}, and a quiver only while the other Hip slot holds
+     * none: two pouches, or a pouch and one quiver, but never two quivers.
+     */
+    public static boolean canWear(Player player, Accessory slot, ItemStack stack) {
+        if (!fits(slot, stack)) return false;
+        Accessory other = otherHip(slot);
+        return other == null || !(stack.getItem() instanceof QuiverItem) || !(get(player, other).getItem() instanceof QuiverItem);
+    }
+
+    /** What the player wears in both Hip slots, first slot first (EMPTY where nothing is). */
+    public static ItemStack[] hips(Player player) {
+        return new ItemStack[] {get(player, Accessory.HIP), get(player, Accessory.HIP_2)};
+    }
+
     /** The empty accessory slot this item would go to on a shift-click, or null. */
     public static @Nullable Accessory freeSlotFor(Player player, ItemStack stack) {
         EquipmentInventory inventory = of(player);
         for (Accessory slot : Accessory.values()) {
-            if (fits(slot, stack) && inventory.get(slot).isEmpty()) return slot;
+            if (canWear(player, slot, stack) && inventory.get(slot).isEmpty()) return slot;
         }
         return null;
     }
@@ -148,7 +169,7 @@ public final class Equipment {
         Accessory target = freeSlotFor(player, held);
         if (target == null) {
             for (Accessory slot : Accessory.values()) {
-                if (fits(slot, held)) {
+                if (canWear(player, slot, held)) {
                     target = slot;
                     break;
                 }
@@ -217,7 +238,10 @@ public final class Equipment {
     /** A new item went into a slot: its advancement (granted from code, see scripts/gen_advancements.py). */
     private static void onWorn(ServerPlayer player, Accessory slot, ItemStack stack) {
         if (slot == Accessory.BACK && stack.is(Mechanical.LEATHER_SATCHEL.get())) award(player, "wilderness/worn_satchel");
-        if (slot == Accessory.HIP && stack.getItem() instanceof QuiverItem) award(player, "wilderness/quiver");
+        if ((slot == Accessory.HIP || slot == Accessory.HIP_2) && stack.getItem() instanceof QuiverItem) award(player, "wilderness/quiver");
+        // both Hip slots in use: two pouches, or a pouch and the quiver
+        Accessory other = otherHip(slot);
+        if (other != null && !get(player, other).isEmpty()) award(player, "wilderness/two_hip_bags");
         if (slot == Accessory.CLOAK && stack.getItem() instanceof CloakItem) award(player, "wilderness/worn_cloak");
     }
 

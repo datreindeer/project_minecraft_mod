@@ -27,7 +27,7 @@ import net.minecraft.client.resources.model.EquipmentClientInfo;
  * <li>a cloak ({@link CloakItem}): its humanoid equipment layer over body and shoulders (a size above chest armour),
  * then a cape like a skin cape (textures/entity/cloak/&lt;id&gt;.png, pushed out over chest armour) or, for the Glider
  * Cloak, its wings layer (folded, spread while gliding);</li>
- * <li>the Leather Satchel ({@link WornSatchelModel}), the Quiver ({@link WornQuiverModel}) and the Leather Pouch ({@link WornPouchModel});</li>
+ * <li>the Leather Satchel ({@link WornSatchelModel}), the Quiver ({@link WornQuiverModel}) and the Leather Pouches ({@link WornPouchModel}) of the two Hip slots;</li>
  * <li>the Miner's ore sack ({@link MinerSackModel}, people.TribespersonRenderer adds this layer too);</li>
  * <li>a tribesperson's gear: hood, mantle, cloak, necklace, braids, beard, feathers ({@link TribeGearModel}).</li>
  * </ul>
@@ -84,7 +84,7 @@ public class EquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
         if (EquipmentClient.pack(state)) {
             collector.submitModel(pack, state, poseStack, RenderTypes.entityCutout(WornPackModel.TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor);
         }
-        if (EquipmentClient.pouch(state)) {
+        if (EquipmentClient.pouch(state) || EquipmentClient.pouchLeft(state)) {
             collector.submitModel(pouch, state, poseStack, RenderTypes.entityCutout(WornPouchModel.TEXTURE), light, OverlayTexture.NO_OVERLAY, state.outlineColor);
         }
         Identifier gear = EquipmentClient.tribeGear(state);

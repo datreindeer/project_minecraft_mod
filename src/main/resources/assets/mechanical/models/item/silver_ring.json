@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mechanical:item/silver_ring",
+    "layer1": "mechanical:item/silver_ring_gem"
+  }
+}

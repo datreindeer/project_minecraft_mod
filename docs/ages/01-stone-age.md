@@ -188,7 +188,7 @@ Leather Pouch, Quiver, Bark Basket, shulker boxes, bundles). Innehållet sparas 
 - **Bärs i Back-platsen** (se Utrustning nedan). Då hänger den framtill på vänster höft med en rem över höger axel, synlig
   på spelaren.
 - **Öppna:** tryck **B** ("Open Satchel, Pouch & Quiver" under Controls > Inventory, går att byta) för att öppna den burna
-  väskan och det som hänger i Hip-platsen (Quiver eller Leather Pouch) tillsammans. B eller E stänger. Trycker man B i inventoriet byter man till väskan. Högerklick med väskan i
+  väskan och det som hänger i de två Hip-platserna (Quiver och/eller Leather Pouch) tillsammans. B eller E stänger. Trycker man B i inventoriet byter man till väskan. Högerklick med väskan i
   handen öppnar den också.
 
 ### Leather Pouch
@@ -201,35 +201,55 @@ Ersätter vanillas **Bundle** (alla Bundle-recept är avstängda för gott). En 
   3 Moleskin + Twine (` T `/`M M`/` M `).
 - **4 platser (2x2)** för samma saker som Leather Satchel tar (inga andra väskor, korgar, kogret eller shulker boxes).
   Innehållet sparas på påsen. Staplas inte.
-- **Bärs i Hip-platsen**, i stället för kogret. Då hänger den i ett midjebälte framtill på höger höft, synlig på spelaren.
-  En påse i Hip-platsen är inget koger: pilar plockas inte in i den, och bågen skjuter inte från den.
+- **Bärs i en Hip-plats.** Det finns två: man kan bära två påsar, eller en påse och ett koger. I första Hip-platsen
+  hänger påsen i ett midjebälte framtill på höger höft, i den andra bakom vänster höft (fri från satcheln framtill till
+  vänster). En påse är inget koger: pilar plockas inte in i den, och bågen skjuter inte från den.
 - **Öppna:** B öppnar påsen bredvid den burna Leather Satchel, i samma fönster (satcheln 3x3 till vänster, påsen 2x2 till
-  höger). Shift-klick från inventoriet fyller satcheln först och sedan påsen. Högerklick med påsen i handen öppnar den också.
-- Advancement **Pouch** (Wilderness-fliken, efter Satchel).
+  höger; med två saker i Hip-platserna står båda 2x2-rutorna bredvid varandra under rubriken "Belt", bredvid en Steel-Frame
+  Pack staplade på varandra). Shift-klick från inventoriet: pilar till kogret, verktyg till verktygsöglorna, resten till
+  satcheln och sedan påsarna. Högerklick med påsen i handen öppnar den också.
+- Advancement **Pouch** (Wilderness-fliken, efter Satchel), och **Belt and Braces** för att bära något i båda Hip-platserna.
 
 ### Quiver
 Sys vid Leatherworking Bench: 2 Leather + 2 tråd (vilken tråd som helst) med Bone Needle (eller bronsnålarna), låses upp av
 Leather. **4 platser, bara pilar** (allt i taggen `#minecraft:arrows`, även moddens pilar). Pilarna ligger kvar i kogret
 när man tar av det.
-- **Bärs i Hip-platsen:** bågar och armborst skjuter från kogret före inventoriet (en pil i andra handen går fortfarande
+- **Bärs i en Hip-plats** (högst **ett** koger: ett andra koger går inte att lägga i den andra Hip-platsen, varken med
+  musen, shift-klick eller högerklick; en påse går bra bredvid). Bågar och armborst skjuter från kogret före inventoriet (en pil i andra handen går fortfarande
   först). Pilar man plockar upp (på marken eller fast i marken efter ett skott) hamnar i kogret först, resten i inventoriet.
 - **Öppna:** B öppnar kogret (bredvid väskan om man bär en). Högerklick med kogret i handen öppnar det också.
-- På spelaren: ett hudkoger på ett midjebälte bakom höger höft, med en pil synlig per fylld plats.
+- På spelaren: ett hudkoger på ett midjebälte bakom höger höft (bakom vänster, spegelvänt, från den andra Hip-platsen),
+  med en pil synlig per fylld plats. Bär man påse och koger ritas bältet bara en gång.
 
 ### Utrustning (accessory-platser)
-Inventoriet har **7 nya platser** för sådant man bär. En kolumn till höger om spelarmodellen: **Cloak**, **Neck**, **Back**
-(off-hand-platsen ligger kvar under dem). En rad under spelarmodellen: **Ring**, **Ring**, **Hip**, **Charm**. Fönstret är
-lite högre än vanligt, och grå konturer visar vad som ska var. Shift-klick lägger en bärbar sak i dess lediga plats. I
-creative ligger platserna i inventoriefliken till höger om rustningen (Charm till vänster om off hand). Bärbara saker
-har tooltipraden "Worn in the X slot".
+Inventoriet har **8 nya platser** för sådant man bär. En kolumn till höger om spelarmodellen: **Cloak**, **Neck**, **Back**
+(off-hand-platsen ligger kvar under dem). En rad under spelarmodellen: **Ring**, **Ring**, **Hip**, **Hip**, **Charm**
+(den andra Hip-platsen kom i v0.211.0; gamla världar behåller det som låg i den gamla Hip-platsen). Fönstret är lite
+högre än vanligt, och grå konturer visar vad som ska var. Shift-klick lägger en bärbar sak i dess lediga plats. I
+creative ligger Cloak, Neck, Back över Ring, Ring, Charm till höger om rustningen, och de två Hip-platserna i en kolumn
+till vänster om off hand. Bärbara saker har tooltipraden "Worn in the X slot".
 
 | Plats | Saker |
 |---|---|
 | Cloak | Otter Fur Cape, Ermine Mantle, Glider Cloak, Tiger Pelt Mantle |
 | Back | Leather Satchel |
-| Hip | Quiver, Leather Pouch |
+| Hip (två) | Quiver (högst ett), Leather Pouch |
 | Neck / Ring / Charm | inga än (kommer i senare åldrar) |
 
+- **Verktyg ur burna väskor:** ligger ett verktyg i en buren väska (Leather Satchel eller Steel-Frame Pack i Back-platsen,
+  Leather Pouch i en Hip-plats) används det när man högerklickar med **tom hand**, utan att man tar fram det. Det slits
+  som vanligt, men på saken i väskan. Bara huvudhanden, bara när den är tom, och inte om off hand själv håller ett
+  passande verktyg (det används då). Ordningen är fast: Back först, sedan första och andra Hip-platsen; i en väska plats
+  för plats, rutnätet först och sedan verktygsöglorna. Det första som passar används. Det gäller:
+  - **Kniv:** stycka ett kadaver (håll inne knappen som vanligt; före "titta på kroppen på hängställningen"), skära
+    örter (1–3 i stället för 1), tappa kåda ur en tall, skära ympkvistar ur äppelträdets löv, skrapa ur en Dugout Blank
+    i sista steget.
+  - **Såg:** såga en fallen stock (håll inne knappen; ett sågdrag per sågtakt).
+  - **Tång:** ta en het gjutning ur en Clay Mold utan att bränna sig.
+  - **Skära:** skörda på stakad åker med skärans halm- och kärvbonus.
+  - Inte (med flit): kniv på en liggande stock (Dugout Blank: samma klick är sågens, och det förvandlar ett vanligt block),
+    mejsel på sten (varje tomhandsklick på sten skulle hugga), hammare på städ (tom hand tar där av saken), eldstål och
+    eldborr (tända med tom hand vore lätt att göra av misstag), shears (vanillas egen väg), ympning (kniven i andra handen).
 - **Död:** burna saker tappas som inventoriet (inte med keepInventory; Curse of Vanishing förstör dem). Curse of Binding
   håller dem på.
 - **Mantlar** (Otter Fur Cape, Ermine Mantle, Glider Cloak) är inte längre bröstrustning. De bärs i Cloak-platsen **över**

@@ -29,8 +29,9 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 /**
- * What lies on a {@link JewelryTableBlock}. Steel Casting Table: slot 0 the Gold Ingots waiting, slot 1 the cast pieces;
- * {@link #mode} the mould (0: two Gold Ring Blanks, 1: a Gold Chain); with a Clay Kiln at 1100° or more beside it one ingot
+ * What lies on a {@link JewelryTableBlock}. Steel Casting Table: slot 0 the Gold or Silver Ingots waiting (one metal at a
+ * time), slot 1 the cast pieces; {@link #mode} the mould (0: two Ring Blanks, 1: a Chain); with a Clay Kiln at the metal's
+ * melting heat (gold 1100°, silver lower) or more beside it one ingot
  * melts and sets every {@link Jewelry#CAST_TICKS}. Jeweler's Bench: slot 0 the blank, slot 1 the cut gem; a chisel on it
  * sets the stone ({@link Jewelry#make}).
  */
@@ -54,22 +55,38 @@ public class JewelryTableBlockEntity extends BlockEntity {
         return mode;
     }
 
-    /** What one ingot casts into in the current mould. */
+    /** The ingots the table casts: Gold, or Silver (gold while it is empty). */
+    private boolean silver() {
+        return items.get(0).is(IronOres.SILVER_INGOT.get());
+    }
+
+    /** What one ingot casts into in the current mould: two Ring Blanks or a Chain, of the metal on the table. */
     public ItemStack castResult() {
+        if (silver()) return mode == 0 ? new ItemStack(Jewelry.SILVER_RING_BLANK.get(), 2) : new ItemStack(Jewelry.SILVER_CHAIN.get());
         return mode == 0 ? new ItemStack(Jewelry.GOLD_RING_BLANK.get(), 2) : new ItemStack(Jewelry.GOLD_CHAIN.get());
     }
 
+    /** The kiln heat the ingots on the table need to melt: silver's or gold's. */
+    public int castTemp() {
+        return silver() ? IronOres.CUPEL_TEMP : IronOres.GOLD_TEMP;
+    }
+
     boolean accepts(ItemStack stack) {
-        if (casting()) return stack.is(Items.GOLD_INGOT);
+        if (casting()) return stack.is(Items.GOLD_INGOT) || stack.is(IronOres.SILVER_INGOT.get());
         return Jewelry.jewelFor(stack) != null || Jewelry.gemOf(stack) != null || stack.getItem() instanceof BronzeTools.ChiselItem;
     }
 
     /** A Clay Kiln (either half) beside it at gold's melting heat or more: the casting multiblock is whole and hot. */
     public static boolean hotKilnBeside(ServerLevel level, BlockPos pos) {
+        return hotKilnBeside(level, pos, IronOres.GOLD_TEMP);
+    }
+
+    /** As above for a given heat (silver melts lower than gold). */
+    public static boolean hotKilnBeside(ServerLevel level, BlockPos pos, int temp) {
         for (Direction d : Direction.Plane.HORIZONTAL) {
             BlockPos p = pos.relative(d);
             for (BlockPos k : new BlockPos[] {p, p.below()})
-                if (level.getBlockEntity(k) instanceof KilnBlockEntity kiln && kiln.temperature() >= IronOres.GOLD_TEMP) return true;
+                if (level.getBlockEntity(k) instanceof KilnBlockEntity kiln && kiln.temperature() >= temp) return true;
         }
         return false;
     }
@@ -77,7 +94,7 @@ public class JewelryTableBlockEntity extends BlockEntity {
     void serverTick(ServerLevel level, BlockPos pos) {
         ItemStack in = items.get(0), out = items.get(1), result = castResult();
         boolean room = out.isEmpty() || ItemStack.isSameItemSameComponents(out, result) && out.getCount() + result.getCount() <= out.getMaxStackSize();
-        if (in.isEmpty() || !room || !hotKilnBeside(level, pos)) {
+        if (in.isEmpty() || !room || !hotKilnBeside(level, pos, castTemp())) {
             if (progress > 0) progress = Math.max(0, progress - 2); // the melt sets back in the crucible
             return;
         }
@@ -95,6 +112,10 @@ public class JewelryTableBlockEntity extends BlockEntity {
     void use(ServerLevel level, Player player, InteractionHand hand, ItemStack stack) {
         if (casting()) {
             ItemStack in = items.get(0);
+            if (!in.isEmpty() && !ItemStack.isSameItemSameComponents(in, stack)) { // one metal at a time
+                player.sendOverlayMessage(Component.translatable("message.mechanical.casting.other_metal", in.getHoverName()));
+                return;
+            }
             if (in.getCount() >= Jewelry.TABLE_MAX_INGOTS) {
                 player.sendOverlayMessage(Component.translatable("message.mechanical.casting.full", Jewelry.TABLE_MAX_INGOTS));
                 return;
@@ -104,7 +125,7 @@ public class JewelryTableBlockEntity extends BlockEntity {
                 in.grow(1);
                 stack.consume(1, player);
             }
-            if (!hotKilnBeside(level, worldPosition)) player.sendOverlayMessage(Component.translatable("message.mechanical.casting.needs_kiln", IronOres.GOLD_TEMP));
+            if (!hotKilnBeside(level, worldPosition, castTemp())) player.sendOverlayMessage(Component.translatable("message.mechanical.casting.needs_kiln", castTemp()));
             level.playSound(null, worldPosition, SoundEvents.METAL_PLACE, SoundSource.BLOCKS, 0.8F, 1.2F);
             sync();
             return;

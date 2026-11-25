@@ -7,6 +7,7 @@ Items (transparent, outlined, lit from the top left):
 - gold_ring_blank / gold_chain: matte cast gold
 - gold_ring / gold_necklace: polished gold with an EMPTY socket; gold_ring_gem / gold_necklace_gem hold only the
   greyscale gem (tinted in game) and line up exactly with that socket
+- silver_*: the same four pieces (and gem layers) in polished, cool silver
 Blocks (opaque): steel_casting_table_top/_side, jewelers_bench_top/_side
 Run: python scripts/gen_p8_textures.py
 """
@@ -25,6 +26,8 @@ LEATHER = {"O": "3b1f12", "T": "53291a", "D": "6e3a1f", "M": "8f4f2b", "L": "a86
 STEEL_MIX = {"k": "2b3038", "c": "6d7887", "b": "94a0b0", "a": "c3ccd8"}
 # like vanilla gold ingot; W is the polish highlight
 GOLD = {"O": "4a2c06", "D": "7a4a0a", "M": "b07a12", "L": "e0a91c", "H": "f8d248", "W": "fff3a8"}
+# polished silver (v0.211.0): cool white-grey, a touch of blue in the shade so it never reads as steel or iron; W the polish
+SILVER = {"O": "262a31", "D": "59616c", "M": "8e97a1", "L": "bcc4cc", "H": "e1e6eb", "W": "ffffff"}
 # greyscale gem (tinted in game): w highlight -> z shade
 GEM = {"w": "ffffff", "x": "dcdcdc", "y": "b4b4b4", "z": "8c8c8c"}
 
@@ -181,10 +184,10 @@ NECKLACE = [
 ]
 
 
-def gold_chain():
+def gold_chain(pal=GOLD):
     """A coil of links round an oval plus a trailing end: face-on links (rim with a hole) alternate with edge-on
-    links (a short bar)."""
-    shades = [rgb(GOLD[k]) for k in "DMLH"]
+    links (a short bar). pal: GOLD, or SILVER for the Silver Chain."""
+    shades = [rgb(pal[k]) for k in "DMLH"]
     col, holes = {}, set()
     centres = [(7.5 + 5 * math.cos(a), 6.5 + 3.4 * math.sin(a))
                for a in (2 * math.pi * i / 10 + 0.3 for i in range(10))] + [(12.6, 11.6), (13, 13)]
@@ -202,7 +205,7 @@ def gold_chain():
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     for (x, y), c in col.items():
         img.putpixel((x, y), c)
-    out = rgb(GOLD["O"]) + (255,)
+    out = rgb(pal["O"]) + (255,)
     for y in range(16):
         for x in range(16):
             if (x, y) not in col and (x, y) not in holes and any(
@@ -328,6 +331,12 @@ if __name__ == "__main__":
         "item/gold_ring_gem": draw(RING, GEM),
         "item/gold_necklace": draw(NECKLACE, GOLD),
         "item/gold_necklace_gem": draw(NECKLACE, GEM),
+        "item/silver_ring_blank": draw(RING_BLANK, SILVER),
+        "item/silver_chain": gold_chain(SILVER),
+        "item/silver_ring": draw(RING, SILVER),
+        "item/silver_ring_gem": draw(RING, GEM),
+        "item/silver_necklace": draw(NECKLACE, SILVER),
+        "item/silver_necklace_gem": draw(NECKLACE, GEM),
         "block/steel_casting_table_top": casting_top(),
         "block/steel_casting_table_side": casting_side(),
         "block/jewelers_bench_top": bench_top(),
@@ -342,7 +351,7 @@ if __name__ == "__main__":
         assert img.size == (16, 16), rel
         a = [img.getpixel((x, y))[3] for x in range(16) for y in range(16)]
         assert all(v == 255 for v in a) if rel.startswith("block/") else (0 in a and 255 in a), rel
-    for base in ("gold_ring", "gold_necklace"):
+    for base in ("gold_ring", "gold_necklace", "silver_ring", "silver_necklace"):
         b, g = loaded[f"item/{base}"], loaded[f"item/{base}_gem"]
         gem = [(x, y) for x in range(16) for y in range(16) if g.getpixel((x, y))[3]]
         assert gem and all(b.getpixel(p)[3] == 0 for p in gem), base

@@ -50,13 +50,14 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class P8SmithTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] TESTS = {"p8_big_fire_pit", "p8_roast", "p8_satchel", "p8_jewelry"};
+    private static final String[] TESTS = {"p8_big_fire_pit", "p8_roast", "p8_satchel", "p8_jewelry", "p8_silver_jewelry"};
 
     static {
         TEST_FUNCTIONS.register("p8_big_fire_pit", () -> P8SmithTest::bigFirePit);
         TEST_FUNCTIONS.register("p8_roast", () -> P8SmithTest::roast);
         TEST_FUNCTIONS.register("p8_satchel", () -> P8SmithTest::satchel);
         TEST_FUNCTIONS.register("p8_jewelry", () -> P8SmithTest::jewelry);
+        TEST_FUNCTIONS.register("p8_silver_jewelry", () -> P8SmithTest::silverJewelry);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -245,6 +246,54 @@ public final class P8SmithTest {
         h.assertTrue(necklace.is(Accessory.NECK.tag) && Temperature.insulation(necklace) == Jewelry.WARM_NORMAL, "garnet: cold insulation");
         Equipment.of(player).set(Accessory.NECK, necklace);
         h.assertTrue(Temperature.wornForWarmth(player).contains(necklace), "the necklace counts toward warmth when worn");
+        h.succeed();
+    }
+
+    /** Silver jewellery (v0.211.0): cast at silver's heat, one metal at a time, set like gold, half the gem's bonus. */
+    private static void silverJewelry(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        floor(h);
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        // silver casts on the Steel Casting Table at silver's heat (below gold's)
+        BlockState kiln = Mechanical.KILN.get().defaultBlockState();
+        h.setBlock(new BlockPos(2, 1, 3), kiln.setValue(KilnBlock.HALF, DoubleBlockHalf.LOWER));
+        h.setBlock(new BlockPos(2, 2, 3), kiln.setValue(KilnBlock.HALF, DoubleBlockHalf.UPPER));
+        BlockPos tablePos = h.absolutePos(new BlockPos(3, 1, 3));
+        h.setBlock(new BlockPos(3, 1, 3), Jewelry.STEEL_CASTING_TABLE.get().defaultBlockState());
+        KilnBlockEntity k = (KilnBlockEntity) level.getBlockEntity(h.absolutePos(new BlockPos(2, 1, 3)));
+        JewelryTableBlockEntity table = (JewelryTableBlockEntity) level.getBlockEntity(tablePos);
+        ItemStack silver = new ItemStack(IronOres.SILVER_INGOT.get(), 2);
+        table.use(level, player, InteractionHand.MAIN_HAND, silver);
+        ItemStack gold = new ItemStack(Items.GOLD_INGOT);
+        table.use(level, player, InteractionHand.MAIN_HAND, gold);
+        h.assertTrue(table.items().get(0).is(IronOres.SILVER_INGOT.get()) && gold.getCount() == 1, "one metal at a time: gold isn't laid on silver");
+        h.assertTrue(IronOres.CUPEL_TEMP < IronOres.GOLD_TEMP && table.castTemp() == IronOres.CUPEL_TEMP, "silver melts at its own, lower heat");
+        for (int t = 0; t < Jewelry.CAST_TICKS; t++) {
+            k.setTemperatureForTest(IronOres.CUPEL_TEMP + 10);
+            table.serverTick(level, tablePos);
+        }
+        h.assertTrue(table.items().get(1).is(Jewelry.SILVER_RING_BLANK.get()) && table.items().get(1).getCount() == 2, "a silver ingot casts two Silver Ring Blanks");
+        h.assertTrue(Jewelry.jewelFor(new ItemStack(Jewelry.SILVER_RING_BLANK.get())) == Jewelry.SILVER_RING.get()
+                && Jewelry.jewelFor(new ItemStack(Jewelry.SILVER_CHAIN.get())) == Jewelry.SILVER_NECKLACE.get(), "the bench sets silver blanks into silver pieces");
+
+        // worn: a Flawless Ruby gives +4 health in gold, +2 in silver
+        ItemStack ring = Jewelry.make(Jewelry.SILVER_RING.get(), new Jewelry.Jewel("ruby", true));
+        h.assertTrue(ring.is(Accessory.RING_1.tag), "the Silver Ring is worn in the ring slots");
+        double before = player.getAttribute(Attributes.MAX_HEALTH).getValue();
+        Equipment.of(player).set(Accessory.RING_1, ring);
+        Equipment.update(player);
+        double silverWorn = player.getAttribute(Attributes.MAX_HEALTH).getValue();
+        h.assertTrue(silverWorn == before + 4 * Jewelry.SILVER_STRENGTH, "a Flawless Ruby in silver adds 2 health: " + before + " -> " + silverWorn);
+        Equipment.of(player).set(Accessory.RING_2, Jewelry.make(Jewelry.GOLD_RING.get(), new Jewelry.Jewel("ruby", true)));
+        Equipment.update(player);
+        h.assertTrue(player.getAttribute(Attributes.MAX_HEALTH).getValue() == before + 6, "with a gold one beside it: 2 + 4");
+        Equipment.of(player).set(Accessory.RING_1, ItemStack.EMPTY);
+        Equipment.of(player).set(Accessory.RING_2, ItemStack.EMPTY);
+        Equipment.update(player);
+        h.assertTrue(player.getAttribute(Attributes.MAX_HEALTH).getValue() == before, "taken off, the bonus is gone");
+        ItemStack necklace = Jewelry.make(Jewelry.SILVER_NECKLACE.get(), new Jewelry.Jewel("garnet", false));
+        h.assertTrue(necklace.is(Accessory.NECK.tag) && Temperature.insulation(necklace) == (float) (Jewelry.WARM_NORMAL * Jewelry.SILVER_STRENGTH),
+                "a garnet in silver keeps half as much cold out");
         h.succeed();
     }
 

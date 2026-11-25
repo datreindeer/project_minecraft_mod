@@ -74,6 +74,7 @@ p8_satchel, p8_jewelry).
 | **Jeweler's Bench** | Steel Plate + nål över plankor (`SC `/`WWW`/`W W`). Lägg ett ämne och en **slipad eller Flawless** gemsten på bänken (inte Rough eller Flawed), högerklicka med en mejsel (Bronze/Iron/Steel Chisel, slits 1) |
 | **Gold Ring** | Ring Blank + sten. Bärs i de två ringplatserna |
 | **Gold Necklace** | Gold Chain + sten. Bärs i halsplatsen |
+| **Silver** (v0.211.0) | Samma bord och bänk med **Silver Ingot** (9 Silver Nugget, från kupellering): bordet gjuter **2 Silver Ring Blank** eller **1 Silver Chain** när ugnen är minst **1000°** (silvrets smältpunkt, lägre än guldets). En metall i taget på bordet ("Take the ... off the table first"). Bänken fattar stenen likadant: **Silver Ring** (ringplatserna) och **Silver Necklace** (halsplatsen). Samma bonus per sten som guld men **hälften så stor** (`Jewelry.SILVER_STRENGTH` = 0,5): Flawless Ruby i silver +2 Max Health i stället för +4. Advancement **Sterling Setting** (efter Jeweler) |
 
 Bonusar per sten (Claude bestämde 2026-11-22, nattkörningen; kan ändras i `Jewelry.BONUSES`). Vanlig sten = liten,
 Flawless = ungefär fyra gånger så mycket, glänser och har aqua namn. Två ringar och ett halsband staplas. "Värme" är

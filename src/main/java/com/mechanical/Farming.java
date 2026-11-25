@@ -452,6 +452,9 @@ public final class Farming {
         if (event.getEntity().isShiftKeyDown() || event.getHand() != net.minecraft.world.InteractionHand.MAIN_HAND) return;
         ItemStack tool = event.getItemStack();
         if (!tool.isEmpty() && !tool.is(SICKLES)) return;
+        // an empty hand with a sickle in a worn bag reaps with it (equipment.WornTools)
+        com.mechanical.equipment.WornTools.Found bagSickle = tool.isEmpty() ? com.mechanical.equipment.WornTools.forEmptyHand(event.getEntity(), event.getHand(), s -> s.is(SICKLES)) : null;
+        if (bagSickle != null) tool = bagSickle.tool();
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
         BlockState state = level.getBlockState(pos);
@@ -470,7 +473,8 @@ public final class Farming {
             }
             if (!tool.isEmpty()) {
                 if (sheaf != null && random.nextFloat() < sickleBonus(tool)) drops.add(new ItemStack(sheaf));
-                tool.hurtAndBreak(1, event.getEntity(), EquipmentSlot.MAINHAND);
+                if (bagSickle != null) bagSickle.hurt(1, event.getEntity());
+                else tool.hurtAndBreak(1, event.getEntity(), EquipmentSlot.MAINHAND);
             }
             for (ItemStack s : drops) if (!s.isEmpty()) Block.popResource(server, pos, s);
             server.setBlock(pos, crop.getStateForAge(0), Block.UPDATE_ALL);

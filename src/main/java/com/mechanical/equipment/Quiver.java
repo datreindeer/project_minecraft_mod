@@ -20,7 +20,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingGetProjectileEvent;
 
 /**
- * The worn {@link QuiverItem} (Hip slot):
+ * The worn {@link QuiverItem} (either Hip slot):
  * <ul>
  * <li>Bows and crossbows shoot from it before the inventory (an arrow held in the other hand still comes first, as in
  * vanilla). The weapon gets a copy of the quiver's first fitting stack; what the shot uses of it is then taken from the
@@ -40,10 +40,10 @@ public final class Quiver {
 
     private record Drawn(Player player, ItemStack quiver, ItemStack kind, int count) {}
 
-    /** The quiver this player wears, or EMPTY. */
+    /** The quiver this player wears in either Hip slot (there is at most one, Equipment#canWear), or EMPTY. */
     public static ItemStack worn(Player player) {
-        ItemStack stack = Equipment.get(player, Accessory.HIP);
-        return stack.getItem() instanceof QuiverItem ? stack : ItemStack.EMPTY;
+        for (ItemStack stack : Equipment.hips(player)) if (stack.getItem() instanceof QuiverItem) return stack;
+        return ItemStack.EMPTY;
     }
 
     public static NonNullList<ItemStack> contents(ItemStack quiver) {

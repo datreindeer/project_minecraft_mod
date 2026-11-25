@@ -281,12 +281,17 @@ public final class Trees {
         BlockPos pos = event.getPos();
         BlockState state = level.getBlockState(pos);
         Wood pine = WOODS.get("pine");
-        if (!(event.getItemStack().getItem() instanceof KnifeItem) || !state.is(pine.log().get())) return;
+        if (!state.is(pine.log().get())) return;
+        // the knife in hand, or one from a worn bag with an empty hand (equipment.WornTools)
+        boolean inHand = event.getItemStack().getItem() instanceof KnifeItem;
+        com.mechanical.equipment.WornTools.Found bagKnife = inHand ? null : com.mechanical.equipment.WornTools.forEmptyHand(event.getEntity(), event.getHand(), s -> s.getItem() instanceof KnifeItem);
+        if (!inHand && bagKnife == null) return;
         if (!level.isClientSide()) {
             level.setBlock(pos, pine.strippedLog().get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS)),
                     Block.UPDATE_ALL);
             Block.popResourceFromFace(level, pos, event.getFace() == null ? Direction.UP : event.getFace(), new ItemStack(PINE_RESIN.get()));
-            event.getItemStack().hurtAndBreak(1, event.getEntity(), event.getHand());
+            if (bagKnife != null) bagKnife.hurt(1, event.getEntity());
+            else event.getItemStack().hurtAndBreak(1, event.getEntity(), event.getHand());
             level.playSound(null, pos, SoundEvents.AXE_STRIP.value(), SoundSource.BLOCKS, 1.0F, 1.3F);
         }
         event.setCancellationResult(InteractionResult.SUCCESS);
@@ -320,11 +325,13 @@ public final class Trees {
             }
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
-        } else if (held.getItem() instanceof KnifeItem && state.is(APPLE_LEAVES.get())) {
+        } else if (state.is(APPLE_LEAVES.get()) && (held.getItem() instanceof KnifeItem
+                || com.mechanical.equipment.WornTools.forEmptyHand(player, event.getHand(), s -> s.getItem() instanceof KnifeItem) != null)) {
             if (!level.isClientSide()) {
                 level.destroyBlock(pos, false, player);
                 Block.popResourceFromFace(level, pos, event.getFace() == null ? Direction.UP : event.getFace(), new ItemStack(APPLE_SCION.get()));
-                held.hurtAndBreak(1, player, event.getHand());
+                if (held.getItem() instanceof KnifeItem) held.hurtAndBreak(1, player, event.getHand());
+                else com.mechanical.equipment.WornTools.forEmptyHand(player, event.getHand(), s -> s.getItem() instanceof KnifeItem).hurt(1, player);
             }
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);

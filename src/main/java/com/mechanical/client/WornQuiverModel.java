@@ -16,7 +16,8 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.resources.Identifier;
 
 /**
- * The Quiver worn in the Hip slot: a hide tube hanging from a waist belt behind the right hip, tilted so the fletchings
+ * The Quiver worn in a Hip slot: a hide tube hanging from a waist belt behind the right hip (behind the left, mirrored, from
+ * the second Hip slot), tilted so the fletchings
  * come up towards the right side; one arrow shows for each quiver slot holding arrows. Parts of the body, so it follows
  * crouching; moved out over chest armour and behind a cloak. Textured by scripts/gen_equipment_textures.py
  * (entity/worn/quiver.png, 32x32).
@@ -24,7 +25,7 @@ import net.minecraft.resources.Identifier;
 public class WornQuiverModel extends HumanoidModel<AvatarRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Mechanical.MODID, "worn_quiver"), "main");
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Mechanical.MODID, "textures/entity/worn/quiver.png");
-    private static final float QUIVER_Z = 2.0F;
+    private static final float QUIVER_X = -2.5F, QUIVER_Z = 2.0F, QUIVER_Z_ROT = 0.45F;
 
     private final ModelPart quiver, belt, beltArmored;
     private final ModelPart[] arrows = new ModelPart[Quiver.SIZE];
@@ -51,7 +52,7 @@ public class WornQuiverModel extends HumanoidModel<AvatarRenderState> {
         // the tube hangs from the belt behind the right hip (x < 0 is the right side), top tilted out to the right
         PartDefinition quiver = body.addOrReplaceChild("quiver", CubeListBuilder.create()
                 .texOffs(0, 0).addBox(-1.5F, -4.0F, 0.0F, 3, 9, 3)
-                .texOffs(0, 14).addBox(-2.0F, -4.5F, -0.5F, 4, 1, 4), PartPose.offsetAndRotation(-2.5F, 7.0F, QUIVER_Z, 0.12F, 0.0F, 0.45F));
+                .texOffs(0, 14).addBox(-2.0F, -4.5F, -0.5F, 4, 1, 4), PartPose.offsetAndRotation(QUIVER_X, 7.0F, QUIVER_Z, 0.12F, 0.0F, QUIVER_Z_ROT));
         float[][] spots = {{-0.75F, 0.6F}, {0.6F, 0.9F}, {-0.2F, 2.1F}, {0.8F, 2.2F}};
         for (int i = 0; i < Quiver.SIZE; i++) {
             quiver.addOrReplaceChild("arrow" + i, CubeListBuilder.create().texOffs(24, 0).addBox(-0.5F, -4.0F, -0.5F, 1, 4, 1),
@@ -64,13 +65,23 @@ public class WornQuiverModel extends HumanoidModel<AvatarRenderState> {
         return LayerDefinition.create(mesh, 32, 32);
     }
 
-    /** One arrow per filled quiver slot; moved out over chest armour and behind a cloak's cape (render data from EquipmentClient). */
+    /**
+     * One arrow per filled quiver slot; moved out over chest armour and behind a cloak's cape; mirrored to the left hip
+     * when worn in the second Hip slot (render data from EquipmentClient).
+     */
     @Override
     public void setupAnim(AvatarRenderState state) {
         super.setupAnim(state);
         int filled = EquipmentClient.quiverArrows(state);
         boolean armored = EquipmentClient.chestArmored(state), cloak = EquipmentClient.cloak(state) != null;
         quiver.z = QUIVER_Z + (armored ? 1.0F : 0.0F) + (cloak ? 1.25F : 0.0F);
+        float side = EquipmentClient.quiverLeft(state) ? -1.0F : 1.0F;
+        quiver.x = QUIVER_X * side;
+        quiver.zRot = QUIVER_Z_ROT * side;
+        for (ModelPart arrow : arrows) { // the arrows mirrored inside the tube too
+            arrow.x = arrow.getInitialPose().x() * side;
+            arrow.zRot = arrow.getInitialPose().zRot() * side;
+        }
         belt.visible = !armored;
         beltArmored.visible = armored;
         for (int i = 0; i < arrows.length; i++) arrows[i].visible = i < filled;

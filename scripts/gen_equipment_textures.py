@@ -17,7 +17,7 @@ Makes (under src/main/resources/assets/mechanical/textures/):
   entity/worn/miner_sack.png              64x32 the Miner's ore sack (client/MinerSackModel): sackcloth, ore lumps, straps
   gui/container/pack_both.png             176x166 (on 256x256) backgrounds for equipment.PackMenu, vanilla container
   gui/container/pack_satchel.png            style: the satchel 3x3 and/or the quiver 2x2 over the player inventory
-  gui/container/pack_quiver.png             (slot positions as in PackMenu)
+  gui/container/pack_quiver.png             (slot positions as in PackMenu; *_2: both Hip slots)
   gui/container/saddlebags_0/1/2.png       190x166 tamed horse screen (wildlife.SaddlebagMenu) with 0-2 satchels
 Run: python scripts/gen_equipment_textures.py"""
 import random
@@ -477,7 +477,7 @@ def slot(img, x, y):
         img.putpixel((x + 16, y + i), grey(LIGHT))
 
 
-def pack(satchel_left, quiver_left, name, cols=3, tools=0):
+def pack(satchel_left, quiver_left, name, cols=3, tools=0, hips=None):
     """cols: the bag's grid (3, or 5 for the Steel-Frame Pack, two rows taller); tools: tool-loop slots right of the grid
     (Satchels.TOOL_SLOTS), each with a faint outline of a hammer so they read as tool slots. As PackMenu lays them out."""
     extra = (cols - 3) * 18
@@ -491,10 +491,11 @@ def pack(satchel_left, quiver_left, name, cols=3, tools=0):
             slot(img, x, y)
             for px, py in [(5, 3), (6, 3), (7, 3), (8, 3), (9, 3), (10, 3), (5, 4), (6, 4), (7, 4), (8, 4), (9, 4), (10, 4)] + [(7, k) for k in range(5, 13)] + [(8, k) for k in range(5, 13)]:
                 img.putpixel((x + px, y + py), grey(SLOT_FILL - 14))  # hammer silhouette
-    if quiver_left is not None:
+    # hips: the top-left slots of each hip bag's 2x2 (PackMenu.hipPosition); else one at (quiver_left, 26)
+    for hx, hy in hips or ([(quiver_left, 26)] if quiver_left is not None else []):
         for r in range(2):
             for c in range(2):
-                slot(img, quiver_left + c * 18, 26 + r * 18)
+                slot(img, hx + c * 18, hy + r * 18)
     for r in range(3):
         for c in range(9):
             slot(img, 8 + c * 18, 84 + extra + r * 18)
@@ -510,6 +511,11 @@ pack(30, 116, "pack_both_tools", tools=3)
 pack(62, None, "pack_satchel_tools", tools=3)
 pack(8, 134, "pack_pack_both", cols=5, tools=3)
 pack((176 - 90 - 22) // 2, None, "pack_pack", cols=5, tools=3)
+# both Hip slots worn (two pouches, or a pouch and the quiver): positions as PackMenu.satchelLeft / hipPosition
+pack(None, None, "pack_quiver_2", hips=[(47, 26), (93, 26)])
+pack(18, None, "pack_both_2", hips=[(82, 26), (124, 26)])
+pack(8, None, "pack_both_tools_2", tools=3, hips=[(90, 26), (132, 26)])
+pack(8, None, "pack_pack_both_2", cols=5, tools=3, hips=[(134, 17), (134, 63)])
 
 
 def saddlebags(satchels):

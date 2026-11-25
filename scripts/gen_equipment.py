@@ -2,7 +2,7 @@
 docs/ages/01-stone-age.md "Utrustning").
 
 - item tags mechanical:equipment/<slot> = what each slot takes: cloak (Otter Fur Cape, Ermine Mantle, Glider Cloak),
-  back (Leather Satchel, Steel-Frame Pack), hip (Quiver, Leather Pouch), neck (Gold Necklace), ring (Gold Ring), charm (Bone Charm)
+  back (Leather Satchel, Steel-Frame Pack), hip (Quiver, Leather Pouch; two Hip slots, at most one quiver), neck (Gold/Silver Necklace), ring (Gold/Silver Ring), charm (Bone Charm)
 - the cloaks stay in #minecraft:chest_armor: that tag is what makes them enchantable like a chest piece (Protection,
   Thorns, Unbreaking, Mending), and Equipment applies those enchantments from the Cloak slot
 - Quiver: item model + definition, lang. Sewn at the Leatherworking Bench (LeatherworkingRecipes, Java)
@@ -34,9 +34,9 @@ def tag_add(path, *values):
 
 SLOTS = {
     "cloak": [M + "otter_fur_cape", M + "ermine_mantle", M + "glider_cloak", M + "elkwight_cloak"],  # Elkwight Cloak: gen_elkwight.py
-    "neck": [M + "gold_necklace"],  # Jewelry (gen_p8smith.py)
+    "neck": [M + "gold_necklace", M + "silver_necklace"],  # Jewelry (gen_p8smith.py)
     "back": [M + "leather_satchel", M + "steel_frame_pack"],
-    "ring": [M + "gold_ring"],
+    "ring": [M + "gold_ring", M + "silver_ring"],
     "hip": [M + "quiver", M + "leather_pouch"],
     "charm": [M + "bone_charm", M + "fern_flower_charm"],  # the Elkwight's Bone Charm (gen_elkwight.py), the Fern Flower Charm (gen_flora.py)
 }
@@ -59,7 +59,8 @@ lang = {
     "item.mechanical.quiver": "Quiver",
     "item.mechanical.leather_pouch": "Leather Pouch",
     "key.mechanical.open_pack": "Open Satchel, Pouch & Quiver",
-    "message.mechanical.nothing_to_open": "Nothing to open: wear a Leather Satchel (Back slot), or a Leather Pouch or Quiver (Hip slot)",
+    "message.mechanical.nothing_to_open": "Nothing to open: wear a Leather Satchel (Back slot), or a Leather Pouch or Quiver (Hip slots)",
+    "container.mechanical.belt": "Belt",
     "tooltip.mechanical.worn_in": "Worn in the %s slot",
     "slot.mechanical.cloak": "Cloak",
     "slot.mechanical.neck": "Neck",

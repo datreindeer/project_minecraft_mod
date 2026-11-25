@@ -25,7 +25,7 @@ public class AccessorySlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        return Equipment.fits(accessory, stack);
+        return Equipment.canWear(owner, accessory, stack);
     }
 
     @Override
