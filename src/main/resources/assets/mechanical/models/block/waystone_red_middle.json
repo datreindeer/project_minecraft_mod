@@ -1,0 +1,113 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mechanical:block/waystone_red_side",
+    "side": "mechanical:block/waystone_red_side",
+    "top": "mechanical:block/waystone_red_top",
+    "base": "mechanical:block/waystone_red_base",
+    "front": "mechanical:block/waystone_red_front_middle",
+    "glow": "mechanical:block/waystone_red_glow_middle"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        3.5
+      ],
+      "to": [
+        13,
+        16,
+        12.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            0,
+            13,
+            16
+          ],
+          "texture": "#front"
+        },
+        "south": {
+          "uv": [
+            3,
+            0,
+            13,
+            16
+          ],
+          "texture": "#front"
+        },
+        "east": {
+          "uv": [
+            3.5,
+            0,
+            12.5,
+            16
+          ],
+          "texture": "#side"
+        },
+        "west": {
+          "uv": [
+            3.5,
+            0,
+            12.5,
+            16
+          ],
+          "texture": "#side"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        0,
+        3.45
+      ],
+      "to": [
+        13,
+        16,
+        3.45
+      ],
+      "light_emission": 15,
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            0,
+            13,
+            16
+          ],
+          "texture": "#glow"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        0,
+        12.55
+      ],
+      "to": [
+        13,
+        16,
+        12.55
+      ],
+      "light_emission": 15,
+      "shade": false,
+      "faces": {
+        "south": {
+          "uv": [
+            3,
+            0,
+            13,
+            16
+          ],
+          "texture": "#glow"
+        }
+      }
+    }
+  ]
+}
