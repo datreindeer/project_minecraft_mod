@@ -4,6 +4,8 @@
 import json
 from pathlib import Path
 
+from gen_metals import CLAY_METALS
+
 R = Path(__file__).resolve().parent.parent / "src/main/resources"
 A, D = R / "assets/mechanical", R / "data"
 M = "mechanical:"
@@ -25,7 +27,7 @@ def patch_tag(path, values):
 SHAPES = ["ingot", "pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade"]
 # every mold lives here; these only take bronze (their textures: gen_bronze_textures.py, items: gen_bronze.py)
 MOLDS = SHAPES + ["saw_blade", "plate", "spear_head", "sword_blade", "arrowheads"]
-METALS = ["copper", "bronze", "poor_bronze"]  # ClayMoldBlock.METAL; poor bronze looks like bronze
+METALS = CLAY_METALS  # ClayMoldBlock.METAL (the metal table); poor bronze looks like bronze
 HEADS = ["pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade"]
 
 # ---- flat items ----
@@ -154,7 +156,6 @@ lang.update({
     "block.mechanical.bellows": "Bellows", "block.mechanical.whetstone": "Whetstone", "item.mechanical.copper_knife": "Copper Knife",
     "item.mechanical.molten_crucible": "Crucible of Molten Metal", "item.mechanical.solid_crucible": "Crucible of Solid Metal",
     "item.mechanical.molten_crucible.of": "Crucible of Molten %s", "item.mechanical.solid_crucible.of": "Crucible of Solid %s",
-    "metal.mechanical.copper": "Copper",
     "tooltip.mechanical.crucible.empty": "Empty: click Crushed Copper Ore, Native Copper or Crushed Tin Ore onto it in your inventory",
     "tooltip.mechanical.crucible.ore": "%s ore: %s/%s units",
     "tooltip.mechanical.crucible.metal": "%s: %s units",

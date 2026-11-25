@@ -72,15 +72,15 @@ public class PouringSpoutBlockEntity extends BlockEntity {
         public int need(ServerLevel level, BlockPos at, Molten m) {
             BlockState s = level.getBlockState(at);
             if (!(s.getBlock() instanceof ClayMoldBlock mold) || s.getValue(ClayMoldBlock.FILL) != ClayMoldBlock.Fill.EMPTY) return 0;
-            if (m.melt > CLAY_MAX || m.metal == null || !m.metal.casts(mold.shape)) return 0;
+            if (m.melt > CLAY_MAX || m.metal() == null || !m.metal().casts(mold.shape)) return 0;
             return mold.shape.units * Molten.UNIT;
         }
 
         @Override
         public void fill(ServerLevel level, BlockPos at, Molten m, int mb) {
             BlockState s = level.getBlockState(at);
-            if (!(s.getBlock() instanceof ClayMoldBlock mold) || m.metal == null) return;
-            level.setBlock(at, s.setValue(ClayMoldBlock.FILL, ClayMoldBlock.Fill.MOLTEN).setValue(ClayMoldBlock.METAL, m.metal), Block.UPDATE_ALL);
+            if (!(s.getBlock() instanceof ClayMoldBlock mold) || m.metal() == null) return;
+            level.setBlock(at, s.setValue(ClayMoldBlock.FILL, ClayMoldBlock.Fill.MOLTEN).setValue(ClayMoldBlock.METAL, m.metal()), Block.UPDATE_ALL);
             level.scheduleTick(at, mold, ClayMoldBlock.SET_TICKS);
         }
 

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.mechanical.Bronze;
-import com.mechanical.BronzeOres;
 import com.mechanical.CrucibleContents;
 import com.mechanical.FurnaceMelt;
 import com.mechanical.FurnaceMenu;
@@ -40,23 +38,15 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
     private static final int DARK = 0xFF404040, GREEN = 0xFF2E7D32, RED = 0xFFB71C1C, GOLD = 0xFF8A6A00, GREY = 0xFF6A6A6A;
 
     // built when the screen opens (never in a static initializer: items must be registered first)
-    private final ItemStack copperIngot = new ItemStack(Items.COPPER_INGOT), bronzeIngot = new ItemStack(Bronze.BRONZE_INGOT.get()),
-            poorIngot = new ItemStack(Bronze.BRONZE_INGOT.get()), copperOre = new ItemStack(BronzeOres.CRUSHED_COPPER_ORE.get()),
-            tinOre = new ItemStack(BronzeOres.CRUSHED_TIN_ORE.get()), charcoal = new ItemStack(Items.CHARCOAL);
+    private final ItemStack charcoal = new ItemStack(Items.CHARCOAL);
 
     public FurnaceScreen(FurnaceMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 220, 112);
-        Bronze.markPoor(poorIngot);
     }
 
-    /** Molten colour of a metal (also the channel strip's tint, client/MoltenRenderer). */
+    /** Molten colour of a metal: the metal table's, as in the High Furnace (also the channel strip's tint, client/MoltenRenderer). */
     public static int colour(Metal metal) {
-        return switch (metal) {
-            case COPPER -> 0xFFFF8A48;
-            case TIN -> 0xFFE4E8F0;
-            case BRONZE -> 0xFFFFC85A;
-            case POOR_BRONZE -> 0xFFE8A850;
-        };
+        return metal.molten().color;
     }
 
     static String units(int quarters) {
@@ -67,13 +57,10 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
         return Component.translatable("metal.mechanical." + m.getSerializedName());
     }
 
-    private ItemStack icon(Metal m, boolean ore) {
-        return switch (m) {
-            case COPPER -> ore ? copperOre : copperIngot;
-            case TIN -> tinOre;
-            case BRONZE -> bronzeIngot;
-            case POOR_BRONZE -> poorIngot;
-        };
+    /** Its crushed ore while melting (an alloy: its ingot), its ingot once molten. */
+    private static ItemStack icon(Metal m, boolean ore) {
+        net.minecraft.world.item.Item crushed = ore ? m.molten().crucibleOre(1) : null;
+        return crushed != null ? new ItemStack(crushed) : m.molten().ingot();
     }
 
     @Override
@@ -116,7 +103,7 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
     /** The heat the notch marks: the charge's melting point, or the pool's while nothing is left to melt. */
     private int needed(FurnaceMelt melt) {
         if (menu.meltTemp() > 0) return menu.meltTemp();
-        return melt.alloy() != null ? melt.alloy().melt : 0;
+        return melt.alloy() != null ? melt.alloy().melt() : 0;
     }
 
     @Override
@@ -178,8 +165,8 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
         } else if (melt.settling()) {
             status = Component.translatable("gui.mechanical.furnace.settling");
             colour = GOLD;
-        } else if (menu.temperature() < alloy.melt) {
-            status = Component.translatable("gui.mechanical.furnace.too_cold", alloy.melt);
+        } else if (menu.temperature() < alloy.melt()) {
+            status = Component.translatable("gui.mechanical.furnace.too_cold", alloy.melt());
             colour = RED;
         } else if (melt.slags()) {
             status = Component.translatable("gui.mechanical.furnace.slag");

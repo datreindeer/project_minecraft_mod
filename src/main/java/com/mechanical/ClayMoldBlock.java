@@ -67,7 +67,7 @@ public class ClayMoldBlock extends Block {
 
     public static final EnumProperty<Fill> FILL = EnumProperty.create("fill", Fill.class);
     /** The metal poured in: its colour shows in the cavity, and it decides what comes out. */
-    public static final EnumProperty<Metal> METAL = EnumProperty.create("metal", Metal.class, Metal.COPPER, Metal.BRONZE, Metal.POOR_BRONZE);
+    public static final EnumProperty<Metal> METAL = EnumProperty.create("metal", Metal.class, Metal::castsAnything);
     public static final int MAX_USES = 5;
     public static final IntegerProperty USES = IntegerProperty.create("uses", 0, MAX_USES - 1);
     public static final int SET_TICKS = 100;

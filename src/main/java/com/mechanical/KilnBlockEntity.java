@@ -212,7 +212,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             CrucibleContents contents = CrucibleItem.contents(stack);
             Metal metal = contents.alloy();
             if (metal == null) return null;
-            return new Bake(1, crucible.kind() == CrucibleItem.Kind.ORE ? MELT_TICKS : REMELT_TICKS, metal.melt, CrucibleItem.molten(contents.melted(), 0));
+            return new Bake(1, crucible.kind() == CrucibleItem.Kind.ORE ? MELT_TICKS : REMELT_TICKS, metal.melt(), CrucibleItem.molten(contents.melted(), 0));
         }
         return recipeFor(stack).map(r -> {
             ItemStack out = new ItemStack(r.result().get());
@@ -490,7 +490,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         }
         if (!out.is(Casting.MOLTEN_CRUCIBLE.get()) || level.getGameTime() % 20 != 0) return;
         Metal metal = CrucibleItem.contents(out).alloy();
-        if (metal != null && temp >= metal.melt) {
+        if (metal != null && temp >= metal.melt()) {
             out.set(Casting.COOLS_AT.get(), level.getGameTime() + CrucibleItem.COOL_SECONDS * 20L);
             out.setDamageValue(0);
         }

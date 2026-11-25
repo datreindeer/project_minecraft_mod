@@ -1,17 +1,21 @@
 package com.mechanical;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
+import net.minecraft.nbt.CompoundTag;
 
 import org.jspecify.annotations.Nullable;
 
 /**
  * A High Furnace's pool (docs/steel-furnace-plan.md section 5): every melt in it is its own layer, in mB, lying by
- * density ({@link Molten} order, heaviest at the bottom, Slag on top). Alloys mix themselves while both parts are in and
- * the furnace is hot enough, {@link #MIX_PER_TICK} mB a tick per recipe, in fixed proportions, and what is left over of
- * one part stays as its own layer: 9 Copper + 1 Tin -> 10 Bronze (950°), 1 Pig Iron + 2 Wrought Iron -> 3 Steel (1500°).
+ * density ({@link Molten#values()} order, heaviest at the bottom, Slag on top). Alloys ({@link Molten#alloys()}, the metal
+ * table) mix themselves while both parts are in and the furnace is hot enough, {@link #MIX_PER_TICK} mB a tick per recipe,
+ * in fixed proportions, and what is left over of one part stays as its own layer: 9 Copper + 1 Tin -> 10 Bronze (950°),
+ * 1 Pig Iron + 2 Wrought Iron -> 3 Steel (1500°). Saved by melt id ({@link #save}); pools saved before 0.208.0 by the old
+ * enum's order load through {@link #loadLegacy}.
  * There is no Poor Bronze from mixing here: the furnace mixes exactly. Everything only moves (add, drain, mix trades
  * parts for the same total), so nothing can be made from nothing; {@link #selfCheck} proves it at start-up.
  * The Smelting Furnace keeps its own rules ({@link FurnaceMelt}).
@@ -23,11 +27,11 @@ public final class MeltPool {
     /** An alloy recipe: {@code a} parts of one and {@code b} of the other make {@code a + b} of the result, at {@code heat}°. */
     public record Alloy(Molten a, int partsA, Molten b, int partsB, Molten result, int heat) {}
 
-    public static final List<Alloy> ALLOYS = List.of(
-            new Alloy(Molten.COPPER, 9, Molten.TIN, 1, Molten.BRONZE, 950),
-            new Alloy(Molten.PIG_IRON, 1, Molten.WROUGHT_IRON, 2, Molten.STEEL, 1500));
+    /** The Molten enum's order before 0.208.0: what the old saves' numbers mean. */
+    private static final String[] LEGACY = {"gold", "lead", "silver", "copper", "bronze", "poor_bronze", "pig_iron", "steel", "wrought_iron",
+            "tin", "glass", "basalt", "obsidian", "slag"};
 
-    private final EnumMap<Molten, Integer> mb = new EnumMap<>(Molten.class);
+    private final TreeMap<Molten, Integer> mb = new TreeMap<>();
     private int capacity;
 
     public MeltPool(int capacity) {
@@ -89,7 +93,7 @@ public final class MeltPool {
     /** One tick of mixing at {@code temperature}°: every recipe whose parts are both in mixes up to {@link #MIX_PER_TICK} mB. */
     public boolean mix(float temperature) {
         boolean any = false;
-        for (Alloy r : ALLOYS) {
+        for (Alloy r : Molten.alloys()) {
             if (temperature < r.heat) continue;
             int parts = r.partsA + r.partsB, batch = MIX_PER_TICK / parts;
             int n = Math.min(batch, Math.min(get(r.a) / r.partsA, get(r.b) / r.partsB));
@@ -102,20 +106,30 @@ public final class MeltPool {
         return any;
     }
 
-    public int[] save() {
-        int[] out = new int[mb.size() * 2];
-        int i = 0;
-        for (Map.Entry<Molten, Integer> e : mb.entrySet()) {
-            out[i++] = e.getKey().ordinal();
-            out[i++] = e.getValue();
-        }
-        return out;
+    /** id -> mB (also a Furnace Salamander's form). */
+    public CompoundTag save() {
+        CompoundTag t = new CompoundTag();
+        mb.forEach((m, v) -> t.putInt(m.id, v));
+        return t;
     }
 
-    public void load(int[] data) {
+    /** A melt no longer in the table is dropped. */
+    public void load(CompoundTag t) {
         mb.clear();
-        for (int i = 0; i + 1 < data.length; i += 2)
-            if (data[i] >= 0 && data[i] < Molten.values().length && data[i + 1] > 0) mb.put(Molten.values()[data[i]], data[i + 1]);
+        for (String id : t.keySet()) {
+            Molten m = Molten.byId(id);
+            int v = t.getIntOr(id, 0);
+            if (m != null && v > 0) mb.put(m, v);
+        }
+    }
+
+    /** A pool saved before 0.208.0: {ordinal, mB} pairs in the old fixed order ({@link #LEGACY}). */
+    public void loadLegacy(int[] data) {
+        mb.clear();
+        for (int i = 0; i + 1 < data.length; i += 2) {
+            Molten m = data[i] >= 0 && data[i] < LEGACY.length ? Molten.byId(LEGACY[data[i]]) : null;
+            if (m != null && data[i + 1] > 0) mb.merge(m, data[i + 1], Integer::sum);
+        }
     }
 
     /** Layers, both alloy recipes, leftovers and conservation (run at start-up from {@link HighFurnace#init}). */
@@ -143,6 +157,9 @@ public final class MeltPool {
         MeltPool l = new MeltPool(1000);
         l.load(f.save());
         check(l.get(Molten.GOLD) == 600 && l.total() == 600, "save and load");
+        l.loadLegacy(new int[] {6, 300, 13, 50, 9, 100}); // pig iron, slag, tin in the old numbers
+        check(l.get(Molten.PIG_IRON) == 300 && l.get(Molten.SLAG) == 50 && l.get(Molten.TIN) == 100, "old saves load: " + l.layers());
+        check(l.layers().getLast().getKey() == Molten.SLAG && l.bottom() == Molten.TIN, "layers by density: tin (7.29) under pig iron (7.1): " + l.layers());
     }
 
     private static void check(boolean ok, String what) {

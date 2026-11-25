@@ -1,6 +1,5 @@
 package com.mechanical;
 
-import net.minecraft.world.item.Items;
 
 import java.util.List;
 
@@ -82,16 +81,17 @@ public class CrucibleItem extends Item {
      */
     static List<ItemStack> emptied(CrucibleContents contents, Kind kind) {
         List<ItemStack> out = new ArrayList<>();
-        contents.units().forEach((metal, n) -> {
-            if (kind == Kind.ORE && (metal.equals("copper") || metal.equals("tin"))) {
+        contents.units().forEach((id, n) -> {
+            Metal metal = Metal.byId(id);
+            if (metal == null) return;
+            if (kind == Kind.ORE && !metal.isAlloy()) {
                 // units are conserved exactly (concentrate is 2 units, crushed ore 1): giving every unit back as crushed ore
                 // would let washing double the ore on each round trip
-                boolean copper = metal.equals("copper");
-                if (n / 2 > 0) out.add(new ItemStack(copper ? BronzeOres.COPPER_CONCENTRATE.get() : BronzeOres.TIN_CONCENTRATE.get(), n / 2));
-                if (n % 2 > 0) out.add(new ItemStack(copper ? BronzeOres.CRUSHED_COPPER_ORE.get() : BronzeOres.CRUSHED_TIN_ORE.get()));
+                if (n / 2 > 0) out.add(new ItemStack(metal.molten().crucibleOre(CrucibleContents.CONCENTRATE), n / 2));
+                if (n % 2 > 0) out.add(new ItemStack(metal.molten().crucibleOre(1)));
             } else if (n / 2 > 0) {
-                ItemStack ingot = new ItemStack(metal.equals("copper") ? Items.COPPER_INGOT : Bronze.BRONZE_INGOT.get(), n / 2);
-                if (metal.equals("poor_bronze")) Bronze.markPoor(ingot);
+                ItemStack ingot = metal.molten().ingot(); // Poor Bronze's comes marked
+                ingot.setCount(n / 2);
                 out.add(ingot);
             }
         });
@@ -202,7 +202,7 @@ public class CrucibleItem extends Item {
             builder.accept(Component.translatable("tooltip.mechanical.crucible.tin_only").withStyle(ChatFormatting.DARK_GRAY));
         }
         if (kind == Kind.ORE && metal != null)
-            builder.accept(Component.translatable("tooltip.mechanical.crucible.melts", metal.melt).withStyle(ChatFormatting.DARK_GRAY));
+            builder.accept(Component.translatable("tooltip.mechanical.crucible.melts", metal.melt()).withStyle(ChatFormatting.DARK_GRAY));
         if (kind == Kind.MOLTEN) builder.accept(Component.translatable("tooltip.mechanical.crucible.pour").withStyle(ChatFormatting.GOLD));
         if (kind == Kind.SOLID) builder.accept(Component.translatable("tooltip.mechanical.crucible.remelt").withStyle(ChatFormatting.DARK_GRAY));
     }

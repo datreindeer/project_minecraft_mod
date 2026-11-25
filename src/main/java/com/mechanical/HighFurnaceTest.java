@@ -674,7 +674,7 @@ public final class HighFurnaceTest {
                 e -> e.getItem().is(HighFurnace.FURNACE_SALAMANDER.get()));
         h.assertTrue(drops.size() == 1, "a salamander was left: " + drops.size());
         MeltPool held = new MeltPool(Integer.MAX_VALUE);
-        held.load(FurnaceSalamander.pool(drops.get(0).getItem()));
+        FurnaceSalamander.load(drops.get(0).getItem(), held);
         h.assertTrue(held.get(Molten.BRONZE) == 500 && held.get(Molten.GOLD) == 200, "half of each layer: " + held.layers());
         // a new furnace melts it back
         h.setBlock(b.front(), HighFurnace.HIGH_FURNACE_FRONT.get().defaultBlockState().setValue(HighFurnaceFrontBlock.FACING, Direction.NORTH));

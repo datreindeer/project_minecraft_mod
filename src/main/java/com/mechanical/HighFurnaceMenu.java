@@ -41,7 +41,7 @@ public class HighFurnaceMenu extends AbstractContainerMenu {
     public boolean clickMenuButton(Player player, int id) {
         if (furnace == null) return false;
         if (id == BOTTOM) furnace.select(null);
-        else if (id >= 0 && id < Molten.values().length) furnace.select(Molten.values()[id]);
+        else if (id >= 0 && id < Molten.values().size()) furnace.select(Molten.values().get(id));
         else return false;
         return true;
     }

@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 /**
@@ -33,8 +32,8 @@ public final class Coins {
 
     /** The coins one ingot mints into, or empty if it isn't a coin metal. */
     public static ItemStack minted(ItemStack ingot) {
-        Item coin = ingot.is(Items.COPPER_INGOT) ? COPPER_COIN.get() : ingot.is(IronOres.SILVER_INGOT.get()) ? SILVER_COIN.get()
-                : ingot.is(Items.GOLD_INGOT) ? GOLD_COIN.get() : null;
+        Item coin = null; // the metal table's "coin": Copper, Silver and Gold
+        for (Molten m : Molten.values()) if (m.coin() != null && m.isIngot(ingot)) coin = m.coin();
         return coin == null ? ItemStack.EMPTY : new ItemStack(coin, COINS_PER_INGOT);
     }
 

@@ -74,20 +74,10 @@ public class FoundryBasinBlock extends Block implements EntityBlock {
         ClayChannelBlock.refreshAround(level, pos);
     }
 
-    /** The block a melt casts into here, or null. */
+    /** The block a melt casts into here (the metal table's), or null. */
     public static @Nullable Item block(Molten m) {
-        return switch (m) {
-            case COPPER -> Items.COPPER_BLOCK.weathering().unaffected();
-            case GOLD -> Items.GOLD_BLOCK;
-            case LEAD -> HighFurnace.LEAD_BLOCK_ITEM.get();
-            case BRONZE, POOR_BRONZE -> HighFurnace.BRONZE_BLOCK_ITEM.get();
-            case STEEL -> HighFurnace.STEEL_BLOCK_ITEM.get();
-            case SLAG -> HighFurnace.SLAG_STONE_ITEM.get();
-            case BASALT -> HighFurnace.CAST_BASALT_ITEM.get();
-            case GLASS -> Items.GLASS;
-            case OBSIDIAN -> Items.OBSIDIAN;
-            default -> null;
-        };
+        ItemStack b = m.block();
+        return b.isEmpty() ? null : b.getItem();
     }
 
     public static int cast(Molten m) {

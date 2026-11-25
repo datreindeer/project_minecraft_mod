@@ -100,14 +100,17 @@ public final class Casting {
 
     public record OreUnits(Metal metal, int units) {}
 
-    /** What one ore item adds to a crucible, or null if it can't go in. A Bronze Ingot melts back into its 2 units. */
+    /**
+     * What one item adds to a crucible, or null if it can't go in: the ores in the metal table (crushed ore 1 unit, washed
+     * concentrate and native copper 2), and an alloy's ingot melts back into its 2 units. Copper and Tin Ingots don't go
+     * in: an emptied crucible gives ore metal back as ore, and ore yields twice in a High Furnace (docs/metals.md, 10).
+     */
     public static OreUnits oreUnits(ItemStack stack) {
-        if (stack.is(BronzeOres.CRUSHED_COPPER_ORE.get())) return new OreUnits(Metal.COPPER, 1);
-        if (stack.is(BronzeOres.CRUSHED_TIN_ORE.get())) return new OreUnits(Metal.TIN, 1);
-        if (stack.is(BronzeOres.COPPER_CONCENTRATE.get())) return new OreUnits(Metal.COPPER, CrucibleContents.CONCENTRATE); // washed: no gangue
-        if (stack.is(BronzeOres.TIN_CONCENTRATE.get())) return new OreUnits(Metal.TIN, CrucibleContents.CONCENTRATE);
-        if (stack.is(Bronze.BRONZE_INGOT.get())) return new OreUnits(Bronze.isPoor(stack) ? Metal.POOR_BRONZE : Metal.BRONZE, 2);
-        if (stack.is(BronzeOres.NATIVE_COPPER.get())) return new OreUnits(Metal.COPPER, 2); // nearly pure metal
+        for (Metal m : Metal.values()) {
+            int units = m.molten().crucibleUnits(stack);
+            if (units > 0) return new OreUnits(m, units);
+            if (m.isAlloy() && m.molten().isIngot(stack)) return new OreUnits(m, ClayMoldBlock.Shape.INGOT.units);
+        }
         return null;
     }
 

@@ -23,6 +23,8 @@ gen_advancements.py, gen_registry.py. Run: python scripts/gen_bronzetools.py
 import json
 from pathlib import Path
 
+from gen_metals import CLAY_METALS  # the Clay Mold "metal" states
+
 from gem_table import GEMS
 
 R = Path(__file__).resolve().parent.parent / "src/main/resources"
@@ -67,7 +69,7 @@ for s in SHAPES:
             "textures": {**base, "metal": B + f"clay_{s}_mold_bronze_{fill}"}, "elements": [slab, metal]})
     w(A / f"blockstates/clay_{s}_mold.json", {"variants": {
         f"fill={fill},metal={m},uses={u}": {"model": B + f"clay_{s}_mold" + ("" if fill == "empty" else f"_{fill}_bronze")}
-        for fill in ("empty", "molten", "solid") for m in ("copper", "bronze", "poor_bronze") for u in range(5)}})
+        for fill in ("empty", "molten", "solid") for m in CLAY_METALS for u in range(5)}})
     w(A / f"items/clay_{s}_mold.json", {"model": {"type": "minecraft:model", "model": B + f"clay_{s}_mold"}})
     w(D / f"mechanical/loot_table/blocks/clay_{s}_mold.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
         "condition": {"type": "minecraft:survives_explosion"},

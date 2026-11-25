@@ -54,39 +54,43 @@ public record CrucibleContents(Map<String, Integer> units) {
         return units.keySet().stream().noneMatch(k -> Metal.byId(k).isAlloy());
     }
 
-    /** Tin share of copper + tin in percent (0 without tin). */
+    /** Tin share of copper + tin in percent (0 without tin): the share of the crucible alloy's second part. */
     public float tinPercent() {
-        int cu = units(Metal.COPPER), sn = units(Metal.TIN);
+        Molten.Crucible r = Molten.crucibleAlloy();
+        int cu = units(r.base().metal()), sn = units(r.addition().metal());
         return cu + sn == 0 ? 0 : sn * 100F / (cu + sn);
     }
 
     /**
-     * The metal this melts into, or null if it makes nothing castable (tin alone). Copper + tin: 9-11.5 % tin is
-     * Bronze, 8-15 % Poor Bronze (both melt at 950°); any other share melts as Copper at 1085° and the tin is lost as
-     * slag (see {@link #melted}).
+     * The metal this melts into, or null if it makes nothing castable (tin alone). Copper + tin by the table's alloy rule
+     * ({@link Molten#crucibleAlloy}): 9-11.5 % tin is Bronze, 8-15 % Poor Bronze (both melt at 950°); any other share
+     * melts as Copper at 1085° and the tin is lost as slag (see {@link #melted}).
      */
     public Metal alloy() {
         if (units.size() == 1) {
             Metal only = Metal.byId(units.keySet().iterator().next());
-            return only == Metal.TIN ? null : only;
+            return only.castsAnything() ? only : null;
         }
-        int cu = units(Metal.COPPER), sn = units(Metal.TIN);
+        Molten.Crucible r = Molten.crucibleAlloy();
+        int cu = units(r.base().metal()), sn = units(r.addition().metal());
         if (cu == 0 || cu + sn != total()) return null;
         return alloy(cu, sn);
     }
 
+    /** The crucible alloy rule on {@code copper} units of its first part and {@code tin} of its second. */
     public static Metal alloy(int copper, int tin) {
-        int total = copper + tin;
-        if (tin * 1000 >= 90 * total && tin * 1000 <= 115 * total) return Metal.BRONZE;
-        if (tin * 100 >= 8 * total && tin * 100 <= 15 * total) return Metal.POOR_BRONZE;
-        return Metal.COPPER;
+        Molten.Crucible r = Molten.crucibleAlloy();
+        double total = copper + tin, pct = tin * 100.0;
+        if (pct >= r.goodMin() * total && pct <= r.goodMax() * total) return r.result().metal();
+        if (pct >= r.poorMin() * total && pct <= r.poorMax() * total) return r.poorResult().metal();
+        return r.base().metal();
     }
 
     /** What the Crucible of Molten Metal holds: all units as the alloy; copper with the wrong share of tin loses the tin. */
     public CrucibleContents melted() {
         Metal metal = alloy();
         if (metal == null) return EMPTY;
-        int n = metal == Metal.COPPER ? units(Metal.COPPER) : total();
+        int n = metal == Molten.crucibleAlloy().base().metal() ? units(metal) : total();
         return new CrucibleContents(Map.of(metal.getSerializedName(), n));
     }
 
@@ -99,7 +103,7 @@ public record CrucibleContents(Map<String, Integer> units) {
         CrucibleContents slag = EMPTY.add(Metal.COPPER, 5).add(Metal.TIN, 1);
         check(slag.alloy() == Metal.COPPER && slag.melted().equals(EMPTY.add(Metal.COPPER, 5)), "slag: the tin is lost");
         CrucibleContents good = EMPTY.add(Metal.COPPER, 9).add(Metal.TIN, 1);
-        check(good.melted().equals(EMPTY.add(Metal.BRONZE, 10)) && good.alloy().melt == 950, "9:1 melts into 10 bronze at 950");
+        check(good.melted().equals(EMPTY.add(Metal.BRONZE, 10)) && good.alloy().melt() == 950, "9:1 melts into 10 bronze at 950");
         check(EMPTY.add(Metal.TIN, 2).alloy() == null && EMPTY.add(Metal.COPPER, 3).alloy() == Metal.COPPER, "tin alone / copper alone");
         CrucibleContents washed = EMPTY.add(Metal.COPPER, 4 * CONCENTRATE).add(Metal.TIN, 1);
         check(washed.alloy() == Metal.BRONZE && washed.melted().total() == 9, "4 copper concentrate + 1 crushed tin = 9 bronze");

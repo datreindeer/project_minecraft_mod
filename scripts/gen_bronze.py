@@ -174,7 +174,6 @@ lang.update({
     "item.mechanical.copper_concentrate": "Copper Concentrate", "item.mechanical.tin_concentrate": "Tin Concentrate",
     "tooltip.mechanical.crucible.empty": "Empty: click Crushed Copper / Tin Ore, Concentrate or Native Copper onto it in your inventory",
     "item.mechanical.bronze_ingot": "Bronze Ingot", "item.mechanical.bronze_helmet": "Bronze Helmet", "item.mechanical.bronze_greaves": "Bronze Greaves",
-    "metal.mechanical.bronze": "Bronze", "metal.mechanical.poor_bronze": "Poor Bronze", "metal.mechanical.tin": "Tin",
     "tooltip.mechanical.poor_bronze": "Poor Bronze: 70% durability",
     "message.mechanical.crucible.too_hot": "Let it cool before you knock it out",
     "tooltip.mechanical.crucible.mix": "%s%% tin: %s",

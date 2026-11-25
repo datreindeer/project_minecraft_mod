@@ -140,7 +140,7 @@ public class HighFurnaceScreen extends AbstractContainerScreen<HighFurnaceMenu> 
     protected void extractLabels(GuiGraphicsExtractor g, int xm, int ym) {
         g.text(font, title, 8, 6, DARK, false);
         int t = menu.temperature(), target = menu.target();
-        g.text(font, Component.translatable("gui.mechanical.high_furnace.heat", t, target), TEXT_X, 20, t >= 1450 ? GOLD : DARK, false);
+        g.text(font, Component.translatable("gui.mechanical.high_furnace.heat", t, target), TEXT_X, 20, t >= com.mechanical.HighFurnaceMelting.IRON_ORE_HEAT ? GOLD : DARK, false);
         g.text(font, Component.translatable("gui.mechanical.high_furnace.blast", String.format(Locale.ROOT, "%.1f", menu.effectiveBlast()),
                 HighFurnaceBlockEntity.FULL_BLAST), TEXT_X, 31, DARK, false);
         Component state = menu.dryingSeconds() > 0

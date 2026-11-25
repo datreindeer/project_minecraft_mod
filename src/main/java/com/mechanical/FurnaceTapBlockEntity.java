@@ -344,7 +344,7 @@ public class FurnaceTapBlockEntity extends BlockEntity implements MenuProvider {
     /** The metal the tap lets out now, or null (closed, broken, too cold, still settling, nothing castable). */
     @Nullable Metal flowing(BlockState state) {
         Metal metal = melt.alloy();
-        boolean flows = formed && state.getValue(FurnaceTapBlock.OPEN) && metal != null && !melt.settling() && temperature() >= metal.melt;
+        boolean flows = formed && state.getValue(FurnaceTapBlock.OPEN) && metal != null && !melt.settling() && temperature() >= metal.melt();
         return flows ? metal : null;
     }
 

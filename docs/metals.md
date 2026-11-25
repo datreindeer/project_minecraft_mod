@@ -4,6 +4,10 @@ Genomgång av alla metaller och smältor i moddet: smältpunkter, densitet och l
 vad, malm och utbyte, legeringar, gjutning, smide, verktyg, mynt och var varje värde står i koden. Föremålsnamn står på
 engelska. Avsnitt 1–10 är granskningen som den såg ut i v0.207.0; avsnitt 11 listar inkonsekvenserna och förslagen.
 
+**Sedan v0.208.0 finns allt detta på ett ställe:** tabellen i `scripts/gen_metals.py` (avsnitt 12). Avsnitt 13 listar
+vad som ändrades, avsnitt 14 hur man lägger till en metall. Där avsnitt 1–10 pekar på `switch`-satser och dubbletter är
+de borta; talen står kvar som de var om inte avsnitt 13 säger annat.
+
 Sökvägar: `java/` = `src/main/java/com/mechanical/`, `res/` = `src/main/resources/`.
 
 ## 1. Metalltabell (v0.207.0)
@@ -213,3 +217,106 @@ Samma metall beskrivs på många ställen:
 19. **Smältpunkter mot verkligheten:** Silver 1000 (verklig 962) och Gold 1100 (1064) är avrundade till spelsteg
     (kupellering 1000°, Gold precis på lerans gräns 1100°). Obsidian 1700 är ett spelvärde (ska kräva toppvärme).
     Bloomery 1350 mot HF 1450 är två processer (fast reduktion mot smält järn). Inga ändringar föreslås.
+
+## 12. Metalltabellen (en källa, v0.208.0)
+
+Allt om en metall står i **en rad** i `METALS` i `scripts/gen_metals.py` (legeringar i `ALLOYS` i samma fil). Skriptet
+skriver `res/data/mechanical/metals.json`, som `Molten` läser en gång vid start (föremål och blocktillstånd är fasta
+då, därför inte en datapack-registry), metall- och smältnamnen i `en_us.json` och tabellen nedan. Övriga generatorer tar
+Clay Mold-metallerna därifrån (`CLAY_METALS`). Koden läser:
+
+- `Molten`: smältpunkt, densitet (lagerordningen räknas fram, tyngst underst), färg, ingot/nugget/block/plate/coin,
+  vad som smälter till den och hur mycket (`melts`), järnmalm som reduceras (`reduce`, `reduce_heat`), degelmalm
+  (`crucible`), lerformsgjutningar (`casts`) och Molding Flask-gjutningar (`flask`), legeringarna.
+- `Metal` (enum: Copper, Tin, Bronze, Poor Bronze): bara namnen. Smältpunkt, gjutformer och alloy-regel kommer ur
+  tabellen; enumen finns för att Clay Moldens `metal`-tillstånd och Smelting Furnaces sparade fält behöver en fast mängd.
+- `HighFurnaceMelting`, `IngotMoldBlock`, `FoundryBasinBlock`, `MoldingFlaskBlock`, `RefractoryTroughBlock`,
+  `PouringSpoutBlockEntity`, `CrucibleContents`, `CrucibleItem`, `FurnaceMelt`, `Casting.oreUnits`, `Coins`,
+  `IronOres.GOLD_TEMP`/`CUPEL_TEMP`, `FurnaceScreen.colour` och `HighFurnaceScreen`: allt ur tabellen.
+- High Furnace-poolen och Furnace Salamander sparas per id (`MeltPool.save`). Gamla världar läses med den frysta gamla
+  ordningen (`MeltPool.loadLegacy`); Smelting Furnace läser en kortare sparning så långt den räcker.
+
+Tabellen nedan skrivs av `gen_metals.py` (ändra inte för hand):
+
+<!-- metals:start -->
+| Smälta | Smälter | Verklig | Densitet | Färg | Ingot / Nugget / Block | Ugnar |
+|---|---|---|---|---|---|---|
+| Gold | 1100° | 1064° | 19,3 | `FFC21E` | gold_ingot / gold_nugget / gold_block | HF, Clay Kiln 1100° (Raw Gold, 9 Gold Nugget) |
+| Lead | 330° | 327° | 11,34 | `8C93A8` | lead_ingot / – / lead_block | HF, Clay Kiln 800° (Raw Galena) |
+| Silver | 1000° | 962° | 10,49 | `F4F6FF` | silver_ingot / silver_nugget / – | HF, Clay Kiln 1000° (Leaded Cupel) |
+| Copper | 1085° | 1085° | 8,96 | `FF7A2A` | copper_ingot / copper_nugget / copper_block | Crucible, Smelting Furnace, HF |
+| Bronze | 950° | ≈950° (10 % tenn) | 8,8 | `FFB13B` | bronze_ingot / – / bronze_block | Crucible, Smelting Furnace, HF |
+| Poor Bronze | 950° | 900–1000° | 8,8 | `E09A44` | bronze_ingot / – / – | Crucible, Smelting Furnace, HF |
+| Steel | 1500° | 1425–1540° | 7,85 | `FFCE4A` | steel_ingot / iron_nugget / steel_block | HF, Bloomery 1000° (cementering) |
+| Wrought Iron | 1550° | ≈1510–1540° | 7,75 | `FFC040` | wrought_iron_ingot / iron_nugget / – | HF, Bloomery 1350° (bloom), Finery Hearth 1300° |
+| Tin | 232° | 232° | 7,29 | `E8ECF2` | tin_ingot / – / tin_block | Crucible, Smelting Furnace, HF |
+| Pig Iron | 1200° | 1150–1200° | 7,1 | `FFA33A` | pig_iron_ingot / iron_nugget / – | HF |
+| Basalt | 1250° | 1100–1250° | 2,9 | `C0402A` | block: cast_basalt | HF |
+| Glass | 1400° | ≈1000–1400° | 2,5 | `B8F0A0` | block: glass | HF |
+| Obsidian | 1700° | ≈1000–1200° (spelvärde: toppvärme) | 2,4 | `6A2AA8` | block: obsidian | HF |
+| Slag | 1200° | 1200–1400° | 2,3 (verklig 2,8–3,3) | `3A4A2A` | block: slag_stone | HF |
+
+Legering: 9 copper + 1 tin → 10 bronze vid 950°; i degeln 9.0–11.5 % tin = bronze, 8.0–15.0 % = poor_bronze.
+
+Legering: 1 pig_iron + 2 wrought_iron → 3 steel vid 1500°.
+<!-- metals:end -->
+
+## 13. Ändrat i v0.208.0
+
+| Nr (avsnitt 11) | Ändring | Tal före → efter |
+|---|---|---|
+| 1, 12, 13, 14, 15 | En tabell; `switch`-satser och dubbletter borta | inga tal ändrade |
+| 2 | En färg per metall: Smelting Furnace-skärmen och Clay Channel-strängen tar HF-färgen | Copper `FF8A48` → `FF7A2A`, Tin `E4E8F0` → `E8ECF2`, Bronze `FFC85A` → `FFB13B`, Poor Bronze `E8A850` → `E09A44` |
+| 3 | Lagerordning efter verklig densitet | ordning … Bronze, Poor Bronze, **Steel, Wrought Iron, Tin, Pig Iron, Basalt, Glass**, Obsidian, Slag (förut Pig Iron, Steel, Wrought Iron, Tin, Glass, Basalt); Slag får spelvärdet 2,3 |
+| 4 | HF-pool och Salamander sparas per id, gamla läses | – |
+| 5 | Smelting Furnace tål ändrat antal metaller | – |
+| 6 | Copper Nugget ur tråg och Sand Runner; Copper Nugget smälter (22 mB); Iron Nugget smälter som Pig Iron (22 mB) | förut: kopparrest förlorad, nuggets smälte inte |
+| 7 | Poor Bronze gjuter inget block | förut Bronze Block (blev god Bronze vid omsmältning) |
+| 8 | Poor Bronze i Iron Plate Mold → Bronze Plate märkt Poor | förut inget |
+| 9 | Tin i Foundry Basin → Tin Block | förut inget |
+| 10 | Smelting Furnace tar Tin Ingot | 2 enheter (8 quarters), som Copper Ingot |
+| 16 | `02-bronze-age.md`: Poor Bronze-spjut/svärd | 161 → 322 |
+
+Kvar (inte ändrat): 11 (saknade nuggets/block, kräver nya föremål med texturer), 17 (vanilla-ugnens tennrecept), 18
+(texturpaletter), 19 (smältpunkter avrundade till spelsteg). Zink och mässing läggs inte till nu: användarens plan har dem
+i ångåldern (`03-iron-age.md:347`, `04-steel-age.md:16`), så de prövas med en testmetall (avsnitt 14).
+
+## 14. Så lägger du till en metall
+
+Exempel: **Zinc** och **Brass** (2 Copper + 1 Zinc), när ångåldern kommer.
+
+1. **En rad per metall** i `METALS` i `scripts/gen_metals.py`:
+
+   ```python
+   dict(id="zinc", name="Zinc", melt=420, real_melt="420", density=7.14, color=0xB4C0C8,
+        ingot=M + "zinc_ingot", nugget=M + "zinc_nugget", block=M + "zinc_block",
+        ores={M + "crushed_calamine": 150}),
+   dict(id="brass", name="Brass", melt=930, real_melt="900–940", density=8.5, color=0xE8C050,
+        ingot=M + "brass_ingot", block=M + "brass_block", plate=M + "brass_plate"),
+   ```
+
+   och legeringen i `ALLOYS`:
+
+   ```python
+   dict(result="brass", parts=[("copper", 2), ("zinc", 1)], heat=950),
+   ```
+
+2. Kör kedjan (`gen_metals.py` går direkt efter `gen_data.py`).
+3. **Föremålen:** tabellen gör inga föremål. Finns tackan/blocket inte redan (vanilla eller moddets), registrera dem som
+   de andra (`ITEMS.registerSimpleItem("zinc_ingot")` i åldersklassen), med textur (åldersgeneratorns `*_textures.py`),
+   modell och namn (åldersgeneratorn), registry-noter, advancement och åldersdokument.
+4. **Klart, utan mer kod:** High Furnace smälter malmen, tackan, nuggeten och blocket (200/22/1800 mB) vid 420°, lägger
+   Zinc mellan Tin och Pig Iron och Brass mellan Poor Bronze och Steel, blandar 2:1 till Brass vid 950°, häller i Pouring
+   Spout och rännor, gjuter tackor, nuggets, plåt (Iron Ingot/Nugget/Plate Mold, Pig Mold), block (Foundry Basin), knackas
+   ur tråg som tackor + nuggets, ryms i Steel Ladle, sparas per id, får sin färg i alla renderare och skärmar och sina
+   namn (`metal.mechanical.zinc`, `molten.mechanical.zinc`). `coin=` gör den präglingsbar.
+5. **Bara om den ska i degeln eller lerformarna** (bronsåldern): lägg en konstant sist i `Metal`-enumen (startkontrollen
+   säger till om den saknas), fyll i `crucible=` och `casts=`, och måla lerformens utseende (`looks` i `gen_copper.py`).
+   Degeln och Smelting Furnace stöder en legering (brons); en andra degellegering kräver att `CrucibleContents` och
+   `FurnaceMelt` görs allmänna först (`gen_metals.py` och `Molten` vägrar annars).
+
+Beviset: game testen `metals_new_metal` (`java/MetalsTest.java`) laddar exakt sådana rader för en Test Zinc och Test
+Brass (gjorda av vanilla-föremål) genom samma inläsare och visar smältning, lager, legering 2:1, gjutning, block,
+sparning per id och att en borttagen metall bara faller ur en sparning. `metals_table` kontrollerar hela den riktiga
+tabellen: att varje föremål finns, densitetsordningen, smältpunkt per ugn, legeringsförhållandena, gjutning i varje
+formtyp, mynten, fixarna ovan och att gamla sparningar laddas.

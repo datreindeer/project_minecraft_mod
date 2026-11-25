@@ -1,0 +1,323 @@
+{
+  "metals": [
+    {
+      "id": "gold",
+      "melt": 1100,
+      "density": 19.3,
+      "color": "FFC21E",
+      "melts": {
+        "minecraft:raw_gold": 300,
+        "minecraft:gold_ingot": 200,
+        "minecraft:gold_nugget": 22,
+        "minecraft:gold_block": 1800
+      },
+      "ingot": "minecraft:gold_ingot",
+      "nugget": "minecraft:gold_nugget",
+      "block": "minecraft:gold_block",
+      "coin": "mechanical:gold_coin"
+    },
+    {
+      "id": "lead",
+      "melt": 330,
+      "density": 11.34,
+      "color": "8C93A8",
+      "melts": {
+        "mechanical:raw_galena": 300,
+        "mechanical:lead_ingot": 200,
+        "mechanical:lead_block": 1800
+      },
+      "ingot": "mechanical:lead_ingot",
+      "block": "mechanical:lead_block"
+    },
+    {
+      "id": "silver",
+      "melt": 1000,
+      "density": 10.49,
+      "color": "F4F6FF",
+      "melts": {
+        "mechanical:silver_ingot": 200,
+        "mechanical:silver_nugget": 22
+      },
+      "ingot": "mechanical:silver_ingot",
+      "nugget": "mechanical:silver_nugget",
+      "coin": "mechanical:silver_coin"
+    },
+    {
+      "id": "copper",
+      "melt": 1085,
+      "density": 8.96,
+      "color": "FF7A2A",
+      "melts": {
+        "mechanical:crushed_copper_ore": 200,
+        "mechanical:copper_concentrate": 400,
+        "mechanical:native_copper": 400,
+        "minecraft:raw_copper": 400,
+        "minecraft:copper_ingot": 200,
+        "minecraft:copper_nugget": 22,
+        "minecraft:copper_block": 1800
+      },
+      "ingot": "minecraft:copper_ingot",
+      "nugget": "minecraft:copper_nugget",
+      "block": "minecraft:copper_block",
+      "coin": "mechanical:copper_coin",
+      "crucible": {
+        "mechanical:crushed_copper_ore": 1,
+        "mechanical:copper_concentrate": 2,
+        "mechanical:native_copper": 2
+      },
+      "casts": {
+        "ingot": "minecraft:copper_ingot",
+        "pickaxe_head": "mechanical:rough_cast_copper_pickaxe_head",
+        "axe_head": "mechanical:rough_cast_copper_axe_head",
+        "shovel_head": "mechanical:rough_cast_copper_shovel_head",
+        "hoe_head": "mechanical:rough_cast_copper_hoe_head",
+        "knife_blade": "mechanical:rough_cast_copper_knife_blade"
+      }
+    },
+    {
+      "id": "bronze",
+      "melt": 950,
+      "density": 8.8,
+      "color": "FFB13B",
+      "melts": {
+        "mechanical:bronze_ingot": 200,
+        "mechanical:bronze_block": 1800
+      },
+      "ingot": "mechanical:bronze_ingot",
+      "block": "mechanical:bronze_block",
+      "plate": "mechanical:bronze_plate",
+      "casts": {
+        "ingot": "mechanical:bronze_ingot",
+        "pickaxe_head": "mechanical:rough_cast_bronze_pickaxe_head",
+        "axe_head": "mechanical:rough_cast_bronze_axe_head",
+        "shovel_head": "mechanical:rough_cast_bronze_shovel_head",
+        "hoe_head": "mechanical:rough_cast_bronze_hoe_head",
+        "knife_blade": "mechanical:rough_cast_bronze_knife_blade",
+        "saw_blade": "mechanical:rough_cast_bronze_saw_blade",
+        "plate": "mechanical:rough_cast_bronze_plate",
+        "spear_head": "mechanical:rough_cast_bronze_spear_head",
+        "sword_blade": "mechanical:rough_cast_bronze_sword_blade",
+        "kettle": "mechanical:rough_cast_bronze_kettle",
+        "arrowheads": "mechanical:rough_cast_bronze_arrowheads",
+        "bucket": "mechanical:rough_cast_bronze_bucket",
+        "sickle_blade": "mechanical:rough_cast_bronze_sickle_blade",
+        "shears": "mechanical:rough_cast_bronze_shears",
+        "fish_hooks": "mechanical:rough_cast_bronze_fish_hooks",
+        "needles": "mechanical:rough_cast_bronze_needles",
+        "tongs": "mechanical:rough_cast_bronze_tongs",
+        "chisel_blade": "mechanical:rough_cast_bronze_chisel_blade",
+        "hammer_head": "mechanical:rough_cast_bronze_hammer_head",
+        "anvil": "mechanical:rough_cast_bronze_anvil",
+        "tuyere": "mechanical:bronze_tuyere_nozzle"
+      }
+    },
+    {
+      "id": "poor_bronze",
+      "melt": 950,
+      "density": 8.8,
+      "color": "E09A44",
+      "melts": {
+        "mechanical:bronze_ingot": 200
+      },
+      "ingot": "mechanical:bronze_ingot",
+      "plate": "mechanical:bronze_plate",
+      "casts": {
+        "ingot": "mechanical:bronze_ingot",
+        "pickaxe_head": "mechanical:rough_cast_bronze_pickaxe_head",
+        "axe_head": "mechanical:rough_cast_bronze_axe_head",
+        "shovel_head": "mechanical:rough_cast_bronze_shovel_head",
+        "hoe_head": "mechanical:rough_cast_bronze_hoe_head",
+        "knife_blade": "mechanical:rough_cast_bronze_knife_blade",
+        "saw_blade": "mechanical:rough_cast_bronze_saw_blade",
+        "plate": "mechanical:rough_cast_bronze_plate",
+        "spear_head": "mechanical:rough_cast_bronze_spear_head",
+        "sword_blade": "mechanical:rough_cast_bronze_sword_blade",
+        "kettle": "mechanical:rough_cast_bronze_kettle",
+        "arrowheads": "mechanical:rough_cast_bronze_arrowheads",
+        "bucket": "mechanical:rough_cast_bronze_bucket",
+        "sickle_blade": "mechanical:rough_cast_bronze_sickle_blade",
+        "shears": "mechanical:rough_cast_bronze_shears",
+        "fish_hooks": "mechanical:rough_cast_bronze_fish_hooks",
+        "needles": "mechanical:rough_cast_bronze_needles",
+        "tongs": "mechanical:rough_cast_bronze_tongs",
+        "chisel_blade": "mechanical:rough_cast_bronze_chisel_blade",
+        "hammer_head": "mechanical:rough_cast_bronze_hammer_head",
+        "anvil": "mechanical:rough_cast_bronze_anvil",
+        "tuyere": "mechanical:bronze_tuyere_nozzle"
+      },
+      "poor": true
+    },
+    {
+      "id": "steel",
+      "melt": 1500,
+      "density": 7.85,
+      "color": "FFCE4A",
+      "melts": {
+        "mechanical:blister_steel": 200,
+        "mechanical:steel_ingot": 200,
+        "mechanical:steel_block": 1800
+      },
+      "ingot": "mechanical:steel_ingot",
+      "nugget": "minecraft:iron_nugget",
+      "block": "mechanical:steel_block",
+      "plate": "mechanical:steel_plate"
+    },
+    {
+      "id": "wrought_iron",
+      "melt": 1550,
+      "density": 7.75,
+      "color": "FFC040",
+      "melts": {
+        "mechanical:wrought_iron_ingot": 200
+      },
+      "ingot": "mechanical:wrought_iron_ingot",
+      "nugget": "minecraft:iron_nugget",
+      "plate": "mechanical:iron_plate"
+    },
+    {
+      "id": "tin",
+      "melt": 232,
+      "density": 7.29,
+      "color": "E8ECF2",
+      "melts": {
+        "mechanical:crushed_tin_ore": 200,
+        "mechanical:tin_concentrate": 400,
+        "mechanical:tin_ingot": 200,
+        "mechanical:tin_block": 1800
+      },
+      "ingot": "mechanical:tin_ingot",
+      "block": "mechanical:tin_block",
+      "crucible": {
+        "mechanical:crushed_tin_ore": 1,
+        "mechanical:tin_concentrate": 2
+      }
+    },
+    {
+      "id": "pig_iron",
+      "melt": 1200,
+      "density": 7.1,
+      "color": "FFA33A",
+      "melts": {
+        "mechanical:pig_iron_ingot": 200,
+        "minecraft:iron_nugget": 22
+      },
+      "ingot": "mechanical:pig_iron_ingot",
+      "nugget": "minecraft:iron_nugget",
+      "flask": {
+        "ingot_mold": "mechanical:iron_ingot_mold",
+        "plate_mold": "mechanical:iron_plate_mold",
+        "nugget_mold": "mechanical:iron_nugget_mold",
+        "gear": "mechanical:cast_iron_gear",
+        "pot": "mechanical:cast_iron_pot"
+      },
+      "reduce_heat": 1450,
+      "reduce": {
+        "minecraft:raw_iron": [
+          100,
+          200
+        ],
+        "mechanical:roasted_iron_ore": [
+          200,
+          300
+        ],
+        "mechanical:raw_bog_iron": [
+          65,
+          130
+        ],
+        "mechanical:roasted_bog_iron": [
+          130,
+          200
+        ]
+      }
+    },
+    {
+      "id": "basalt",
+      "melt": 1250,
+      "density": 2.9,
+      "color": "C0402A",
+      "melts": {
+        "minecraft:basalt": 250,
+        "minecraft:polished_basalt": 250,
+        "minecraft:smooth_basalt": 250,
+        "mechanical:cast_basalt": 1800
+      },
+      "block": "mechanical:cast_basalt",
+      "nonmetal": true
+    },
+    {
+      "id": "glass",
+      "melt": 1400,
+      "density": 2.5,
+      "color": "B8F0A0",
+      "melts": {
+        "mechanical:glass_batch": 250,
+        "minecraft:glass": 1800
+      },
+      "block": "minecraft:glass",
+      "nonmetal": true
+    },
+    {
+      "id": "obsidian",
+      "melt": 1700,
+      "density": 2.4,
+      "color": "6A2AA8",
+      "melts": {
+        "minecraft:obsidian": 250
+      },
+      "block": "minecraft:obsidian",
+      "nonmetal": true
+    },
+    {
+      "id": "slag",
+      "melt": 1200,
+      "density": 2.3,
+      "color": "3A4A2A",
+      "melts": {
+        "mechanical:slag_stone": 1800
+      },
+      "block": "mechanical:slag_stone",
+      "nonmetal": true
+    }
+  ],
+  "alloys": [
+    {
+      "result": "bronze",
+      "parts": [
+        [
+          "copper",
+          9
+        ],
+        [
+          "tin",
+          1
+        ]
+      ],
+      "heat": 950,
+      "crucible": {
+        "good": [
+          9.0,
+          11.5
+        ],
+        "poor": [
+          8.0,
+          15.0
+        ],
+        "poor_result": "poor_bronze"
+      }
+    },
+    {
+      "result": "steel",
+      "parts": [
+        [
+          "pig_iron",
+          1
+        ],
+        [
+          "wrought_iron",
+          2
+        ]
+      ],
+      "heat": 1500
+    }
+  ]
+}

@@ -63,7 +63,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class IronOres {
     /** Kiln heat: lead smelts on Charcoal alone (800° is its natural max); cupellation and gold need the bellows. */
-    public static final int LEAD_TEMP = 800, CUPEL_TEMP = 1000, GOLD_TEMP = 1100;
+    public static final int LEAD_TEMP = 800;
+    /** Cupellation runs at silver's melting point, gold melts at its own (the metal table). */
+    public static final int CUPEL_TEMP = Molten.SILVER.melt, GOLD_TEMP = Molten.GOLD.melt;
     /** Limestone on the Stone Anvil. */
     public static final int FLUX_PER_LIMESTONE = 2;
     /** Lime burning (docs/ages/03-iron-age.md "Kalk och murbruk"): over Charcoal's 800°, so it needs the bellows. */

@@ -312,7 +312,8 @@ också. Föremål som aldrig smälter studsar ut ur toppen med ett fräs.
 ### Familjer, lager och legering
 
 - Allt får ligga i pölen samtidigt (det är det som gör det roligt). Varje smälta är ett **lager**. Lagren ligger efter
-  densitet: Gold, Lead, Silver, Copper, Bronze, Pig Iron, Steel, Wrought Iron, Tin, Glass, Basalt, Obsidian och **Slag överst**.
+  densitet: Gold, Lead, Silver, Copper, Bronze, Steel, Wrought Iron, Tin, Pig Iron, Basalt, Glass, Obsidian och **Slag överst**
+  (verkliga densiteter i metalltabellen sedan v0.208.0, se `docs/metals.md`).
 - **Legeringar blandar sig själva** när båda delarna finns och ugnen är varm nog. Det går 20 mB per tick och recept. Det som blir över
   ligger kvar som eget lager:
 

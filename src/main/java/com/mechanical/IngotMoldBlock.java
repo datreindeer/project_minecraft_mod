@@ -11,9 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -93,19 +91,14 @@ public class IngotMoldBlock extends Block implements EntityBlock {
                     if (i != null) i.setCount(INGOTS);
                     yield i;
                 }
-                case PLATE -> switch (m) {
-                    case BRONZE -> new ItemStack(Bronze.BRONZE_PLATE.get());
-                    case WROUGHT_IRON -> new ItemStack(Smithing.IRON_PLATE.get());
-                    case STEEL -> new ItemStack(Smithing.STEEL_PLATE.get());
-                    default -> null;
-                };
+                case PLATE -> m.plate().isEmpty() ? null : m.plate();
                 case PIG -> {
                     ItemStack i = ingot(m);
                     if (i != null) i.setCount(2);
                     yield i;
                 }
                 case NUGGET -> {
-                    ItemStack n = m == Molten.COPPER ? new ItemStack(net.minecraft.world.item.Items.COPPER_NUGGET) : HighFurnaceMelting.nugget(m);
+                    ItemStack n = HighFurnaceMelting.nugget(m);
                     if (n != null) n.setCount(18);
                     yield n;
                 }
@@ -151,24 +144,10 @@ public class IngotMoldBlock extends Block implements EntityBlock {
         ClayChannelBlock.refreshAround(level, pos);
     }
 
-    /** The ingot a melt sets into, or null (glass, slag ... have none). */
+    /** The ingot a melt sets into (the metal table's), or null (glass, slag ... have none). */
     public static @Nullable ItemStack ingot(Molten m) {
-        Item i = switch (m) {
-            case GOLD -> Items.GOLD_INGOT;
-            case LEAD -> IronOres.LEAD_INGOT.get();
-            case SILVER -> IronOres.SILVER_INGOT.get();
-            case COPPER -> Items.COPPER_INGOT;
-            case BRONZE, POOR_BRONZE -> Bronze.BRONZE_INGOT.get();
-            case TIN -> Mechanical.TIN_INGOT.get();
-            case PIG_IRON -> HighFurnace.PIG_IRON_INGOT.get();
-            case STEEL -> Smithing.STEEL_INGOT.get();
-            case WROUGHT_IRON -> Ironworking.WROUGHT_IRON_INGOT.get();
-            default -> null;
-        };
-        if (i == null) return null;
-        ItemStack out = new ItemStack(i);
-        if (m == Molten.POOR_BRONZE) Bronze.markPoor(out);
-        return out;
+        ItemStack out = m.ingot();
+        return out.isEmpty() ? null : out;
     }
 
     @Override

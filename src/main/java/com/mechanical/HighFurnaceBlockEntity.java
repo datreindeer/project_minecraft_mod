@@ -445,9 +445,8 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
             if (!e.isAlive()) continue;
             ItemStack stack = e.getItem();
             if (stack.is(HighFurnace.FURNACE_SALAMANDER.get()) && temperature() >= 1200) {
-                int[] held = FurnaceSalamander.pool(stack);
                 MeltPool in = new MeltPool(Integer.MAX_VALUE);
-                in.load(held);
+                FurnaceSalamander.load(stack, in);
                 if (in.total() <= pool.room()) {
                     for (var l : in.layers()) pool.add(l.getKey(), l.getValue());
                     e.discard();
@@ -517,10 +516,10 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
             } else if (level.getBlockEntity(q) instanceof ClayChannelBlockEntity) {
                 if (m.melt > PouringSpoutBlockEntity.CLAY_MAX) {
                     if (TroughFlow.crack(level, q, now)) pool.drain(m, Math.min(TroughFlow.RATE / 2, pool.get(m)));
-                } else if (m.metal != null && now % ChannelFlow.STEP_TICKS == 0) {
+                } else if (m.metal() != null && now % ChannelFlow.STEP_TICKS == 0) {
                     FurnaceMelt clay = new FurnaceMelt(); // the pool's layer in quarters, for the Clay Channels' own flow
                     int had = pool.get(m) / Molten.QUARTER;
-                    clay.setPool(m.metal, had);
+                    clay.setPool(m.metal(), had);
                     if (ChannelFlow.step(level, q, clay, clay.alloy())) {
                         pool.drain(m, (had - clay.poolTotal()) * Molten.QUARTER);
                         dirty = true;
@@ -540,7 +539,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
             if (m.ironOre()) { // reduced: pig iron and slag (less slag and more iron with flux), and half a Charcoal burnt
                 boolean fluxed = flux > 0;
                 if (fluxed) flux--;
-                pool.add(Molten.PIG_IRON, fluxed ? m.withFlux() : m.mb());
+                pool.add(m.molten(), fluxed ? m.withFlux() : m.mb());
                 pool.add(Molten.SLAG, fluxed ? HighFurnaceMelting.SLAG_FLUX : HighFurnaceMelting.SLAG);
                 reduction += 0.5F;
                 burnReductionCoal();
@@ -714,10 +713,10 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
             MeltPool half = new MeltPool(Integer.MAX_VALUE);
             for (var l : pool.layers()) half.add(l.getKey(), l.getValue() / 2);
             if (!half.isEmpty()) {
-                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), FurnaceSalamander.of(half.save()));
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), FurnaceSalamander.of(half));
                 if (level instanceof ServerLevel server) Smelting.award(server, pos, HighFurnace.SALAMANDER_ADVANCEMENT, 12);
             }
-            pool.load(new int[0]);
+            pool.load(new net.minecraft.nbt.CompoundTag());
         }
         if (level != null) {
             for (ItemStack it : slots) if (!it.isEmpty()) Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), it.copy());
@@ -737,7 +736,9 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         super.loadAdditional(input);
         temp = input.getFloatOr("temp", Float.NaN);
         dried = input.getIntOr("dried", 0);
-        pool.load(input.getIntArray("pool").orElse(new int[0]));
+        var melt = input.read("melt", net.minecraft.nbt.CompoundTag.CODEC);
+        if (melt.isPresent()) pool.load(melt.get());
+        else pool.loadLegacy(input.getIntArray("pool").orElse(new int[0])); // saved before 0.208.0
         int n = input.getIntOr("slot_count", 0);
         slots = net.minecraft.core.NonNullList.withSize(n, ItemStack.EMPTY);
         net.minecraft.world.ContainerHelper.loadAllItems(input, slots);
@@ -771,7 +772,7 @@ public class HighFurnaceBlockEntity extends BlockEntity implements MenuProvider 
         super.saveAdditional(output);
         if (!Float.isNaN(temp)) output.putFloat("temp", temp);
         output.putInt("dried", dried);
-        output.putIntArray("pool", pool.save());
+        output.store("melt", net.minecraft.nbt.CompoundTag.CODEC, pool.save());
         output.putInt("slot_count", slots.size());
         net.minecraft.world.ContainerHelper.saveAllItems(output, slots);
         int[] pr = new int[progress.length];

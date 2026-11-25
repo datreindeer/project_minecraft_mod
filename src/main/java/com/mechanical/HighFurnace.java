@@ -210,6 +210,7 @@ public final class HighFurnace {
     }
 
     public static void init() {
+        Molten.selfCheck();
         MeltPool.selfCheck();
         PouringSpoutBlockEntity.SINKS.add(new IngotMoldBlock.Sink());
         PouringSpoutBlockEntity.SINKS.add(new FoundryBasinBlock.Sink());

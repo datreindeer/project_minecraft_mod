@@ -523,7 +523,7 @@ Monteras i **Tool Station**, låses upp när man bär det slipade huvudet.
   Står i `minecraft:spears`.
 - **Bronze Sword:** vanligt vanilla-svärd på bronsmaterialet: **5,5 skada** (Iron Sword 6), attackfart 1,6, **460**
   hållbarhet. Står i `minecraft:swords` (svärdsförtrollningar).
-- Poor Bronze följer med till spjut och svärd som till de andra verktygen (70 % hållbarhet: 161).
+- Poor Bronze följer med till spjut och svärd som till de andra verktygen (70 % hållbarhet: 322).
 
 ### Bronze Saw och planks
 
@@ -678,7 +678,7 @@ Allt kommer in **genom tratten**: kasta eller släpp föremål på Furnace Chute
 eller ligger på kanten tas in).
 
 - **Malm** i alla former degeln tar: Crushed Copper / Tin Ore (1 enhet), Copper / Tin Concentrate (2), Native Copper (2).
-- **Tackor att smälta om:** Copper Ingot och Bronze Ingot (2 enheter; Poor Bronze förblir Poor).
+- **Tackor att smälta om:** Copper Ingot, Tin Ingot och Bronze Ingot (2 enheter; Poor Bronze förblir Poor). Tin Ingot sedan v0.208.0.
 - **Bränsle:** bara **Charcoal** (och Coal), upp till **16** st.
 - Det som inte får plats, inte smälter eller inte går att blanda kastas tillbaka upp från tratten (med ett fräs).
   Blandningsregeln är degelns: koppar och tenn blandas, smält brons tar bara mer av samma brons.

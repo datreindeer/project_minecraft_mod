@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /**
  * What a Smelting Furnace holds, in quarter units (4 quarters = 1 crucible unit = 1 Crushed Copper Ore's worth of
@@ -25,7 +24,10 @@ public final class FurnaceMelt {
      * without tin only up to the rest, so a furnace filled from whole stacks always has room for the other ore.
      * (Before 0.58 the first stack thrown in filled it: 32 copper and the tin bounced out, or tin that never poured.)
      */
-    public static final int TIN_MAX = 18, COPPER_ALONE = CAPACITY - TIN_MAX;
+    public static final int TIN_MAX = (int) (CAPACITY * Molten.crucibleAlloy().goodMax() / 100), COPPER_ALONE = CAPACITY - TIN_MAX;
+    /** The table's crucible alloy (Molten#crucibleAlloy): copper + tin -> bronze or poor bronze. */
+    static final Metal BASE = Molten.crucibleAlloy().base().metal(), ADDITION = Molten.crucibleAlloy().addition().metal(),
+            GOOD = Molten.crucibleAlloy().result().metal(), POOR = Molten.crucibleAlloy().poorResult().metal();
     /** Metals by ordinal: copper, tin, bronze, poor bronze. */
     static final Metal[] METALS = Metal.values();
 
@@ -40,10 +42,10 @@ public final class FurnaceMelt {
 
     /** What one item adds (its metal and quarters), or null if it doesn't melt. */
     public static Amount quarters(ItemStack stack) {
-        if (stack.is(Items.COPPER_INGOT)) return new Amount(Metal.COPPER, 2 * INGOT_QUARTERS);
+        // every crucible metal's ingot: its 2 units exactly (Copper, Tin, Bronze, Poor Bronze)
+        for (Metal m : METALS) if (m.molten().isIngot(stack)) return new Amount(m, ClayMoldBlock.Shape.INGOT.units * INGOT_QUARTERS);
         Casting.OreUnits u = Casting.oreUnits(stack);
-        if (u == null) return null;
-        return new Amount(u.metal(), u.units() * (stack.is(Bronze.BRONZE_INGOT.get()) ? INGOT_QUARTERS : ORE_QUARTERS));
+        return u == null ? null : new Amount(u.metal(), u.units() * ORE_QUARTERS);
     }
 
     /** Quarters in use (a part-quarter left in the pool counts whole). */
@@ -89,8 +91,8 @@ public final class FurnaceMelt {
         CrucibleContents all = all();
         if (!all.canAdd(a.metal())) return 0;
         int room = CAPACITY - total();
-        if (a.metal() == Metal.TIN) room = Math.min(room, TIN_MAX - all.units(Metal.TIN));
-        else if (a.metal() == Metal.COPPER && all.units(Metal.TIN) == 0) room = Math.min(room, COPPER_ALONE - all.units(Metal.COPPER));
+        if (a.metal() == ADDITION) room = Math.min(room, TIN_MAX - all.units(ADDITION));
+        else if (a.metal() == BASE && all.units(ADDITION) == 0) room = Math.min(room, COPPER_ALONE - all.units(BASE));
         return Math.max(0, Math.min(count, room / a.quarters()));
     }
 
@@ -102,7 +104,7 @@ public final class FurnaceMelt {
     public int meltTemp() {
         if (chargeTotal() == 0) return 0;
         Metal m = all().alloy();
-        return m == null ? Metal.TIN.melt : m.melt;
+        return m == null ? ADDITION.melt() : m.melt();
     }
 
     /** Melts one quarter: of the metal most under-represented in the pool, so the pool keeps the charge's mix. */
@@ -126,9 +128,9 @@ public final class FurnaceMelt {
 
     /** What the pool pours as, or null (empty, or tin alone). */
     public Metal alloy() {
-        if (pool[Metal.BRONZE.ordinal()] > 0) return Metal.BRONZE;
-        if (pool[Metal.POOR_BRONZE.ordinal()] > 0) return Metal.POOR_BRONZE;
-        int cu = pool[Metal.COPPER.ordinal()], sn = pool[Metal.TIN.ordinal()];
+        if (pool[GOOD.ordinal()] > 0) return GOOD;
+        if (pool[POOR.ordinal()] > 0) return POOR;
+        int cu = pool[BASE.ordinal()], sn = pool[ADDITION.ordinal()];
         return cu == 0 ? null : CrucibleContents.alloy(cu, sn);
     }
 
@@ -139,16 +141,16 @@ public final class FurnaceMelt {
 
     /** Copper is tapped while there is tin in it: the tin is lost as slag (as in the crucible). */
     public boolean slags() {
-        return alloy() == Metal.COPPER && pool[Metal.TIN.ordinal()] > 0;
+        return alloy() == BASE && pool[ADDITION.ordinal()] > 0;
     }
 
     /** Whole quarters the pool can pour as {@link #alloy()}. */
     public int pourable() {
         Metal m = alloy();
         if (m == null) return 0;
-        if (m == Metal.COPPER) return pool(Metal.COPPER);
+        if (m == BASE) return pool(BASE);
         if (pool[m.ordinal()] > 0) return pool(m);
-        return (pool[Metal.COPPER.ordinal()] + pool[Metal.TIN.ordinal()]) / SCALE;
+        return (pool[BASE.ordinal()] + pool[ADDITION.ordinal()]) / SCALE;
     }
 
     /** Takes {@code q} quarters of the alloy out of the pool (copper and tin in their exact share); false if there isn't that much. */
@@ -156,21 +158,21 @@ public final class FurnaceMelt {
         Metal m = alloy();
         if (m == null || pourable() < q) return false;
         int take = q * SCALE;
-        if (m == Metal.COPPER) {
-            pool[Metal.COPPER.ordinal()] -= take;
-            pool[Metal.TIN.ordinal()] = 0; // slag
+        if (m == BASE) {
+            pool[BASE.ordinal()] -= take;
+            pool[ADDITION.ordinal()] = 0; // slag
         } else if (pool[m.ordinal()] > 0) {
             pool[m.ordinal()] -= take;
         } else {
-            int cu = pool[Metal.COPPER.ordinal()], sn = pool[Metal.TIN.ordinal()];
+            int cu = pool[BASE.ordinal()], sn = pool[ADDITION.ordinal()];
             int tin = (int) Math.min(sn, Math.round(take * (double) sn / (cu + sn)));
             int copper = take - tin;
             if (copper > cu) {
                 tin += copper - cu;
                 copper = cu;
             }
-            pool[Metal.COPPER.ordinal()] -= copper;
-            pool[Metal.TIN.ordinal()] -= tin;
+            pool[BASE.ordinal()] -= copper;
+            pool[ADDITION.ordinal()] -= tin;
         }
         return true;
     }
@@ -182,12 +184,13 @@ public final class FurnaceMelt {
         return out;
     }
 
+    /** Charge then pool, by Metal order; a save from before a metal was added (shorter halves) loads what it has. */
     void load(int[] in) {
         Arrays.fill(charge, 0);
         Arrays.fill(pool, 0);
-        if (in.length != METALS.length * 2) return;
-        System.arraycopy(in, 0, charge, 0, METALS.length);
-        System.arraycopy(in, METALS.length, pool, 0, METALS.length);
+        int n = in.length / 2, k = Math.min(n, METALS.length);
+        System.arraycopy(in, 0, charge, 0, k);
+        System.arraycopy(in, n, pool, 0, k);
     }
 
     /** Thrown on load if the furnace's yield or alloy rules drift from what the docs promise. */
@@ -195,7 +198,7 @@ public final class FurnaceMelt {
         FurnaceMelt f = new FurnaceMelt();
         f.add(new Amount(Metal.COPPER, ORE_QUARTERS), 36);
         f.add(new Amount(Metal.TIN, ORE_QUARTERS), 4);
-        check(f.total() == 200 && f.fits(new Amount(Metal.COPPER, ORE_QUARTERS), 1) == 0, "capacity is counted in quarters");
+        check(TIN_MAX == 18 && f.total() == 200 && f.fits(new Amount(Metal.COPPER, ORE_QUARTERS), 1) == 0, "capacity is counted in quarters");
         f = new FurnaceMelt();
         f.add(new Amount(Metal.COPPER, ORE_QUARTERS), 27);
         f.add(new Amount(Metal.TIN, ORE_QUARTERS), 3); // 9:1 crushed ore, 30 units of ore

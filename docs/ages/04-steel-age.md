@@ -240,7 +240,8 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
   Alla platser smälter samtidigt: **40 tick per 100 mB** vid smältpunkten, snabbare när det är hetare (som kilnen). För kallt
   eller full pöl: platsen väntar (röd stapel i skärmen, "Needs 1085°").
 - **Utbyte:** Crushed Copper/Tin Ore 200 mB, Copper/Tin Concentrate, Native Copper och Raw Copper 400, Raw Gold 300, Raw
-  Galena 300 bly, tackor 200, nuggets 22 (9 nuggets blir 198 mB, aldrig en tacka), Copper Block och Gold Block 1800.
+  Galena 300 bly, tackor 200, nuggets 22 (9 nuggets blir 198 mB, aldrig en tacka; Copper Nugget och Iron Nugget smälter
+  också, Iron Nugget som Pig Iron), Copper Block och Gold Block 1800. Alla tal står i metalltabellen (`docs/metals.md`).
 - **Pölen:** 400 mB per inre block. Varje smälta är ett lager, efter densitet (guld underst, slagg överst). Koppar och tenn
   blandar sig själva **exakt 9:1** till brons vid 950° (20 mB per tick); det som blir över ligger kvar som eget lager. Ingen
   ny Poor Bronze; omsmälta Poor Bronze-tackor blir ett eget lager.
@@ -298,10 +299,10 @@ blåst), **White Heat** (1450°). Test: `high_furnace_shape`, `high_furnace_heat
   färdig gjutning + 3 Burnt Casting Sand. Verktygshuvuden ⅔ av lerformens metall (hackhuvud 400 mB). Av tackjärn: Iron
   Ingot Mold (1000), Iron Plate Mold (1000), Iron Nugget Mold (600), Cast Iron Gear (200), Cast Iron Pot (800).
 - **Pattern Bench** (`PCP` / `L L`): plankor → trämönster (slits 128 tryck).
-- **Iron Plate Mold** (400 mB → Bronze/Iron/Steel Plate) och **Iron Nugget Mold** (400 mB → 18 nuggets), spricker aldrig.
+- **Iron Plate Mold** (400 mB → Bronze/Iron/Steel Plate; Poor Bronze ger Bronze Plate märkt Poor) och **Iron Nugget Mold** (400 mB → 18 nuggets), spricker aldrig.
   **Iron Ingot Mold** gjuts nu i flaska (plåtreceptet borttaget).
 - **Foundry Table**: det som står på bordet stelnar på halva tiden (förenkling: formen står på bordet, bordet håller den inte).
-- **Foundry Basin**: block av 1800 mB metall (Copper/Gold/Lead/Bronze/Steel Block) eller 250 mB slagg/basalt/glas/obsidian;
+- **Foundry Basin**: block av 1800 mB metall (Copper/Gold/Lead/Tin/Bronze/Steel Block; Poor Bronze gjuter inget block) eller 250 mB slagg/basalt/glas/obsidian;
   fyllnaden stiger, stelnar på 10 s per 1000 mB.
 - Test `foundry_casting`. Inte gjort: Anvil i flaska (väntar på användaren), Steel Block kräver inte 1650°.
 

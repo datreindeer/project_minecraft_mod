@@ -9,6 +9,8 @@ Run: python scripts/gen_high_furnace.py"""
 import json
 from pathlib import Path
 
+from gen_metals import CLAY_METALS  # the Clay Mold "metal" states
+
 ROOT = Path(__file__).resolve().parent.parent / "src/main/resources"
 A, D = ROOT / "assets/mechanical", ROOT / "data"
 M, B = "mechanical:", "mechanical:block/"
@@ -367,7 +369,7 @@ for fill in ("molten", "solid"):
         "textures": {**base, "metal": B + f"clay_{s}_mold_bronze_{fill}"}, "elements": [slab, metal]})
 w(A / f"blockstates/clay_{s}_mold.json", {"variants": {
     f"fill={fill},metal={m},uses={u}": {"model": B + f"clay_{s}_mold" + ("" if fill == "empty" else f"_{fill}_bronze")}
-    for fill in ("empty", "molten", "solid") for m in ("copper", "bronze", "poor_bronze") for u in range(5)}})
+    for fill in ("empty", "molten", "solid") for m in CLAY_METALS for u in range(5)}})
 item_def(f"clay_{s}_mold", B + f"clay_{s}_mold")
 w(D / f"mechanical/loot_table/blocks/clay_{s}_mold.json", {"type": "minecraft:block", "pools": [{"rolls": 1,
     "condition": {"type": "minecraft:survives_explosion"},
@@ -893,10 +895,6 @@ merge(A / "lang/en_us.json", {
     "gui.mechanical.high_furnace.layer": "%s mB (%s ingots), melts at %s°",
     "gui.mechanical.high_furnace.layer_click": "Click: the tapholes pour this layer (again: the bottom layer)",
     "gui.mechanical.high_furnace.slot": "Melts into %s mB %s", "gui.mechanical.high_furnace.needs": "Needs %s°",
-    **{f"molten.mechanical.{k}": v for k, v in {"gold": "Molten Gold", "lead": "Molten Lead", "silver": "Molten Silver",
-       "copper": "Molten Copper", "bronze": "Molten Bronze", "poor_bronze": "Molten Poor Bronze", "pig_iron": "Molten Pig Iron",
-       "steel": "Molten Steel", "wrought_iron": "Molten Wrought Iron", "tin": "Molten Tin", "glass": "Molten Glass",
-       "basalt": "Molten Basalt", "obsidian": "Molten Obsidian", "slag": "Molten Slag"}.items()},
     "gui.mechanical.high_furnace.mark.950": "%s°: bronze", "gui.mechanical.high_furnace.mark.1450": "%s°: iron ore",
     "gui.mechanical.high_furnace.mark.1500": "%s°: steel", "gui.mechanical.high_furnace.mark.1600": "%s°: charcoal's ceiling",
 })

@@ -89,24 +89,17 @@ public class MoldingFlaskBlock extends Block implements EntityBlock {
         /** The casting: a finished head of bronze or copper (the rough cast's finished item), or the cast-iron pieces. */
         public @Nullable ItemStack result(Molten m) {
             if (clay != null) {
-                if (m.metal == null || !m.metal.casts(clay)) return null;
-                ItemStack rough = m.metal.cast(clay);
+                if (m.metal() == null || !m.metal().casts(clay)) return null;
+                ItemStack rough = m.metal().cast(clay);
                 Identifier id = BuiltInRegistries.ITEM.getKey(rough.getItem());
                 String done = id.getPath().replace("rough_cast_", "");
                 Item item = BuiltInRegistries.ITEM.getOptional(Identifier.fromNamespaceAndPath(id.getNamespace(), done)).orElse(rough.getItem());
                 ItemStack out = new ItemStack(item, rough.getCount());
-                if (m == Molten.POOR_BRONZE) Bronze.markPoor(out);
+                if (m.poor) Bronze.markPoor(out);
                 return out;
             }
-            if (m != Molten.PIG_IRON) return null;
-            return switch (this) {
-                case INGOT_MOLD -> new ItemStack(HighFurnace.IRON_INGOT_MOLD_ITEM.get());
-                case PLATE_MOLD -> new ItemStack(HighFurnace.IRON_PLATE_MOLD_ITEM.get());
-                case NUGGET_MOLD -> new ItemStack(HighFurnace.IRON_NUGGET_MOLD_ITEM.get());
-                case GEAR -> new ItemStack(HighFurnace.CAST_IRON_GEAR.get());
-                case POT -> new ItemStack(HighFurnace.CAST_IRON_POT.get());
-                default -> null;
-            };
+            Item cast = m.flask(id); // the cast-iron pieces (the metal table's "flask")
+            return cast == null ? null : new ItemStack(cast);
         }
     }
 
