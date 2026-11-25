@@ -759,8 +759,41 @@ public class TravoisEntity extends Entity {
         return found;
     }
 
+    /** How far from a ridden horse the grab key still finds a vehicle the rider isn't aiming at. */
+    static final double SADDLE_REACH = 4.0;
+
+    /** What the grab key does here from {@code horse}'s saddle (a hint's action), or null: nothing (a travois takes no horse). */
+    public String saddleAction(net.minecraft.world.entity.animal.equine.AbstractHorse horse) {
+        return null;
+    }
+
+    /** {@code horse} could be put to this. */
+    protected boolean freeForHorse(net.minecraft.world.entity.animal.equine.AbstractHorse horse) {
+        return !locked() && horse.isTamed() && !horse.isBaby() && pulling(horse) == null;
+    }
+
+    /** From the saddle: the one looked at, else the one the horse draws, else the nearest it can be put to. */
+    private static TravoisEntity saddleTarget(Player player, net.minecraft.world.entity.animal.equine.AbstractHorse horse) {
+        TravoisEntity looked = lookedAt(player);
+        if (looked != null && looked.saddleAction(horse) != null) return looked;
+        TravoisEntity drawn = pulling(horse);
+        if (drawn != null) return drawn.saddleAction(horse) != null ? drawn : null;
+        TravoisEntity best = null;
+        double bestDist = SADDLE_REACH * SADDLE_REACH;
+        for (TravoisEntity t : horse.level().getEntitiesOfClass(TravoisEntity.class, horse.getBoundingBox().inflate(SADDLE_REACH + 1),
+                t -> t.isAlive() && t.saddleAction(horse) != null)) {
+            double d = t.getBoundingBox().distanceToSqr(horse.position());
+            if (d <= bestDist) {
+                best = t;
+                bestDist = d;
+            }
+        }
+        return best;
+    }
+
     /** What the grab key is for: the one {@code player} looks at, else the one they are harnessed to (it lets go). */
     public static TravoisEntity grabTarget(Player player) {
+        if (player.getVehicle() instanceof net.minecraft.world.entity.animal.equine.AbstractHorse horse) return saddleTarget(player, horse);
         TravoisEntity looked = lookedAt(player);
         if (looked != null) return looked;
         for (TravoisEntity t : player.level().getEntitiesOfClass(TravoisEntity.class, player.getBoundingBox().inflate(10), t -> t.harnessId() == player.getId()))
@@ -770,7 +803,8 @@ public class TravoisEntity extends Entity {
 
     /** Server: the grab key. */
     public static void grabKey(Player player) {
-        if (player.isSpectator() || !player.isAlive() || player.isPassenger()) return;
+        if (player.isSpectator() || !player.isAlive()
+                || player.isPassenger() && !(player.getVehicle() instanceof net.minecraft.world.entity.animal.equine.AbstractHorse)) return;
         TravoisEntity target = grabTarget(player);
         if (target != null) target.grab(player);
     }

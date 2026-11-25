@@ -137,6 +137,12 @@ public class PloughEntity extends TravoisEntity {
     }
 
     @Override
+    public String saddleAction(AbstractHorse horse) {
+        if (harness() == horse) return "share";
+        return harnessId() < 0 && freeForHorse(horse) ? "attach" : null;
+    }
+
+    @Override
     public java.util.List<Hint> hints(Player player) {
         java.util.List<Hint> out = new java.util.ArrayList<>();
         out.add(new Hint("harness", harness() != null ? "share" : "hitch_horse"));

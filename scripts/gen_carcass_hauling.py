@@ -6,6 +6,7 @@
 - Travois: shaped recipe, 4 Tool Rods + 2 Cordage + a Scraped Hide; unlocked by a Scraped Hide
 - Hanging Rack: block model (two posts two blocks high, crossbeam, lashings, a gambrel on a cord; HangingRackBlock.HOOK
   is the gambrel's height), blockstate (facing), loot, axe tag, recipe 5 Tool Rods + 1 Cordage; unlocked by a Raw Hide
+- entity tag mechanical:drag_only (pig, wild boar: dragged, never carried or hung on a horse)
 - lang for the entity, block and the hauling messages
 Textures: scripts/gen_carcass_hauling_textures.py.
 Generator order: ... gen_trees.py, gen_biomes.py, gen_carcass_hauling.py, gen_block_items.py, gen_unlocks.py, gen_registry.py.
@@ -154,6 +155,9 @@ w(D / "mechanical/recipe/hanging_rack.json", {"type": "minecraft:crafting_shaped
     "pattern": ["RCR", "R R", "R R"], "key": {"R": "mechanical:tool_rod", "C": "mechanical:cordage"},
     "result": {"id": "mechanical:hanging_rack"}})
 unlock("hanging_rack", "mechanical:raw_hide", ["hanging_rack"])
+
+# too heavy to carry though their hitbox is low (CarcassEntity#isDragged; heavier ones go by their bulk)
+tag_add(D / "mechanical/tags/entity_type/drag_only.json", "minecraft:pig", "mechanical:wild_boar", "mechanical:gloson")
 
 merge(A / "lang/en_us.json", {f"item.mechanical.{k}": v for k, v in ITEMS.items()} | {
     "block.mechanical.hanging_rack": "Hanging Rack",

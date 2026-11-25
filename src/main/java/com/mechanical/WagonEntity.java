@@ -52,7 +52,7 @@ import net.minecraft.world.phys.Vec3;
  * Right-click the wagon with a Chest to put it in the first free cell from the front, with a Hay Bale or wooden slab in the
  * last free cell from the back; punch a module to take it out (a chest spills, a half-eaten bale gives back its wheat);
  * punch the wagon where there is none to pick it up. Two chests in a row (cells 2r and 2r+1) are one double chest, drawn
- * and opened as vanilla's: right-click a chest to open it (a pair opens the 54 slots, left cell first); sneak + right-click
+ * and opened as vanilla's: right-click a chest, with anything in hand, to open the one aimed at (a pair opens the 54 slots, left cell first); sneak + right-click
  * unloads the last body (or the log). Right-click it while dragging a
  * felled log ({@link FelledLogEntity}, up to {@link FelledLogEntity#WAGON_MAX} blocks) to load it on an empty bed. Press the grab key (default H, {@link #grab}) while riding
  * or leading tamed horses to hitch them (again to unhitch): the first takes the lead place, the second is yoked beside it. The team is fixed
@@ -166,6 +166,31 @@ public class WagonEntity extends TravoisEntity {
         return row * COLS + (side < 0 ? 0 : 1);
     }
 
+    /** How high each module (by id; empty: the bare floor) stands above the bed floor, and half its length (WagonRenderer). */
+    private static final double[] MODULE_TOP = {0.05, 0.66, 0.68, SEAT_TOP};
+    private static final double MODULE_HALF = 0.375;
+
+    /** The cell whose own box (its module, or the bare floor) {@code player}'s view ray enters first, or -1. */
+    private int aimedCell(Player player) {
+        // in the wagon's own frame: x to its right, y up, z ahead
+        Vec3 eye = player.getEyePosition().subtract(position()), view = player.getViewVector(1.0F);
+        Vec3 dir = Vec3.directionFromRotation(0, getYRot()), right = Vec3.directionFromRotation(0, getYRot() + 90);
+        Vec3 from = new Vec3(eye.dot(right), eye.y, eye.dot(dir)), to = from.add(new Vec3(view.dot(right), view.y, view.dot(dir)).scale(8));
+        int best = -1;
+        double bestDist = Double.MAX_VALUE;
+        // shortcut: the boxes are level, as on the server; the bed's tilt on a slope (client only) is ignored
+        for (int i = 0; i < SLOTS; i++) {
+            double half = module(i) == EMPTY ? ROW_DEPTH / 2 : MODULE_HALF;
+            var hit = new AABB(slotSide(i) - CELL_WIDTH / 2, BED - 0.1, slotAlong(i) - half,
+                    slotSide(i) + CELL_WIDTH / 2, BED + MODULE_TOP[module(i)], slotAlong(i) + half).clip(from, to);
+            if (hit.isPresent() && hit.get().distanceToSqr(from) < bestDist) {
+                best = i;
+                bestDist = hit.get().distanceToSqr(from);
+            }
+        }
+        return best;
+    }
+
     /** The module {@code stack} puts in, or EMPTY. */
     private static int moduleFor(ItemStack stack) {
         if (stack.is(Items.CHEST)) return CHEST;
@@ -271,6 +296,9 @@ public class WagonEntity extends TravoisEntity {
 
     /** The cell {@code player} is looking at on the wagon, or -1. */
     public int slotLookedAt(Player player) {
+        int aimed = aimedCell(player);
+        if (aimed >= 0) return aimed;
+        // looking at its sides or wheels: the cell above where the ray meets it
         Vec3 eye = player.getEyePosition(), end = eye.add(player.getViewVector(1.0F).scale(8));
         AABB box = getBoundingBox().inflate(getPickRadius());
         return box.clip(eye, end).map(hit -> slotAt(hit.subtract(position()))).orElse(-1);
@@ -640,12 +668,12 @@ public class WagonEntity extends TravoisEntity {
         }
         // a held right-click repeats: right after a log went on or off, the next clicks don't hitch or open anything
         if (justClickedLog(player)) return InteractionResult.SUCCESS;
-        int slot = slotAt(location), module = moduleFor(held);
+        int aimed = aimedCell(player), slot = aimed >= 0 ? aimed : slotAt(location), module = moduleFor(held);
         if (module != EMPTY && CarcassHauling.heavy(player) == null) {
             if (!level().isClientSide()) placeModule(player, module, held);
             return InteractionResult.SUCCESS;
         }
-        if (held.isEmpty() && !player.isShiftKeyDown() && module(slot) == CHEST) {
+        if (!player.isShiftKeyDown() && module(slot) == CHEST && CarcassHauling.heavy(player) == null) { // whatever is in the hand
             if (player instanceof ServerPlayer sp) openChest(sp, slot);
             return InteractionResult.SUCCESS;
         }
@@ -670,6 +698,11 @@ public class WagonEntity extends TravoisEntity {
     @Override
     protected boolean locked() {
         return caravan;
+    }
+
+    @Override
+    public String saddleAction(AbstractHorse horse) {
+        return partner() == null && !inTeam(horse) && freeForHorse(horse) ? "attach" : null;
     }
 
     @Override

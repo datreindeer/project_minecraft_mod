@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -25,7 +26,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 /**
  * The grab key (default H): grab or release the travois, cart, plough or wagon you look at ({@link HarnessPayload}), and a
  * small hint box beside the crosshair that lists what the keys do on it right now ({@link TravoisEntity#hints}), each with
- * the key as it is bound. Hidden with a screen open, F1, or while you ride along.
+ * the key as it is bound. Hidden with a screen open, F1, or while you ride along; from a horse's saddle it offers to attach.
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class HarnessClient {
@@ -62,10 +63,16 @@ public final class HarnessClient {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player == null || mc.level == null || mc.gui.screen() != null || mc.gui.hud.isHidden()
-                || player.isPassenger() || player.isSpectator()) return;
+                || player.isPassenger() && !(player.getVehicle() instanceof AbstractHorse) || player.isSpectator()) return;
         TravoisEntity target = TravoisEntity.grabTarget(player);
         if (target == null) return;
-        List<TravoisEntity.Hint> hints = target.hints(player);
+        List<TravoisEntity.Hint> hints;
+        if (player.getVehicle() instanceof AbstractHorse horse) {
+            // from the saddle only the grab key works; driving along, its own vehicle's hint shows only when looked at
+            String action = target.saddleAction(horse);
+            if (!action.equals("attach") && target != TravoisEntity.lookedAt(player)) return;
+            hints = List.of(new TravoisEntity.Hint("harness", action));
+        } else hints = target.hints(player);
         List<Component> keys = new ArrayList<>();
         int keyW = 0, textW = 0;
         for (TravoisEntity.Hint h : hints) {

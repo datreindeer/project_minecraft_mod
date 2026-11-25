@@ -287,7 +287,7 @@ public final class ElkwightTest {
             start.add(at);
         }
         h.assertTrue(loads.get(0).haulerCount() == 1 && loads.get(2).haulerCount() == 3 && loads.get(4).haulerCount() == 2, "everyone took hold");
-        h.runAfterDelay(3, () -> {
+        h.runAfterDelay(8, () -> { // a dragged body's speed is capped: give it time to close the 3 blocks
             double[] moved = new double[loads.size()];
             for (int i = 0; i < moved.length; i++) moved[i] = loads.get(i).position().subtract(start.get(i)).horizontalDistance();
             String all = java.util.Arrays.toString(moved);

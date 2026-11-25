@@ -458,7 +458,10 @@ Plan: [wagon-plan.md](../wagon-plan.md).
 - **Spänn för:** rid en tam häst eller led den i koppel (inom 10 block) till vagnen, titta på vagnen och tryck på greppnyckeln (**H**, kan ändras):
   den låses i spannets **första plats**. Gör likadant med en andra häst: den hamnar bredvid. Rider och leder du båda på en
   gång går båda in med ett tryck. Den häst du rider tar alltid första platsen, så att du styr spannet. Kopplet tas av:
-  hästarna sitter **fast** i dragstången och inget kan slitas loss.
+  hästarna sitter **fast** i dragstången och inget kan slitas loss. **Från sadeln:** rid fram (högst 4 block, eller titta
+  på vagnen), rutan visar **H Attach horse**, och greppnyckeln spänner för hästen du rider.
+- **Svänger lugnt:** en förspänd häst vänder högst 40° i sekunden stillastående och 70° i gång, och går riden högst
+  ungefär 7 block i sekunden, så att vagnen inte slungas runt när ryttaren vänder.
 - **Spänna från:** **smyg + högerklicka en spänd häst**. Tar du från den första hästen flyttar den andra upp till första
   platsen. Greppnyckeln på ett fullt spann spänner inte från. Den andra hästen går i på den sida den stod på när
   den spändes för, och byter inte sida om ryttaren byter häst.
@@ -487,7 +490,7 @@ Bädden är ett rutnät om **6 celler**, 2 breda x 3 djupa (cell = rad*2 + sida,
 | Cell | Vad den gör |
 |---|---|
 | tom | **2 rum** kroppar (stort djur 3 rum = 1,5 cell, medel 2, litet 1). Helt tomt flak = **12 rum**: 4 stora, 6 mellanstora eller 12 lätta (kärran 6). Jättar går aldrig. |
-| **Chest** | **27 platser** per kista. Två kistor i samma rad ritas och öppnas som en **dubbelkista** (som i vanilla, 54 platser, vänstra kistan först); en ensam kista öppnar sina 27. Smyg + högerklicka en kista öppnar just den. Sex kistor = 162 platser. |
+| **Chest** | **27 platser** per kista. Två kistor i samma rad ritas och öppnas som en **dubbelkista** (som i vanilla, 54 platser, vänstra kistan först); en ensam kista öppnar sina 27. **Högerklick med vad som helst i handen** öppnar just den kista du tittar på (att sätta i en modul eller lasta en kropp du släpar går före; smyg öppnar inte). Sex kistor = 162 platser. |
 | **Hay Bale** | **9 tuggor**. En skadad häst i spannet äter en tugga var 5:e sekund och läker 2 hälsa. Uppäten försvinner balen. |
 | **säte** | valfri trä-slab (taggen `#minecraft:wooden_slabs`). Högerklicka sätet med tom hand för att sitta (när du inte rider). Du kliver av vid sidan av flaket, bredvid sätet. Kommer tillbaka som en Oak Slab. |
 

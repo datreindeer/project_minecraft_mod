@@ -17,6 +17,7 @@
     "AdvancementsScreenMixin",
     "HumanoidModelMixin",
     "LivingEntityRendererMixin",
+    "LivingEntityRendererInvoker",
     "ModelFeatureRendererMixin",
     "QuadrupedModelMixin",
     "SheepModelMixin",
@@ -31,6 +32,7 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "AbstractHorseMixin",
     "MultiNoiseBiomeSourceMixin",
     "LivingEntityWaypointMixin",
     "EntityGetterMixin",

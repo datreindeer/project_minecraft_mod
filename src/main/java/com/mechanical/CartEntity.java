@@ -199,6 +199,10 @@ public class CartEntity extends TravoisEntity {
             return InteractionResult.CONSUME;
         }
         ItemStack held = player.getItemInHand(hand);
+        // a mounted chest opens with anything in hand (an empty one goes the usual way, plainUse)
+        if (hand == InteractionHand.MAIN_HAND && hasChest() && !held.isEmpty() && !player.isShiftKeyDown() && !justClickedLog(player)
+                && CarcassHauling.heavy(player) == null && FelledLogEntity.handled(player) == null)
+            return openGoods(player);
         if (hand != InteractionHand.MAIN_HAND || !held.is(Items.CHEST) || hasChest() || CarcassHauling.heavy(player) != null)
             return super.interact(player, hand, location);
         if (!level().isClientSide()) {
@@ -301,6 +305,12 @@ public class CartEntity extends TravoisEntity {
     }
 
     @Override
+    public String saddleAction(AbstractHorse horse) {
+        if (puller() == horse) return locked() ? null : "unhitch";
+        return harnessId() < 0 && freeForHorse(horse) ? "attach" : null;
+    }
+
+    @Override
     public java.util.List<Hint> hints(Player player) {
         java.util.List<Hint> out = new java.util.ArrayList<>();
         Entity puller = puller();
@@ -351,7 +361,7 @@ public class CartEntity extends TravoisEntity {
             playSound(SoundEvents.LEAD_UNTIED, 1.0F, 0.8F);
             return;
         }
-        WagonEntity wagon = wagonAhead();
+        WagonEntity wagon = player.getVehicle() instanceof AbstractHorse ? null : wagonAhead(); // from the saddle: the horse
         if (wagon != null) {
             if (pullsOther(wagon)) {
                 player.sendOverlayMessage(Component.translatable("message.mechanical.cart.wagon_has_trailer"));

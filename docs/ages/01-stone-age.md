@@ -916,18 +916,22 @@ vanilla-loot direkt (Phantom Membrane kommer i omgång 2). Phantoms som brinner 
 En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer av djuret bär man hem det.
 
 - **Bära på axlarna:** smyg + högerklicka på kroppen med **tom hand**. Små djur (hare, kanin, fåglar, ekorre, igelkott;
-  hitbox-bredd under 0,6) och mellanstora (rådjur, kronhjort, ren, får, gris, vildsvin, mufflon, varg, grävling, ko …)
-  läggs över axlarna och syns där (i tredje person; i första person döljs den). Mellanstora gör dig **25 % långsammare**
-  och du **kan inte springa**; små väger ingenting.
-- **Släpa:** stora djur (bredd 1,1 eller mer: uroxe, häst, björn, älg, grottlejon, jättehjort) kan inte bäras. Samma grepp
-  tar tag i ett ben och du **släpar** kroppen. Kameran är fri: kroppen följer efter dig vart du än går
+  hitbox-bredd under 0,6, och alla ätliga fåglar) och mellanstora **upp till ett fårs storlek** (Sheep, Goat, Mouflon,
+  Roe Deer, varg, grävling …) läggs över axlarna och syns där (i tredje person; i första person döljs den). Mellanstora gör
+  dig **25 % långsammare** och du **kan inte springa**; små väger ingenting.
+- **Släpa:** **Pig, Wild Boar, Cow, Red Deer och allt tyngre** (ren, uroxe, häst, björn, älg, jättehjort) kan inte bäras
+  och inte hängas på en häst. Regeln: bredd 1,1 eller mer, skrymmande mer än ett får (bredd² × höjd över 1,06), eller
+  entitetstaggen `mechanical:drag_only` (Pig, Wild Boar, Gloson, som är låga men tunga). Samma grepp tar tag i ett ben och du **släpar** kroppen. Kameran är fri: kroppen följer efter dig vart du än går
   och tittar.
   Kroppen vrider huvudänden mot den eller de som drar och glider jämnt efter, upp och ner för steg (servern skickar läget
-  varje tick och klienten jämnar ut det över 4 tick). **50 % långsammare**, ingen sprint. Högerklicka på den igen för att släppa.
+  varje tick och klienten jämnar ut det över 4 tick). Den går högst 5 block i sekunden, den rycker aldrig ifrån.
+  **50 % långsammare**, ingen sprint. Högerklicka på den igen för att släppa.
 - **Släpa tillsammans:** upp till **4 spelare** kan ta tag i samma stora kropp (smyg + högerklick med tom hand), var och en
   i sitt ben (framben först, sedan bakben), och de greppade benen sträcks ut mot den som drar. Arbetet delas: långsamheten
-  och matkostnaden blir 50 % × behövda / antal som drar (två på en björn: 25 % långsammare, halva maten). Små och
-  mellanstora djur bärs av en.
+  och matkostnaden blir 50 % × behövda / antal som drar (två på en björn: 25 % långsammare, halva maten). Kroppar som
+  bärs på axlarna bärs av en. Är ni två eller fler hålls alla kvar vid kroppen som i ett rep (högst 2,5 block från sitt
+  grepp), och kroppen vrider sig lugnt (högst 60° i sekunden) mot mitten av er. Drar ni åt var sitt håll ligger den
+  stilla mellan er i stället för att snurra.
 - **Jättar kräver flera:** Giant Deer och Walrus (bredd 2 eller mer) behöver **3** som drar, **Woolly Mammoth 4**. Är ni
   för få kan ni försöka: ni spänner er och darrar, kroppen kryper bara fram (10 % × antal/behövda), ni blir 70 %
   långsammare och kommer inte längre än 2,5 block från ert grepp, och det står hur många som behövs. Se
@@ -938,8 +942,9 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
   ett block eller en **träff på 4 skada eller mer** tappar kroppen. Högerklicka på ett block för att lägga ner den där. Dör
   eller loggar du ut, eller kommer mer än 12 block ifrån den, ligger den kvar.
 - **Armarna håller kroppen**, och alla spelare ser det: bär du på axlarna är båda armarna uppe och håller kroppen. Släpar
-  du har du båda händerna nere på benet framför dig och rycker bakåt i varje steg; är kroppen för tung spänner du armarna
-  och darrar.
+  du håller du med båda händerna i ett **rep surrat runt benet** (varje dragare sitt rep och sitt ben): vänd mot kroppen
+  har du händerna framför dig, går du ifrån den ligger de bakom höften. Du rycker i varje steg; är kroppen för tung spänner
+  du armarna och darrar. I första person kommer repet in underifrån.
 - **Blodspår:** en färsk kropp blöder på vägen, glest men lätt att följa. En släpad kropp lämnar en blodfläck på marken
   ungefär **var 2:a block**, en buren droppar då och då och lämnar en fläck ungefär **var 6:e block**. Står du still blir
   det inga fläckar. Har kroppen åldrats på en Hanging Rack, börjat bli dålig eller förskämts blöder den inte längre.
@@ -980,7 +985,7 @@ En Carcass som ligger på marken försvinner efter 5 minuter. Vill man ha ut mer
 - Fart: −10 % tom, −7 % till per plats last, alltså −31 % med en uroxe mot −50 % om du släpar den. Lastad
   går det inte att springa. Slå på släden för att plocka upp den (lasten hamnar på marken).
 - **Kostar mat:** att bära och dra tar på krafterna, räknat per block du går (utmattning; 4 = en halv klubba, sprint
-  kostar 0,1 per block): en mellanstor kropp på axlarna **0,03**, en stor släpad för hand **0,08**, travoisen **0,02 tom
+  kostar 0,1 per block): en mellanstor kropp på axlarna **0,03**, en släpad för hand **0,08**, travoisen **0,02 tom
   upp till 0,10 full**. Lätta kroppar kostar inget. (`CarcassHauling.exhaust`)
 - I bronsåldern kommer **Wheeled Cart** (se 02-bronze-age.md, *Vagn och häst*): dubbelt så mycket last, ett förråd, en kista kan monteras på den, och en tam häst kan dra den.
 

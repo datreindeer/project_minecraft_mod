@@ -1,5 +1,5 @@
 """Texture for a Trader Caravan's prepared carcass (client/CarcassRenderer.Lashing, CarcassEntity#isPrepared): 64x64,
-the same UV boxes as the model. The wrap (a 16 px cube) is a salted hide, pale and speckled with salt, tied with two dark
+the same UV boxes as the model (and the drag rope's). The wrap (a 16 px cube) is a salted hide, pale and speckled with salt, tied with two dark
 cords round it and one along the top where it hangs from the pole; the pole (2x2x16) is barked wood with cut ends.
 Run: python scripts/gen_carcass_lashing_textures.py"""
 import random
@@ -14,7 +14,8 @@ CORD = (92, 70, 44)
 BARK = (104, 80, 54)
 WOOD = (178, 146, 98)
 # (u, v, w, h, d) as in CarcassRenderer.Lashing: wrap 16x16x16, pole 2x2x16
-WRAP, POLE = (0, 0, 16, 16, 16), (0, 32, 2, 2, 16)
+WRAP, POLE, ROPE = (0, 0, 16, 16, 16), (0, 32, 2, 2, 16), (36, 32, 2, 2, 8)
+ROPE_HEMP = (168, 138, 92)  # the drag rope
 BANDS = (3, 4, 11, 12)  # cords round the wrap, px along the body (model z)
 
 
@@ -57,6 +58,11 @@ def main():
                 if not end and r.random() < 0.15:
                     f *= 0.75  # bark furrows
                 img.putpixel((x0 + x, y0 + y), clamp(c, f))
+    for face, (x0, y0, fw, fh) in faces(*ROPE).items():
+        for y in range(fh):
+            for x in range(fw):
+                along = y if face in ("top", "bottom") else x if face in ("east", "west") else 0
+                img.putpixel((x0 + x, y0 + y), clamp(ROPE_HEMP, (1.15 if (along + x + y) % 2 == 0 else 0.82) * (1 + r.uniform(-0.06, 0.06))))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     img.save(OUT)
     print("carcass lashing texture written")
