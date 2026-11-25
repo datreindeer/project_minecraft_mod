@@ -26,7 +26,7 @@ Kod: `Smithing`. Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
   bryter som diamant (obsidian). Texturerna är vanillas järnverktyg med blått stål.
 - **Flint and Steel:** Flint + Steel Plate (vanillas recept ville ha Iron Ingot). Tänder varje gång.
 - **Steel Quarry Hammer** (Tool Station): Steel Hammer Head + Steel Plate + Iron Tool Rod. Bryter 3×3 som Bronze Quarry
-  Hammer, men varje malm en stålhacka bryter smulas (guld, diamant m.m.); 1800 i hållbarhet.
+  Hammer, men varje malm en stålhacka bryter smulas (guld, diamant m.m.); 2700 i hållbarhet.
 - **Stålrustning** (Armor Station): 3 / 6 / 5 / 2 Steel Plate + 2 / 4 / 3 / 2 Leather + hammare → Steel Helmet /
   Chestplate / Leggings / Boots. Skydd 3 / 7 / 6 / 2 och 1 i seghet (järn 2 / 6 / 5 / 2, diamant 3 / 8 / 6 / 3),
   hållbarhet ×25 (järn 15, diamant 33).

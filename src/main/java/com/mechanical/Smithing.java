@@ -154,7 +154,7 @@ public final class Smithing {
             p -> p.humanoidArmor(STEEL_ARMOR, net.minecraft.world.item.equipment.ArmorType.BOOTS));
 
     /** The Bronze Quarry Hammer's 3x3 face in steel: every ore a steel pickaxe mines crumbles, nothing stops it short of obsidian. */
-    public static final ToolMaterial QUARRY_STEEL = new ToolMaterial(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 1800, 4.5F, 2.5F, 12, STEEL_TOOL_MATERIALS);
+    public static final ToolMaterial QUARRY_STEEL = new ToolMaterial(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 2700, 4.5F, 2.5F, 12, STEEL_TOOL_MATERIALS);
     public static final DeferredItem<Item> STEEL_QUARRY_HAMMER = ITEMS.registerSimpleItem("steel_quarry_hammer",
             p -> p.tool(QUARRY_STEEL, BronzeTools.QUARRY_MINEABLE, 7.0F, -3.4F, 0.0F));
     /** Between the two: iron's reach (gold, redstone, diamond ores crumble), 900 uses. */
