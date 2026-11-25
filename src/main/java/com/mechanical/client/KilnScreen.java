@@ -75,8 +75,8 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
         float strain = menu.cracked() ? 1 : menu.strain();
         if (strain > 0) {
             int x = leftPos + STRAIN_X, y0 = topPos + TUBE_TOP - 1, y1 = topPos + TUBE_BOTTOM + 1;
-            graphics.fill(x - 1, y0, x + STRAIN_W + 1, y1, 0xFF373737);
-            graphics.fill(x, y0 + 1, x + STRAIN_W, y1 - 1, 0xFF1E1E1E);
+            graphics.fill(x - 1, y0, x + STRAIN_W + 1, y1, com.mechanical.client.ui.HideUi.EDGE_DARK);
+            graphics.fill(x, y0 + 1, x + STRAIN_W, y1 - 1, com.mechanical.client.ui.HideUi.DARK);
             int h = Math.round(strain * (y1 - y0 - 2));
             graphics.fill(x, y1 - 1 - h, x + STRAIN_W, y1 - 1, menu.cracked() ? 0xFF6E1010 : 0xFFE03020);
         }

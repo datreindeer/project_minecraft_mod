@@ -23,6 +23,7 @@
     "AbstractEquineModelMixin",
     "CreativeModeInventoryScreenMixin",
     "InventoryScreenMixin",
+    "GuiTextColorMixin",
     "ServerSelectionListMixin",
     "OnlineServerEntryMixin",
     "SectionCompilerTimingMixin"
@@ -54,6 +55,7 @@
     "EnchantmentHelperMixin",
     "InventoryMenuMixin",
     "SlotAccessor",
+    "MerchantMenuAccessor",
     "ItemEntityMixin",
     "ProjectileWeaponItemMixin",
     "ServerGamePacketListenerImplMixin",

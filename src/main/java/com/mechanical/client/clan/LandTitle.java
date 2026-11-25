@@ -2,6 +2,7 @@ package com.mechanical.client.clan;
 
 import com.mechanical.Mechanical;
 import com.mechanical.clan.Lands;
+import com.mechanical.client.ui.HideUi;
 import com.mechanical.people.Tribe;
 
 import net.minecraft.client.DeltaTracker;
@@ -18,7 +19,7 @@ import net.minecraft.util.Util;
  */
 public final class LandTitle {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(Mechanical.MODID, "land_title");
-    static final int PANEL = 0xE0302418, BORDER = 0xFF8A6A44, TITLE = 0xFFF0D8A8, TEXT = 0xFFE8E0D0, PAD = 8;
+    static final int TITLE = HideUi.NAME, TEXT = HideUi.TEXT, PAD = 8;
     static final long SHOW_MS = 5000, FADE_MS = 600;
     /** Standing colours from hostile to honoured (also the Relations tab's bar). */
     static final int[] STANDING = {0xFFE05A4A, 0xFFE0A050, 0xFFD8D0B8, 0xFFA8E07A, 0xFF7AD8E0};
@@ -79,9 +80,8 @@ public final class LandTitle {
         int w = Math.max(font.width(title) + 14, sub == null ? 0 : font.width(sub)) + 2 * PAD;
         int h = PAD + 10 + (sub == null ? 0 : 12) + PAD - 2;
         int x = (g.guiWidth() - w) / 2, y = g.guiHeight() / 4;
-        g.fill(x - 1, y - 1, x + w + 1, y + h + 1, alpha(BORDER, a));
-        g.fill(x, y, x + w, y + h, alpha(PANEL, a));
-        g.fill(x, y + h - 2, x + w, y + h, alpha(colour, a)); // a stripe of the tribe's colour along the bottom
+        HideUi.panel(g, x - 4, y - 2, w + 8, h + 8, a);
+        g.fill(x + 6, y + h - 1, x + w - 6, y + h + 1, alpha(colour, a)); // a stripe of the tribe's colour along the bottom
         TribeTabList.pennant(g, x + PAD, y + PAD - 2, alpha(colour, a));
         g.text(font, title, x + PAD + 14, y + PAD, alpha(TITLE, a));
         if (sub != null) {

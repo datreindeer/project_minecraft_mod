@@ -11,6 +11,7 @@ import com.mechanical.FurnaceTapBlockEntity;
 import com.mechanical.KilnBlockEntity;
 import com.mechanical.Mechanical;
 import com.mechanical.Metal;
+import com.mechanical.client.ui.HideUi;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -35,7 +36,7 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
     private static final Identifier FLAME = Identifier.withDefaultNamespace("container/furnace/lit_progress");
     /** Inside of the tank: x 40..51, rows 18..61 (= {@link FurnaceMelt#CAPACITY} quarters). */
     public static final int TANK_X = 40, TANK_W = 12, FLAME_X = 22, FLAME_Y = 70, FUEL_X = 38, TEXT_X = 62, ROW_H = 21;
-    private static final int DARK = 0xFF404040, GREEN = 0xFF2E7D32, RED = 0xFFB71C1C, GOLD = 0xFF8A6A00, GREY = 0xFF6A6A6A;
+    private static final int DARK = HideUi.LABEL, GREEN = HideUi.GOOD, RED = HideUi.BAD, GOLD = HideUi.GOLD, GREY = HideUi.DIM;
 
     // built when the screen opens (never in a static initializer: items must be registered first)
     private final ItemStack charcoal = new ItemStack(Items.CHARCOAL);
@@ -154,8 +155,7 @@ public class FurnaceScreen extends AbstractContainerScreen<FurnaceMenu> {
             y += 11;
         }
         if (melt.poolTotal() + melt.chargeTotal() == 0) {
-            graphics.text(font, Component.translatable("gui.mechanical.furnace.empty"), TEXT_X, y + 1, DARK, false);
-            y += 11;
+            y = graphics.textWithWordWrap(font, Component.translatable("gui.mechanical.furnace.empty"), TEXT_X, y + 1, imageWidth - TEXT_X - 8, DARK, false) + 1;
         }
         Component status;
         int colour;

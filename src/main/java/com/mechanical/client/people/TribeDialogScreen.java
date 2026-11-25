@@ -1,5 +1,6 @@
 package com.mechanical.client.people;
 
+import com.mechanical.client.ui.HideUi;
 import com.mechanical.people.TribeDialog;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -14,7 +15,6 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
  */
 public class TribeDialogScreen extends Screen {
     private static final int W = 280, PAD = 10, BUTTON_H = 20;
-    private static final int PANEL = 0xE0302418, BORDER = 0xFF8A6A44, NAME = 0xFFF0D8A8, TEXT = 0xFFE8E0D0;
     private final TribeDialog.Open open;
     private int top, textHeight;
 
@@ -58,15 +58,14 @@ public class TribeDialogScreen extends Screen {
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractBackground(graphics, mouseX, mouseY, a);
         int left = (width - W) / 2, height = PAD + 12 + textHeight + PAD + BUTTON_H + PAD;
-        graphics.fill(left - 1, top - 1, left + W + 1, top + height + 1, BORDER);
-        graphics.fill(left, top, left + W, top + height, PANEL);
+        HideUi.panel(graphics, left, top, W, height);
     }
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         int left = (width - W) / 2;
-        graphics.text(font, open.name(), left + PAD, top + PAD, NAME);
-        graphics.textWithWordWrap(font, open.text(), left + PAD, top + PAD + 12, W - PAD * 2, TEXT);
+        graphics.text(font, open.name(), left + PAD, top + PAD, HideUi.NAME);
+        graphics.textWithWordWrap(font, open.text(), left + PAD, top + PAD + 12, W - PAD * 2, HideUi.TEXT);
         super.extractRenderState(graphics, mouseX, mouseY, a);
     }
 

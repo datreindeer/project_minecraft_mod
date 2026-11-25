@@ -1,0 +1,486 @@
+package com.mechanical.client.ui;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import com.mechanical.Coins;
+import com.mechanical.Mechanical;
+import com.mechanical.client.people.TradeBoardScreen;
+import com.mechanical.equipment.Accessory;
+import com.mechanical.equipment.Equipment;
+import com.mechanical.equipment.PackMenu;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.LevelSettings;
+import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.WorldOptions;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+
+/**
+ * Dev only: with {@code guishots.flag} in the game directory (first line: output folder, second, optional: comma
+ * separated name prefixes to shoot) the client photographs the GUI style: the menus from the title screen, then in a flat
+ * world "GuiShots" the inventories, every container and the trade screens; then quits. Nothing happens without the flag.
+ * Pattern: GearShots.
+ */
+@EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
+public final class GuiShots {
+    private static int stage = -1, ticks, step;
+    private static File out;
+    private static String[] only = {};
+    private static BlockPos spot;
+    private static Vec3 stand;
+
+    /** One shot: set up on the server, show on the client, then (a few ticks later) hover at {x, y} or run more. */
+    private record Shot(String name, boolean world, Consumer<ServerPlayer> server, Runnable client, Supplier<int[]> hover) {}
+
+    private static final List<Shot> SHOTS = new ArrayList<>();
+
+    private static void menu(String name, Supplier<Screen> screen) {
+        SHOTS.add(new Shot(name, false, p -> {}, () -> Minecraft.getInstance().gui.setScreen(screen.get()), null));
+    }
+
+    private static void inWorld(String name, Consumer<ServerPlayer> server, Runnable client, Supplier<int[]> hover) {
+        SHOTS.add(new Shot(name, true, server, client, hover));
+    }
+
+    private static void show(Screen screen) {
+        Minecraft.getInstance().gui.setScreen(screen);
+    }
+
+    /** Places {@code block} before the player, right-clicks it and fills the opened menu's first slots. */
+    private static void container(String name, Supplier<Block> block, ItemStack... fill) {
+        inWorld(name, p -> {
+            reset(p);
+            open(p, block.get());
+            for (int i = 0; i < fill.length; i++) if (fill[i] != null) p.containerMenu.getSlot(i).set(fill[i].copy());
+        }, () -> {}, null);
+    }
+
+    private static void open(ServerPlayer p, Block block) {
+        ServerLevel level = p.level();
+        level.setBlock(spot, Blocks.AIR.defaultBlockState(), 3);
+        BlockState state = block.defaultBlockState();
+        level.setBlock(spot, state, 3);
+        state.useWithoutItem(level, p, new BlockHitResult(Vec3.atCenterOf(spot), Direction.UP, spot, false));
+        // some only open with their structure built: the menu straight from the block entity shows the screen all the same
+        if (p.containerMenu == p.inventoryMenu && level.getBlockEntity(spot) instanceof net.minecraft.world.MenuProvider menu)
+            p.openMenu(menu, buf -> buf.writeBlockPos(spot));
+    }
+
+    /** Survival, no menu, a bag of ordinary things. */
+    private static void reset(ServerPlayer p) {
+        p.closeContainer();
+        p.setGameMode(GameType.SURVIVAL);
+        p.getInventory().clearContent();
+        p.removeAllEffects();
+        ItemStack[] things = {new ItemStack(Items.IRON_PICKAXE), new ItemStack(Items.TORCH, 48), new ItemStack(Items.BREAD, 11),
+                new ItemStack(Items.COAL, 30), new ItemStack(Items.COBBLESTONE, 64), new ItemStack(Items.OAK_LOG, 17),
+                new ItemStack(Coins.COPPER_COIN.get(), 48), new ItemStack(Coins.SILVER_COIN.get(), 12), new ItemStack(Items.WHEAT, 64)};
+        for (int i = 0; i < things.length; i++) p.getInventory().setItem(i, things[i]);
+        p.getInventory().setItem(12, new ItemStack(Items.FLINT, 20));
+        p.getInventory().setItem(13, new ItemStack(Items.OBSIDIAN, 6));
+        p.getInventory().setItem(14, new ItemStack(Items.WOOL.black(), 6));
+        p.getInventory().setItem(15, new ItemStack(Items.LEATHER, 9));
+        p.getInventory().setItem(22, new ItemStack(Items.PAPER, 24));
+        p.getInventory().setItem(30, new ItemStack(Items.EMERALD, 3));
+        p.teleportTo(p.level(), stand.x, stand.y, stand.z, java.util.Set.of(), 0, 20, true);
+    }
+
+    private static Villager villager;
+
+    private static void trade(ServerPlayer p, net.minecraft.resources.ResourceKey<VillagerProfession> profession, int level, int xp, boolean hero) {
+        reset(p);
+        ServerLevel world = p.level();
+        world.setBlock(spot, Blocks.AIR.defaultBlockState(), 3);
+        if (villager != null) villager.discard();
+        villager = EntityTypes.VILLAGER.create(world, EntitySpawnReason.COMMAND);
+        villager.setPos(stand.x, stand.y, stand.z + 1.8);
+        villager.setNoAi(true);
+        villager.setYRot(180);
+        villager.setYHeadRot(180);
+        villager.yBodyRot = 180;
+        world.addFreshEntity(villager);
+        villager.setVillagerData(villager.getVillagerData().withProfession(world.registryAccess(), profession).withLevel(level));
+        villager.setVillagerXp(xp);
+        if (hero) p.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 4000, 0));
+        p.teleportTo(world, stand.x, stand.y, stand.z, java.util.Set.of(), 0, 5, true);
+    }
+
+    /** A librarian gets one of every kind of row: two inputs, an enchanted book, a dearer price, sold out, purchases. */
+    private static void interact(ServerPlayer p) {
+        if (villager.getVillagerData().profession().is(VillagerProfession.LIBRARIAN)) {
+            var enchantments = p.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+            var offers = villager.getOffers();
+            offers.clear();
+            Item coin = Coins.COPPER_COIN.get(), silver = Coins.SILVER_COIN.get();
+            offers.add(offer(new ItemCost(silver, 10), new ItemCost(Items.BOOK), EnchantmentHelper.createBook(
+                    new EnchantmentInstance(enchantments.getOrThrow(Enchantments.MENDING), 1)), 3));
+            offers.add(offer(new ItemCost(coin, 24), null, new ItemStack(Items.BOOKSHELF), 12));
+            offers.add(offer(new ItemCost(coin, 9), null, new ItemStack(Items.LANTERN), 12));
+            MerchantOffer soldOut = offer(new ItemCost(silver, 2), null, new ItemStack(Items.NAME_TAG), 2);
+            soldOut.setToOutOfStock();
+            offers.add(soldOut);
+            offers.add(offer(new ItemCost(Items.PAPER, 24), null, new ItemStack(coin, 4), 16));
+            offers.add(offer(new ItemCost(Items.BOOK, 4), null, new ItemStack(coin, 6), 12));
+            offers.add(offer(new ItemCost(Items.LEATHER, 6), null, new ItemStack(silver, 1), 8));
+        }
+        villager.mobInteract(p, InteractionHand.MAIN_HAND);
+        if (villager.getVillagerData().profession().is(VillagerProfession.LIBRARIAN)) {
+            villager.getOffers().get(1).addToSpecialPriceDiff(14); // dearer than usual, to show both ways
+            p.sendMerchantOffers(p.containerMenu.containerId, villager.getOffers(), 5, villager.getVillagerXp(), true, true);
+        }
+    }
+
+    private static MerchantOffer offer(ItemCost a, ItemCost b, ItemStack result, int uses) {
+        return new MerchantOffer(a, java.util.Optional.ofNullable(b), result, uses, 5, 0.05F);
+    }
+
+    /** Clicks row {@code index} as a player would: the packet, the server, the new offers and the flash. */
+    private static void click(int index) {
+        int[] at = row(index);
+        if (at != null) Minecraft.getInstance().gui.screen().mouseClicked(new net.minecraft.client.input.MouseButtonEvent(at[0], at[1],
+                new net.minecraft.client.input.MouseButtonInfo(0, 0)), false);
+    }
+
+    /** The centre of row {@code index} on the open trade screen. */
+    private static int[] row(int index) {
+        if (!(Minecraft.getInstance().gui.screen() instanceof TradeBoardScreen board)) return null;
+        int[] at = board.rowAt(index);
+        return at == null ? null : new int[] {at[0] + 60, at[1] + 11};
+    }
+
+    private static int[] fromCentre(int dx, int dy) {
+        var window = Minecraft.getInstance().getWindow();
+        return new int[] {window.getGuiScaledWidth() / 2 + dx, window.getGuiScaledHeight() / 2 + dy};
+    }
+
+    private static void selectCreativeTab(CreativeModeInventoryScreen screen, net.minecraft.resources.ResourceKey<net.minecraft.world.item.CreativeModeTab> tab) {
+        try { // selectTab is private
+            var m = CreativeModeInventoryScreen.class.getDeclaredMethod("selectTab", net.minecraft.world.item.CreativeModeTab.class);
+            m.setAccessible(true);
+            m.invoke(screen, BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(tab));
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void creative(String name, net.minecraft.resources.ResourceKey<net.minecraft.world.item.CreativeModeTab> tab) {
+        inWorld(name, p -> {
+            reset(p);
+            p.setGameMode(GameType.CREATIVE);
+        }, () -> {
+            Minecraft mc = Minecraft.getInstance();
+            CreativeModeInventoryScreen screen = new CreativeModeInventoryScreen(mc.player, mc.player.connection.enabledFeatures(), true);
+            mc.gui.setScreen(screen);
+            selectCreativeTab(screen, tab);
+        }, null);
+    }
+
+    private static Block mod(String name) {
+        return BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(Mechanical.MODID, name));
+    }
+
+    private static void menus() {
+        Minecraft mc = Minecraft.getInstance();
+        menu("menu_title", TitleScreen::new);
+        menu("menu_options", () -> new net.minecraft.client.gui.screens.options.OptionsScreen(new TitleScreen(), mc.options));
+        menu("menu_video", () -> new net.minecraft.client.gui.screens.options.VideoSettingsScreen(new TitleScreen(), mc, mc.options));
+        menu("menu_keys", () -> new net.minecraft.client.gui.screens.options.controls.KeyBindsScreen(new TitleScreen(), mc.options));
+        menu("menu_accessibility", () -> new net.minecraft.client.gui.screens.options.AccessibilityOptionsScreen(new TitleScreen(), mc.options));
+        menu("menu_worlds", () -> new net.minecraft.client.gui.screens.worldselection.SelectWorldScreen(new TitleScreen()));
+        menu("menu_multiplayer", () -> new net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen(new TitleScreen()));
+        menu("menu_confirm", () -> new net.minecraft.client.gui.screens.ConfirmScreen(yes -> {}, Component.literal("Delete world?"),
+                Component.literal("It will be lost forever (a long time).")));
+        SHOTS.add(new Shot("menu_create_world", false, p -> {}, () ->
+                net.minecraft.client.gui.screens.worldselection.CreateWorldScreen.openFresh(mc, () -> mc.gui.setScreen(new TitleScreen())), null));
+
+    }
+
+    /** The shots in the world: built once it is there (item stacks need a loaded world). */
+    private static void worldShots() {
+        Minecraft mc = Minecraft.getInstance();
+        inWorld("world_pause", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.PauseScreen(true)), null);
+        inWorld("world_options", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.options.OptionsScreen(
+                new net.minecraft.client.gui.screens.PauseScreen(true), mc.options)), null);
+        inWorld("inventory", p -> {
+            reset(p);
+            Equipment.of(p).set(Accessory.BACK, new ItemStack(Mechanical.LEATHER_SATCHEL.get()));
+            Equipment.of(p).set(Accessory.HIP, new ItemStack(Mechanical.LEATHER_POUCH.get()));
+            p.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
+            p.addEffect(new MobEffectInstance(MobEffects.SPEED, 2000, 1));
+            p.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 0));
+        }, () -> show(new InventoryScreen(mc.player)), () -> {
+            if (!(mc.gui.screen() instanceof InventoryScreen s)) return null;
+            return new int[] {s.getLeftPos() + 16, s.getTopPos() + 172}; // hover the pickaxe in the hotbar
+        });
+        inWorld("inventory_recipebook", GuiShots::reset, () -> {
+            InventoryScreen s = new InventoryScreen(mc.player);
+            show(s);
+            for (var child : s.children())
+                if (child instanceof net.minecraft.client.gui.components.ImageButton b) {
+                    b.onPress(new net.minecraft.client.input.KeyEvent(257, 0, 0));
+                    break;
+                }
+        }, null);
+        creative("creative_items", CreativeModeTabs.BUILDING_BLOCKS);
+        creative("creative_search", CreativeModeTabs.SEARCH);
+        creative("creative_inventory", CreativeModeTabs.INVENTORY);
+
+        container("box_crafting", () -> Blocks.CRAFTING_TABLE, null, new ItemStack(Items.OAK_PLANKS), null, null, new ItemStack(Items.STICK), null, null,
+                new ItemStack(Items.STICK));
+        inWorld("box_furnace", p -> {
+            reset(p);
+            open(p, Blocks.FURNACE);
+            p.containerMenu.getSlot(0).set(new ItemStack(Items.RAW_IRON, 8));
+            p.containerMenu.getSlot(1).set(new ItemStack(Items.COAL, 5));
+        }, () -> {}, null);
+        container("box_blast", () -> Blocks.BLAST_FURNACE);
+        container("box_chest", () -> Blocks.CHEST, new ItemStack(Items.APPLE, 5), new ItemStack(Items.DIAMOND_SWORD), new ItemStack(Items.COAL, 64));
+        inWorld("box_double_chest", p -> {
+            reset(p);
+            p.level().setBlock(spot.east(), Blocks.AIR.defaultBlockState(), 3);
+            var container = new net.minecraft.world.SimpleContainer(54);
+            for (int i = 0; i < 54; i += 5) container.setItem(i, new ItemStack(Items.BRICK, 1 + i));
+            p.openMenu(new net.minecraft.world.SimpleMenuProvider((id, inv, pl) -> net.minecraft.world.inventory.ChestMenu.sixRows(id, inv, container),
+                    Component.translatable("container.chestDouble")));
+        }, () -> {}, null);
+        container("box_shulker", () -> Blocks.SHULKER_BOX.defaultBlockState().getBlock());
+        container("box_dispenser", () -> Blocks.DISPENSER, new ItemStack(Items.ARROW, 20));
+        container("box_hopper", () -> Blocks.HOPPER, new ItemStack(Items.IRON_INGOT, 20));
+        container("box_crafter", () -> Blocks.CRAFTER);
+        container("box_brewing", () -> Blocks.BREWING_STAND, new ItemStack(Items.POTION), new ItemStack(Items.POTION), null, new ItemStack(Items.NETHER_WART),
+                new ItemStack(Items.BLAZE_POWDER, 8));
+        container("box_enchanting", () -> Blocks.ENCHANTING_TABLE, new ItemStack(Items.IRON_SWORD), new ItemStack(Items.LAPIS_LAZULI, 12));
+        container("box_anvil", () -> Blocks.ANVIL, new ItemStack(Items.IRON_SWORD));
+        container("box_anvil_empty", () -> Blocks.ANVIL);
+        container("box_smithing", () -> Blocks.SMITHING_TABLE);
+        container("box_grindstone", () -> Blocks.GRINDSTONE);
+        container("box_loom", () -> Blocks.LOOM, new ItemStack(Items.BANNER.white()), new ItemStack(Items.DYE.red(), 4));
+        container("box_stonecutter", () -> Blocks.STONECUTTER, new ItemStack(Items.STONE, 20));
+        container("box_cartography", () -> Blocks.CARTOGRAPHY_TABLE);
+        container("box_beacon", () -> Blocks.BEACON);
+        inWorld("box_horse", p -> {
+            reset(p);
+            var horse = EntityTypes.DONKEY.create(p.level(), EntitySpawnReason.COMMAND);
+            horse.setPos(stand.x + 1, stand.y, stand.z + 2);
+            horse.setTamed(true);
+            horse.setNoAi(true);
+            p.level().addFreshEntity(horse);
+            horse.getSlot(499).set(new ItemStack(Items.CHEST));
+            horse.openCustomInventoryScreen(p);
+        }, () -> {}, null);
+
+        for (String station : List.of("tool_station", "fletching_table", "leatherworking_bench", "armor_station", "mold_bench", "kiln", "bloomery_hearth", "furnace_tap", "high_furnace_front"))
+            container("mod_" + station, () -> mod(station));
+        inWorld("mod_pack", p -> {
+            reset(p);
+            Equipment.of(p).set(Accessory.BACK, new ItemStack(Mechanical.LEATHER_SATCHEL.get()));
+            Equipment.of(p).set(Accessory.HIP, new ItemStack(Mechanical.LEATHER_POUCH.get()));
+            PackMenu.openWorn(p);
+        }, () -> {}, null);
+
+        inWorld("trade_farmer", p -> trade(p, VillagerProfession.FARMER, 2, 30, false), () -> {}, null);
+        // the interact happens once the client sees the villager (it looks at it, so the screen gets its portrait)
+        inWorld("trade_farmer_hover", p -> interact(p), () -> {}, () -> row(0));
+        inWorld("trade_librarian", p -> trade(p, VillagerProfession.LIBRARIAN, 5, 260, true), () -> {}, null);
+        inWorld("trade_librarian_hover", p -> interact(p), () -> {}, () -> row(1));
+        inWorld("trade_librarian_hover_bought", p -> {}, () -> click(4), null);
+        inWorld("trade_librarian_hover_bought_paper", p -> {}, () -> {}, () -> row(4));
+        inWorld("trade_elder", p -> {
+            reset(p);
+            if (villager != null) villager.discard();
+            com.mechanical.people.GuiShotHooks.elder(p, stand);
+        }, () -> {}, () -> row(0));
+        inWorld("trade_caravan", p -> {
+            reset(p);
+            com.mechanical.people.GuiShotHooks.caravan(p, stand);
+        }, () -> {}, () -> row(1));
+
+        inWorld("screen_clan", p -> {
+            com.mechanical.people.GuiShotHooks.clear(p);
+            reset(p);
+        }, () -> net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(
+                new com.mechanical.clan.ClanNetwork.Request()), null);
+        inWorld("screen_dialog", GuiShots::reset, () -> show(new com.mechanical.client.people.TribeDialogScreen(new com.mechanical.people.TribeDialog.Open(0,
+                Component.literal("Ashka of the Reed Marsh tribe"), Component.literal(
+                        "We have walked a long way, friend. May our band rest by your fire tonight? We have hides and herbs to trade."),
+                com.mechanical.people.TribeDialog.TRADE | com.mechanical.people.TribeDialog.YES_NO))), null);
+        inWorld("screen_advancements", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(
+                mc.player.connection.getAdvancements())), null);
+        inWorld("screen_stats", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.achievement.StatsScreen(null, mc.player.getStats())), null);
+    }
+
+    private static void filter(int from) {
+        if (only.length > 0)
+            SHOTS.subList(from, SHOTS.size()).removeIf(s -> java.util.Arrays.stream(only).noneMatch(s.name()::startsWith));
+    }
+
+    @SubscribeEvent
+    static void onTick(ClientTickEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        try {
+            if (stage == -1) {
+                File flag = new File(mc.gameDirectory, "guishots.flag");
+                if (!flag.exists()) {
+                    stage = -2;
+                    return;
+                }
+                List<String> lines = Files.readAllLines(flag.toPath());
+                out = new File(lines.get(0).trim());
+                out.mkdirs();
+                if (lines.size() > 1 && !lines.get(1).isBlank()) only = lines.get(1).trim().split(",");
+                stage = 0;
+            }
+            if (stage < 0) return;
+            if (stage == 0) {
+                if (mc.gui.screen() instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen) mc.gui.setScreen(new TitleScreen());
+                if (!(mc.gui.screen() instanceof TitleScreen) || mc.gui.overlay() != null) return;
+                if (++ticks < 60) return;
+                menus();
+                filter(0);
+                mc.options.cloudStatus().set(net.minecraft.client.CloudStatus.OFF);
+                mc.options.pauseOnLostFocus = false;
+                stage = 1;
+                ticks = 0;
+                return;
+            }
+            if (stage == 1 && step >= SHOTS.size()) { // the menus are done: make the world
+                stage = 2;
+                ticks = 0;
+                String name = "GuiShots" + System.currentTimeMillis() % 100000;
+                mc.createWorldOpenFlows().createFreshLevel(name,
+                        new LevelSettings(name, GameType.CREATIVE, LevelSettings.DifficultySettings.DEFAULT, true, WorldDataConfiguration.DEFAULT),
+                        new WorldOptions(77L, false, false),
+                        reg -> reg.lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.FLAT).value().createWorldDimensions(),
+                        new TitleScreen());
+                return;
+            }
+            if (stage == 2) {
+                if (mc.player == null || mc.getSingleplayerServer() == null) return;
+                if (++ticks < 100) return;
+                mc.gui.setScreen(null);
+                int menus = SHOTS.size();
+                worldShots();
+                filter(menus);
+                var server = mc.getSingleplayerServer();
+                server.execute(() -> {
+                    for (String cmd : List.of("time set noon", "gamerule advance_time false", "weather clear", "gamerule spawn_mobs false",
+                            "gamerule send_command_feedback false")) {
+                        server.getCommands().performPrefixedCommand(server.createCommandSourceStack().withSuppressedOutput(), cmd);
+                    }
+                    ServerPlayer p = server.getPlayerList().getPlayers().get(0);
+                    int ground = p.level().getHeight(Heightmap.Types.MOTION_BLOCKING, 0, 0);
+                    stand = new Vec3(0.5, ground, 0.5);
+                    spot = BlockPos.containing(0.5, ground, 2.5);
+                    p.teleportTo(p.level(), stand.x, stand.y, stand.z, java.util.Set.of(), 0, 20, true);
+                });
+                stage = 3;
+                ticks = 0;
+                return;
+            }
+            if (step >= SHOTS.size()) {
+                mc.stop();
+                return;
+            }
+            Shot shot = SHOTS.get(step);
+            ticks++;
+            mc.gui.toastManager().clear();
+            var server = mc.getSingleplayerServer();
+            if (ticks == 1 && shot.world()) {
+                server.execute(() -> {
+                    try {
+                        shot.server().accept(server.getPlayerList().getPlayers().get(0));
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else if (ticks == 20) {
+                shot.client().run();
+            } else if (ticks >= 40) {
+                int[] at = shot.hover() == null ? null : shot.hover().get();
+                mouse(at == null ? new int[] {2, 2} : at);
+                if (ticks == (shot.name().startsWith("box_furnace") ? 130 : shot.name().endsWith("_bought") ? 45 : 60)) {
+                    Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), image -> {
+                        try (image) {
+                            image.writeToFile(new File(out, shot.name() + ".png"));
+                        } catch (Exception ignored) {}
+                    });
+                } else if (ticks > (shot.name().startsWith("box_furnace") ? 136 : 66)) {
+                    boolean keep = step + 1 < SHOTS.size() && shot.name().startsWith("trade_") && SHOTS.get(step + 1).name().startsWith(shot.name() + "_");
+                    if (!keep && shot.world()) mc.gui.setScreen(null);
+                    step++;
+                    ticks = 0;
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            mc.stop();
+        }
+    }
+
+    /** Puts the mouse at a GUI position (the cursor itself stays where it is). */
+    private static void mouse(int[] gui) {
+        Minecraft mc = Minecraft.getInstance();
+        try {
+            var window = mc.getWindow();
+            for (String[] f : new String[][] {{"xpos", "0"}, {"ypos", "1"}}) {
+                Field field = mc.mouseHandler.getClass().getDeclaredField(f[0]);
+                field.setAccessible(true);
+                int i = Integer.parseInt(f[1]);
+                field.setDouble(mc.mouseHandler, gui[i] * (double) (i == 0 ? window.getScreenWidth() : window.getScreenHeight())
+                        / (i == 0 ? window.getGuiScaledWidth() : window.getGuiScaledHeight()));
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private GuiShots() {}
+}

@@ -2218,6 +2218,16 @@ En stam som slagit sig ner nära dig kan bygga en **väg** åt dig (koden: `peop
   är där.
 - **Avancemang** (Wilderness): *Paths Between Us* (sätt ner en Road Marker) och *The Trade Road* (låt dem bygga en handelsväg).
 
+### Gränssnittets stil (hud och bark)
+
+Alla skärmar har modets stil: sytt läder med brun kant och stygn. Det gäller inventory, creative, alla behållare
+(även modets egna), knappar, reglage, textfält, flikar, paus-, inställnings- och menyskärmar, receptboken, boken och
+tooltips. Titelskärmens panorama är kvar. Texturerna ritas av `scripts/gen_gui_textures.py` (körs sist av
+GUI-generatorerna: efter `gen_copper_textures`, `gen_bloomery_textures`, `gen_smelter_textures`, `gen_station_textures`,
+`gen_moldbench_textures` och `gen_equipment_textures`). Skärmar som ritas i kod använder `client/ui/HideUi`.
+Stammar, karavaner och bybor delar en handelsskärm (`client/people/TradeBoardScreen.java`) med porträtt, två spalter,
+priser som ikoner och en blinkning när köpet gått igenom.
+
 ### Handelskaravaner (Trader Caravan)
 Vanillas **Wandering Trader** och hans **Trader Llamas** finns inte längre: ingen av dem kommer in i världen (inte heller
 från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan** från en rik handelsstam (temperament
