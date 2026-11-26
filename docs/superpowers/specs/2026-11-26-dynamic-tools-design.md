@@ -86,3 +86,18 @@ görs och därmed de nya metallrods.
 ## Anti-mål
 - Ett gammalt verktyg som byter stats när världen laddas.
 - Fula omfärgade skaft (kvalitetsribban: skuggning och kanter ska se handgjorda ut).
+
+## Ändringar efter användarens svar (2026-11-26)
+
+- Byggsätt A bekräftat av användaren.
+- **Copper och Bronze Tool Rod gjuts i form:** en ny skaftform (unfired clay → fired, som de andra formerna) görs i
+  Mold Bench, gjuts med koppar eller brons och slipas som kopparhuvudena. Crafting-receptet (2 ingots) tas bort.
+  Poor Bronze ärvs till skaftet som till andra bronsdelar.
+- **Bågar och fiskespön blir dynamiska** (broom och bucket fortfarande inte):
+  - Båge: sträng (Cordage/Sinew/String …) + grepp (binding-tabellen) + stav (stick/Tool Rod/Yew Stave …). Delarna
+    påverkar durability och dragkraft (pilens fart/skada) och dragtid. Byggaren sätter faktorer i samma stil som
+    rod-tabellen, relativt dagens standarddelar (samma delar = samma stats som förr).
+  - Fiskespö: krok (bone/bronze/iron hook = huvudet, som i dag) + lina (Twine/String/Sinew …) + spö (stick/Tool Rod/
+    bambu om det finns …). Delarna påverkar durability och hur snabbt fisken nappar (lure-tid).
+- Skills (samma gren): minnet av spelarutsatta block (ingen Mining-XP) sparas med världen i stället för i minnet.
+- Malmbalansen (Mining + Masonry staplas) och skills-tempot behålls som de är.

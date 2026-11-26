@@ -67,3 +67,15 @@
 ### Task 7: Quest, docs, version, full suite
 
 **Files:** one advancement/quest via `scripts/gen_advancements.py` ("A Better Haft": take a tool with a metal rod from the Tool Station; awarded from code), docs (`docs/ages/*` tool sections: parts and tiers table; registry notes for the Tool Station; `progression.json` one sentence sv+en), `docs/skills-and-tools-plan.md` (mark approach A, replace the old "one item per tool type" viewer notes), `gradle.properties` 0.225.0. Full suite once. Commit "Dynamic tools: quest, docs, v0.225.0".
+
+### Task 8: Copper and bronze rods are cast (user answer)
+
+Replace the 2-ingot crafting recipes from Task 2: a rod mold (unfired clay rod mold in Mold Bench → fired in the kiln, like `Casting.UNFIRED_CLAY_*_MOLD`), cast with copper or bronze the way heads are cast (`Casting`, `PouringSpout`, molding flask or whatever the copper heads use), a rough cast rod ground on the Whetstone like copper heads, Poor Bronze inherited. Generator for mold/rough-rod textures in the style of the existing molds. Update registry notes, age docs, the recipe viewer sees the new station recipes automatically. Test: cast a copper rod end to end in a gametest (or the closest existing casting test pattern). Commit "Dynamic tools: copper and bronze rods are cast in a mold".
+
+### Task 9: Dynamic bows and fishing rods (user answer)
+
+Extend `ToolParts` with bow parts (string, grip, stave) and fishing-rod parts (hook = head, line, rod) per the spec addendum; stats: durability + draw power/time for bows (`CrudeBowItem`, `YewLongbowItem`, `SINEW_BOW` if it gets a station recipe), durability + lure time for rods (`BoneHookRodItem`, crude rod). Defaults reproduce today's stats. Tool Station screen gets the two types; looks via the same layered generator where the sprite allows (string/line recolour). Tests like Task 1/3. Commit "Dynamic tools: bows and fishing rods".
+
+### Task 10: Persist the placed-block memory (skills follow-up)
+
+`SkillHooks` PLACED → per-level SavedData (bounded as today), so player-placed ore/stone and fluid-made stone stay XP-free across restarts. Test: save/load round trip of the set. Commit "Skills: remember player-placed blocks across restarts".
