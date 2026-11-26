@@ -53,6 +53,7 @@ public final class ViewerTest {
             sourcesRebuildAfterInvalidate(h);
             jsonSources(h);
             emptyTagSkipped(h);
+            noteParse();
             h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -105,6 +106,15 @@ public final class ViewerTest {
         var r = new ViewerRecipe(Station.CRAFTING_SHAPELESS, List.of(new Slot(List.of(Items.FLINT, Items.STICK), 1, false)), new ItemStack(Items.TORCH), 0, UnlockKind.ALL_SEEN, "");
         h.assertTrue(r.unlocked(java.util.Set.of("minecraft:stick"), List.of()), "an alternative option counts as seen");
         h.assertTrue(!r.unlocked(java.util.Set.of(), List.of()), "nothing seen is locked");
+    }
+
+    private static void noteParse() {
+        var p = Note.parse("3 [[plant_fibre]] (**shapeless**)");
+        var want = List.of(new Note.Piece("3 ", null, false), new Note.Piece(null, "mechanical:plant_fibre", false),
+                new Note.Piece(" (", null, false), new Note.Piece("shapeless", null, true), new Note.Piece(")", null, false));
+        if (!p.equals(want)) throw new IllegalStateException("note pieces: " + p);
+        var l = Note.links("[[a]] and [[minecraft:stick]]");
+        if (!l.equals(java.util.Set.of("mechanical:a", "minecraft:stick"))) throw new IllegalStateException("note links: " + l);
     }
 
     private static void codecRoundTrip(GameTestHelper h) {

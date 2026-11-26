@@ -151,6 +151,13 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     from "src/main/templates"
     into "build/generated/sources/modMetadata"
 }
+// The item notes double as the recipe viewer's in-game text.
+tasks.named('processResources') {
+    from('docs/registry_notes_en.json') {
+        into 'assets/mechanical'
+        rename { 'recipe_notes.json' }
+    }
+}
 // Include the output of "generateModMetadata" as an input directory for the build
 // this works with both building through Gradle and the IDE.
 sourceSets.main.resources.srcDir generateModMetadata
