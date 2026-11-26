@@ -70,10 +70,11 @@ public class ToolStationMenu extends AbstractContainerMenu {
     public void slotsChanged(Container container) {
         ItemStack head = inputs.getItem(HEAD), binding = inputs.getItem(BINDING), rod = inputs.getItem(ROD);
         int chosen = selected.get();
+        boolean constrained = chosen >= 0 && head.is(ToolStationRecipes.ALL.get(chosen).head().get()); // another head ignores the selection
         // a clicked recipe is the only one that may produce; otherwise the recipe whose own binding and rod fit best (ties: first in ALL)
         ItemStack out = ToolStationRecipes.ALL.stream()
                 .filter(r -> r.matches(head, binding, rod) && ToolStationRecipes.isUnlocked(player, r)
-                        && (chosen < 0 || ToolStationRecipes.ALL.get(chosen) == r))
+                        && (!constrained || ToolStationRecipes.ALL.get(chosen) == r))
                 .max(java.util.Comparator.comparingInt(r -> r.score(binding, rod)))
                 .map(r -> Bronze.inheritPoor(build(r, head, binding, rod), inputs))
                 .orElse(ItemStack.EMPTY);
