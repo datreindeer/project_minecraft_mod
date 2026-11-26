@@ -50,6 +50,7 @@ public class ToolStationMenu extends AbstractContainerMenu {
             @Override
             public void onTake(Player player, ItemStack carried) {
                 carried.onCraftedBy(player, carried.getCount());
+                if (player instanceof net.minecraft.server.level.ServerPlayer sp) com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.SMITHING, 10);
                 for (int i = 0; i < 3; i++) inputs.removeItem(i, 1);
                 super.onTake(player, carried);
             }

@@ -110,6 +110,7 @@ public final class TreeFelling {
         Tree tree = find(level, cut);
         CACHE.remove(player);
         if (tree == null) return;
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.WOODCUTTING, 3 * tree.logs().size());
 
         // We take over the whole break (cancel vanilla) so the cut log falls with the tree instead of dropping at the stump.
         event.setCanceled(true);

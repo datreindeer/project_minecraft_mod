@@ -46,6 +46,9 @@ public final class SkillsTest {
                     new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "skills"));
             freshPlayer(h, p);
             multiLevel(h, p);
+            miningXp(h, p);
+            stationXp(h, p);
+            huntingXp(h, p);
             h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -73,5 +76,35 @@ public final class SkillsTest {
         h.assertTrue(Skills.level(p, Skill.FARMING) == 1, "other skills untouched");
         for (int i = 0; i < 200; i++) h.assertTrue(!Skills.roll(p, Skill.MINING, 11, 1.0), "roll below unlock is false");
         h.assertTrue(Skills.roll(p, Skill.MINING, 10, 1.0), "chance 10 x 1.0 always hits at unlock");
+    }
+
+    private static void miningXp(GameTestHelper h, ServerPlayer p) {
+        var level = h.getLevel();
+        net.minecraft.core.BlockPos ore = h.absolutePos(new net.minecraft.core.BlockPos(2, 1, 2)), stone = ore.east();
+        level.setBlockAndUpdate(ore, net.minecraft.world.level.block.Blocks.IRON_ORE.defaultBlockState());
+        level.setBlockAndUpdate(stone, net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+        p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+        int before = Skills.xp(p, Skill.MINING);
+        p.gameMode.destroyBlock(ore);
+        h.assertTrue(Skills.xp(p, Skill.MINING) == before + 10, "ore gives 10 Mining, got " + (Skills.xp(p, Skill.MINING) - before));
+        p.gameMode.destroyBlock(stone);
+        h.assertTrue(Skills.xp(p, Skill.MINING) == before + 11, "stone gives 1 Mining, got " + (Skills.xp(p, Skill.MINING) - before));
+    }
+
+    private static void stationXp(GameTestHelper h, ServerPlayer p) {
+        var menu = new com.mechanical.FletchingMenu(1, p.getInventory(), net.minecraft.world.inventory.ContainerLevelAccess.create(h.getLevel(), h.absolutePos(new net.minecraft.core.BlockPos(1, 1, 1))));
+        var stick = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK);
+        var result = menu.slots.stream().filter(s -> !(s.container instanceof net.minecraft.world.entity.player.Inventory) && !s.mayPlace(stick)).findFirst().orElseThrow();
+        int before = Skills.xp(p, Skill.FLETCHING);
+        result.onTake(p, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ARROW));
+        h.assertTrue(Skills.xp(p, Skill.FLETCHING) == before + 8, "fletching result gives 8, got " + (Skills.xp(p, Skill.FLETCHING) - before));
+    }
+
+    private static void huntingXp(GameTestHelper h, ServerPlayer p) {
+        var level = h.getLevel();
+        net.minecraft.world.entity.animal.Animal cow = h.spawn(net.minecraft.world.entity.EntityTypes.COW, new net.minecraft.core.BlockPos(4, 1, 4));
+        int before = Skills.xp(p, Skill.HUNTING);
+        cow.hurtServer(level, level.damageSources().playerAttack(p), 1000F);
+        h.assertTrue(Skills.xp(p, Skill.HUNTING) == before + 25, "killing a cow gives 25 Hunting, got " + (Skills.xp(p, Skill.HUNTING) - before));
     }
 }

@@ -173,7 +173,11 @@ public class CookwareBlockEntity extends BlockEntity {
                     seconds / 60, String.format("%02d", seconds % 60)) : Component.translatable("message.mechanical.cookware.no_fire"));
             return;
         }
-        for (ItemStack s : items) player.getInventory().placeItemBackInInventory(s, Prediction.SERVER_ONLY);
+        for (ItemStack s : items) {
+            if (done) com.mechanical.skills.Skills.cooked(player, s);
+
+            player.getInventory().placeItemBackInInventory(s, Prediction.SERVER_ONLY);
+        }
         items.clear();
         done = false;
         progress = 0;

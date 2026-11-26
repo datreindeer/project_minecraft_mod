@@ -103,6 +103,7 @@ public class BakingStoneBlock extends Block {
         if (level instanceof ServerLevel server) {
             server.setBlock(pos, state.setValue(CONTENTS, Contents.EMPTY), Block.UPDATE_ALL);
             Block.popResource(server, pos.above(), new ItemStack(out));
+            if (out == Items.BREAD) com.mechanical.skills.Skills.cooked(player, new ItemStack(out));
         }
         return InteractionResult.SUCCESS;
     }

@@ -61,6 +61,12 @@ public class KilnMenu extends AbstractContainerMenu {
             public boolean mayPlace(ItemStack stack) {
                 return false;
             }
+
+            @Override
+            public void onTake(Player player, ItemStack carried) {
+                com.mechanical.skills.Skills.cooked(player, carried);
+                super.onTake(player, carried);
+            }
         });
         addStandardInventorySlots(inventory, 8, 84);
         addDataSlots(data);
@@ -123,7 +129,7 @@ public class KilnMenu extends AbstractContainerMenu {
         if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);
         else slot.setChanged();
         if (stack.getCount() == copy.getCount()) return ItemStack.EMPTY;
-        slot.onTake(player, stack);
+        slot.onTake(player, copy); // the whole taken stack, for the Cooking XP
         return copy;
     }
 

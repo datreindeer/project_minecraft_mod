@@ -7,6 +7,8 @@ import java.util.function.Supplier;
 import com.mechanical.Mechanical;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -67,6 +69,11 @@ public final class Skills {
         int after = level(p, s);
         // FakePlayers have no connection
         if (!(p instanceof FakePlayer)) PacketDistributor.sendToPlayer(p, new SkillPayload(s, amount, after > before ? after : 0));
+    }
+
+    /** Cooking XP for food a player takes out of a cooker: 5 per item; non-food and burnt food give nothing. */
+    public static void cooked(Player p, ItemStack food) {
+        if (p instanceof ServerPlayer sp && food.has(DataComponents.FOOD) && !food.is(Mechanical.BURNT_FOOD.get())) addXp(sp, Skill.COOKING, 5 * food.getCount());
     }
 
     /** False below the unlock level; otherwise a chance of effective level times perLevel. */

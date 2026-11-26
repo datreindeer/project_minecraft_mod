@@ -146,6 +146,8 @@ public class LapidaryWheelBlock extends Block {
             default -> level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0F, 1.2F);
         }
         player.sendOverlayMessage(Component.translatable("message.mechanical.lapidary." + result, out.getHoverName()));
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp && !result.equals("cracked"))
+            com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.GOLD_SMITHING, result.equals("flawless") ? 30 : 10);
         player.getInventory().placeItemBackInInventory(out, net.minecraft.util.Prediction.SERVER_ONLY);
     }
 }

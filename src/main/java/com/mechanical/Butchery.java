@@ -180,7 +180,7 @@ public final class Butchery {
     }
 
     /** Wild, grown passive animals (and phantoms) become carcasses; pets, babies and undead horses keep vanilla behaviour. */
-    static boolean leavesCarcass(LivingEntity entity) {
+    public static boolean leavesCarcass(LivingEntity entity) {
         // phantoms only when a player killed them (like the vanilla membrane); those burnt by the sun just vanish
         if (entity.getType() == EntityTypes.PHANTOM) return entity.getLastHurtByPlayer() != null;
         if (listed(NEVER_CARCASS, entity.getType())) return false;
@@ -215,6 +215,7 @@ public final class Butchery {
      * shared between animals (hides, meat, feathers), so each animal's advancement also needs that very animal cut up.
      */
     static void awardButchered(net.minecraft.server.level.ServerPlayer player, EntityType<?> type) {
+        com.mechanical.skills.Skills.addXp(player, com.mechanical.skills.Skill.SLAUGHTER, 20);
         if (player instanceof net.neoforged.neoforge.common.util.FakePlayer) return;
         String path = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(type).getPath();
         var holder = player.level().getServer().getAdvancements().get(net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "hunting/" + path));

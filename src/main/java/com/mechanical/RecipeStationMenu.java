@@ -73,6 +73,11 @@ public class RecipeStationMenu extends AbstractContainerMenu {
             @Override
             public void onTake(Player player, ItemStack carried) {
                 carried.onCraftedBy(player, carried.getCount());
+                if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+                    if (RecipeStationMenu.this instanceof FletchingMenu) com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.FLETCHING, 8);
+                    else if (RecipeStationMenu.this instanceof LeatherworkingMenu || RecipeStationMenu.this instanceof ArmorStationMenu)
+                        com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.LEATHERWORKING, 15);
+                }
                 current().ifPresent(RecipeStationMenu.this::consume);
                 super.onTake(player, carried);
             }

@@ -83,6 +83,7 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
         ItemStack coins = Coins.minted(item);
         item = ItemStack.EMPTY;
         hits = 0;
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.SMITHING, 20);
         Block.popResource(level, worldPosition.above(), coins);
         sync();
     }
@@ -113,6 +114,7 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
         item = ItemStack.EMPTY;
         hits = 0;
         level.playSound(null, worldPosition, SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.6F, 1.2F);
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.SMITHING, 20);
         Block.popResource(level, worldPosition.above(), new ItemStack(FirePit.FIRE_GRATE.get()));
         sync();
     }
@@ -249,7 +251,10 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
         level.playSound(null, worldPosition, SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.6F, 1.3F);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z, 3, 0.1, 0.05, 0.1, 0.01);
         Block.popResource(level, worldPosition.above(), result);
-        if (player instanceof net.minecraft.server.level.ServerPlayer sp) Kettle.award(sp, Smithing.FORGE_ADVANCEMENT);
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+            Kettle.award(sp, Smithing.FORGE_ADVANCEMENT);
+            com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.SMITHING, 20);
+        }
         sync();
     }
 

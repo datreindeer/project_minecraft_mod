@@ -147,8 +147,9 @@ public final class StoneCrafts {
 
     /** Called by the Stone Anvil when a piece is crushed, for the "Rubble" advancement. */
     static void crushedBy(Player player, ItemStack piece) {
-        if (player instanceof ServerPlayer p && (is(piece, "conglomerate") || is(piece, "shale")))
-            Kettle.award(p, Identifier.fromNamespaceAndPath(MODID, "bronze_age/rubble"));
+        if (!(player instanceof ServerPlayer p)) return;
+        com.mechanical.skills.Skills.addXp(p, com.mechanical.skills.Skill.MASONRY, 5);
+        if (is(piece, "conglomerate") || is(piece, "shale")) Kettle.award(p, Identifier.fromNamespaceAndPath(MODID, "bronze_age/rubble"));
     }
 
     // ---------------------------------------------------------------- game test

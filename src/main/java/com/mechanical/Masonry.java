@@ -192,14 +192,19 @@ public final class Masonry {
             server.setBlock(pos, to.withPropertiesOf(state), Block.UPDATE_ALL);
             server.playSound(null, pos, SoundEvents.MUD_BRICKS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
             if (player == null || !player.getAbilities().instabuild) mortar.shrink(1);
-            if (player instanceof ServerPlayer p) Kettle.award(p, Identifier.fromNamespaceAndPath(MODID, "iron_age/repointed"));
+            if (player instanceof ServerPlayer p) {
+                Kettle.award(p, Identifier.fromNamespaceAndPath(MODID, "iron_age/repointed"));
+                com.mechanical.skills.Skills.addXp(p, com.mechanical.skills.Skill.MASONRY, 5);
+            }
         }
         return true;
     }
 
     /** Pumice Chunk on a mossy block (StoneCrafts.PumiceItem): the "Weathered" advancement. */
     static void scrubbedBy(Player player) {
-        if (player instanceof ServerPlayer p) Kettle.award(p, Identifier.fromNamespaceAndPath(MODID, "bronze_age/weathered"));
+        if (!(player instanceof ServerPlayer p)) return;
+        Kettle.award(p, Identifier.fromNamespaceAndPath(MODID, "bronze_age/weathered"));
+        com.mechanical.skills.Skills.addXp(p, com.mechanical.skills.Skill.MASONRY, 5);
     }
 
     // ---------------------------------------------------------------- game test

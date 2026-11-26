@@ -160,6 +160,7 @@ public class FishTrapBlock extends Block implements SimpleWaterloggedBlock {
             for (int i = 0; i < state.getValue(FISH); i++) {
                 player.getInventory().placeItemBackInInventory(new ItemStack(catchAt(level, pos, state, i)), Prediction.SERVER_ONLY);
             }
+            if (player instanceof net.minecraft.server.level.ServerPlayer sp) com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.FISHING, 5 * state.getValue(FISH));
             level.setBlock(pos, state.setValue(FISH, 0).setValue(EELS, 0), Block.UPDATE_ALL);
             level.playSound(null, pos, SoundEvents.FISHING_BOBBER_SPLASH, SoundSource.BLOCKS, 0.6F, 1.2F);
         }

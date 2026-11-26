@@ -304,6 +304,8 @@ public class FirePitBlockEntity extends BlockEntity {
             if (done) break;
         }
         if (slot < 0) return false;
+        if (cooked[slot]) com.mechanical.skills.Skills.cooked(player, items.get(slot));
+
         player.getInventory().placeItemBackInInventory(items.get(slot), Prediction.SERVER_ONLY);
         items.set(slot, ItemStack.EMPTY);
         cookingProgress[slot] = 0;
@@ -350,6 +352,7 @@ public class FirePitBlockEntity extends BlockEntity {
     /** Empty hand on a big pit with a done roast: the cooked meat into the inventory. False if there is none ready. */
     boolean takeRoast(Player player) {
         if (!roastDone()) return false;
+        com.mechanical.skills.Skills.cooked(player, roastCooked);
         player.getInventory().placeItemBackInInventory(roastCooked, Prediction.SERVER_ONLY);
         if (player instanceof net.minecraft.server.level.ServerPlayer sp) FirePit.award(sp, "iron_age/whole_roast");
         roastRaw = roastCooked = ItemStack.EMPTY;
