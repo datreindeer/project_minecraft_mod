@@ -5,8 +5,8 @@
    "en": "Stone Age: the first days"
   },
   "intro": {
-   "sv": "Du börjar med bara händerna. Vanilla-genvägarna är borta: stockar kräver yxa, plankor splittras utan yxa och djur släpper inget kött förrän du styckar dem. Målet med de första dagarna är flintverktyg, stenverktyg, eld och en [[kiln]] som kan bränna en [[crucible]], det som bronsåldern behöver.",
-   "en": "You start with your bare hands. The vanilla shortcuts are gone: logs need an axe, planks splinter without an axe and animals drop no meat until you butcher them. The goal of the first days is flint tools, stone tools, fire and a [[kiln]] that can fire a [[crucible]], which is what the Bronze Age needs."
+   "sv": "Du börjar med bara händerna. Vanilla-genvägarna är borta: stockar kräver yxa, plankor splittras utan yxa och djur släpper inget kött förrän du styckar dem. Målet med de första dagarna är flintverktyg, stenverktyg, eld och en [[kiln]] som kan bränna en [[crucible]], det som bronsåldern behöver. Håll muspekaren över ett föremål (i valfritt inventarie eller i söklistan bredvid) och tryck R för att se dess recept, eller U för att se vad det används till.",
+   "en": "You start with your bare hands. The vanilla shortcuts are gone: logs need an axe, planks splinter without an axe and animals drop no meat until you butcher them. The goal of the first days is flint tools, stone tools, fire and a [[kiln]] that can fire a [[crucible]], which is what the Bronze Age needs. Hold the pointer over an item (in any inventory, or in the search list beside it) and press R to see its recipes, or U to see what it is used for."
   },
   "steps": [
    {
