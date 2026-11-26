@@ -64,10 +64,18 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
     private static String last;
     private String type;
     private Set<String> seen = Set.of();
+    private final java.util.Map<String, List<Integer>> byType = new java.util.HashMap<>();
+    private List<String> known = List.of();
 
     public ToolStationScreen(ToolStationMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, W, H);
         inventoryLabelY = 133;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        refresh();
     }
 
     // ------------------------------------------------------------------ model
@@ -83,19 +91,22 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         return p.contains("bow") ? "bow" : p;
     }
 
-    private List<Integer> recipes(String t) {
-        List<Integer> out = new ArrayList<>();
+    /** The unlocked recipes (indices into ALL) by type, and the types that have any: worked out once a frame. */
+    private void refresh() {
+        byType.clear();
         for (int i = 0; i < ToolStationRecipes.ALL.size(); i++) {
             Recipe r = ToolStationRecipes.ALL.get(i);
-            if (type(r).equals(t) && ToolStationRecipes.isUnlocked(minecraft.player, r)) out.add(i);
+            if (ToolStationRecipes.isUnlocked(minecraft.player, r)) byType.computeIfAbsent(type(r), k -> new ArrayList<>()).add(i);
         }
-        return out;
+        known = java.util.Arrays.stream(TYPES).filter(byType::containsKey).toList();
+    }
+
+    private List<Integer> recipes(String t) {
+        return byType.getOrDefault(t, List.of());
     }
 
     private List<String> types() {
-        List<String> out = new ArrayList<>();
-        for (String t : TYPES) if (!recipes(t).isEmpty()) out.add(t);
-        return out;
+        return known;
     }
 
     /** The picked type: the selected recipe's, else the last one, else the first known. */
@@ -189,6 +200,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
     public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(g, mouseX, mouseY, partialTick);
         seen = SeenItems.seen(minecraft.player);
+        refresh();
         int x0 = leftPos, y0 = topPos;
         HideUi.panel(g, x0, y0, W, H);
         HideUi.seam(g, x0 + 7, y0 + 20, W - 14);
@@ -296,8 +308,8 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         if (part == 0) return new Hint(new ItemStack(r.head().get()).getHoverName(), TEXT, List.of());
         if (!placed.isEmpty()) {
             ToolParts.Part p = part == 1 ? ToolParts.binding(placed.getItem()) : ToolParts.rod(placed.getItem());
-            boolean ok = options(r, part).contains(placed.getItem()) || r.dynamic() && p != null && p.tier() <= ToolParts.tier(r.head().get());
-            if (!ok && r.dynamic() && p != null)
+            boolean ok = options(r, part).contains(placed.getItem()) || r.dynamic() && (part == 1 ? r.bindings() : r.rods()).contains(placed.getItem());
+            if (!ok && r.dynamic() && p != null && p.tier() > ToolParts.tier(r.head().get()))
                 return new Hint(Component.translatable("gui.mechanical.tool_station.needs_tier",
                         Component.translatable("gui.mechanical.tool_station.tier." + p.tier())), BAD, List.of());
             if (!ok) return new Hint(Component.translatable("gui.mechanical.tool_station.wrong_" + PARTS[part]), BAD, List.of());
@@ -363,7 +375,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
                 y = share(g, col, x, y, ToolStats.binding(r.binding().get(), parts.binding()));
                 y = share(g, col, x, y, ToolStats.rod(r.rod().get(), parts.rod()));
                 if (parts.smithing() > 0) {
-                    icon(g, Skill.SMITHING.icon(), x, y);
+                    g.item(Skill.SMITHING.icon(), x, y);
                     g.text(font, Component.translatable("gui.mechanical.tool_station.smithing", parts.smithing()), x + 18, y + 4, TEXT, false);
                     numbers(g, col, y + 4, new String[] {"+" + Math.round(ToolStats.smithing(parts.smithing()) * 100) + "%", "", ""}, new int[] {GOOD, 0, 0});
                     y += 16;
@@ -374,7 +386,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
             y += 22;
         }
         if (Bronze.isPoor(out)) {
-            icon(g, menu.getSlot(ToolStationMenu.HEAD).getItem(), x, y);
+            g.item(menu.getSlot(ToolStationMenu.HEAD).getItem(), x, y);
             g.text(font, Component.translatable("gui.mechanical.tool_station.poor"), x + 18, y + 4, BAD, false);
             numbers(g, col, y + 4, new String[] {"×" + factor(Bronze.POOR_DURABILITY), "", ""}, new int[] {BAD, 0, 0});
             y += 16;
@@ -390,15 +402,11 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
 
     /** One part's row: its icon and name, and its factors against the recipe's own part ("–" where it changes nothing). */
     private int share(GuiGraphicsExtractor g, int[] col, int x, int y, ToolStats.Share s) {
-        icon(g, new ItemStack(s.part()), x, y);
+        g.item(new ItemStack(s.part()), x, y);
         g.text(font, cut(new ItemStack(s.part()).getHoverName(), col[0] - 16 - (x + 18)), x + 18, y + 4, s.isDefault() ? DIM : TEXT, false);
         numbers(g, col, y + 4, new String[] {times(s.durability()), times(s.speed()), plus(s.damage())},
                 new int[] {change(s.durability(), 1), change(s.speed(), 1), change(s.damage(), 0)});
         return y + 16;
-    }
-
-    private void icon(GuiGraphicsExtractor g, ItemStack stack, int x, int y) {
-        g.item(stack, x, y);
     }
 
     private void numbers(GuiGraphicsExtractor g, int[] col, int y, String[] values, int[] colours) {

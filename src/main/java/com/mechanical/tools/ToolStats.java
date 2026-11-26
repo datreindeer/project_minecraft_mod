@@ -18,8 +18,15 @@ public final class ToolStats {
     public static Stats of(ItemStack tool) {
         Tool miner = tool.get(DataComponents.TOOL);
         float speed = 0;
-        // the last rule with a speed is the tool's own work (a sword's first rule is cobwebs at 15)
-        if (miner != null) for (Tool.Rule rule : miner.rules()) speed = rule.speed().orElse(speed);
+        // the rule for the tool's own mineable/* tag; without one (swords: cobwebs at 15, then sword_efficient) the last rule with a speed
+        if (miner != null) for (Tool.Rule rule : miner.rules()) {
+            if (rule.speed().isEmpty()) continue;
+            if (rule.blocks().unwrapKey().filter(tag -> tag.location().getPath().startsWith("mineable/")).isPresent()) {
+                speed = rule.speed().get();
+                break;
+            }
+            speed = rule.speed().get();
+        }
         ItemAttributeModifiers attributes = tool.get(DataComponents.ATTRIBUTE_MODIFIERS);
         float damage = 0;
         if (attributes != null) for (ItemAttributeModifiers.Entry e : attributes.modifiers())

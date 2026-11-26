@@ -46,7 +46,7 @@ public final class ToolStationRecipes {
         }
 
         public List<Item> rods() {
-            return ToolParts.rods(head.get());
+            return ToolParts.rods(head.get(), rod.get());
         }
 
         public List<Item> parts() {
@@ -71,7 +71,7 @@ public final class ToolStationRecipes {
         }
 
         public boolean matches(ItemStack head, ItemStack binding, ItemStack rod) {
-            if (dynamic()) return head.is(this.head.get()) && ToolParts.allowed(head.getItem(), binding.getItem(), rod.getItem());
+            if (dynamic()) return head.is(this.head.get()) && ToolParts.allowed(head.getItem(), this.rod.get(), binding.getItem(), rod.getItem());
             return head.is(this.head.get()) && (binding.is(this.binding.get()) || gluable() && binding.is(Kettle.HIDE_GLUE.get())) && rod.is(this.rod.get());
         }
     }

@@ -99,9 +99,15 @@ public final class ToolsTest {
 
     /** A rod above the head's tier is refused; a Bronze Tool Rod and Leather on a bronze pickaxe give x1.35 x1.1 over Cordage on a Tool Rod. */
     private static void steelRodLonger(GameTestHelper h) {
-        h.assertFalse(ToolParts.allowed(Bronze.BRONZE_PICKAXE_HEAD.get(), Items.LEATHER, Smithing.STEEL_TOOL_ROD.get()), "steel rod (4) on a bronze head (2)");
-        h.assertTrue(ToolParts.allowed(Bronze.BRONZE_PICKAXE_HEAD.get(), Items.LEATHER, Smithing.BRONZE_TOOL_ROD.get()), "bronze rod on a bronze head");
-        h.assertFalse(ToolParts.allowed(Mechanical.STONE_PICKAXE_HEAD.get(), Mechanical.TWINE.get(), Smithing.BONE_TOOL_ROD.get()), "stone takes only wood");
+        Item toolRod = Mechanical.TOOL_ROD.get();
+        h.assertFalse(ToolParts.allowed(Bronze.BRONZE_PICKAXE_HEAD.get(), toolRod, Items.LEATHER, Smithing.STEEL_TOOL_ROD.get()), "steel rod (4) on a bronze head (2)");
+        h.assertTrue(ToolParts.allowed(Bronze.BRONZE_PICKAXE_HEAD.get(), toolRod, Items.LEATHER, Smithing.BRONZE_TOOL_ROD.get()), "bronze rod on a bronze head");
+        h.assertFalse(ToolParts.allowed(Mechanical.STONE_PICKAXE_HEAD.get(), Items.STICK, Mechanical.TWINE.get(), Smithing.BONE_TOOL_ROD.get()), "stone takes only wood");
+        h.assertFalse(ToolParts.allowed(Bronze.BRONZE_PICKAXE_HEAD.get(), toolRod, Mechanical.CORDAGE.get(), Items.LEATHER), "no Leather rod on a haft");
+        h.assertTrue(ToolParts.allowed(Bronze.BRONZE_SWORD_BLADE.get(), Items.LEATHER, Mechanical.CORDAGE.get(), Smithing.BRONZE_TOOL_ROD.get()), "a Bronze Tool Rod grip on a sword");
+        h.assertTrue(ToolParts.allowed(Bronze.BRONZE_SWORD_BLADE.get(), Items.LEATHER, Mechanical.CORDAGE.get(), Items.LEATHER), "the sword's own Leather grip");
+        for (Item head : List.of(Items.FLINT, Mechanical.STONE_PICKAXE_HEAD.get()))
+            h.assertTrue(java.util.Set.copyOf(ToolParts.rods(head, toolRod)).equals(java.util.Set.of(Items.STICK, toolRod)), "wood only on " + head + ": " + ToolParts.rods(head, toolRod));
         ItemStack pick = bronzePick();
         int expected = Math.round(460 * 1.35F * 1.1F);
         h.assertTrue(Math.abs(pick.getMaxDamage() - expected) <= 1, "bronze rod durability " + pick.getMaxDamage() + " vs " + expected);

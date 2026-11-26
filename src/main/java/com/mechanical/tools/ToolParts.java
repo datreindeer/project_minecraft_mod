@@ -93,8 +93,13 @@ public final class ToolParts {
                 .map(Map.Entry::getKey).toList();
     }
 
-    public static java.util.List<Item> rods(Item head) {
-        return ordered(RODS.get(), head);
+    /** The rods for this head: Leather only where the recipe's own rod is the Leather grip (swords, knives, tongs), never on a haft. */
+    public static java.util.List<Item> rods(Item head, Item defaultRod) {
+        return ordered(RODS.get(), head).stream().filter(r -> fits(r, defaultRod)).toList();
+    }
+
+    private static boolean fits(Item rod, Item defaultRod) {
+        return rod != Items.LEATHER || defaultRod == Items.LEATHER;
     }
 
     /** Head tier from its material, the registry path's first word: flint, stone and tusk 0, copper 1, bronze 2, iron 3, steel 4. */
@@ -103,10 +108,10 @@ public final class ToolParts {
         return path.startsWith("steel") ? 4 : path.startsWith("iron") ? 3 : path.startsWith("bronze") ? 2 : path.startsWith("copper") ? 1 : 0;
     }
 
-    /** Known parts, neither above the head's tier. */
-    public static boolean allowed(Item head, Item binding, Item rod) {
+    /** Known parts, neither above the head's tier, and a Leather rod only in place of a Leather grip ({@link #rods}). */
+    public static boolean allowed(Item head, Item defaultRod, Item binding, Item rod) {
         Part b = binding(binding), r = rod(rod);
-        return b != null && r != null && b.tier() <= tier(head) && r.tier() <= tier(head);
+        return b != null && r != null && b.tier() <= tier(head) && r.tier() <= tier(head) && fits(rod, defaultRod);
     }
 
     /**
