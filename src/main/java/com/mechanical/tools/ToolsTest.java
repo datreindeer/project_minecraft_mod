@@ -107,8 +107,15 @@ public final class ToolsTest {
         double damage = pick.get(DataComponents.ATTRIBUTE_MODIFIERS).compute(Attributes.ATTACK_DAMAGE, 0, EquipmentSlot.MAINHAND);
         double base = new ItemStack(Bronze.BRONZE_PICKAXE.get()).get(DataComponents.ATTRIBUTE_MODIFIERS).compute(Attributes.ATTACK_DAMAGE, 0, EquipmentSlot.MAINHAND);
         h.assertTrue(Math.abs(damage - base - 0.5) < 1e-6, "bronze rod +0.5 damage: " + base + " -> " + damage);
-        float speed = pick.get(DataComponents.TOOL).defaultMiningSpeed(), baseSpeed = new ItemStack(Bronze.BRONZE_PICKAXE.get()).get(DataComponents.TOOL).defaultMiningSpeed();
-        h.assertTrue(Math.abs(speed - baseSpeed * 1.03F * 0.98F) < 1e-4, "speed x1.03 x0.98: " + baseSpeed + " -> " + speed);
+        var stone = net.minecraft.world.level.block.Blocks.STONE.defaultBlockState();
+        var baseTool = new ItemStack(Bronze.BRONZE_PICKAXE.get()).get(DataComponents.TOOL);
+        float speed = pick.get(DataComponents.TOOL).getMiningSpeed(stone), baseSpeed = baseTool.getMiningSpeed(stone);
+        h.assertTrue(Math.abs(speed - baseSpeed * 1.03F * 0.98F) < 1e-4, "stone speed x1.03 x0.98: " + baseSpeed + " -> " + speed);
+        h.assertTrue(pick.get(DataComponents.TOOL).defaultMiningSpeed() == baseTool.defaultMiningSpeed(), "bare-hand default speed unchanged");
+        try {
+            ToolParts.apply(pick.copy(), Mechanical.CORDAGE.get(), Mechanical.TOOL_ROD.get(), new ToolParts.Parts(Items.DIRT, Mechanical.TOOL_ROD.get(), 0));
+            throw h.assertionException("dirt binding accepted");
+        } catch (IllegalArgumentException refused) {}
     }
 
     /** Smithing 40 gives x1.2 durability. */

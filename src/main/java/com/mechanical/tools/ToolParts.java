@@ -95,9 +95,11 @@ public final class ToolParts {
     /**
      * Writes the parts and the stats they give onto the tool, recomputed from the item's own stats so it can be applied again.
      * A Poor Bronze tool keeps its 70 % (Bronze.markPoor on it afterwards is a no-op), rounded as markPoor rounds.
+     * Throws IllegalArgumentException for a part outside the tables: callers check {@link #allowed} first.
      */
     public static void apply(ItemStack tool, Item defaultBinding, Item defaultRod, Parts parts) {
-        Part db = binding(defaultBinding), dr = rod(defaultRod), b = binding(parts.binding()), r = rod(parts.rod());
+        Part db = known(binding(defaultBinding), defaultBinding), dr = known(rod(defaultRod), defaultRod),
+                b = known(binding(parts.binding()), parts.binding()), r = known(rod(parts.rod()), parts.rod());
         ItemStack fresh = new ItemStack(tool.getItem());
         tool.set(TOOL_PARTS.get(), parts);
         if (fresh.isDamageableItem()) {
@@ -111,16 +113,22 @@ public final class ToolParts {
             float factor = (b.speed() * r.speed()) / (db.speed() * dr.speed());
             tool.set(DataComponents.TOOL, new Tool(miner.rules().stream()
                     .map(rule -> new Tool.Rule(rule.blocks(), rule.speed().map(s -> s * factor), rule.correctForDrops())).toList(),
-                    miner.defaultMiningSpeed() * factor, miner.damagePerBlock(), miner.canDestroyBlocksInCreative()));
+                    miner.defaultMiningSpeed(), miner.damagePerBlock(), miner.canDestroyBlocksInCreative())); // default = bare-hand speed, left alone
         }
         ItemAttributeModifiers attributes = fresh.get(DataComponents.ATTRIBUTE_MODIFIERS);
         if (attributes != null) {
+            // only items with a base_attack_damage modifier get the rod's bonus; tongs and chisels without one get none, deliberately
             double extra = r.damage() - dr.damage();
             tool.set(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(attributes.modifiers().stream()
                     .map(e -> !e.matches(Attributes.ATTACK_DAMAGE, Item.BASE_ATTACK_DAMAGE_ID) ? e : new ItemAttributeModifiers.Entry(e.attribute(),
                             new AttributeModifier(e.modifier().id(), e.modifier().amount() + extra, e.modifier().operation()), e.slot(), e.display()))
                     .toList()));
         }
+    }
+
+    private static Part known(Part part, Item item) {
+        if (part == null) throw new IllegalArgumentException("not a tool part in this slot: " + BuiltInRegistries.ITEM.getKey(item));
+        return part;
     }
 
     public static void init() {}
