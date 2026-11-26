@@ -15,6 +15,8 @@ import com.mechanical.Mechanical;
 import com.mechanical.client.people.TradeBoardScreen;
 import com.mechanical.equipment.Accessory;
 import com.mechanical.equipment.Equipment;
+import com.mechanical.skills.Skill;
+import com.mechanical.skills.Skills;
 import com.mechanical.equipment.PackMenu;
 
 import net.minecraft.client.Minecraft;
@@ -356,6 +358,7 @@ public final class GuiShots {
                 mc.player.connection.getAdvancements())), null);
         quests();
         recipes();
+        skills();
         inWorld("screen_stats", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.achievement.StatsScreen(null, mc.player.getStats())), null);
     }
 
@@ -532,6 +535,54 @@ public final class GuiShots {
                 if (slot.getItem().is(Mechanical.TWINE.get())) return new int[] {s.getLeftPos() + slot.x + 8, s.getTopPos() + slot.y + 8};
             return null;
         });
+    }
+
+    /** Varied levels (set straight, so no popups lie under the screen), Fletching at the top, and a gold Topaz ring: Mining +3. */
+    private static void skilled(ServerPlayer p) {
+        reset(p);
+        int[] levels = {22, 13, 8, 3, 15, 41, 5, 11, 1, 2, 6, 100};
+        java.util.Map<String, Integer> xp = new java.util.HashMap<>();
+        for (Skill s : Skill.values()) {
+            int l = levels[s.ordinal()];
+            xp.put(s.key(), Skills.xpForLevel(l) + (l < Skills.MAX_LEVEL ? (Skills.xpForLevel(l + 1) - Skills.xpForLevel(l)) * (s.ordinal() * 7 % 10) / 10 : 0));
+        }
+        p.setData(Skills.XP.get(), xp);
+        Equipment.of(p).set(Accessory.RING_1, com.mechanical.Jewelry.make(com.mechanical.Jewelry.GOLD_RING.get(), new com.mechanical.Jewelry.Jewel("topaz", false)));
+    }
+
+    /** At {@code tick} of the shot, {@code amount} Mining XP (once each), through the real payload to the popup. */
+    private static Supplier<int[]> mine(int tick, int amount) {
+        return () -> {
+            if (ticks == tick || ticks == tick + 4) {
+                var server = Minecraft.getInstance().getSingleplayerServer();
+                server.execute(() -> Skills.addXp(server.getPlayerList().getPlayers().get(0), Skill.MINING, amount));
+            }
+            return null;
+        };
+    }
+
+    private static void skills() {
+        Minecraft mc = Minecraft.getInstance();
+        for (int[] size : new int[][] {{1920, 1080, 3}, {854, 480, 2}}) {
+            inWorld(size[2] == 3 ? "skills_screen" : "skills_screen_small", GuiShots::skilled, () -> {
+                mc.getWindow().setWindowed(size[0], size[1]);
+                mc.options.guiScale().set(size[2]);
+                mc.resizeGui();
+                show(new com.mechanical.client.skills.SkillsScreen(Skill.MINING));
+            }, null);
+        }
+        // Mining 4 XP short of 14: two gains of 10 merge into one popup that says the new level
+        inWorld("skills_toast", p -> {
+            skilled(p);
+            var xp = new java.util.HashMap<>(p.getData(Skills.XP.get()));
+            xp.put(Skill.MINING.key(), Skills.xpForLevel(14) - 4);
+            p.setData(Skills.XP.get(), xp);
+        }, () -> {
+            mc.getWindow().setWindowed(1920, 1080);
+            mc.options.guiScale().set(3);
+            mc.resizeGui();
+        }, mine(48, 10));
+        inWorld("skills_toast_gain", GuiShots::skilled, () -> {}, mine(48, 10));
     }
 
     private static net.minecraft.client.gui.components.EditBox searchBox() {
