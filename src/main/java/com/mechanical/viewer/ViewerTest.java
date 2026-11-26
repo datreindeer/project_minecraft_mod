@@ -50,6 +50,7 @@ public final class ViewerTest {
             toolStationKeyPart(h);
             altOptionCountsAsSeen(h);
             codecRoundTrip(h);
+            sourcesRebuildAfterInvalidate(h);
             h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -111,5 +112,12 @@ public final class ViewerTest {
         var d = ViewerRecipe.CODEC.decode(buf);
         h.assertTrue(d.station() == r.station() && d.inputs().equals(r.inputs()) && ItemStack.matches(d.output(), r.output())
                 && d.width() == r.width() && d.unlock() == r.unlock() && d.unlockId().equals(r.unlockId()), "codec round trip");
+    }
+
+    private static void sourcesRebuildAfterInvalidate(GameTestHelper h) {
+        var before = StationSources.all();
+        StationSources.invalidate();
+        var after = StationSources.all();
+        h.assertTrue(before != after && before.size() == after.size(), "invalidate gives a fresh list of the same size");
     }
 }

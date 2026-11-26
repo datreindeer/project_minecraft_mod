@@ -19,17 +19,32 @@ import com.mechanical.ToolStationRecipes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
 /** The mod's Java-coded recipes (stations without JSON), as {@link ViewerRecipe}s. */
+@EventBusSubscriber(modid = com.mechanical.Mechanical.MODID)
 public final class StationSources {
-    private static List<ViewerRecipe> all;
+    private static volatile List<ViewerRecipe> all;
 
     private StationSources() {}
 
     /** Built on first use, when the registries are full. */
-    public static synchronized List<ViewerRecipe> all() {
-        if (all == null) all = build();
-        return all;
+    public static List<ViewerRecipe> all() {
+        List<ViewerRecipe> a = all;
+        if (a == null) all = a = build(); // rebuilding twice on a race is harmless
+        return a;
+    }
+
+    /** Tags and registries changed (reload, datapacks, new world): the tag and predicate snapshots are stale. */
+    @SubscribeEvent
+    static void onTagsUpdated(TagsUpdatedEvent event) {
+        invalidate();
+    }
+
+    static void invalidate() {
+        all = null;
     }
 
     private static List<ViewerRecipe> build() {
