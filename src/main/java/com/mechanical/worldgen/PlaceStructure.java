@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import com.mechanical.Mechanical;
 import com.mechanical.dashboard.Landmarks;
 import com.mechanical.people.AgeRebuild;
+import com.mechanical.people.ClimateZone;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -28,6 +29,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -41,16 +43,19 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 /**
- * /structure tribe_village|ancient_oak &lt;x&gt; &lt;z&gt;: builds one at the middle of the chunk holding x, z. Unlike vanilla's
+ * /structure tribe_village|ancient_oak &lt;x&gt; &lt;z&gt;: a village is built centred exactly on x, z and the land is
+ * shaped to take it (hills cut, dips and water filled, a slope out to the land round it); an oak goes where worldgen would
+ * put it in that chunk, and only on dry, fairly level ground. Unlike vanilla's
  * /place it saves the structure start and its references in the chunks, so the game knows it stands there (land title,
  * tribe visits, age rebuilds). Vanilla /locate still does not find it: that only searches worldgen's own placement spots.
- * The biome is not checked; water, uneven ground, buildings and other villages or oaks are refused. The ground is not levelled as worldgen's beard_box would.
+ * The biome is not checked; buildings and other villages or oaks are refused.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class PlaceStructure {
@@ -70,7 +75,8 @@ public final class PlaceStructure {
         var generator = source.getGenerator();
         var randomState = source.randomState();
         ChunkPos at = new ChunkPos(x >> 4, z >> 4);
-        StructureStart start = structure.generate(holder, level.dimension(), level.registryAccess(), generator, generator.getBiomeSource(),
+        boolean village = kind.equals("tribe_village");
+        StructureStart start = village ? villageStart(level, structure, x, z) : structure.generate(holder, level.dimension(), level.registryAccess(), generator, generator.getBiomeSource(),
                 randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED), randomState, level.getStructureTemplateManager(), level.getSeed(),
                 at, 0, level, b -> true);
         if (!start.isValid()) return "Can't build there: water, or the ground is too uneven";
@@ -93,12 +99,13 @@ public final class PlaceStructure {
                     + chunk.getPos().getMiddleBlockZ();
         }
 
-        String ground = groundRefusal(level, kind, centre(start));
+        String ground = village ? null : groundRefusal(level, centre(start));
         if (ground != null) return ground;
         // shortcut: entities of chunks nobody is near may not be read from disk yet; those keep existing, only blocks go
         if (!level.getEntitiesOfClass(Entity.class, AABB.of(box).inflate(0, 16, 0), PlaceStructure::keep).isEmpty())
             return "A player, pet, named animal, vehicle, armor stand or hanging item is in the way";
 
+        if (village) shape(level, centre(start), ((TribeVillageStructure.Piece) start.getPieces().getFirst()).climate());
         for (LevelChunk chunk : chunks) {
             ChunkPos p = chunk.getPos();
             start.placeInChunk(level, level.structureManager(), generator, level.getRandom(), new BoundingBox(p.getMinBlockX(), level.getMinY(),
@@ -109,7 +116,7 @@ public final class PlaceStructure {
             chunk.addReferenceForStructure(structure, at.pack());
             chunk.markUnsaved();
         }
-        if (start.getPieces().getFirst() instanceof TribeVillageStructure.Piece village) AgeRebuild.found(village);
+        if (start.getPieces().getFirst() instanceof TribeVillageStructure.Piece placed) AgeRebuild.found(placed);
         BlockPos c = centre(start);
         Landmarks.add(level, kind, c.getX(), c.getZ());
         return null;
@@ -137,26 +144,90 @@ public final class PlaceStructure {
         return false;
     }
 
+    /** How far out from the village's clearing the land slopes (one block per block) to meet what was there. */
+    private static final int RIM = 12;
+
     /**
-     * The structure's height comes from the world generator's noise. Land made by an older generator, or dug and filled by
+     * A village centred on x, z whatever the land is like: its floor at the middle height of the real ground under it, but
+     * never below any water {@link #shape} will touch, so none can run in.
+     */
+    private static StructureStart villageStart(ServerLevel level, Structure structure, int x, int z) {
+        int r = TribeVillageStructure.CLEAR_R + RIM;
+        for (int cx = x - r >> 4; cx <= x + r >> 4; cx++)
+            for (int cz = z - r >> 4; cz <= z + r >> 4; cz++) level.getChunk(cx, cz); // heights read as the world's floor otherwise
+        List<Integer> heights = new ArrayList<>();
+        int water = level.getMinY();
+        for (int dx = -r; dx <= r; dx++)
+            for (int dz = -r; dz <= r; dz++) {
+                if (dx * dx + dz * dz > r * r) continue;
+                BlockPos top = top(level, x + dx, z + dz);
+                if (!level.getFluidState(top.below()).isEmpty()) water = Math.max(water, top.getY());
+                if (dx * dx + dz * dz <= TribeVillageStructure.CLEAR_R * TribeVillageStructure.CLEAR_R) heights.add(top.getY());
+            }
+        heights.sort(null);
+        BlockPos centre = new BlockPos(x, Math.max(water, heights.get(heights.size() / 2)), z);
+        var piece = new TribeVillageStructure.Piece(level.getRandom().nextLong(), centre, ClimateZone.of(level.getBiome(centre)));
+        return new StructureStart(structure, new ChunkPos(x >> 4, z >> 4), 0, new PiecesContainer(List.of(piece)));
+    }
+
+    /** The first free block above the ground or the water at x, z, looking past trees and plants. */
+    private static BlockPos top(ServerLevel level, int x, int z) {
+        BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos(x, level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1, z);
+        while (at.getY() > level.getMinY()) {
+            BlockState s = level.getBlockState(at);
+            if (!s.getFluidState().isEmpty() || !(s.isAir() || s.is(BlockTags.LEAVES) || s.is(BlockTags.LOGS) || s.canBeReplaced())) break;
+            at.move(Direction.DOWN);
+        }
+        return at.above().immutable();
+    }
+
+    /**
+     * What worldgen's beard_box and the piece's own ground work leave undone on finished land: under the village, hills
+     * higher than the piece clears and water or caves deeper than it fills; round it, a slope to the old ground.
+     */
+    private static void shape(ServerLevel level, BlockPos centre, ClimateZone climate) {
+        BlockState soil = (climate == ClimateZone.WARM ? Blocks.COARSE_DIRT : Blocks.GRASS_BLOCK).defaultBlockState();
+        int core = TribeVillageStructure.CLEAR_R, r = core + RIM, floor = centre.getY();
+        for (int dx = -r; dx <= r; dx++)
+            for (int dz = -r; dz <= r; dz++) {
+                double d = Math.sqrt(dx * dx + dz * dz);
+                if (d > r) continue;
+                int x = centre.getX() + dx, z = centre.getZ() + dz;
+                int step = Math.max(0, (int) Math.ceil(d - core - 0.5)); // 0 inside the clearing
+                BlockPos top = top(level, x, z);
+                int g = top.getY();
+                if (g > floor + step) { // cut: everything above goes, trees too, and the old surface is laid on the new height
+                    BlockState surface = level.getBlockState(top.below());
+                    for (int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1; y >= floor + step; y--)
+                        set(level, new BlockPos(x, y, z), Blocks.AIR.defaultBlockState());
+                    if (step > 0) set(level, new BlockPos(x, floor + step - 1, z), surface.getFluidState().isEmpty() ? surface : soil);
+                }
+                // fill: from the slope's low edge down to solid ground, through water and caves
+                BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos(x, floor - step - 1, z);
+                for (int i = 0; i < 64 && p.getY() > level.getMinY(); i++, p.move(Direction.DOWN)) {
+                    BlockState s = level.getBlockState(p);
+                    if (s.isSolid() && s.getFluidState().isEmpty() && !s.is(BlockTags.LEAVES) && !s.is(BlockTags.LOGS)) break;
+                    set(level, p, i == 0 ? soil : Blocks.DIRT.defaultBlockState());
+                }
+            }
+    }
+
+    private static void set(ServerLevel level, BlockPos p, BlockState s) {
+        level.setBlock(p, s, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+    }
+
+    /**
+     * An oak's height comes from the world generator's noise. Land made by an older generator, or dug and filled by
      * players, can differ from it, so the real blocks are checked at the places the structure itself samples.
      */
-    private static String groundRefusal(ServerLevel level, String kind, BlockPos centre) {
-        boolean village = kind.equals("tribe_village");
-        int reach = village ? 24 : 10;
+    private static String groundRefusal(ServerLevel level, BlockPos centre) {
         List<Integer> heights = new ArrayList<>();
-        for (int dx = -reach; dx <= reach; dx += village ? 6 : 5)
-            for (int dz = -reach; dz <= reach; dz += village ? 6 : 5) {
-                if (dx * dx + dz * dz > reach * reach) continue;
-                int x = centre.getX() + dx, z = centre.getZ() + dz;
-                BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos(x, level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1, z);
-                while (at.getY() > level.getMinY()) { // past trees and plants down to the ground or the water
-                    BlockState s = level.getBlockState(at);
-                    if (!s.getFluidState().isEmpty()) return "Can't build there: there is water";
-                    if (!(s.isAir() || s.is(BlockTags.LEAVES) || s.is(BlockTags.LOGS) || s.canBeReplaced())) break;
-                    at.move(Direction.DOWN);
-                }
-                heights.add(at.getY() + 1);
+        for (int dx = -10; dx <= 10; dx += 5)
+            for (int dz = -10; dz <= 10; dz += 5) {
+                if (dx * dx + dz * dz > 100) continue;
+                BlockPos top = top(level, centre.getX() + dx, centre.getZ() + dz);
+                if (!level.getFluidState(top.below()).isEmpty()) return "Can't build there: there is water";
+                heights.add(top.getY());
             }
         heights.sort(null);
         if (heights.getLast() - heights.getFirst() > 8) return "Can't build there: the ground is too uneven";
