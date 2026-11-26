@@ -17,6 +17,13 @@
               "type": "minecraft:model",
               "model": "mechanical:item/tool_parts/stone_axe/rod_stick"
             }
+          },
+          {
+            "when": "tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/stone_axe/rod_tool_rod"
+            }
           }
         ],
         "fallback": {
@@ -75,6 +82,13 @@
               "model": {
                 "type": "minecraft:model",
                 "model": "mechanical:item/tool_parts/stone_axe/zone_stick"
+              }
+            },
+            {
+              "when": "tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/stone_axe/zone_tool_rod"
               }
             }
           ],

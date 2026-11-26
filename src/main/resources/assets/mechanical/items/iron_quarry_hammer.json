@@ -19,6 +19,13 @@
             }
           },
           {
+            "when": "tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/rod_tool_rod"
+            }
+          },
+          {
             "when": "bone_tool_rod",
             "model": {
               "type": "minecraft:model",
@@ -124,6 +131,13 @@
               "model": {
                 "type": "minecraft:model",
                 "model": "mechanical:item/tool_parts/iron_quarry_hammer/zone_stick"
+              }
+            },
+            {
+              "when": "tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_quarry_hammer/zone_tool_rod"
               }
             },
             {

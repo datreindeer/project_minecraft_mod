@@ -30,6 +30,13 @@
                   }
                 },
                 {
+                  "when": "tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/steel_spear/rod_tool_rod"
+                  }
+                },
+                {
                   "when": "bone_tool_rod",
                   "model": {
                     "type": "minecraft:model",
@@ -149,6 +156,13 @@
                     "model": {
                       "type": "minecraft:model",
                       "model": "mechanical:item/tool_parts/steel_spear/zone_stick"
+                    }
+                  },
+                  {
+                    "when": "tool_rod",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/steel_spear/zone_tool_rod"
                     }
                   },
                   {

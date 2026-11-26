@@ -19,6 +19,13 @@
             }
           },
           {
+            "when": "tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_smithing_hammer/rod_tool_rod"
+            }
+          },
+          {
             "when": "bone_tool_rod",
             "model": {
               "type": "minecraft:model",

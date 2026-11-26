@@ -619,11 +619,12 @@ public final class GuiShots {
         return stack;
     }
 
-    /** Tools look like their parts: bronze pickaxes per rod (row 1) and per binding (row 2), steel axes and flint spears (row 3); then the steel axe in hand. */
+    /** Tools look like their parts: bronze pickaxes per rod (row 1) and per binding (row 2), steel axes, flint spears, bronze tongs and quarry hammers (row 3); then the steel axe in hand. */
     private static void toolVariants() {
         Minecraft mc = Minecraft.getInstance();
         Item pick = com.mechanical.Bronze.BRONZE_PICKAXE.get(), axe = com.mechanical.Smithing.STEEL_AXE.get(), spear = Mechanical.FLINT_SPEAR.get();
         Item cordage = Mechanical.CORDAGE.get(), rod = Mechanical.TOOL_ROD.get();
+        Item tongs = com.mechanical.BronzeTools.BRONZE_TONGS.get(), quarry = com.mechanical.BronzeTools.BRONZE_QUARRY_HAMMER.get();
         inWorld("tool_variants", p -> {
             reset(p);
             p.getInventory().clearContent();
@@ -631,9 +632,12 @@ public final class GuiShots {
                     new ItemStack(pick), built(pick, cordage, Items.STICK), built(pick, cordage, com.mechanical.Smithing.BONE_TOOL_ROD.get()),
                     built(pick, cordage, com.mechanical.Smithing.COPPER_TOOL_ROD.get()), built(pick, cordage, com.mechanical.Smithing.BRONZE_TOOL_ROD.get()), null, null, null, null,
                     built(pick, Mechanical.TWINE.get(), rod), built(pick, com.mechanical.Kettle.HIDE_GLUE.get(), rod), built(pick, Items.LEATHER, rod),
-                    built(pick, com.mechanical.wildlife.Wildlife.SINEW.get(), rod), built(pick, com.mechanical.Bronze.BRONZE_PLATE.get(), rod), null, null, null, null,
+                    built(pick, com.mechanical.wildlife.Wildlife.SINEW.get(), rod), built(pick, com.mechanical.Bronze.BRONZE_PLATE.get(), rod), built(pick, cordage, rod),
+                    null, null, null,
                     new ItemStack(axe), built(axe, com.mechanical.Smithing.STEEL_PLATE.get(), com.mechanical.Smithing.STEEL_TOOL_ROD.get()),
-                    built(axe, Items.LEATHER, com.mechanical.Smithing.BONE_TOOL_ROD.get()), new ItemStack(spear), built(spear, Mechanical.TWINE.get(), Items.STICK)};
+                    built(axe, Items.LEATHER, com.mechanical.Smithing.BONE_TOOL_ROD.get()), new ItemStack(spear), built(spear, Mechanical.TWINE.get(), Items.STICK),
+                    new ItemStack(tongs), built(tongs, Mechanical.CORDAGE.get(), com.mechanical.Smithing.BRONZE_TOOL_ROD.get()),
+                    new ItemStack(quarry), built(quarry, Items.LEATHER, com.mechanical.Smithing.BRONZE_TOOL_ROD.get())};
             for (int i = 0; i < stacks.length; i++) if (stacks[i] != null) p.getInventory().setItem(9 + i, stacks[i]);
             p.getInventory().setItem(0, built(axe, com.mechanical.Smithing.STEEL_PLATE.get(), com.mechanical.Smithing.STEEL_TOOL_ROD.get()));
         }, () -> {

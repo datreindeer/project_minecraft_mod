@@ -17,6 +17,7 @@ the binding's fallback), so a bone rod never shows a stray wooden pixel at the h
 --sheets writes 8x sheets per tool (classification, every rod, every binding) to inspect.
 """
 import json
+import os
 import sys
 import zipfile
 from pathlib import Path
@@ -24,10 +25,9 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
-JAR_NAME = "build/moddev/artifacts/minecraft-patched-26.3.0.95-merged.jar"
-JAR = ROOT / JAR_NAME
-if not JAR.exists():  # a git worktree without its own build: use the main checkout's
-    JAR = Path(r"C:\Users\Yngve\Documents\project_minecraft_mod") / JAR_NAME
+JAR = Path(os.environ.get("MECHANICAL_MC_JAR", ROOT / "build/moddev/artifacts/minecraft-patched-26.3.0.95-merged.jar"))
+if not JAR.exists():
+    sys.exit(f"no Minecraft jar at {JAR}: build once (./gradlew compileJava) or set MECHANICAL_MC_JAR to the merged jar")
 ASSETS = ROOT / "src/main/resources/assets"
 ITEM_TEX = ASSETS / "mechanical/textures/item"
 jar = zipfile.ZipFile(JAR)
@@ -37,6 +37,8 @@ def hexset(*cs):
     return {tuple(int(c[i:i + 2], 16) for i in (0, 2, 4)) for c in cs}
 
 
+# the saws' ring handle: the binding is the joint where the blade's tang meets the ring
+SAW = {"haft": hexset("493019", "90663a", "8b6237", "865e34", "7b552f", "76512c"), "zone_px": [(3, 10), (3, 11), (4, 11)]}
 TONG_RINGS = [(4, 10), (6, 12)]  # the tongs' binding: a ring atop each leather grip
 HOE_END = {"haft_px": [(2, 14), (3, 14)]}  # vanilla's hoe haft ends in two outline-coloured pixels
 STICK = hexset("281e0b", "493615", "684e1e", "896727")
@@ -44,19 +46,31 @@ TWINE_WRAP = hexset("836f61", "9b8474", "a58c7c", "ac917f", "b79c89")
 # the mod's leather (gen_bronzetools_textures.LEATHER): vanilla's leather item is orange hide, not a worn wrap
 LEATHER = [(56, 32, 18), (84, 50, 28), (110, 70, 42), (140, 96, 60)]
 
+# the Tool Rod is planed: redder and darker than the rough stick, with a light end-grain cap where it pokes through a head
+PLANED, END_GRAIN = [(46, 28, 14), (78, 48, 22), (112, 72, 34), (146, 100, 48)], (184, 136, 76)
+
 # part id path -> (tier, ramp source); a ramp is a list of colours dark to light
-RODS = {"stick": (0, "minecraft:stick"), "tool_rod": (0, "tool_rod"), "leather": (0, LEATHER),
+RODS = {"stick": (0, "minecraft:stick"), "tool_rod": (0, PLANED), "leather": (0, LEATHER),
         "bone_tool_rod": (1, "bone_tool_rod"), "copper_tool_rod": (1, "copper_tool_rod"),
         "bronze_tool_rod": (2, "bronze_tool_rod"), "iron_tool_rod": (3, "iron_tool_rod"), "steel_tool_rod": (4, "steel_tool_rod")}
-BINDINGS = {"twine": (0, "twine"), "cordage": (0, "cordage"), "hide_glue": (0, "hide_glue"), "leather": (0, LEATHER),
-            "sinew": (0, "sinew"), "bronze_plate": (2, "bronze_plate"), "iron_plate": (3, "iron_plate"),
-            "steel_plate": (4, "steel_plate"), "iron_tool_rod": (3, "iron_tool_rod")}
+BINDINGS = {"twine": 0, "cordage": 0, "hide_glue": 0, "leather": 0, "sinew": 0, "bronze_plate": 2, "iron_plate": 3,
+            "steel_plate": 4, "iron_tool_rod": 3}  # part id path -> tier
 
-CORDS = {"twine", "cordage", "sinew", "leather"}  # wound on, so they show turns; glue and metal bands stay smooth
+# Binding colours (end line, shade, light, accent), set apart from the wood: every light is above the stick's lightest.
+BIND = {"twine": [(96, 90, 78), (150, 144, 128), (225, 218, 196)],
+        "cordage": [(96, 72, 44), (140, 108, 68), (206, 174, 122)],
+        "leather": [(66, 34, 14), (112, 58, 26), (156, 86, 42), (228, 198, 142)],
+        "sinew": [(126, 100, 56), (206, 180, 120), (248, 240, 212)],
+        "hide_glue": [(108, 60, 12), (172, 106, 24), (226, 160, 48), (252, 214, 118)],
+        "bronze_plate": [(72, 46, 16), (190, 140, 62), (242, 206, 126)],
+        "iron_plate": [(46, 46, 52), (166, 168, 176), (226, 227, 231)],
+        "steel_plate": [(28, 34, 44), (128, 144, 168), (202, 212, 226)],
+        "iron_tool_rod": [(40, 40, 44), (148, 148, 154), (212, 212, 216)]}
+WOOD = {"stick", "tool_rod", "leather"}
 
 # (namespace, name, default binding, default rod, overrides) — the dynamic recipes of ToolStationRecipes.ALL.
 # Overrides: haft = the haft colours instead of the stick's; wrap = extra wrap colours; haft_px / head_px / zone_px = hand mask
-# pixels; wrap_size = pixels of a drawn-in wrap where the sprite has none; art_rod = the rod the sprite shows when it is
+# pixels; wrap_size = length of a drawn-in wrap between its two end lines where the sprite has none; art_rod = the rod the sprite shows when it is
 # not the default rod (a wooden haft drawn for an Iron Tool Rod, wooden sword grips drawn for Leather).
 TOOLS = [
     ("mechanical", "crude_stone_pickaxe", "twine", "stick", {}),
@@ -70,13 +84,13 @@ TOOLS = [
     ("minecraft", "copper_axe", "cordage", "tool_rod", {}),
     ("minecraft", "copper_shovel", "cordage", "tool_rod", {}),
     ("minecraft", "copper_hoe", "cordage", "tool_rod", HOE_END),
-    ("mechanical", "copper_knife", "twine", "stick", {"wrap_size": 3}),
+    ("mechanical", "copper_knife", "twine", "stick", {"wrap_size": 2}),
     ("mechanical", "bronze_pickaxe", "cordage", "tool_rod", {}),
     ("mechanical", "bronze_axe", "cordage", "tool_rod", {}),
     ("mechanical", "bronze_shovel", "cordage", "tool_rod", {}),
     ("mechanical", "bronze_hoe", "cordage", "tool_rod", HOE_END),
-    ("mechanical", "bronze_knife", "twine", "stick", {"wrap_size": 3}),
-    ("mechanical", "bronze_saw", "twine", "stick", {"haft": hexset("493019", "90663a", "8b6237", "865e34", "7b552f", "76512c")}),
+    ("mechanical", "bronze_knife", "twine", "stick", {"wrap_size": 2}),
+    ("mechanical", "bronze_saw", "twine", "stick", SAW),
     ("mechanical", "bronze_spear", "cordage", "tool_rod", {"spear": True}),
     ("mechanical", "bronze_sword", "cordage", "leather", {"haft": hexset("54321c", "6d4529", "8c603c", "382012"), "wrap_size": 2}),
     ("mechanical", "bronze_sickle", "twine", "stick", {}),
@@ -89,7 +103,7 @@ TOOLS = [
     ("minecraft", "iron_axe", "leather", "tool_rod", {}),
     ("minecraft", "iron_shovel", "leather", "tool_rod", {}),
     ("minecraft", "iron_hoe", "leather", "tool_rod", HOE_END),
-    ("mechanical", "iron_knife", "leather", "stick", {"wrap_size": 3}),
+    ("mechanical", "iron_knife", "leather", "stick", {"wrap_size": 2}),
     ("minecraft", "iron_sword", "cordage", "leather", {"wrap_size": 2, "art_rod": "stick"}),
     ("minecraft", "iron_spear", "cordage", "tool_rod", {"spear": True}),
     ("mechanical", "iron_smithing_hammer", "leather", "tool_rod", {}),
@@ -97,12 +111,12 @@ TOOLS = [
     ("mechanical", "steel_axe", "iron_tool_rod", "tool_rod", {}),
     ("mechanical", "steel_shovel", "iron_tool_rod", "tool_rod", {}),
     ("mechanical", "steel_hoe", "iron_tool_rod", "tool_rod", HOE_END),
-    ("mechanical", "steel_knife", "leather", "stick", {"wrap_size": 3}),
+    ("mechanical", "steel_knife", "leather", "stick", {"wrap_size": 2}),
     ("mechanical", "steel_sword", "iron_tool_rod", "leather", {"wrap_size": 2, "art_rod": "stick"}),
     ("mechanical", "steel_spear", "iron_tool_rod", "tool_rod", {"spear": True}),
     ("mechanical", "steel_quarry_hammer", "steel_plate", "iron_tool_rod", {"haft_add": hexset("34200c"), "art_rod": "tool_rod"}),
-    ("mechanical", "iron_saw", "leather", "stick", {"haft": hexset("493019", "90663a", "8b6237", "865e34", "7b552f", "76512c")}),
-    ("mechanical", "steel_saw", "leather", "stick", {"haft": hexset("493019", "90663a", "8b6237", "865e34", "7b552f", "76512c")}),
+    ("mechanical", "iron_saw", "leather", "stick", SAW),
+    ("mechanical", "steel_saw", "leather", "stick", SAW),
     ("mechanical", "iron_sickle", "leather", "stick", {}),
     ("mechanical", "steel_sickle", "leather", "stick", {}),
     ("mechanical", "iron_chisel", "leather", "stick", {"haft": hexset("493019", "634323", "744f1e", "896136", "34200c"), "wrap": hexset("ad8036")}),
@@ -175,7 +189,7 @@ def split(im, opts):
         zone = set(opts["zone_px"])
         assert zone <= haft
     else:
-        zone = junction(haft, head, nb4, opts.get("wrap_size", 4))
+        zone = junction(haft, head, nb4, opts.get("wrap_size", 3))
     return opaque, head, haft - zone, zone, bool(wrap)
 
 
@@ -197,10 +211,10 @@ def groups(pixels):
     return out
 
 
-def junction(haft, head, nb4, size=4):
-    """The wrap where the haft enters the head: on the main haft (not a stub poking out above the head), the first
-    pixels touching the head's main part (not a sword's pommel) counted from the handle's end, grown {size} pixels
-    down the haft."""
+def junction(haft, head, nb4, size=3):
+    """The wrap where the haft enters the head: on the main haft (not a stub poking out above the head), from the first
+    pixels touching the head's main part (not a sword's pommel) counted from the handle's end, a band {size} + 2 end
+    lines long down the haft axis (hafts run bottom-left to top-right, so along the axis x - y falls)."""
     main, body = max(groups(haft), key=len), max(groups(head), key=len)
     cx, cy = sum(p[0] for p in body) / len(body), sum(p[1] for p in body) / len(body)
     end = max(main, key=lambda p: (p[0] - cx) ** 2 + (p[1] - cy) ** 2)
@@ -211,13 +225,33 @@ def junction(haft, head, nb4, size=4):
                 steps[q] = steps[p] + 1
                 todo.append(q)
     touching = groups({p for p in main if any(q in body for q in nb4(p))})
-    zone = set(min(touching, key=lambda g: min(steps[p] for p in g)))
-    while len(zone) < size:
-        nxt = sorted({q for p in zone for q in nb8(p, main)} - zone, key=lambda q: (steps[q], q))
-        if not nxt:
-            break
-        zone.add(nxt[0])
-    return zone
+    top = max(p[0] - p[1] for p in min(touching, key=lambda g: min(steps[p] for p in g)))
+    return {p for p in main if top - size - 1 <= p[0] - p[1] <= top}
+
+
+def paint_wrap(img, zone, b, ends=True):
+    """A wrap where the sprite drew none, painted in the binding's own colours: a dark end line at both ends of the band,
+    between them each binding's pattern, offset per row so it survives at 16 px. side 0 is the haft's upper-left edge."""
+    end, shade, light, *accent = BIND[b]
+    axis = [p[0] - p[1] for p in zone]
+    top, low, edge = max(axis), min(axis), min(p[0] + p[1] for p in zone)
+    for p in zone:
+        k, side = top - (p[0] - p[1]), int(p[0] + p[1] > edge)
+        if ends and (k == 0 or p[0] - p[1] == low):
+            c = end
+        elif b == "twine":
+            c = light if (k + side) % 2 == 0 else shade
+        elif b == "cordage":  # two turns on, one off, on the diagonal
+            c = shade if (k + side) % 3 == 2 else light
+        elif b == "sinew":  # a thin pale spiral on a darker cream
+            c = light if (k + side) % 3 == 0 else shade
+        elif b == "leather":
+            c = accent[0] if (k == (top - low) // 2 and side == 0) else light if side == 0 else shade
+        elif b == "hide_glue":
+            c = accent[0] if (k == 1 and side == 0) else light if side == 0 else shade
+        else:  # metal: lit edge and shaded edge, a cylinder
+            c = light if side == 0 else shade
+        img.putpixel(p, (*c, 255))
 
 
 def layer(im, pixels, colours=None):
@@ -229,15 +263,21 @@ def layer(im, pixels, colours=None):
     return out
 
 
-def drawn_wrap(img, r, cord):
-    """A wrap where the sprite drew none, painted rather than recoloured (the junction pixels are mostly the haft's dark
-    edge, which would bury it): cord in turns, a light row and a shaded row; glue or metal a bright smooth band."""
-    n = len(r)
-    for y in range(16):
-        for x in range(16):
-            if img.getpixel((x, y))[3]:
-                i = (n - 1 if y % 2 == 0 else max(0, n - 3)) if cord else n - 2 + (y % 2 == 0)
-                img.putpixel((x, y), (*r[i], 255))
+def rod_layer(im, pixels, colours, rod, head, rp):
+    """The haft recoloured; a rod that is not wood gets a dark line where it meets the head, the planed Tool Rod an
+    end-grain cap on a tip poking through the head."""
+    out = layer(im, pixels, colours)
+    touch = lambda p: any((p[0] + dx, p[1] + dy) in head for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+    if rod not in WOOD:
+        for p in pixels:
+            if touch(p):
+                out.putpixel(p, (*rp[0], 255))
+    if rod == "tool_rod":
+        for g in groups(pixels):
+            tip = max(g, key=lambda p: (p[0] - p[1], -p[1]))
+            if len(g) <= 3 and touch(tip):
+                out.putpixel(tip, (*END_GRAIN, 255))
+    return out
 
 
 def write_png(path, im):
@@ -274,25 +314,29 @@ def build(ns, name, dbind, drod, opts, sheets):
     assert haft and zone, f"{name}: no haft/zone found"
     t = tier(name)
     rods = [r for r, (rt, _) in RODS.items() if rt <= t and (r != "leather" or drod == "leather")]
-    binds = [b for b, (bt, _) in BINDINGS.items() if bt <= t]
+    binds = [b for b, bt in BINDINGS.items() if bt <= t]
     art = opts.get("art_rod", drod)  # the rod the sprite shows: the fallback, so it needs no layer of its own
     assert drod in rods and art in rods and dbind in binds, name
+    made_rods = [r for r in rods if r != art or r == "tool_rod"]  # the sprites draw a rough stick; the planed Tool Rod gets its own
     src = im.load()
     haft_shades = {src[p][:3] for p in haft | (set() if wrapped else zone)}
     zone_shades = {src[p][:3] for p in zone}
     layers = {"head": layer(im, head), "rod": layer(im, haft), "zone": layer(im, zone)}
-    for r in rods:
-        if r != art:
-            m = recolour(haft_shades, ramp(RODS[r][1]))
-            layers[f"rod_{r}"] = layer(im, haft, m)
-            if not wrapped:
-                layers[f"zone_{r}"] = layer(im, zone, m)
+    for r in made_rods:
+        rp = ramp(RODS[r][1])
+        if r.split("_")[0] == name.split("_")[0]:  # the head's own metal: a step darker (its highlight kept), so the haft stays apart
+            rp = [tuple(v * 2 // 3 for v in rp[0])] + rp[:-2] + rp[-1:]
+        m = recolour(haft_shades, rp)
+        layers[f"rod_{r}"] = rod_layer(im, haft, m, r, head, rp)
+        if not wrapped:
+            layers[f"zone_{r}"] = rod_layer(im, zone, m, r, head, rp)
     for b in binds:
         if b != dbind or not wrapped:
-            r = ramp(BINDINGS[b][1])
-            layers[f"binding_{b}"] = layer(im, zone, recolour(zone_shades if wrapped else haft_shades, r))
-            if not wrapped:
-                drawn_wrap(layers[f"binding_{b}"], r, b in CORDS)
+            if wrapped:
+                layers[f"binding_{b}"] = layer(im, zone, recolour(zone_shades, BIND[b][:3]))
+            else:
+                layers[f"binding_{b}"] = Image.new("RGBA", (16, 16))
+                paint_wrap(layers[f"binding_{b}"], zone, b, ends="zone_px" not in opts)
 
     # self-check: the default layers are the original sprite, pixel for pixel, and never overlap
     assert not (head & haft or head & zone or haft & zone) and head | haft | zone == opaque, name
@@ -306,8 +350,8 @@ def build(ns, name, dbind, drod, opts, sheets):
         write_png(ITEM_TEX / "tool_parts" / name / f"{k}.png", img)
         write_json(ASSETS / "mechanical/models/item/tool_parts" / name / f"{k}.json",
                    {**model, "textures": {"layer0": f"mechanical:item/tool_parts/{name}/{k}"}})
-    rod_cases = {r: ref(f"{name}/rod_{r}") for r in rods if r != art}
-    zone_default = ref(f"{name}/zone") if wrapped else select(0, {r: ref(f"{name}/zone_{r}") for r in rods if r != art}, ref(f"{name}/zone"))
+    rod_cases = {r: ref(f"{name}/rod_{r}") for r in made_rods}
+    zone_default = ref(f"{name}/zone") if wrapped else select(0, {r: ref(f"{name}/zone_{r}") for r in made_rods}, ref(f"{name}/zone"))
     bind_cases = {b: ref(f"{name}/binding_{b}") for b in binds if b != dbind or not wrapped}
     composite = {"type": "minecraft:composite", "models": [ref(f"{name}/head"), select(0, rod_cases, ref(f"{name}/rod")),
                                                             select(1, bind_cases, zone_default)]}
@@ -321,12 +365,13 @@ def build(ns, name, dbind, drod, opts, sheets):
         item = {"model": composite}
     write_json(ASSETS / ns / "items" / f"{name}.json", item)
     if sheets:
-        sheet(sheets, name, im, head, haft, zone, layers, rods, binds, art, dbind, wrapped)
+        sheet(sheets, name, im, head, haft, zone, layers, rods, binds, drod, wrapped)
     return len(layers)
 
 
-def sheet(out, name, im, head, haft, zone, layers, rods, binds, drod, dbind, wrapped):
-    """Row 1: original, classification (head grey, haft brown, binding zone red); then one cell per rod, one per binding."""
+def sheet(out, name, im, head, haft, zone, layers, rods, binds, drod, wrapped):
+    """Row 1: original, classification (head grey, haft brown, binding zone red); then one cell per rod, one per binding
+    on the default rod, all as the Tool Station builds them."""
     cls = Image.new("RGBA", (16, 16))
     for p in head:
         cls.putpixel(p, (150, 150, 160, 255))
@@ -335,16 +380,16 @@ def sheet(out, name, im, head, haft, zone, layers, rods, binds, drod, dbind, wra
     for p in zone:
         cls.putpixel(p, (220, 40, 40, 255))
     cells = [("original", im), ("split", cls)]
-    zone_for = lambda r: layers["zone"] if wrapped or r == drod else layers[f"zone_{r}"]
+    zone_for = lambda r: layers["zone"] if wrapped else layers.get(f"zone_{r}", layers["zone"])
     for r in rods:
         c = layers["head"].copy()
-        c.alpha_composite(layers["rod"] if r == drod else layers[f"rod_{r}"])
-        c.alpha_composite(zone_for(r))
+        c.alpha_composite(layers.get(f"rod_{r}", layers["rod"]))
+        c.alpha_composite(layers.get(f"binding_{BIND_DEFAULT[name]}", zone_for(r)))
         cells.append(("rod " + r, c))
     for b in binds:
         c = layers["head"].copy()
-        c.alpha_composite(layers["rod"])
-        c.alpha_composite(layers[f"binding_{b}"] if f"binding_{b}" in layers else zone_for(drod))
+        c.alpha_composite(layers.get(f"rod_{drod}", layers["rod"]))
+        c.alpha_composite(layers.get(f"binding_{b}", zone_for(drod)))
         cells.append(("bind " + b, c))
     S, cols = 8, 6
     W = 16 * S + 12
@@ -361,10 +406,28 @@ def sheet(out, name, im, head, haft, zone, layers, rods, binds, drod, dbind, wra
     img.save(out / f"parts_{name}.png")
 
 
+def walk(node):
+    if isinstance(node, dict):
+        for k, v in node.items():
+            yield k, v
+            yield from walk(v)
+    elif isinstance(node, list):
+        for v in node:
+            yield from walk(v)
+
+
+BIND_DEFAULT = {n: b for _, n, b, *_ in TOOLS}
+
+
 def main():
     sheets = Path(sys.argv[sys.argv.index("--sheets") + 1]) if "--sheets" in sys.argv else None
     assert len({n for _, n, *_ in TOOLS}) == len(TOOLS)
     total = sum(build(*t, sheets) for t in TOOLS)
+    for ns, name, *_ in TOOLS:  # every model the item definitions name exists
+        text = (ASSETS / ns / "items" / f"{name}.json").read_text(encoding="utf-8")
+        for m in {v for k, v in walk(json.loads(text)) if k == "model" and isinstance(v, str)}:
+            mns, path = m.split(":")
+            assert (ASSETS / mns / "models" / f"{path}.json").exists() or f"assets/{mns}/models/{path}.json" in jar.namelist(), f"{name}: no model {m}"
     print(f"{len(TOOLS)} tools, {total} layers")
 
 

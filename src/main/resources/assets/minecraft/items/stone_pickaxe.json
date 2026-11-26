@@ -17,6 +17,13 @@
               "type": "minecraft:model",
               "model": "mechanical:item/tool_parts/stone_pickaxe/rod_stick"
             }
+          },
+          {
+            "when": "tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/stone_pickaxe/rod_tool_rod"
+            }
           }
         ],
         "fallback": {
@@ -75,6 +82,13 @@
               "model": {
                 "type": "minecraft:model",
                 "model": "mechanical:item/tool_parts/stone_pickaxe/zone_stick"
+              }
+            },
+            {
+              "when": "tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/stone_pickaxe/zone_tool_rod"
               }
             }
           ],

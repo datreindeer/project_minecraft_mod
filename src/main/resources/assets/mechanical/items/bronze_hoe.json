@@ -19,6 +19,13 @@
             }
           },
           {
+            "when": "tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/rod_tool_rod"
+            }
+          },
+          {
             "when": "bone_tool_rod",
             "model": {
               "type": "minecraft:model",
@@ -103,6 +110,13 @@
               "model": {
                 "type": "minecraft:model",
                 "model": "mechanical:item/tool_parts/bronze_hoe/zone_stick"
+              }
+            },
+            {
+              "when": "tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_hoe/zone_tool_rod"
               }
             },
             {

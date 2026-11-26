@@ -58,6 +58,7 @@ public final class ToolsTest {
             smithingBonus(h);
             poorOnce(h);
             station(h);
+            looksFollowParts(h);
             h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -94,6 +95,20 @@ public final class ToolsTest {
             for (var type : List.of(DataComponents.MAX_DAMAGE, DataComponents.TOOL, DataComponents.ATTRIBUTE_MODIFIERS))
                 h.assertTrue(java.util.Objects.equals(fresh.get(type), built.get(type)), r.id() + " keeps " + type + ": " + fresh.get(type) + " vs " + built.get(type));
             h.assertTrue(built.has(ToolParts.TOOL_PARTS.get()), r.id() + " gets tool_parts");
+        }
+    }
+
+    /** Every dynamic recipe's tool has the composite item model scripts/gen_tool_parts.py writes (a new recipe needs a row there). */
+    private static void looksFollowParts(GameTestHelper h) {
+        for (var r : com.mechanical.ToolStationRecipes.ALL) {
+            if (!r.dynamic()) continue;
+            var id = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(r.result().get());
+            try (var in = ToolsTest.class.getResourceAsStream("/assets/" + id.getNamespace() + "/items/" + id.getPath() + ".json")) {
+                h.assertTrue(in != null && new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8).contains("minecraft:composite"),
+                        id + " has a parts-following item model (add it to gen_tool_parts.py TOOLS)");
+            } catch (java.io.IOException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 
