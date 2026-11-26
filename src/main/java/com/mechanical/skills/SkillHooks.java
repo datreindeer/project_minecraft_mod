@@ -2,15 +2,17 @@ package com.mechanical.skills;
 
 import static com.mechanical.Mechanical.MODID;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.Map;
+
+import com.mojang.serialization.Codec;
 
 import com.mechanical.Butchery;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -18,6 +20,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -33,10 +37,41 @@ public final class SkillHooks {
 
     private SkillHooks() {}
 
-    /** Player-placed ore and stone positions per dimension, so placing and re-breaking them pays nothing. */
-    // shortcut: forgotten on server restart, persist in SavedData if players farm across restarts
-    private static final Map<ResourceKey<Level>, LinkedHashSet<Long>> PLACED = new HashMap<>();
-    private static final int MAX_PLACED = 20_000;
+    /** Player-placed ore and stone positions per level, so placing and re-breaking them pays nothing, also after a restart. */
+    static final class Placed extends SavedData {
+        static final int MAX = 20_000;
+        static final Codec<Placed> CODEC = Codec.LONG.listOf().xmap(Placed::new, d -> new ArrayList<>(d.set));
+        static final SavedDataType<Placed> TYPE = new SavedDataType<>(Identifier.fromNamespaceAndPath(MODID, "placed_blocks"), () -> new Placed(java.util.List.of()), CODEC);
+        private final LinkedHashSet<Long> set;
+
+        Placed(java.util.List<Long> positions) {
+            set = new LinkedHashSet<>(positions);
+        }
+
+        static Placed get(ServerLevel level) {
+            return level.getDataStorage().computeIfAbsent(TYPE);
+        }
+
+        void add(BlockPos pos) {
+            set.add(pos.asLong());
+            if (set.size() > MAX) {
+                var it = set.iterator();
+                it.next();
+                it.remove();
+            }
+            setDirty();
+        }
+
+        boolean remove(BlockPos pos) {
+            boolean had = set.remove(pos.asLong());
+            if (had) setDirty();
+            return had;
+        }
+
+        boolean has(BlockPos pos) {
+            return set.contains(pos.asLong());
+        }
+    }
 
     static boolean paysMining(BlockState state) {
         return state.is(ORES) || state.is(BlockTags.BASE_STONE_OVERWORLD);
@@ -46,8 +81,7 @@ public final class SkillHooks {
     @SubscribeEvent
     static void onDrops(BlockDropsEvent event) {
         if (!(event.getBreaker() instanceof ServerPlayer p) || !paysMining(event.getState())) return;
-        var placed = PLACED.get(event.getLevel().dimension());
-        if (placed != null && placed.remove(event.getPos().asLong())) return;
+        if (Placed.get(event.getLevel()).remove(event.getPos())) return;
         boolean ore = event.getState().is(ORES);
         // silk touch gives the ore block back, which can be placed and mined again: no XP, no extra
         if (ore && event.getDrops().stream().anyMatch(d -> d.getItem().getItem() == event.getState().getBlock().asItem())) return;
@@ -72,14 +106,8 @@ public final class SkillHooks {
         remember(level, event.getPos());
     }
 
-    private static void remember(Level level, net.minecraft.core.BlockPos pos) {
-        var placed = PLACED.computeIfAbsent(level.dimension(), k -> new LinkedHashSet<>());
-        placed.add(pos.asLong());
-        if (placed.size() > MAX_PLACED) {
-            var it = placed.iterator();
-            it.next();
-            it.remove();
-        }
+    static void remember(Level level, BlockPos pos) {
+        if (level instanceof ServerLevel sl) Placed.get(sl).add(pos);
     }
 
     @SubscribeEvent

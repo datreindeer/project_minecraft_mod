@@ -53,6 +53,7 @@ public final class SkillsTest {
             farmingXp(h, p);
             silkOreXp(h, p);
             fluidStoneXp(h, p);
+            placedPersists(h);
             cookedXp(h, p);
             extraOre(h);
             noDupeUnstackable(h);
@@ -140,6 +141,16 @@ public final class SkillsTest {
         int before = Skills.xp(p, Skill.MINING);
         p.gameMode.destroyBlock(pos);
         h.assertTrue(Skills.xp(p, Skill.MINING) == before, "generator stone pays no Mining XP");
+    }
+
+    private static void placedPersists(GameTestHelper h) {
+        var pos = h.absolutePos(new net.minecraft.core.BlockPos(6, 1, 6));
+        SkillHooks.remember(h.getLevel(), pos);
+        var json = com.mojang.serialization.JsonOps.INSTANCE;
+        var enc = SkillHooks.Placed.CODEC.encodeStart(json, SkillHooks.Placed.get(h.getLevel())).getOrThrow();
+        var back = SkillHooks.Placed.CODEC.parse(json, enc).getOrThrow();
+        h.assertTrue(back.has(pos), "placed position survives a save/load round trip");
+        SkillHooks.Placed.get(h.getLevel()).remove(pos);
     }
 
     private static void stationXp(GameTestHelper h, ServerPlayer p) {
