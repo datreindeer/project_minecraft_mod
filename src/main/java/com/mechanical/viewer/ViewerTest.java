@@ -101,6 +101,10 @@ public final class ViewerTest {
         var seen = java.util.Set.of("mechanical:cordage", "mechanical:tool_rod");
         h.assertTrue(!r.unlocked(seen, List.of()), "no unlock without the recipe id");
         h.assertTrue(r.unlocked(seen, List.of("mechanical:bronze_pickaxe")), "unlocked by the recipe id");
+        var rods = r.inputs().get(2).options();
+        h.assertTrue(rods.contains(com.mechanical.Smithing.BRONZE_TOOL_ROD.get()), "the bronze pickaxe's rod slot has the Bronze Tool Rod");
+        h.assertTrue(!rods.contains(com.mechanical.Smithing.STEEL_TOOL_ROD.get()) && !rods.contains(Items.LEATHER), "no Steel Tool Rod or Leather on a pickaxe");
+        h.assertTrue(rods.get(0) == com.mechanical.Mechanical.TOOL_ROD.get(), "the default rod comes first");
     }
 
     private static void altOptionCountsAsSeen(GameTestHelper h) {

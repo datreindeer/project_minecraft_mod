@@ -50,9 +50,9 @@ public final class StationSources {
     private static List<ViewerRecipe> build() {
         List<ViewerRecipe> out = new ArrayList<>();
         for (ToolStationRecipes.Recipe r : ToolStationRecipes.ALL) {
-            List<Item> binding = r.gluable() ? List.of(r.binding().get(), Kettle.HIDE_GLUE.get()) : List.of(r.binding().get());
+            List<Item> binding = r.dynamic() ? first(r.binding().get(), r.bindings()) : r.gluable() ? List.of(r.binding().get(), Kettle.HIDE_GLUE.get()) : List.of(r.binding().get());
             out.add(new ViewerRecipe(Station.TOOL_STATION,
-                    List.of(new Slot(List.of(r.head().get()), 1, false), new Slot(binding, 1, false), new Slot(List.of(r.rod().get()), 1, false)),
+                    List.of(new Slot(List.of(r.head().get()), 1, false), new Slot(binding, 1, false), new Slot(r.dynamic() ? first(r.rod().get(), r.rods()) : List.of(r.rod().get()), 1, false)),
                     new ItemStack(r.result().get()), 0, UnlockKind.RECIPE_ID, r.id()));
         }
         station(out, Station.FLETCHING, FletchingRecipes.ALL);
@@ -63,6 +63,13 @@ public final class StationSources {
         for (KilnBlockEntity.Recipe r : KilnBlockEntity.RECIPES) matching(out, Station.KILN, r.input(), r.count(), r.result());
         for (BloomeryBlockEntity.Recipe r : BloomeryBlockEntity.RECIPES) matching(out, Station.BLOOMERY, r.input(), r.count(), r.result());
         return List.copyOf(out);
+    }
+
+    private static List<Item> first(Item def, List<Item> all) {
+        List<Item> out = new ArrayList<>(all);
+        out.remove(def);
+        out.add(0, def);
+        return out;
     }
 
     private static void station(List<ViewerRecipe> out, Station station, List<StationRecipe> recipes) {

@@ -1,6 +1,8 @@
 package com.mechanical.client.viewer;
 
 import static com.mechanical.client.ui.HideUi.DIM;
+import static com.mechanical.client.ui.HideUi.GOOD;
+import static com.mechanical.client.ui.HideUi.BAD;
 import static com.mechanical.client.ui.HideUi.EDGE;
 import static com.mechanical.client.ui.HideUi.EDGE_DARK;
 import static com.mechanical.client.ui.HideUi.GOLD;
@@ -19,6 +21,9 @@ import org.jspecify.annotations.Nullable;
 
 import com.mechanical.BloomeryBlockEntity;
 import com.mechanical.KilnBlockEntity;
+import com.mechanical.ToolStationRecipes;
+import com.mechanical.tools.ToolParts;
+import com.mechanical.tools.ToolStats;
 import com.mechanical.client.ui.HideUi;
 import com.mechanical.viewer.Note;
 import com.mechanical.viewer.SeenItems;
@@ -377,11 +382,13 @@ public class RecipeViewScreen extends Screen {
             case TOOL_STATION, FLETCHING, ARMOR_STATION, LEATHERWORKING, MOLD_BENCH, PATTERN_BENCH -> {
                 int n = r.inputs().size(), x = bx + 8, ox = bx + bw - 8 - 26, ax = ox - 8 - 22;
                 int y0 = cy - (n * 22 - 4) / 2;
+                Item[] picked = new Item[n];
                 for (int i = 0; i < n; i++) {
                     Slot s = r.inputs().get(i);
                     int y = y0 + i * 22;
                     HideUi.slot(g, x, y);
                     Item shown = input(g, s, x, y, mouseX, mouseY);
+                    picked[i] = shown;
                     List<Component> lines = new ArrayList<>();
                     if (r.station() == Station.TOOL_STATION && i < TOOL_PARTS.length)
                         lines.add(Component.translatable("gui.mechanical.tool_station." + TOOL_PARTS[i]).withColor(LABEL));
@@ -395,6 +402,7 @@ public class RecipeViewScreen extends Screen {
                 }
                 HideUi.arrow(g, ax, cy - 8);
                 output(g, r, ox, cy - 13, mouseX, mouseY);
+                if (r.station() == Station.TOOL_STATION && n == 3) toolStats(g, r, picked[1], picked[2], bx + bw / 2, cy + 38);
             }
             default -> { // one in, one out
                 boolean fire = r.station() != Station.STONECUTTING;
@@ -411,6 +419,29 @@ public class RecipeViewScreen extends Screen {
                     g.centeredText(font, heat[1], ax + 11, cy + 23, DIM);
                 }
             }
+        }
+    }
+
+    /** The Tool Station's numbers for the parts shown (no Smithing), against the recipe's own parts: durability, speed, damage. */
+    private void toolStats(GuiGraphicsExtractor g, ViewerRecipe r, @Nullable Item binding, @Nullable Item rod, int cx, int y) {
+        ToolStationRecipes.Recipe tr = ToolStationRecipes.ALL.stream().filter(t -> t.id().equals(r.unlockId())).findFirst().orElse(null);
+        if (tr == null || !tr.dynamic() || binding == null || rod == null) return;
+        ItemStack plain = new ItemStack(tr.result().get()), built = plain.copy();
+        ToolParts.apply(built, tr.binding().get(), tr.rod().get(), new ToolParts.Parts(binding, rod, 0));
+        ToolStats.Stats base = ToolStats.of(plain), now = ToolStats.of(built);
+        String[] keys = {"durability", "speed", "damage"};
+        String[] vals = {now.durability() <= 0 ? "–" : String.valueOf(now.durability()), now.speed() <= 0 ? "–" : String.format(java.util.Locale.ROOT, "%.1f", now.speed()),
+                now.damage() <= 0 ? "–" : String.format(java.util.Locale.ROOT, "%.1f", now.damage())};
+        double[] a = {now.durability(), now.speed(), now.damage()}, b = {base.durability(), base.speed(), base.damage()};
+        int total = 0;
+        for (int i = 0; i < 3; i++) total += font.width(Component.translatable("gui.mechanical.tool_station.col." + keys[i])) + 3 + font.width(vals[i]) + (i < 2 ? 10 : 0);
+        int x = cx - total / 2;
+        for (int i = 0; i < 3; i++) {
+            Component label = Component.translatable("gui.mechanical.tool_station.col." + keys[i]);
+            g.text(font, label, x, y, DIM, false);
+            x += font.width(label) + 3;
+            g.text(font, vals[i], x, y, Math.abs(a[i] - b[i]) < 0.005 ? TEXT : a[i] > b[i] ? GOOD : BAD, false);
+            x += font.width(vals[i]) + 10;
         }
     }
 

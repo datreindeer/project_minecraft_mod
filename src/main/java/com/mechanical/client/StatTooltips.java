@@ -58,6 +58,13 @@ public final class StatTooltips {
                     .withStyle(frac > 0.5F ? GOOD : frac > 0.2F ? ChatFormatting.YELLOW : BAD)));
         }
 
+        com.mechanical.tools.ToolParts.Parts parts = stack.get(com.mechanical.tools.ToolParts.TOOL_PARTS.get());
+        if (parts != null) {
+            lines.add(Component.translatable("tooltip.mechanical.tool_parts", new ItemStack(parts.rod()).getHoverName(), new ItemStack(parts.binding()).getHoverName()).withStyle(LABEL));
+            if (parts.smithing() > 0) lines.add(Component.translatable("tooltip.mechanical.tool_smithing", parts.smithing(),
+                    Math.round(com.mechanical.tools.ToolStats.smithing(parts.smithing()) * 100)).withStyle(GOOD));
+        }
+
         // mining: pickaxes (stone), axes (logs), shovels (dirt)
         mining(lines, stack, ItemTags.PICKAXES, Blocks.STONE.defaultBlockState(), "Mining speed");
         mining(lines, stack, ItemTags.AXES, Blocks.OAK_LOG.defaultBlockState(), "Chopping speed");

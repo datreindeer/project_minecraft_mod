@@ -68,6 +68,8 @@
   "gui.mechanical.tool_station.col.durability": "Dur.",
   "gui.mechanical.tool_station.col.speed": "Speed",
   "gui.mechanical.tool_station.col.damage": "Dmg.",
+  "tooltip.mechanical.tool_parts": "Rod: %s  Binding: %s",
+  "tooltip.mechanical.tool_smithing": "Smithing %s: +%s%% durability",
   "gui.mechanical.tool_station.base": "Base",
   "gui.mechanical.tool_station.result": "Result",
   "gui.mechanical.tool_station.smithing": "Smithing %s",
