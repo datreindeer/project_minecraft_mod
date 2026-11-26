@@ -434,7 +434,7 @@ public class RecipeViewScreen extends Screen {
         ToolStats.Stats base = ToolStats.of(plain), now = ToolStats.of(built);
         String[] keys = com.mechanical.client.ToolStationScreen.columns(tr.kind()), vals = com.mechanical.client.ToolStationScreen.values(tr.kind(), now);
         // a bow's draw time is better shorter
-        double flip = tr.kind() == ToolParts.Kind.BOW ? -1 : 1;
+        double flip = tr.kind().drawn() ? -1 : 1;
         double[] a = {now.durability(), flip * now.speed(), now.damage()}, b = {base.durability(), flip * base.speed(), base.damage()};
         int total = 0, cols = keys[2].isEmpty() ? 2 : 3;
         for (int i = 0; i < cols; i++) total += font.width(Component.translatable("gui.mechanical.tool_station.col." + keys[i])) + 3 + font.width(vals[i]) + (i < cols - 1 ? 10 : 0);

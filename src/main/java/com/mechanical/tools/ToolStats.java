@@ -26,7 +26,8 @@ public final class ToolStats {
 
     public static Stats of(ItemStack tool) {
         int durability = tool.isDamageableItem() ? tool.getMaxDamage() : 0;
-        if (tool.getItem() instanceof BowItem) return new Stats(durability, drawTicks(tool) / 20.0F, bowDamage(tool));
+        if (tool.getItem() instanceof BowItem || tool.getItem() instanceof net.minecraft.world.item.CrossbowItem)
+            return new Stats(durability, drawTicks(tool) / 20.0F, bowDamage(tool));
         if (tool.getItem() instanceof BoneHookRodItem rod) return new Stats(durability, rod.lureTicks(tool) / 20.0F, 0);
         Tool miner = tool.get(DataComponents.TOOL);
         float speed = 0;
@@ -51,7 +52,7 @@ public final class ToolStats {
      * (BowItem: power 1 x 3), crossbow 3.15 (CrossbowItem.ARROW_POWER, private); the mod's bows scale the bow's, their parts scale theirs.
      */
     public static float bowDamage(ItemStack stack) {
-        if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) return 3.15F;
+        if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) return 3.15F * com.mechanical.Smithing.powerFactor(stack);
         float bow = 3.0F * ToolParts.ranged(stack).power();
         if (stack.getItem() instanceof com.mechanical.CrudeBowItem) return bow * (float) com.mechanical.CrudeBowItem.DAMAGE_FACTOR;
         if (stack.getItem() instanceof com.mechanical.wildlife.mountain.HornBowItem) return bow * com.mechanical.wildlife.mountain.HornBowItem.SPEED_FACTOR;
@@ -59,9 +60,10 @@ public final class ToolStats {
         return bow;
     }
 
-    /** Ticks to a full draw (the crossbow's 1.25 s without a holder to ask about Quick Charge). */
+    /** Ticks to a full draw (a crossbow's charge without a holder to ask about Quick Charge: vanilla's 1.25 s, the steel one's longer). */
     public static int drawTicks(ItemStack stack) {
-        if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) return 25;
+        if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem)
+            return Math.max(1, Math.round(com.mechanical.Smithing.CROSSBOW_CHARGE_TICKS * com.mechanical.Smithing.chargeFactor(stack)));
         return ToolParts.ranged(stack).drawTicks(stack.getItem() instanceof com.mechanical.YewLongbowItem ? com.mechanical.YewLongbowItem.DRAW_TICKS : BowItem.MAX_DRAW_DURATION);
     }
 
@@ -70,7 +72,7 @@ public final class ToolStats {
         ToolParts.Part def = ToolParts.part(kind, slot, defaultItem), chosen = ToolParts.part(kind, slot, item);
         if (def == null || chosen == null || kind == ToolParts.Kind.TOOL) return share(def, chosen, defaultItem, item);
         float durability = chosen.durability() / def.durability();
-        if (kind == ToolParts.Kind.BOW) return new Share(item, item == defaultItem, durability, def.speed() / chosen.speed(), chosen.power() / def.power());
+        if (kind.drawn()) return new Share(item, item == defaultItem, durability, def.speed() / chosen.speed(), chosen.power() / def.power());
         return new Share(item, item == defaultItem, durability, (chosen.lure() - def.lure()) / 20.0F, 0);
     }
 

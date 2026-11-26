@@ -41,6 +41,9 @@ public final class FletchingRecipes {
             StationRecipe.of(() -> Bronze.BRONZE_ARROW.get(), 4, of(() -> Bronze.BRONZE_ARROWHEAD.get(), 4), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
             // iron: four forged Iron Bolt Heads (one ingot) on four short shafts, crossbow bolts
             StationRecipe.of(() -> Smithing.IRON_BOLT.get(), 4, of(() -> Smithing.IRON_BOLT_HEAD.get(), 4), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
+            // the crossbows' other bolts: cast bronze heads (a Poor Bronze head makes poor bolts) and forged steel ones
+            StationRecipe.of(() -> Smithing.BRONZE_BOLT.get(), 4, of(() -> Bronze.BRONZE_BOLT_HEAD.get(), 4), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
+            StationRecipe.of(() -> Smithing.STEEL_BOLT.get(), 4, of(() -> Smithing.STEEL_BOLT_HEAD.get(), 4), of(() -> Items.STICK, 1), of(() -> Items.FEATHER, 1), null),
             StationRecipe.of(() -> Mechanical.FIRE_ARROW.get(), 1, of(() -> Mechanical.TALLOW.get(), 1), of(() -> Items.ARROW, 1), of(() -> Mechanical.TWINE.get(), 1), null),
             StationRecipe.of(() -> Mechanical.SINEW_BOW.get(), 1, of(() -> Wildlife.SINEW.get(), 1), of(() -> Mechanical.CRUDE_BOW.get(), 1), of(() -> Mechanical.CORDAGE.get(), 1, () -> Kettle.HIDE_GLUE.get()), null));
 

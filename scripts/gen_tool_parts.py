@@ -162,6 +162,18 @@ def recolour(sources, target):
     return {c: target[round(i * (len(target) - 1) / (len(s) - 1))] for i, c in enumerate(s)}
 
 
+def recolour_smooth(sources, target, span):
+    """Original shade -> the target ramp read at the shade's place in {@code span} (the whole sprite's wood, darkest to lightest), so a
+    big stock keeps its grain and its depth, where rank matching would fold its few browns onto a short metal ramp, lightest on top."""
+    lo, hi = min(map(lum, span)), max(map(lum, span))
+    out = {}
+    for c in sources:
+        t = (lum(c) - lo) / max(1.0, hi - lo) * (len(target) - 1)
+        i = min(int(t), len(target) - 2)
+        out[c] = tuple(round(target[i][k] * (1 - (t - i)) + target[i + 1][k] * (t - i)) for k in range(3))
+    return out
+
+
 def split(im, opts):
     px = im.load()
     opaque = {(x, y) for y in range(16) for x in range(16) if px[x, y][3] > 0}
@@ -432,6 +444,11 @@ BOWSTRING = {"cordage": [(99, 78, 66), (130, 102, 85)], "sinew": [(190, 160, 104
 STAVE_RAMP = {"stick": "minecraft:stick", "bamboo": "minecraft:bamboo"}
 BOW_FRAMES = ["", "_pulling_0", "_pulling_1", "_pulling_2"]
 ROD_FRAMES = ["", "_cast"]
+CROSSBOW_FRAMES = ["", "_pulling_0", "_pulling_1", "_pulling_2", "_arrow", "_firework"]  # model names; the first one's texture is *_standby
+# crossbows (docs/superpowers/specs/2026-11-26-crossbows-design.md): the stock and string recoloured, the prod, stirrup, windlass and the
+# loaded bolt or rocket never. Vanilla draws the string grey, so the Tool Station's Sinew gets a layer of its own ("drawn" is the sprite's).
+CROSSBOW_WOOD = hexset("4d2e11", "2a1a09", "6d4218", "90581f", "b5732f", "3b240d", "1f1206", "482b10", "36200b")
+CROSSBOW_GREY = hexset("444444", "6d6d6d", "969696", "979797")
 
 
 def rod_zones(x, y, c):
@@ -441,6 +458,14 @@ def rod_zones(x, y, c):
     if c in POLE or c in LINE:
         return "rod"
     return "fixed"
+
+
+def crossbow_zones(x, y, c):
+    """The string is grey (but the stirrup in the top-left corner is not); the stock is the wood on the diagonal band from the prod to the
+    butt (gen_crossbows.stock); the wooden prod arc off that band, a steel prod and everything loaded stay fixed."""
+    if c in CROSSBOW_GREY:
+        return "fixed" if x <= 5 and y <= 5 else "grip"
+    return "rod" if c in CROSSBOW_WOOD and x + y >= 11 and abs(x - y) <= 3 else "fixed"
 
 
 def crude_bow_zones(x, y, c):
@@ -456,24 +481,31 @@ RANGED = [
     ("crude_bow", BOW_FRAMES, crude_bow_zones, [["tool_rod", "stick"], ["twine", "cordage", "leather", "sinew"], ["cordage", "twine", "string", "sinew"]]),
     ("yew_longbow", BOW_FRAMES, yew_zones, [["yew_stave"], ["leather", "twine", "cordage", "sinew"], ["sinew", "twine", "cordage", "string"]]),
 ] + [(n, ROD_FRAMES, rod_zones, [["tool_rod", "stick", "bamboo"], ["twine", "cordage", "string", "sinew"]])
-     for n in ("crude_fishing_rod", "bone_hook_fishing_rod", "bronze_hook_fishing_rod", "iron_hook_fishing_rod")]
+     for n in ("crude_fishing_rod", "bone_hook_fishing_rod", "bronze_hook_fishing_rod", "iron_hook_fishing_rod")] + [
+    (n, CROSSBOW_FRAMES, crossbow_zones, [["tool_rod", "stick", "bone_tool_rod", "copper_tool_rod", "bronze_tool_rod", "iron_tool_rod"] + extra,
+                                          ["drawn", "sinew", "twine", "cordage", "string"]])
+    for n, extra in (("minecraft:crossbow", []), ("steel_crossbow", ["steel_tool_rod"]))]
 SLOT_LAYER = ["rod", "grip", "string"]  # custom_model_data string index -> zone (a fishing rod's line is its "grip" slot)
 
 
 def part_ramp(zone, part):
     if zone == "rod":
-        return ramp(STAVE_RAMP[part])
+        return ramp(STAVE_RAMP[part] if part in STAVE_RAMP else RODS[part][1])
     if zone == "string":
         return BOWSTRING[part]
     return LINE_RAMP[part] if part in LINE_RAMP else BIND[part][:3]
 
 
 def build_ranged(name, frames, zone_of, slots, sheets):
-    """Each frame split into zones by colour, one recoloured layer per non-default part, and its model in the item definition a composite."""
+    """Each frame split into zones by colour, one recoloured layer per non-default part, and its model in the item definition a composite.
+    A vanilla item ("minecraft:crossbow") is read from the client jar and its item definition written into the mod's minecraft assets."""
+    ns, name = name.split(":") if ":" in name else ("mechanical", name)
     composites, cells, count = {}, [], 0
     for f in frames:
         frame = name + f
-        im = texture(frame)
+        model = template_model(ns, frame, False)
+        tex = model["textures"]["layer0"].split(":")[-1].split("item/", 1)[1]  # vanilla's standby frame is the crossbow model's texture
+        im = texture(f"minecraft:{tex}" if ns == "minecraft" else tex)
         px = im.load()
         zones = {}
         for y in range(16):
@@ -490,9 +522,10 @@ def build_ranged(name, frames, zone_of, slots, sheets):
             zone = SLOT_LAYER[i]
             assert zones.get(zone) or len(parts) == 1, f"{frame}: no {zone} pixels"
             shades = {px[p][:3] for p in zones.get(zone, ())}
+            smooth = zone_of is crossbow_zones and zone == "rod"
             for part in parts[1:]:
-                layers[f"{zone}_{part}"] = layer(im, zones[zone], recolour(shades, part_ramp(zone, part)))
-        model = template_model("mechanical", frame, False)
+                pal = part_ramp(zone, part)
+                layers[f"{zone}_{part}"] = layer(im, zones[zone], recolour_smooth(shades, pal, CROSSBOW_WOOD) if smooth else recolour(shades, pal))
         for k, img in layers.items():
             write_png(ITEM_TEX / "tool_parts" / frame / f"{k}.png", img)
             write_json(ASSETS / "mechanical/models/item/tool_parts" / frame / f"{k}.json",
@@ -522,19 +555,20 @@ def build_ranged(name, frames, zone_of, slots, sheets):
         img.save(sheets / f"parts_{name}.png")
 
     # the item definition keeps its own frame logic (using_item / use_duration, fishing_rod/cast); each frame's model becomes its composite
-    path = ASSETS / "mechanical/items" / f"{name}.json"
+    path = ASSETS / ns / "items" / f"{name}.json"
+    prefix = f"{ns}:item/"
 
     def swap(node):
         if isinstance(node, dict):
             m = node.get("model") if node.get("type") == "minecraft:model" else None
             if node.get("type") == "minecraft:composite":  # a second run: back to the frame it was made from
                 m = node["models"][0]["model"].replace("tool_parts/", "").rsplit("/", 1)[0]
-            if isinstance(m, str) and m.startswith("mechanical:item/") and m[16:] in composites:
-                return composites[m[16:]]
+            if isinstance(m, str) and m.startswith(prefix) and m[len(prefix):] in composites:
+                return composites[m[len(prefix):]]
             return {k: swap(v) for k, v in node.items()}
         return [swap(v) for v in node] if isinstance(node, list) else node
 
-    data = swap(json.loads(path.read_text(encoding="utf-8")))
+    data = swap(json.loads(path.read_text(encoding="utf-8") if path.exists() else jar.read(f"assets/{ns}/items/{name}.json")))
     assert json.dumps(data).count("minecraft:composite") == len(frames), name
     write_json(path, data)
     return count
@@ -544,7 +578,7 @@ def main():
     sheets = Path(sys.argv[sys.argv.index("--sheets") + 1]) if "--sheets" in sys.argv else None
     assert len({n for _, n, *_ in TOOLS}) == len(TOOLS)
     total = sum(build(*t, sheets) for t in TOOLS) + sum(build_ranged(*r, sheets) for r in RANGED)
-    for ns, name, *_ in TOOLS + [("mechanical", r[0]) for r in RANGED]:  # every model the item definitions name exists
+    for ns, name, *_ in TOOLS + [tuple(r[0].split(":")) if ":" in r[0] else ("mechanical", r[0]) for r in RANGED]:  # every model the item definitions name exists
         text = (ASSETS / ns / "items" / f"{name}.json").read_text(encoding="utf-8")
         for m in {v for k, v in walk(json.loads(text)) if k == "model" and isinstance(v, str)}:
             mns, path = m.split(":")

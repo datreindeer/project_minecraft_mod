@@ -1,0 +1,35 @@
+{
+  "parent": "mechanical:iron_age/crossbow",
+  "criteria": {
+    "has_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:bronze_bolt"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_0"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:bronze_bolt"
+    },
+    "title": {
+      "translate": "advancements.mechanical.iron_age.bronze_bolt.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.iron_age.bronze_bolt.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

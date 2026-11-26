@@ -53,7 +53,8 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
     /** Type keys in list order; bows, fishing rods, the broom and buckets are here so they stay craftable. */
     private static final String[] TYPES = {"pickaxe", "axe", "shovel", "hoe", "sickle", "knife", "saw", "chisel", "smithing_hammer",
             "quarry_hammer", "spear", "sword", "tongs", "ard", "bow", "fishing_rod", "broom", "bucket"};
-    private static final String[] PARTS = {"head", "binding", "rod"}, BOW_PARTS = {"string", "grip", "stave"}, ROD_PARTS = {"hook", "line", "rod"};
+    private static final String[] PARTS = {"head", "binding", "rod"}, BOW_PARTS = {"string", "grip", "stave"}, ROD_PARTS = {"hook", "line", "rod"},
+            CROSSBOW_PARTS = {"prod", "string", "stock"};
     private static final int W = 392, H = 226;
     private static final int TYPE_X = 7, TYPE_Y = 25, LIST_X = 7, LIST_Y = 64, LIST_W = 162, LIST_H = 62, ROW_W = 78, ROW_H = 18;
     private static final int PART_X = 178, PART_Y = 26, PART_STEP = 22, OUT_X = 358, OUT_Y = 44, BOX_X = 178, BOX_Y = 94, BOX_W = 206, BOX_H = 125;
@@ -83,6 +84,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
     /** A recipe's type key, from its result's registry path. */
     static String type(Recipe r) {
         String p = BuiltInRegistries.ITEM.getKey(r.result().get()).getPath();
+        if (p.contains("crossbow")) return "crossbow";
         for (String t : new String[] {"pickaxe", "quarry_hammer", "smithing_hammer", "fishing_rod", "shovel", "sickle", "chisel", "spear", "sword",
                 "tongs", "bucket", "broom", "saw", "axe", "hoe", "knife"})
             if (p.contains(t)) return t;
@@ -147,7 +149,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
     /** The slot's name for this kind of recipe: head, binding, rod; string, grip, stave; hook, line, rod. */
     public static String partKey(@Nullable Recipe r, int part) {
         ToolParts.Kind kind = r == null ? ToolParts.Kind.TOOL : r.kind();
-        return (kind == ToolParts.Kind.BOW ? BOW_PARTS : kind == ToolParts.Kind.FISHING_ROD ? ROD_PARTS : PARTS)[part];
+        return (kind == ToolParts.Kind.BOW ? BOW_PARTS : kind == ToolParts.Kind.CROSSBOW ? CROSSBOW_PARTS : kind == ToolParts.Kind.FISHING_ROD ? ROD_PARTS : PARTS)[part];
     }
 
     // ------------------------------------------------------------------ input
@@ -401,7 +403,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         y += 5;
         ToolStats.Stats now = ToolStats.of(out);
         g.text(font, Component.translatable("gui.mechanical.tool_station.result"), x, y, NAME, true);
-        boolean quickIsLow = kind == ToolParts.Kind.BOW; // a shorter draw is the better one
+        boolean quickIsLow = kind.drawn(); // a shorter draw is the better one
         numbers(g, col, y, values(kind, now), new int[] {change(now.durability(), base.durability()),
                 quickIsLow ? change(base.speed(), now.speed()) : change(now.speed(), base.speed()), change(now.damage(), base.damage())});
     }
@@ -409,7 +411,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
     /** Base or result numbers: durability, speed, damage; durability, draw seconds, arrow damage multiplier; durability, seconds sooner. */
     public static String[] values(ToolParts.Kind kind, ToolStats.Stats s) {
         return switch (kind) {
-            case BOW -> new String[] {num(s.durability()), seconds(s.speed()), "×" + factor(s.damage())};
+            case BOW, CROSSBOW -> new String[] {num(s.durability()), seconds(s.speed()), "×" + factor(s.damage())};
             case FISHING_ROD -> new String[] {num(s.durability()), s.speed() <= 0 ? "–" : "-" + seconds(s.speed()), ""};
             default -> new String[] {num(s.durability()), dec(s.speed()), dec(s.damage())};
         };
@@ -417,7 +419,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
 
     /** The ledger's column keys for this kind ("" for none). */
     public static String[] columns(ToolParts.Kind kind) {
-        return kind == ToolParts.Kind.BOW ? new String[] {"durability", "draw", "power"}
+        return kind.drawn() ? new String[] {"durability", "draw", "power"}
                 : kind == ToolParts.Kind.FISHING_ROD ? new String[] {"durability", "bites", ""} : new String[] {"durability", "speed", "damage"};
     }
 
@@ -430,13 +432,13 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         g.item(new ItemStack(s.part()), x, y);
         g.text(font, cut(new ItemStack(s.part()).getHoverName(), col[0] - 16 - (x + 18)), x + 18, y + 4, s.isDefault() ? DIM : TEXT, false);
         String[] values = switch (kind) {
-            case BOW -> new String[] {times(s.durability()), times(s.speed()), times(s.damage())};
+            case BOW, CROSSBOW -> new String[] {times(s.durability()), times(s.speed()), times(s.damage())};
             case FISHING_ROD -> new String[] {times(s.durability()), Math.abs(s.speed()) < 0.005 ? "–" : "-" + seconds(s.speed()), ""};
             default -> new String[] {times(s.durability()), times(s.speed()), plus(s.damage())};
         };
         // a bow's draw-time factor is better below 1, and a rod's seconds sooner better above 0
-        int speed = kind == ToolParts.Kind.BOW ? change(1, s.speed()) : kind == ToolParts.Kind.FISHING_ROD ? change(s.speed(), 0) : change(s.speed(), 1);
-        numbers(g, col, y + 4, values, new int[] {change(s.durability(), 1), speed, kind == ToolParts.Kind.BOW ? change(s.damage(), 1) : change(s.damage(), 0)});
+        int speed = kind.drawn() ? change(1, s.speed()) : kind == ToolParts.Kind.FISHING_ROD ? change(s.speed(), 0) : change(s.speed(), 1);
+        numbers(g, col, y + 4, values, new int[] {change(s.durability(), 1), speed, kind.drawn() ? change(s.damage(), 1) : change(s.damage(), 0)});
         return y + 16;
     }
 

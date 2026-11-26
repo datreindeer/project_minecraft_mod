@@ -34,7 +34,7 @@ public final class ToolStationRecipes {
             return BuiltInRegistries.ITEM.getKey(result.get()).toString();
         }
 
-        /** Tools, bows and fishing rods take any allowed parts; the broom and buckets stay as they are. */
+        /** Tools, bows, crossbows and fishing rods take any allowed parts; the broom and buckets stay as they are. */
         public boolean dynamic() {
             return kind != ToolParts.Kind.FIXED;
         }
@@ -177,7 +177,13 @@ public final class ToolStationRecipes {
                     ToolParts.Kind.FISHING_ROD),
             // hammers: the iron quarry hammer as the bronze one (an Iron Plate round the haft), the steel smithing hammer as the steel tools
             new Recipe(Smithing.IRON_QUARRY_HAMMER, Smithing.IRON_HAMMER_HEAD, Smithing.IRON_PLATE, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_HAMMER_HEAD.get())),
-            new Recipe(Smithing.STEEL_SMITHING_HAMMER, Smithing.STEEL_HAMMER_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_HAMMER_HEAD.get())));
+            new Recipe(Smithing.STEEL_SMITHING_HAMMER, Smithing.STEEL_HAMMER_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_HAMMER_HEAD.get())),
+            // crossbows: "head" = the prod (with its trigger), "binding" = the string, "rod" = the stock; unlocked by holding the prod.
+            // The Iron Crossbow is vanilla's: Sinew on a Tool Rod stock gives exactly its stats.
+            new Recipe(() -> Items.CROSSBOW, Smithing.IRON_CROSSBOW_PROD, () -> com.mechanical.wildlife.Wildlife.SINEW.get(), Mechanical.TOOL_ROD,
+                    s -> s.is(Smithing.IRON_CROSSBOW_PROD.get()), ToolParts.Kind.CROSSBOW),
+            new Recipe(() -> Smithing.STEEL_CROSSBOW.get(), Smithing.STEEL_CROSSBOW_PROD, () -> com.mechanical.wildlife.Wildlife.SINEW.get(), Mechanical.TOOL_ROD,
+                    s -> s.is(Smithing.STEEL_CROSSBOW_PROD.get()), ToolParts.Kind.CROSSBOW));
 
     public static boolean isUnlocked(Player player, Recipe recipe) {
         return player.getData(Mechanical.UNLOCKED_TOOLS).contains(recipe.id());

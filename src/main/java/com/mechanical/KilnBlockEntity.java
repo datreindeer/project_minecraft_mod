@@ -114,6 +114,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_SWORD_BLADE_MOLD.get()), 1, () -> Bronze.CLAY_SWORD_BLADE_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_KETTLE_MOLD.get()), 1, () -> Bronze.CLAY_KETTLE_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_ARROWHEADS_MOLD.get()), 1, () -> Bronze.CLAY_ARROWHEADS_MOLD_ITEM.get(), 400, 600),
+            new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_BOLT_HEADS_MOLD.get()), 1, () -> Bronze.CLAY_BOLT_HEADS_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(BronzeTools.UNFIRED_CLAY_BUCKET_MOLD.get()), 1, () -> BronzeTools.CLAY_BUCKET_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(BronzeTools.UNFIRED_CLAY_SICKLE_BLADE_MOLD.get()), 1, () -> BronzeTools.CLAY_SICKLE_BLADE_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(BronzeTools.UNFIRED_CLAY_SHEARS_MOLD.get()), 1, () -> BronzeTools.CLAY_SHEARS_MOLD_ITEM.get(), 400, 600),

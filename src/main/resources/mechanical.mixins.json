@@ -25,7 +25,8 @@
     "GuiTextColorMixin",
     "ServerSelectionListMixin",
     "OnlineServerEntryMixin",
-    "SectionCompilerTimingMixin"
+    "SectionCompilerTimingMixin",
+    "FirstPersonHandsAndItemsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

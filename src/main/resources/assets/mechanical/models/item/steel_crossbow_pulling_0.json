@@ -1,0 +1,6 @@
+{
+  "parent": "mechanical:item/steel_crossbow",
+  "textures": {
+    "layer0": "mechanical:item/steel_crossbow_pulling_0"
+  }
+}

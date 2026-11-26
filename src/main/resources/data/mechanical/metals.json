@@ -130,7 +130,8 @@
         "hammer_head": "mechanical:rough_cast_bronze_hammer_head",
         "anvil": "mechanical:rough_cast_bronze_anvil",
         "tuyere": "mechanical:bronze_tuyere_nozzle",
-        "tool_rod": "mechanical:rough_cast_bronze_tool_rod"
+        "tool_rod": "mechanical:rough_cast_bronze_tool_rod",
+        "bolt_heads": "mechanical:rough_cast_bronze_bolt_heads"
       }
     },
     {
@@ -168,7 +169,8 @@
         "hammer_head": "mechanical:rough_cast_bronze_hammer_head",
         "anvil": "mechanical:rough_cast_bronze_anvil",
         "tuyere": "mechanical:bronze_tuyere_nozzle",
-        "tool_rod": "mechanical:rough_cast_bronze_tool_rod"
+        "tool_rod": "mechanical:rough_cast_bronze_tool_rod",
+        "bolt_heads": "mechanical:rough_cast_bronze_bolt_heads"
       },
       "poor": true
     },

@@ -323,6 +323,7 @@ public final class GuiShots {
             container("mod_" + station, () -> mod(station));
         toolStation();
         toolVariants();
+        crossbows();
         inWorld("mod_pack", p -> {
             reset(p);
             Equipment.of(p).set(Accessory.BACK, new ItemStack(Mechanical.LEATHER_SATCHEL.get()));
@@ -669,6 +670,59 @@ public final class GuiShots {
             show(new InventoryScreen(mc.player));
         }, null);
         inWorld("tool_variants_held", p -> {}, () -> {
+            mc.gui.setScreen(null);
+            mc.player.getInventory().setSelectedSlot(0);
+        }, null);
+    }
+
+    /** A crossbow loaded with a bolt, as one charged on the Tool Station's parts. */
+    private static ItemStack charged(ItemStack crossbow, Item bolt) {
+        crossbow.set(net.minecraft.core.component.DataComponents.CHARGED_PROJECTILES,
+                net.minecraft.world.item.component.ChargedProjectiles.ofNonEmpty(List.of(new ItemStack(bolt))));
+        return crossbow;
+    }
+
+    /** Crossbows: the Tool Station with a steel prod; a row of crossbows by stock and string, loaded and not; a charged steel one in hand. */
+    private static void crossbows() {
+        Minecraft mc = Minecraft.getInstance();
+        Item steelBow = com.mechanical.Smithing.STEEL_CROSSBOW.get(), sinew = com.mechanical.wildlife.Wildlife.SINEW.get(), rod = Mechanical.TOOL_ROD.get();
+        inWorld("crossbow_station", p -> {
+            smith(p, com.mechanical.Smithing.STEEL_CROSSBOW_PROD.get(), com.mechanical.Smithing.IRON_TOOL_ROD.get(), sinew);
+            p.setData(Mechanical.UNLOCKED_TOOLS, com.mechanical.ToolStationRecipes.ALL.stream().map(com.mechanical.ToolStationRecipes.Recipe::id).toList());
+            java.util.List<String> seen = new java.util.ArrayList<>(p.getData(com.mechanical.viewer.SeenItems.SEEN.get()));
+            for (Item i : List.of(com.mechanical.Smithing.IRON_TOOL_ROD.get(), com.mechanical.Smithing.STEEL_TOOL_ROD.get(), com.mechanical.Smithing.STEEL_CROSSBOW_PROD.get()))
+                seen.add(BuiltInRegistries.ITEM.getKey(i).toString());
+            p.setData(com.mechanical.viewer.SeenItems.SEEN.get(), List.copyOf(seen));
+            lay(p, steelBow, com.mechanical.Smithing.STEEL_CROSSBOW_PROD.get(), sinew, com.mechanical.Smithing.IRON_TOOL_ROD.get());
+        }, () -> {
+            mc.getWindow().setWindowed(1920, 1080);
+            mc.options.guiScale().set(3);
+            mc.resizeGui();
+        }, null);
+        inWorld("crossbow_variants", p -> {
+            reset(p);
+            p.getInventory().clearContent();
+            Item cross = Items.CROSSBOW, cordage = Mechanical.CORDAGE.get(), twine = Mechanical.TWINE.get();
+            ItemStack[] row = {new ItemStack(cross), built(cross, sinew, Items.STICK), built(cross, cordage, com.mechanical.Smithing.BRONZE_TOOL_ROD.get()),
+                    built(cross, Items.STRING, com.mechanical.Smithing.IRON_TOOL_ROD.get()), built(cross, twine, com.mechanical.Smithing.BONE_TOOL_ROD.get()),
+                    charged(built(cross, sinew, rod), com.mechanical.Smithing.IRON_BOLT.get()), null, null, null,
+                    new ItemStack(steelBow), built(steelBow, sinew, rod), built(steelBow, sinew, com.mechanical.Smithing.STEEL_TOOL_ROD.get()),
+                    built(steelBow, Items.STRING, com.mechanical.Smithing.COPPER_TOOL_ROD.get()), built(steelBow, cordage, Items.STICK),
+                    charged(built(steelBow, sinew, rod), com.mechanical.Smithing.STEEL_BOLT.get()), null, null, null,
+                    new ItemStack(com.mechanical.Smithing.IRON_CROSSBOW_PROD.get()), new ItemStack(com.mechanical.Smithing.STEEL_CROSSBOW_PROD.get()),
+                    new ItemStack(com.mechanical.Bronze.BRONZE_BOLT_HEAD.get(), 4), new ItemStack(com.mechanical.Smithing.BRONZE_BOLT.get(), 16),
+                    new ItemStack(com.mechanical.Smithing.IRON_BOLT.get(), 16), new ItemStack(com.mechanical.Smithing.STEEL_BOLT_HEAD.get(), 4),
+                    new ItemStack(com.mechanical.Smithing.STEEL_BOLT.get(), 16), new ItemStack(com.mechanical.Bronze.ROUGH_CAST_BRONZE_BOLT_HEADS.get()),
+                    new ItemStack(com.mechanical.Bronze.UNFIRED_CLAY_BOLT_HEADS_MOLD.get())};
+            for (int i = 0; i < row.length; i++) if (row[i] != null) p.getInventory().setItem(9 + i, row[i]);
+            p.getInventory().setItem(0, charged(built(steelBow, sinew, rod), com.mechanical.Smithing.STEEL_BOLT.get()));
+        }, () -> {
+            mc.getWindow().setWindowed(1920, 1080);
+            mc.options.guiScale().set(4);
+            mc.resizeGui();
+            show(new InventoryScreen(mc.player));
+        }, null);
+        inWorld("crossbow_held", p -> {}, () -> {
             mc.gui.setScreen(null);
             mc.player.getInventory().setSelectedSlot(0);
         }, null);

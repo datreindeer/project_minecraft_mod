@@ -1,19 +1,7 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "equipment",
-  "pattern": [
-    "PRP",
-    "STS",
-    " T "
-  ],
-  "key": {
-    "P": "mechanical:iron_plate",
-    "R": "mechanical:iron_tool_rod",
-    "S": "mechanical:sinew",
-    "T": "mechanical:tool_rod"
-  },
-  "result": {
-    "id": "minecraft:crossbow",
-    "count": 1
-  }
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:never"
+    }
+  ]
 }

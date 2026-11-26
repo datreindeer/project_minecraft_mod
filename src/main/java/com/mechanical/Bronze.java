@@ -82,6 +82,12 @@ public final class Bronze {
     public static final DeferredBlock<ClayMoldBlock> CLAY_ARROWHEADS_MOLD = Casting.mold("clay_arrowheads_mold", ClayMoldBlock.Shape.ARROWHEADS);
     public static final DeferredItem<BlockItem> CLAY_ARROWHEADS_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_arrowheads_mold", CLAY_ARROWHEADS_MOLD);
     public static final int ARROWHEADS_PER_CAST = 4;
+    /** The crossbow's bronze bolts: a gang mold of four squat bodkins (2 units), ground apart into {@link #ARROWHEADS_PER_CAST} heads. */
+    public static final DeferredItem<Item> UNFIRED_CLAY_BOLT_HEADS_MOLD = ITEMS.registerSimpleItem("unfired_clay_bolt_heads_mold");
+    public static final DeferredBlock<ClayMoldBlock> CLAY_BOLT_HEADS_MOLD = Casting.mold("clay_bolt_heads_mold", ClayMoldBlock.Shape.BOLT_HEADS);
+    public static final DeferredItem<BlockItem> CLAY_BOLT_HEADS_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_bolt_heads_mold", CLAY_BOLT_HEADS_MOLD);
+    public static final DeferredItem<Item> ROUGH_CAST_BRONZE_BOLT_HEADS = ITEMS.registerSimpleItem("rough_cast_bronze_bolt_heads");
+    public static final DeferredItem<Item> BRONZE_BOLT_HEAD = ITEMS.registerSimpleItem("bronze_bolt_head");
 
     // --- castings, rough and ground ---
     public static final DeferredItem<Item> ROUGH_CAST_BRONZE_PICKAXE_HEAD = ITEMS.registerSimpleItem("rough_cast_bronze_pickaxe_head");
@@ -141,8 +147,8 @@ public final class Bronze {
 
     /** The ground piece for a rough bronze casting (Poor Bronze stays poor), or empty. */
     static ItemStack ground(ItemStack rough) {
-        if (rough.is(ROUGH_CAST_BRONZE_ARROWHEADS.get())) {
-            ItemStack heads = new ItemStack(BRONZE_ARROWHEAD.get(), ARROWHEADS_PER_CAST);
+        if (rough.is(ROUGH_CAST_BRONZE_ARROWHEADS.get()) || rough.is(ROUGH_CAST_BRONZE_BOLT_HEADS.get())) {
+            ItemStack heads = new ItemStack(rough.is(ROUGH_CAST_BRONZE_ARROWHEADS.get()) ? BRONZE_ARROWHEAD.get() : BRONZE_BOLT_HEAD.get(), ARROWHEADS_PER_CAST);
             if (isPoor(rough)) markPoor(heads);
             return heads;
         }
@@ -185,7 +191,7 @@ public final class Bronze {
             if (isPoor(stack) && !event.getToolTip().isEmpty()) event.getToolTip().add(1, Component.translatable(
                     stack.is(BRONZE_KETTLE.get()) || stack.is(ROUGH_CAST_BRONZE_KETTLE.get()) ? "tooltip.mechanical.poor_bronze_kettle"
                             : BronzeTools.isBucket(stack) ? "tooltip.mechanical.poor_bronze_bucket"
-                            : stack.is(BRONZE_ARROW.get()) ? "tooltip.mechanical.poor_bronze_arrow" : "tooltip.mechanical.poor_bronze",
+                            : stack.is(BRONZE_ARROW.get()) || stack.is(Smithing.BRONZE_BOLT.get()) ? "tooltip.mechanical.poor_bronze_arrow" : "tooltip.mechanical.poor_bronze",
                     Kettle.POOR_CAPACITY, Kettle.CAPACITY).withStyle(ChatFormatting.YELLOW));
         }
 

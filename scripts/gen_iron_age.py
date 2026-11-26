@@ -401,11 +401,7 @@ def bolt():
 
 item("iron_bolt_head", bolt_head(), "Iron Bolt Head")
 item("iron_bolt", bolt(), "Iron Bolt")
-w(D / "mechanical/tags/item/bolts.json", {"values": [M + "iron_bolt"]})
-# vanilla's crossbow from forged parts: an Iron Plate prod either side of an Iron Tool Rod trigger and stirrup, a Sinew
-# string, a wooden Tool Rod stock (its Iron Ingot / Tripwire Hook recipe can't be made in the mod)
-w(D / "minecraft/recipe/crossbow.json", {"type": "minecraft:crafting_shaped", "category": "equipment", "pattern": ["PRP", "STS", " T "],
-    "key": {"P": M + "iron_plate", "R": M + "iron_tool_rod", "S": M + "sinew", "T": M + "tool_rod"}, "result": {"id": "minecraft:crossbow", "count": 1}})
+# the bolts tag, the crossbow prods and vanilla's crossbow recipe (off: the Tool Station builds it) are gen_crossbows.py's
 lang |= {"pattern.mechanical.saw_blade": "Saw Blade", "pattern.mechanical.bolt_heads": "Bolt Heads"}
 
 # ---------------------------------------------------------------- forged versions of the bronze tools (Smithing.java)

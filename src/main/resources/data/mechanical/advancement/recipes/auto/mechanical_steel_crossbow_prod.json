@@ -6,7 +6,7 @@
       "conditions": {
         "items": [
           {
-            "items": "mechanical:iron_plate"
+            "items": "mechanical:steel_plate"
           }
         ]
       }
@@ -21,30 +21,10 @@
         ]
       }
     },
-    "has_2": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:sinew"
-          }
-        ]
-      }
-    },
-    "has_3": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mechanical:tool_rod"
-          }
-        ]
-      }
-    },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "minecraft:crossbow"
+        "recipes": "mechanical:steel_crossbow_prod"
       }
     }
   },
@@ -52,14 +32,12 @@
     [
       "has_0",
       "has_1",
-      "has_2",
-      "has_3",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "minecraft:crossbow"
+      "mechanical:steel_crossbow_prod"
     ]
   }
 }

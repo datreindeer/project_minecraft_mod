@@ -1,0 +1,594 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/crossbow_arrow/fixed"
+            },
+            {
+              "type": "minecraft:select",
+              "property": "minecraft:custom_model_data",
+              "index": 0,
+              "cases": [
+                {
+                  "when": "stick",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_arrow/rod_stick"
+                  }
+                },
+                {
+                  "when": "bone_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_arrow/rod_bone_tool_rod"
+                  }
+                },
+                {
+                  "when": "copper_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_arrow/rod_copper_tool_rod"
+                  }
+                },
+                {
+                  "when": "bronze_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_arrow/rod_bronze_tool_rod"
+                  }
+                },
+                {
+                  "when": "iron_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_arrow/rod_iron_tool_rod"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crossbow_arrow/rod"
+              }
+            },
+            {
+              "type": "minecraft:select",
+              "property": "minecraft:custom_model_data",
+              "index": 1,
+              "cases": [
+                {
+                  "when": "sinew",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_arrow/grip_sinew"
+                  }
+                },
+                {
+                  "when": "twine",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_arrow/grip_twine"
+                  }
+                },
+                {
+                  "when": "cordage",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_arrow/grip_cordage"
+                  }
+                },
+                {
+                  "when": "string",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_arrow/grip_string"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crossbow_arrow/grip"
+              }
+            }
+          ]
+        },
+        "when": "arrow"
+      },
+      {
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/crossbow_firework/fixed"
+            },
+            {
+              "type": "minecraft:select",
+              "property": "minecraft:custom_model_data",
+              "index": 0,
+              "cases": [
+                {
+                  "when": "stick",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_firework/rod_stick"
+                  }
+                },
+                {
+                  "when": "bone_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_firework/rod_bone_tool_rod"
+                  }
+                },
+                {
+                  "when": "copper_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_firework/rod_copper_tool_rod"
+                  }
+                },
+                {
+                  "when": "bronze_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_firework/rod_bronze_tool_rod"
+                  }
+                },
+                {
+                  "when": "iron_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_firework/rod_iron_tool_rod"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crossbow_firework/rod"
+              }
+            },
+            {
+              "type": "minecraft:select",
+              "property": "minecraft:custom_model_data",
+              "index": 1,
+              "cases": [
+                {
+                  "when": "sinew",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_firework/grip_sinew"
+                  }
+                },
+                {
+                  "when": "twine",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_firework/grip_twine"
+                  }
+                },
+                {
+                  "when": "cordage",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_firework/grip_cordage"
+                  }
+                },
+                {
+                  "when": "string",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_firework/grip_string"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crossbow_firework/grip"
+              }
+            }
+          ]
+        },
+        "when": "rocket"
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:condition",
+      "on_false": {
+        "type": "minecraft:composite",
+        "models": [
+          {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/crossbow/fixed"
+          },
+          {
+            "type": "minecraft:select",
+            "property": "minecraft:custom_model_data",
+            "index": 0,
+            "cases": [
+              {
+                "when": "stick",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow/rod_stick"
+                }
+              },
+              {
+                "when": "bone_tool_rod",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow/rod_bone_tool_rod"
+                }
+              },
+              {
+                "when": "copper_tool_rod",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow/rod_copper_tool_rod"
+                }
+              },
+              {
+                "when": "bronze_tool_rod",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow/rod_bronze_tool_rod"
+                }
+              },
+              {
+                "when": "iron_tool_rod",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow/rod_iron_tool_rod"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/crossbow/rod"
+            }
+          },
+          {
+            "type": "minecraft:select",
+            "property": "minecraft:custom_model_data",
+            "index": 1,
+            "cases": [
+              {
+                "when": "sinew",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow/grip_sinew"
+                }
+              },
+              {
+                "when": "twine",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow/grip_twine"
+                }
+              },
+              {
+                "when": "cordage",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow/grip_cordage"
+                }
+              },
+              {
+                "when": "string",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow/grip_string"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/crossbow/grip"
+            }
+          }
+        ]
+      },
+      "on_true": {
+        "type": "minecraft:range_dispatch",
+        "entries": [
+          {
+            "model": {
+              "type": "minecraft:composite",
+              "models": [
+                {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow_pulling_1/fixed"
+                },
+                {
+                  "type": "minecraft:select",
+                  "property": "minecraft:custom_model_data",
+                  "index": 0,
+                  "cases": [
+                    {
+                      "when": "stick",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_1/rod_stick"
+                      }
+                    },
+                    {
+                      "when": "bone_tool_rod",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_1/rod_bone_tool_rod"
+                      }
+                    },
+                    {
+                      "when": "copper_tool_rod",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_1/rod_copper_tool_rod"
+                      }
+                    },
+                    {
+                      "when": "bronze_tool_rod",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_1/rod_bronze_tool_rod"
+                      }
+                    },
+                    {
+                      "when": "iron_tool_rod",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_1/rod_iron_tool_rod"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_1/rod"
+                  }
+                },
+                {
+                  "type": "minecraft:select",
+                  "property": "minecraft:custom_model_data",
+                  "index": 1,
+                  "cases": [
+                    {
+                      "when": "sinew",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_1/grip_sinew"
+                      }
+                    },
+                    {
+                      "when": "twine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_1/grip_twine"
+                      }
+                    },
+                    {
+                      "when": "cordage",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_1/grip_cordage"
+                      }
+                    },
+                    {
+                      "when": "string",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_1/grip_string"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_1/grip"
+                  }
+                }
+              ]
+            },
+            "threshold": 0.58
+          },
+          {
+            "model": {
+              "type": "minecraft:composite",
+              "models": [
+                {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crossbow_pulling_2/fixed"
+                },
+                {
+                  "type": "minecraft:select",
+                  "property": "minecraft:custom_model_data",
+                  "index": 0,
+                  "cases": [
+                    {
+                      "when": "stick",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_2/rod_stick"
+                      }
+                    },
+                    {
+                      "when": "bone_tool_rod",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_2/rod_bone_tool_rod"
+                      }
+                    },
+                    {
+                      "when": "copper_tool_rod",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_2/rod_copper_tool_rod"
+                      }
+                    },
+                    {
+                      "when": "bronze_tool_rod",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_2/rod_bronze_tool_rod"
+                      }
+                    },
+                    {
+                      "when": "iron_tool_rod",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_2/rod_iron_tool_rod"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_2/rod"
+                  }
+                },
+                {
+                  "type": "minecraft:select",
+                  "property": "minecraft:custom_model_data",
+                  "index": 1,
+                  "cases": [
+                    {
+                      "when": "sinew",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_2/grip_sinew"
+                      }
+                    },
+                    {
+                      "when": "twine",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_2/grip_twine"
+                      }
+                    },
+                    {
+                      "when": "cordage",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_2/grip_cordage"
+                      }
+                    },
+                    {
+                      "when": "string",
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "mechanical:item/tool_parts/crossbow_pulling_2/grip_string"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_2/grip"
+                  }
+                }
+              ]
+            },
+            "threshold": 1.0
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/crossbow_pulling_0/fixed"
+            },
+            {
+              "type": "minecraft:select",
+              "property": "minecraft:custom_model_data",
+              "index": 0,
+              "cases": [
+                {
+                  "when": "stick",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_0/rod_stick"
+                  }
+                },
+                {
+                  "when": "bone_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_0/rod_bone_tool_rod"
+                  }
+                },
+                {
+                  "when": "copper_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_0/rod_copper_tool_rod"
+                  }
+                },
+                {
+                  "when": "bronze_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_0/rod_bronze_tool_rod"
+                  }
+                },
+                {
+                  "when": "iron_tool_rod",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_0/rod_iron_tool_rod"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crossbow_pulling_0/rod"
+              }
+            },
+            {
+              "type": "minecraft:select",
+              "property": "minecraft:custom_model_data",
+              "index": 1,
+              "cases": [
+                {
+                  "when": "sinew",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_0/grip_sinew"
+                  }
+                },
+                {
+                  "when": "twine",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_0/grip_twine"
+                  }
+                },
+                {
+                  "when": "cordage",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_0/grip_cordage"
+                  }
+                },
+                {
+                  "when": "string",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/crossbow_pulling_0/grip_string"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crossbow_pulling_0/grip"
+              }
+            }
+          ]
+        },
+        "property": "minecraft:crossbow/pull"
+      },
+      "property": "minecraft:using_item"
+    },
+    "property": "minecraft:charge_type"
+  }
+}

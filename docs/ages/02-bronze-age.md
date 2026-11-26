@@ -369,6 +369,7 @@ flintkniv och spatel. Förr var de crafting-recept av Clay Balls, men mönstren 
 | Clay Spear Head Mold / Sword Blade Mold | 4 / 6 |
 | Clay Kettle Mold | 28 (= 7 Clay-block; bänken tar bara Clay Balls) |
 | Clay Arrowheads Mold | 3 |
+| Clay Bolt Heads Mold | 3 (armborstets Bronze Bolts, se 03-iron-age.md) |
 | Clay Bucket / Sickle Blade / Shears Mold | 8 / 5 / 5 |
 | Clay Fish Hooks / Needles Mold | 3 / 3 |
 | Clay Tongs / Chisel Blade Mold | 6 / 4 (se "Fler bronsverktyg") |
@@ -485,6 +486,7 @@ blandar dem inte när de hämtar delar.
 | Clay Spear Head Mold | 4 | 4 | Rough Cast Bronze Spear Head |
 | Clay Sword Blade Mold | 6 | 6 | Rough Cast Bronze Sword Blade |
 | Clay Arrowheads Mold | 3 | 2 | Rough Cast Bronze Arrowheads (4 spetsar på en gjuttapp) |
+| Clay Bolt Heads Mold | 3 | 2 | Rough Cast Bronze Bolt Heads (4 bodkinspetsar på en tapp) → slipas till 4 Bronze Bolt Head, Poor Bronze följer med |
 
 Bara brons kan gjutas i dem. De andra formarna gjuter brons som koppar: Bronze Ingot, Rough Cast Bronze Pickaxe/Axe/
 Shovel/Hoe Head och Knife Blade. Allt Rough Cast slipas på Whetstone (4 drag) till Bronze ... Head / Blade / Plate.

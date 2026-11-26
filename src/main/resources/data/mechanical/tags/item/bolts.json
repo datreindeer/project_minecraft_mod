@@ -1,5 +1,7 @@
 {
   "values": [
-    "mechanical:iron_bolt"
+    "mechanical:bronze_bolt",
+    "mechanical:iron_bolt",
+    "mechanical:steel_bolt"
   ]
 }

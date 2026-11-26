@@ -102,7 +102,7 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 | Spear Head | 1 | 6 | Iron Spear Head | Steel Spear Head |
 | Hammer Head | 2 | 6 | Iron Hammer Head | Steel Hammer Head |
 | Saw Blade | 1 | 6 | Iron Saw Blade | Steel Saw Blade |
-| Bolt Heads | 1 | 4 | 4 Iron Bolt Head | – |
+| Bolt Heads | 1 | 4 | 4 Iron Bolt Head | 4 Steel Bolt Head |
 | Sickle Blade | 1 | 5 | Iron Sickle Blade | Steel Sickle Blade |
 | Chisel Blade | 1 | 4 | Iron Chisel Blade | Steel Chisel Blade |
 | Tong Arms | 1 | 5 | Iron Tong Arms | – |
@@ -129,8 +129,10 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 | Bucket | 3 Iron Plate (V) |
 | Shears | 2 Iron Plate (diagonalt) |
 | Iron Saw / Steel Saw | Tool Station: Iron / Steel Saw Blade + Leather + Stick |
-| Crossbow | `[Iron Plate][Iron Tool Rod][Iron Plate]` / `[Sinew][Tool Rod][Sinew]` / `[ ][Tool Rod][ ]` |
-| Iron Bolt ×4 | Fletching Table: 4 Iron Bolt Head + Stick + Feather |
+| Iron Crossbow Prod / Steel Crossbow Prod | `[Iron Plate][Iron Tool Rod][Iron Plate]` / `[Steel Plate][Iron Tool Rod][Steel Plate]` |
+| Crossbow / Steel Crossbow | Tool Station: prod + sträng (Sinew) + stock (Tool Rod) |
+| Iron Bolt ×4 / Steel Bolt ×4 | Fletching Table: 4 Iron / Steel Bolt Head + Stick + Feather |
+| Bronze Bolt ×4 | Fletching Table: 4 Bronze Bolt Head (gjutna, Clay Bolt Heads Mold) + Stick + Feather |
 
 - Smitt järn håller längre än brons: järnverktygen har **600** i hållbarhet (vanilla 250, brons 460) och Iron Pickaxe
   bryter guld, redstone, diamant och smaragd. Full järnrustning, bröstplåten som bronsåldern saknade.
@@ -163,10 +165,30 @@ tar dem inte), de går i Quiver och plockas upp dit, och de går sällan sönder
 vanlig pil. Monster med armborst (plundrare) tappar det först när världen nått järnåldern (`LaterAgeGear`). Kod:
 `Smithing` (items, mönster, rustningsgenomslaget), `mixin/CrossbowItemMixin` (armborstet laddar bolts),
 `FletchingRecipes`. Advancements **Crossbowman** (mål, efter *Forged*) och **Bodkin** (efter *Crossbowman*).
+*Ändrat i v0.226.0: armborstet byggs i Tool Station och fler bultar finns, se nästa stycke.*
 Tooltip på alla bågar och armborstet: **Damage multiplier** (pilens skada × detta är vad ett fullt draget skott gör:
 pilens fart, vanlig båge ×3.0, Crude Bow ×2.1, Horn Bow ×3.6, Yew Longbow ×3.9, armborst ×3.15) och **Draw time** (båge 1 s,
 Yew Longbow 1,5 s, armborst 1,25 s, kortare med Quick Charge). Crude Bow ger nu 70 % av vilken pils skada som helst (förut
 alltid en vanlig pils).
+
+**Dynamiska armborst (byggda, v0.226.0;** `docs/superpowers/specs/2026-11-26-crossbows-design.md`**).** Armborstet byggs i
+**Tool Station** av **prod + sträng + stock**; avtryckaren sitter i proddens recept. **Iron Crossbow Prod** = 2 Iron Plate
+med en Iron Tool Rod emellan (crafting, ersätter det gamla armborstreceptet); **Steel Crossbow Prod** = 2 Steel Plate + Iron
+Tool Rod. Proden låser upp receptet. Iron Crossbow Prod + Sinew + Tool Rod blir vanillas **Crossbow** med exakt dagens stats
+(465, 1,25 s, ×3.15); gamla armborst i världen är oförändrade. **Steel Crossbow** (eget item, stålbåge och vev på stocken):
+**930** i hållbarhet, laddning **35 ticks** (1,75 s), bulten flyger **×1,15** fortare (skada ×3.62). Strängen tas ur bågarnas
+strängtabell (Twine, Cordage, String, Sinew: hållbarhet, laddning och bultfart som på bågar), stocken ur skafttabellen upp
+till proddens nivå (Stick … Iron Tool Rod, Steel Tool Rod bara på stålproden; skaftets fart blir laddningstiden, så en
+metallstock håller längre men laddar lite tyngre). Stock och sträng syns på armborstet i alla lägen (oladdat, spänns,
+laddat). **Bultar:** Bronze Bolt **3** skada, **25 %** genom rustning (Bronze Bolt Head gjuts 4 åt gången i **Clay Bolt
+Heads Mold**, 3 Clay Balls, 2 enheter brons, slipas på Whetstone; Poor Bronze ger svagare bultar, −0,5); Iron Bolt 4 / 40 %;
+Steel Bolt **5** / **55 %** (mönstret Bolt Heads med en het Steel Ingot ger 4 spetsar). Alla armborst laddar brons- och
+järnbultar, **bara Steel Crossbow** laddar stålbultar. Monster spawnar aldrig med Steel Crossbow (`LaterAgeGear`);
+plundrare har vanillas armborst som förut. Kod: `Smithing` (items, `loads`, `chargeFactor`, `powerFactor`),
+`mixin/CrossbowItemMixin` (bultar, laddningstid, bultfart), `mixin/FirstPersonHandsAndItemsMixin` och `client/HoldPoses`
+(stålarmborstet hålls som vanillas), `ToolParts.Kind.CROSSBOW`. Data och texturer: `scripts/gen_crossbows.py`,
+`scripts/gen_tool_parts.py`. Advancements **Cheap Shot** (Bronze Bolt, efter *Crossbowman*), **Windlass** och **Armour
+Piercer** (Steel Age-fliken). Test: `ToolsTest`, `IronAgeTest`.
 
 **Smidda versioner av bronsverktygen (byggda, v0.130.0).** Varje bronsverktyg har nu sin järn- (och ofta stål-)version.
 Delarna smids på städet (mönstren ovan) och sätts ihop i Tool Station; de gör allt bronsverktyget gör, och lite till:
@@ -394,7 +416,9 @@ Inga öppna beslut just nu: rostning (sämre, inte oanvändbar), malmerna (alla 
 | Iron Plate, Iron Tool Rod, järnhuvuden | Items | Smidda delar till verktyg, rustning och vanillas järnsaker |
 | Iron Saw Blade, Steel Saw Blade, Iron Saw, Steel Saw | Items | **Byggd.** Smitt blad, Tool Station |
 | Iron Bolt Head, Iron Bolt | Items | **Byggd.** 4 spetsar per tacka, armborstets ammunition |
-| Crossbow (vanilla) | Item | **Byggd.** Iron Plate, Iron Tool Rod, Sinew, Tool Rod |
+| Bronze Bolt Head, Bronze Bolt, Clay Bolt Heads Mold | Items | **Byggd (v0.226.0).** Gjutna spetsar, 3 skada, 25 % genom rustning |
+| Iron Crossbow Prod | Item | **Byggd (v0.226.0).** 2 Iron Plate + Iron Tool Rod |
+| Crossbow (vanilla) | Item | **Byggd.** Tool Station: Iron Crossbow Prod + sträng + stock |
 | Steel Ingot | Item | Wrought Iron + Charcoal, cementering |
 | Galena Ore, Deepslate Galena Ore | Block | **Byggd.** Bronze Pickaxe, ger Raw Galena |
 | Raw Galena, Lead Ingot | Items | **Byggd.** Kiln 800° |

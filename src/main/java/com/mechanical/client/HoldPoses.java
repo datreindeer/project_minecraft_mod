@@ -196,6 +196,13 @@ public final class HoldPoses {
             Held extensions = extensionsFor(item);
             if (extensions != null) event.registerItem(extensions, item);
         }
+        // the Steel Crossbow is no Items.CROSSBOW, which vanilla's charged-crossbow hold asks for (AvatarRenderer.getArmPose): same pose, same rule
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
+                return !entity.isSwinging() && net.minecraft.world.item.CrossbowItem.isCharged(stack) ? HumanoidModel.ArmPose.CROSSBOW_HOLD : null;
+            }
+        }, com.mechanical.Smithing.STEEL_CROSSBOW.get());
     }
 
     @SubscribeEvent

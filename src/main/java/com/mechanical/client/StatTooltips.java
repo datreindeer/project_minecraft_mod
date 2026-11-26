@@ -60,7 +60,8 @@ public final class StatTooltips {
 
         com.mechanical.tools.ToolParts.Parts parts = stack.get(com.mechanical.tools.ToolParts.TOOL_PARTS.get());
         if (parts != null) {
-            String key = stack.getItem() instanceof BowItem ? "tooltip.mechanical.bow_parts" : stack.getItem() instanceof FishingRodItem ? "tooltip.mechanical.fishing_rod_parts" : "tooltip.mechanical.tool_parts";
+            String key = stack.getItem() instanceof BowItem ? "tooltip.mechanical.bow_parts" : stack.getItem() instanceof FishingRodItem ? "tooltip.mechanical.fishing_rod_parts"
+                    : stack.getItem() instanceof net.minecraft.world.item.CrossbowItem ? "tooltip.mechanical.crossbow_parts" : "tooltip.mechanical.tool_parts";
             lines.add(Component.translatable(key, new ItemStack(parts.rod()).getHoverName(), new ItemStack(parts.binding()).getHoverName(),
                     new ItemStack(parts.head()).getHoverName()).withStyle(LABEL));
             if (parts.smithing() > 0) lines.add(Component.translatable("tooltip.mechanical.tool_smithing", parts.smithing(),
@@ -100,14 +101,15 @@ public final class StatTooltips {
             int draw = stack.getItem() instanceof net.minecraft.world.item.CrossbowItem && event.getEntity() != null
                     ? net.minecraft.world.item.CrossbowItem.getChargeDuration(stack, event.getEntity()) : com.mechanical.tools.ToolStats.drawTicks(stack);
             lines.add(Component.translatable("tooltip.mechanical.bow.draw_time", value(String.format(java.util.Locale.ROOT, "%.2f", draw / 20.0F).replaceAll("0$", "") + " s")).withStyle(LABEL));
-            if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) use(lines, Component.translatable("tooltip.mechanical.crossbow.bolts_only").getString());
+            if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) use(lines, Component.translatable(stack.is(com.mechanical.Smithing.STEEL_CROSSBOW.get())
+                    ? "tooltip.mechanical.crossbow.all_bolts" : "tooltip.mechanical.crossbow.bolts_only").getString());
         }
         if (stack.getItem() instanceof SpecialArrowItem arrow) {
             lines.add(stat("Damage", value(String.format("%.1f", arrow.damage()) + " (arrow: 2.0)")));
             if (arrow.fire()) lines.add(Component.literal(" Sets the target on fire").withStyle(ChatFormatting.GOLD));
             if (stack.is(com.mechanical.Smithing.BOLTS)) {
-                lines.add(stat("Armor ignored", value(Math.round(com.mechanical.Smithing.BOLT_ARMOR_PIERCE * 100) + "%")));
-                use(lines, "Crossbow only");
+                lines.add(stat("Armor ignored", value(Math.round(com.mechanical.Smithing.boltPierce(stack) * 100) + "%")));
+                use(lines, stack.is(com.mechanical.Smithing.STEEL_BOLT.get()) ? "Steel Crossbow only" : "Crossbow only");
             }
         } else if (stack.is(Items.ARROW)) {
             lines.add(stat("Damage", value("2.0")));

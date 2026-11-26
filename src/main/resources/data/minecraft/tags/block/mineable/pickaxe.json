@@ -591,6 +591,7 @@
     "mechanical:taphole",
     "mechanical:high_furnace_front",
     "mechanical:electrum_block",
-    "mechanical:soapstone_tool_rod_mold"
+    "mechanical:soapstone_tool_rod_mold",
+    "mechanical:soapstone_bolt_heads_mold"
   ]
 }

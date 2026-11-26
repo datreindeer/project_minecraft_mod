@@ -35,17 +35,25 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  * The parts a dynamic tool was built from and what they do to its stats (docs/superpowers/specs/2026-11-26-dynamic-tools-design.md).
  * Stats are relative to the recipe's default parts, so a tool built with them keeps exactly the item's own stats.
  * Leather in the rod slot is the grip of a sword, knife or tongs: a rod with factors 1.0, so the rod-table rods replace it as grips.
- * Bows (string, grip, stave in the head, binding and rod slots) and fishing rods (hook, line, rod) use their own tables ({@link Kind}).
+ * Bows (string, grip, stave in the head, binding and rod slots), crossbows (prod, string, stock) and fishing rods (hook, line, rod)
+ * use their own tables ({@link Kind}).
  */
 public final class ToolParts {
     /** What a Tool Station recipe makes, and so which table each slot reads (none: the slot takes only the recipe's own item). */
     public enum Kind {
-        TOOL, BOW, FISHING_ROD, FIXED;
+        TOOL, BOW, CROSSBOW, FISHING_ROD, FIXED;
+
+        /** Bows and crossbows: their speed is a draw (charge) time, their power the projectile's speed. */
+        public boolean drawn() {
+            return this == BOW || this == CROSSBOW;
+        }
 
         private Map<Item, Part> table(int slot) {
             return switch (this) {
                 case TOOL -> slot == 1 ? BINDINGS.get() : slot == 2 ? RODS.get() : null;
                 case BOW -> slot == 0 ? STRINGS.get() : slot == 1 ? GRIPS.get() : STAVES.get();
+                // the prod is the item (its recipe's own); the string from the bows' table, the stock from the rods' (up to the prod's tier)
+                case CROSSBOW -> slot == 1 ? STRINGS.get() : slot == 2 ? RODS.get() : null;
                 case FISHING_ROD -> slot == 1 ? LINES.get() : slot == 2 ? FISHING_RODS.get() : null;
                 case FIXED -> null;
             };
@@ -203,7 +211,7 @@ public final class ToolParts {
     /** Leather is a rod only as a grip; a Yew Stave goes only on the Yew Longbow, and the Yew Longbow takes only one. */
     private static boolean fits(Kind kind, int slot, Item part, Item own) {
         if (slot != 2) return true;
-        if (kind == Kind.TOOL) return part != Items.LEATHER || own == Items.LEATHER;
+        if (kind == Kind.TOOL || kind == Kind.CROSSBOW) return part != Items.LEATHER || own == Items.LEATHER;
         if (kind == Kind.BOW) return (part == BronzeTools.YEW_STAVE.get()) == (own == BronzeTools.YEW_STAVE.get());
         return true;
     }
@@ -256,7 +264,7 @@ public final class ToolParts {
             if (Bronze.isPoor(tool)) durability = Math.round(durability * Bronze.POOR_DURABILITY);
             tool.set(DataComponents.MAX_DAMAGE, Math.max(1, durability));
         }
-        if (kind == Kind.BOW) tool.set(RANGED.get(), new Ranged(power, dSpeed / cSpeed, 0));
+        if (kind.drawn()) tool.set(RANGED.get(), new Ranged(power, dSpeed / cSpeed, 0));
         if (kind == Kind.FISHING_ROD) tool.set(RANGED.get(), new Ranged(1, 1, lure));
         if (kind != Kind.TOOL) return;
         Tool miner = fresh.get(DataComponents.TOOL);

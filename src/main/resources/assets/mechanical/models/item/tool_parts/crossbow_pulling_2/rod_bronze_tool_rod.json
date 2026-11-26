@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/crossbow",
+  "textures": {
+    "layer0": "mechanical:item/tool_parts/crossbow_pulling_2/rod_bronze_tool_rod"
+  }
+}

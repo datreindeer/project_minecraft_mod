@@ -21,6 +21,11 @@ Steel Tool Rod är nivå 4 som skaft (×1,75 hållbarhet, +1,0 skada); se *Delar
 
 Kod: `Smithing`. Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
 
+- **Steel Crossbow** (v0.226.0): **Steel Crossbow Prod** (2 Steel Plate + Iron Tool Rod, crafting) + sträng + stock i Tool
+  Station. 930 i hållbarhet (vanillas dubbla), laddning 35 ticks, bulten ×1,15 fortare; vev på stocken. Ensam om att ladda
+  **Steel Bolts** (Bolt Heads-mönstret med en het Steel Ingot: 4 Steel Bolt Head; 5 skada, 55 % genom rustning). Se
+  *Dynamiska armborst* i 03-iron-age.md. Advancements **Windlass**, **Armour Piercer**.
+
 - **Steel Tool Rod**: smids på städet av 1 het Steel Ingot, 3 slag (mönster Tool Rod, som Iron Tool Rod). Rod i Tool Station för dynamiska
   verktyg (nivå 4, hållbarhet ×1,75, +1 skada). Texturer: `scripts/gen_tool_rods.py`. Test: `ToolsTest`.
 

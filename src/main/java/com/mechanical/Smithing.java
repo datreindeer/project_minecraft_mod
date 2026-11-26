@@ -119,6 +119,40 @@ public final class Smithing {
     /** Share of the target's armour protection an Iron Bolt's square head punches through. */
     public static final float BOLT_ARMOR_PIERCE = 0.4F;
     public static final DeferredItem<SpecialArrowItem> IRON_BOLT = ITEMS.registerItem("iron_bolt", p -> new SpecialArrowItem(p, BOLT_DAMAGE, false));
+    // ---- dynamic crossbows (docs/superpowers/specs/2026-11-26-crossbows-design.md): prod + string + stock at the Tool Station.
+    // The Iron Crossbow is vanilla's; bronze bolts are cast (Bronze), steel bolt heads forged like the iron ones.
+    public static final DeferredItem<Item> IRON_CROSSBOW_PROD = ITEMS.registerSimpleItem("iron_crossbow_prod");
+    public static final DeferredItem<Item> STEEL_CROSSBOW_PROD = ITEMS.registerSimpleItem("steel_crossbow_prod");
+    /** A heavier steel prod spanned with a windlass: twice vanilla's durability, a slower charge, faster bolts. */
+    public static final DeferredItem<net.minecraft.world.item.CrossbowItem> STEEL_CROSSBOW = ITEMS.registerItem("steel_crossbow",
+            net.minecraft.world.item.CrossbowItem::new, p -> p.stacksTo(1).durability(930).enchantable(1)
+                    .component(DataComponents.CHARGED_PROJECTILES, net.minecraft.world.item.component.ChargedProjectiles.EMPTY));
+    public static final int CROSSBOW_CHARGE_TICKS = 25, STEEL_CROSSBOW_CHARGE_TICKS = 35;
+    public static final float STEEL_CROSSBOW_SPEED = 1.15F;
+    public static final DeferredItem<Item> STEEL_BOLT_HEAD = ITEMS.registerSimpleItem("steel_bolt_head");
+    public static final DeferredItem<SpecialArrowItem> BRONZE_BOLT = ITEMS.registerItem("bronze_bolt", p -> new SpecialArrowItem(p, 3.0, false));
+    public static final DeferredItem<SpecialArrowItem> STEEL_BOLT = ITEMS.registerItem("steel_bolt", p -> new SpecialArrowItem(p, 5.0, false));
+
+    /** Share of the armour a bolt ignores: bronze 25 %, iron {@link #BOLT_ARMOR_PIERCE}, steel 55 %. */
+    public static float boltPierce(ItemStack bolt) {
+        return bolt.is(BRONZE_BOLT.get()) ? 0.25F : bolt.is(STEEL_BOLT.get()) ? 0.55F : BOLT_ARMOR_PIERCE;
+    }
+
+    /** Whether this crossbow loads this bolt: every crossbow bronze and iron ones, only the Steel Crossbow steel ones. */
+    public static boolean loads(Item crossbow, ItemStack bolt) {
+        return bolt.is(BOLTS) && (crossbow == STEEL_CROSSBOW.get() || !bolt.is(STEEL_BOLT.get()));
+    }
+
+    /** A crossbow's charge time against vanilla's 25 ticks: the Steel Crossbow's windlass, then its parts (ToolParts.Ranged). */
+    public static float chargeFactor(ItemStack crossbow) {
+        return (crossbow.is(STEEL_CROSSBOW.get()) ? (float) STEEL_CROSSBOW_CHARGE_TICKS / CROSSBOW_CHARGE_TICKS : 1)
+                * com.mechanical.tools.ToolParts.ranged(crossbow).draw();
+    }
+
+    /** A crossbow's bolt speed (so damage) against vanilla's: the steel prod, then its parts. */
+    public static float powerFactor(ItemStack crossbow) {
+        return (crossbow.is(STEEL_CROSSBOW.get()) ? STEEL_CROSSBOW_SPEED : 1) * com.mechanical.tools.ToolParts.ranged(crossbow).power();
+    }
 
     /** Iron wears less than bronze: 1 a blow instead of {@link Ironworking#HAMMER_WEAR}. */
     public static final DeferredItem<Item> IRON_SMITHING_HAMMER = ITEMS.registerSimpleItem("iron_smithing_hammer", p -> p.durability(500));
@@ -189,7 +223,7 @@ public final class Smithing {
         SPEAR_HEAD("spear_head", 1, 6, () -> IRON_SPEAR_HEAD.get(), () -> STEEL_SPEAR_HEAD.get()),
         HAMMER_HEAD("hammer_head", 2, 6, () -> IRON_HAMMER_HEAD.get(), () -> STEEL_HAMMER_HEAD.get()),
         SAW_BLADE("saw_blade", 1, 6, () -> IRON_SAW_BLADE.get(), () -> STEEL_SAW_BLADE.get()),
-        BOLT_HEADS("bolt_heads", 1, 4, BOLT_HEADS_PER_INGOT, () -> IRON_BOLT_HEAD.get(), null),
+        BOLT_HEADS("bolt_heads", 1, 4, BOLT_HEADS_PER_INGOT, () -> IRON_BOLT_HEAD.get(), () -> STEEL_BOLT_HEAD.get()),
         SICKLE_BLADE("sickle_blade", 1, 5, () -> IRON_SICKLE_BLADE.get(), () -> STEEL_SICKLE_BLADE.get()),
         CHISEL_BLADE("chisel_blade", 1, 4, () -> IRON_CHISEL_BLADE.get(), () -> STEEL_CHISEL_BLADE.get()),
         TONG_ARMS("tong_arms", 1, 5, () -> IRON_TONG_ARMS.get(), null),
@@ -261,13 +295,13 @@ public final class Smithing {
     /** Iron Needles and Iron Fish Hooks one hot Wrought Iron Ingot is drawn into (the bronze gang molds cast 4 too). */
     public static final int NEEDLES_PER_INGOT = 4, FISH_HOOKS_PER_INGOT = 4;
 
-    /** An Iron Bolt ignores {@link #BOLT_ARMOR_PIERCE} of the armour it hits. */
+    /** A bolt ignores its {@link #boltPierce} share of the armour it hits. */
     @SubscribeEvent
     static void boltPiercesArmour(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent event) {
         if (event.getSource().getDirectEntity() instanceof net.minecraft.world.entity.projectile.arrow.AbstractArrow arrow
                 && arrow.getPickupItemStackOrigin().is(BOLTS))
             event.addReductionModifier(net.neoforged.neoforge.common.damagesource.DamageContainer.Reduction.ARMOR,
-                    (container, reduction) -> reduction * (1 - BOLT_ARMOR_PIERCE));
+                    (container, reduction) -> reduction * (1 - boltPierce(arrow.getPickupItemStackOrigin())));
     }
 
     private static DeferredItem<HotMetalItem> hot(String name, Supplier<? extends Item> cold) {

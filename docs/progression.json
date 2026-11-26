@@ -1074,12 +1074,14 @@
     },
     "items": [
      "minecraft:crossbow",
+     "mechanical:iron_crossbow_prod",
      "mechanical:iron_bolt",
+     "mechanical:bronze_bolt",
      "mechanical:iron_saw"
     ],
     "text": {
-     "sv": "Ett [[minecraft:crossbow]] görs av smidda delar: 2 Iron Plate, en Iron Tool Rod, 2 Sinew och 2 Tool Rod. Det skjuter pilar och [[mechanical:iron_bolt]]: smid en het tacka till 4 Iron Bolt Head (mönstret Bolt Heads) och fjädra dem på Fletching Table med Stick och Feather. En bolt gör 4 i skada och går igenom 40 % av rustningen, men bara armborst kan skjuta den.\n\nMönstret Saw Blade ger ett sågblad av järn eller stål. I Tool Station med Leather och Stick blir det en [[mechanical:iron_saw]] (900 i hållbarhet) eller Steel Saw (1600). De sågar fortare än Bronze Saw och duger till allt bronssågen gör.",
-     "en": "A [[minecraft:crossbow]] is made from forged parts: 2 Iron Plates, an Iron Tool Rod, 2 Sinew and 2 Tool Rods. It shoots arrows and [[mechanical:iron_bolt]]s: forge a hot ingot into 4 Iron Bolt Heads (the Bolt Heads pattern) and fletch them at the Fletching Table with a Stick and a Feather. A bolt does 4 damage and goes through 40% of armour, but only a crossbow can shoot it.\n\nThe Saw Blade pattern gives an iron or steel saw blade. At the Tool Station with Leather and a Stick it becomes an [[mechanical:iron_saw]] (900 durability) or a Steel Saw (1600). They saw faster than the Bronze Saw and do everything it does."
+     "sv": "Ett [[minecraft:crossbow]] byggs i Tool Station av en [[mechanical:iron_crossbow_prod]] (2 Iron Plate och en Iron Tool Rod), en sträng och en stock, som ändrar hur det laddar och skjuter. Det skjuter gjutna [[mechanical:bronze_bolt]] och [[mechanical:iron_bolt]]: smid en het tacka till 4 Iron Bolt Head (mönstret Bolt Heads) och fjädra dem på Fletching Table med Stick och Feather. En bolt gör 4 i skada och går igenom 40 % av rustningen, men bara armborst kan skjuta den.\n\nMönstret Saw Blade ger ett sågblad av järn eller stål. I Tool Station med Leather och Stick blir det en [[mechanical:iron_saw]] (900 i hållbarhet) eller Steel Saw (1600). De sågar fortare än Bronze Saw och duger till allt bronssågen gör.",
+     "en": "A [[minecraft:crossbow]] is built at the Tool Station from an [[mechanical:iron_crossbow_prod]] (2 Iron Plates and an Iron Tool Rod), a string and a stock, which change how it charges and shoots. It shoots cast [[mechanical:bronze_bolt]]s and [[mechanical:iron_bolt]]s: forge a hot ingot into 4 Iron Bolt Heads (the Bolt Heads pattern) and fletch them at the Fletching Table with a Stick and a Feather. A bolt does 4 damage and goes through 40% of armour, but only a crossbow can shoot it.\n\nThe Saw Blade pattern gives an iron or steel saw blade. At the Tool Station with Leather and a Stick it becomes an [[mechanical:iron_saw]] (900 durability) or a Steel Saw (1600). They saw faster than the Bronze Saw and do everything it does."
     }
    },
    {
@@ -1288,14 +1290,15 @@
     },
     "items": [
      "steel_pickaxe",
+     "steel_crossbow",
      "steel_chestplate",
      "steel_quarry_hammer",
      "steel_sickle",
      "flint_and_steel"
     ],
     "text": {
-     "sv": "Heta Steel Ingots smids på städet efter samma mönster som järnet: Steel Plate, huvuden och blad. Huvud + [[iron_tool_rod]] (kil och beslag) + Tool Rod blir stålverktyg som [[steel_pickaxe]]: 2200 i hållbarhet, snabbare och hårdare, och de bryter obsidian. Flint (eller Jasper) + Steel Plate blir [[minecraft:flint_and_steel]].\n\nI Armor Station: Steel Plates på läder blir **stålrustning** ([[steel_chestplate]]), mellan järn och diamant. En [[steel_quarry_hammer]] (Steel Hammer Head, Steel Plate, Iron Tool Rod) smular varje malm en stålhacka bryter i sin 3×3-yta, en [[steel_sickle]] skär 5×5, och Steel Saw, Steel Chisel och Steel Smithing Hammer håller längre och arbetar fortare än järnets.",
-     "en": "Hot Steel Ingots are forged on the anvil to the same patterns as iron: Steel Plate, heads and blades. Head + [[iron_tool_rod]] (wedge and ferrule) + Tool Rod make steel tools like the [[steel_pickaxe]]: 2200 durability, faster and harder-hitting, and they mine obsidian. Flint (or Jasper) + Steel Plate make a [[minecraft:flint_and_steel]].\n\nAt the Armor Station, Steel Plates on leather make **steel armour** ([[steel_chestplate]]), between iron and diamond. A [[steel_quarry_hammer]] (Steel Hammer Head, Steel Plate, Iron Tool Rod) crumbles every ore a steel pickaxe mines in its 3x3 face, a [[steel_sickle]] reaps 5x5, and the Steel Saw, Steel Chisel and Steel Smithing Hammer last longer and work faster than iron's."
+     "sv": "Heta Steel Ingots smids på städet efter samma mönster som järnet: Steel Plate, huvuden och blad. Huvud + [[iron_tool_rod]] (kil och beslag) + Tool Rod blir stålverktyg som [[steel_pickaxe]]: 2200 i hållbarhet, snabbare och hårdare, och de bryter obsidian. Flint (eller Jasper) + Steel Plate blir [[minecraft:flint_and_steel]].\n\nI Armor Station: Steel Plates på läder blir **stålrustning** ([[steel_chestplate]]), mellan järn och diamant. En [[steel_quarry_hammer]] (Steel Hammer Head, Steel Plate, Iron Tool Rod) smular varje malm en stålhacka bryter i sin 3×3-yta, en [[steel_sickle]] skär 5×5, och Steel Saw, Steel Chisel och Steel Smithing Hammer håller längre och arbetar fortare än järnets. En [[steel_crossbow]] (Steel Crossbow Prod av 2 Steel Plate och en Iron Tool Rod, sträng och stock i Tool Station) håller dubbelt så länge, skjuter fortare men laddar långsammare, och är ensam om att ladda Steel Bolts.",
+     "en": "Hot Steel Ingots are forged on the anvil to the same patterns as iron: Steel Plate, heads and blades. Head + [[iron_tool_rod]] (wedge and ferrule) + Tool Rod make steel tools like the [[steel_pickaxe]]: 2200 durability, faster and harder-hitting, and they mine obsidian. Flint (or Jasper) + Steel Plate make a [[minecraft:flint_and_steel]].\n\nAt the Armor Station, Steel Plates on leather make **steel armour** ([[steel_chestplate]]), between iron and diamond. A [[steel_quarry_hammer]] (Steel Hammer Head, Steel Plate, Iron Tool Rod) crumbles every ore a steel pickaxe mines in its 3x3 face, a [[steel_sickle]] reaps 5x5, and the Steel Saw, Steel Chisel and Steel Smithing Hammer last longer and work faster than iron's. A [[steel_crossbow]] (a Steel Crossbow Prod of 2 Steel Plates and an Iron Tool Rod, a string and a stock at the Tool Station) lasts twice as long and shoots harder but charges slower, and only it loads Steel Bolts."
     }
    },
    {

@@ -27,6 +27,7 @@
     "mechanical:iron_tongs",
     "mechanical:iron_needle",
     "mechanical:iron_quarry_hammer",
-    "mechanical:steel_smithing_hammer"
+    "mechanical:steel_smithing_hammer",
+    "mechanical:steel_crossbow"
   ]
 }

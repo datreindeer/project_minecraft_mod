@@ -1,0 +1,6 @@
+{
+  "parent": "mechanical:item/steel_crossbow",
+  "textures": {
+    "layer0": "mechanical:item/tool_parts/steel_crossbow_firework/grip_string"
+  }
+}

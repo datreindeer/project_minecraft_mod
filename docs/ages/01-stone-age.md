@@ -160,6 +160,8 @@ kniv, såg, mejsel, smedshammare, stenbrottshammare, spjut, svärd, tång och ar
 Sinew (×1,2, draget ×0,95, pilfart ×1,1); grepp ur bindningstabellen (Twine, Cordage, Leather, Sinew); stav Stick (×0,75, snabbare ×1,1, pilfart ×0,85),
 Tool Rod (×1,0); Yew Stave bara på Yew Longbow. **Fiskespön** (lina, skaft): lina Twine (×0,85), Cordage (×1,0), String (×0,9, napp 2 s snabbare),
 Sinew (×1,1, napp 1 s snabbare); skaft Stick (×0,8), Tool Rod (×1,0), Bamboo (×1,15).
+**Armborst** (prod, sträng, stock; järnåldern, se 03-iron-age.md): strängen ur bågarnas strängtabell (standard Sinew), stocken ur
+skafttabellen upp till proddens nivå (standard Tool Rod; skaftets fart blir laddningstiden). Samma delar som förr = vanillas armborst.
 
 ### Flint Spear (Tool Station)
 Huvud: **Flint**, bindning: **Cordage**, skaft: **Tool Rod**. Fungerar som vanilla Stone Spear: 2 skada vid stöt (vänsterklick), håll in högerklick och spring för ansats (skadan beror på farten). Hållbarhet 100.

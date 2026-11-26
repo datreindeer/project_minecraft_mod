@@ -60,6 +60,8 @@ public final class ToolsTest {
             poorOnce(h);
             station(h);
             bowsAndRods(h);
+            crossbows(h);
+            castBoltHeads(h);
             looksFollowParts(h);
             h.succeed();
         } catch (RuntimeException e) {
@@ -173,6 +175,74 @@ public final class ToolsTest {
                 "the Yew Stave makes only the longbow: " + crude.options(2) + " / " + yewBow.options(2));
         h.assertTrue(result(p, Items.FLINT, Items.LEATHER, Items.BAMBOO).isEmpty() && result(p, Mechanical.BONE_FISH_HOOK.get(), twine, yew).isEmpty(), "no leather line, no yew rod");
         h.assertFalse(result(p, Items.FLINT, cord, Items.BAMBOO).isEmpty(), "a cordage line on bamboo");
+    }
+
+    /**
+     * Crossbows (docs/superpowers/specs/2026-11-26-crossbows-design.md): Sinew on a Tool Rod stock is vanilla's crossbow exactly; the Steel
+     * Crossbow lasts twice as long, charges in 35 ticks and shoots x1.15; a String string and a Stick stock trade durability for a quicker,
+     * weaker shot; a crossbow never built at the Tool Station (every one in the world today) is untouched; stocks follow the prod's tier.
+     */
+    private static void crossbows(GameTestHelper h) {
+        Item sinew = com.mechanical.wildlife.Wildlife.SINEW.get(), rod = Mechanical.TOOL_ROD.get();
+        Item ironProd = Smithing.IRON_CROSSBOW_PROD.get(), steelProd = Smithing.STEEL_CROSSBOW_PROD.get();
+        var p = net.neoforged.neoforge.common.util.FakePlayerFactory.get(h.getLevel(), new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "crossbows"));
+        p.setData(Mechanical.UNLOCKED_TOOLS, com.mechanical.ToolStationRecipes.ALL.stream().map(com.mechanical.ToolStationRecipes.Recipe::id).toList());
+        ItemStack old = new ItemStack(Items.CROSSBOW);
+        h.assertTrue(old.getMaxDamage() == 465 && ToolStats.drawTicks(old) == 25 && net.minecraft.world.item.CrossbowItem.getChargeDuration(old, p) == 25
+                && Smithing.powerFactor(old) == 1 && Math.abs(ToolStats.bowDamage(old) - 3.15F) < 1e-5, "an old crossbow is vanilla's");
+        // the station adds the fake player's Smithing bonus (+0.5 % a level) to every durability
+        float smith = 1 + ToolParts.SMITHING_BONUS_PER_LEVEL * com.mechanical.skills.Skills.level(p, com.mechanical.skills.Skill.SMITHING);
+        ItemStack iron = result(p, ironProd, sinew, rod), steel = result(p, steelProd, sinew, rod);
+        h.assertTrue(iron.is(Items.CROSSBOW) && iron.getMaxDamage() == Math.round(465 * smith) && net.minecraft.world.item.CrossbowItem.getChargeDuration(iron, p) == 25
+                && Smithing.powerFactor(iron) == 1, "the default Iron Crossbow is vanilla's: " + iron.getMaxDamage() + " " + ToolParts.ranged(iron));
+        h.assertTrue(steel.is(Smithing.STEEL_CROSSBOW.get()) && steel.getMaxDamage() == Math.round(930 * smith) && net.minecraft.world.item.CrossbowItem.getChargeDuration(steel, p) == 35
+                && ToolStats.drawTicks(steel) == 35 && Math.abs(ToolStats.bowDamage(steel) - 3.15F * 1.15F) < 1e-4,
+                "the default Steel Crossbow: 930, 35 ticks, x1.15: " + steel.getMaxDamage() + " " + ToolStats.drawTicks(steel) + " " + ToolStats.bowDamage(steel));
+        h.assertTrue(steel.get(DataComponents.CUSTOM_MODEL_DATA).strings().equals(List.of("tool_rod", "sinew")), "the model names stock, then string");
+        ItemStack light = result(p, ironProd, Items.STRING, Items.STICK);
+        int lightDraw = net.minecraft.world.item.CrossbowItem.getChargeDuration(light, p);
+        h.assertTrue(light.is(Items.CROSSBOW) && light.getMaxDamage() == Math.round(465 / 1.2F * 0.9F * 0.8F * smith) && lightDraw == Math.round(25 * 0.95F / 1.05F)
+                && Math.abs(Smithing.powerFactor(light) - 1.05F / 1.1F) < 1e-5,
+                "String on a Stick: shorter-lived, quicker, softer: " + light.getMaxDamage() + " " + lightDraw + " " + Smithing.powerFactor(light));
+        ItemStack heavy = result(p, steelProd, sinew, Smithing.IRON_TOOL_ROD.get());
+        h.assertTrue(heavy.getMaxDamage() == Math.round(930 * 1.5F * smith) && net.minecraft.world.item.CrossbowItem.getChargeDuration(heavy, p) == Math.round(35 / 0.96F),
+                "an Iron Tool Rod stock: x1.5 durability, a heavier charge: " + heavy.getMaxDamage());
+        h.assertTrue(result(p, ironProd, sinew, Smithing.STEEL_TOOL_ROD.get()).isEmpty() && !result(p, steelProd, sinew, Smithing.STEEL_TOOL_ROD.get()).isEmpty(),
+                "a steel stock only on the steel prod");
+        h.assertTrue(result(p, ironProd, sinew, Items.LEATHER).isEmpty() && result(p, ironProd, Items.LEATHER, rod).isEmpty(), "leather is neither stock nor string");
+        var share = ToolStats.share(ToolParts.Kind.CROSSBOW, 1, sinew, Items.STRING);
+        h.assertTrue(Math.abs(share.speed() - 0.95F / 1.05F) < 1e-5 && Math.abs(share.damage() - 1.05F / 1.1F) < 1e-5, "the station's share for a String string: " + share);
+    }
+
+    /** Bronze Bolt Heads: Mold Bench (3 Clay Balls) -> kiln -> pour bronze or Poor Bronze (2 units) -> rough casting -> 4 heads on the Whetstone. */
+    private static void castBoltHeads(GameTestHelper h) {
+        var level = h.getLevel();
+        h.assertTrue(com.mechanical.MoldBench.ALL.stream().anyMatch(r -> r.result().get() == Bronze.UNFIRED_CLAY_BOLT_HEADS_MOLD.get()), "the Mold Bench shapes the bolt heads mold");
+        h.assertTrue(com.mechanical.KilnBlockEntity.RECIPES.stream().anyMatch(r -> r.input().test(new ItemStack(Bronze.UNFIRED_CLAY_BOLT_HEADS_MOLD.get()))
+                && r.result().get() == Bronze.CLAY_BOLT_HEADS_MOLD_ITEM.get()), "the kiln fires it");
+        var mold = new net.minecraft.core.BlockPos(5, 2, 5);
+        h.setBlock(mold.below(), net.minecraft.world.level.block.Blocks.STONE);
+        var smith = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        for (var metal : List.of(com.mechanical.Metal.BRONZE, com.mechanical.Metal.POOR_BRONZE)) {
+            h.setBlock(mold, Bronze.CLAY_BOLT_HEADS_MOLD.get());
+            smith.getInventory().clearContent();
+            smith.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,
+                    com.mechanical.CrucibleItem.molten(com.mechanical.CrucibleContents.EMPTY.add(metal, 4), level.getGameTime()));
+            var hit = new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(h.absolutePos(mold)), net.minecraft.core.Direction.UP, h.absolutePos(mold), false);
+            h.getBlockState(mold).useItemOn(smith.getMainHandItem(), level, smith, net.minecraft.world.InteractionHand.MAIN_HAND, hit);
+            var state = h.getBlockState(mold);
+            h.assertTrue(state.getValue(com.mechanical.ClayMoldBlock.FILL) == com.mechanical.ClayMoldBlock.Fill.MOLTEN
+                    && com.mechanical.CrucibleItem.contents(smith.getMainHandItem()).total() == 2, metal + " poured, 2 units");
+            h.setBlock(mold, state.setValue(com.mechanical.ClayMoldBlock.FILL, com.mechanical.ClayMoldBlock.Fill.SOLID));
+            smith.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            h.getBlockState(mold).useWithoutItem(level, smith, hit);
+            ItemStack rough = ItemStack.EMPTY;
+            for (int i = 0; i < smith.getInventory().getContainerSize(); i++)
+                if (smith.getInventory().getItem(i).is(Bronze.ROUGH_CAST_BRONZE_BOLT_HEADS.get())) rough = smith.getInventory().getItem(i);
+            ItemStack heads = com.mechanical.Casting.ground(rough);
+            h.assertTrue(heads.is(Bronze.BRONZE_BOLT_HEAD.get()) && heads.getCount() == 4 && Bronze.isPoor(heads) == (metal == com.mechanical.Metal.POOR_BRONZE),
+                    metal + " casts bolt heads: " + rough + " -> " + heads);
+        }
     }
 
     /** Every dynamic recipe's tool has the composite item model scripts/gen_tool_parts.py writes (a new recipe needs a row there). */

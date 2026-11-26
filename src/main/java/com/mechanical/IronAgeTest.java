@@ -296,7 +296,7 @@ public final class IronAgeTest {
             h.assertTrue(ToolStationRecipes.ALL.stream().anyMatch(r -> r.result().get() == saw), "Tool Station: " + saw);
         h.assertTrue(Smithing.Pattern.SAW_BLADE.result(new ItemStack(Smithing.HOT_STEEL_INGOT.get())).is(Smithing.STEEL_SAW_BLADE.get()), "a steel saw blade");
 
-        // ---- the crossbow from forged parts, and Iron Bolts: crossbow-only, harder-hitting than bronze, through armour
+        // ---- crossbows from forged prods (Tool Station), and bolts: crossbow-only, harder-hitting than bronze, through armour
         ItemStack heads = Smithing.Pattern.BOLT_HEADS.result(new ItemStack(Smithing.HOT_WROUGHT_IRON_INGOT.get()));
         h.assertTrue(heads.is(Smithing.IRON_BOLT_HEAD.get()) && heads.getCount() == Smithing.BOLT_HEADS_PER_INGOT, "one hot ingot: 4 Iron Bolt Heads");
         h.assertTrue(FletchingRecipes.ALL.stream().anyMatch(r -> r.result().get() == Smithing.IRON_BOLT.get()), "Fletching Table: Iron Bolts");
@@ -304,8 +304,42 @@ public final class IronAgeTest {
                 stock = new ItemStack(Mechanical.TOOL_ROD.get());
         var bowIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 3, List.of(plate, rod.copy(), plate.copy(), sinew, stock, sinew.copy(),
                 ItemStack.EMPTY, stock.copy(), ItemStack.EMPTY));
-        h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, bowIn, level)
-                .map(r -> r.value().assemble(bowIn).is(Items.CROSSBOW)).orElse(false), "Iron Plates, Iron Tool Rod, Sinew, Tool Rods: a Crossbow");
+        h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, bowIn, level).isEmpty(), "the old crossbow crafting recipe is gone (Tool Station)");
+        for (var c : List.of(new ItemStack[] {plate, new ItemStack(Smithing.IRON_CROSSBOW_PROD.get())},
+                new ItemStack[] {new ItemStack(Smithing.STEEL_PLATE.get()), new ItemStack(Smithing.STEEL_CROSSBOW_PROD.get())})) {
+            var prodIn = net.minecraft.world.item.crafting.CraftingInput.of(3, 1, List.of(c[0].copy(), rod.copy(), c[0].copy()));
+            h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, prodIn, level).map(r -> r.value().assemble(prodIn).is(c[1].getItem())).orElse(false),
+                    "2 plates and an Iron Tool Rod: " + c[1]);
+            h.assertTrue(ToolStationRecipes.ALL.stream().anyMatch(r -> r.head().get() == c[1].getItem()), "the Tool Station takes " + c[1]);
+        }
+        // bolts per crossbow: bronze and iron in any, steel only in the Steel Crossbow; damage and armour pierce per metal
+        ItemStack bronzeBolt = new ItemStack(Smithing.BRONZE_BOLT.get()), steelBolt = new ItemStack(Smithing.STEEL_BOLT.get());
+        ItemStack steelBow = new ItemStack(Smithing.STEEL_CROSSBOW.get());
+        var ironLoads = ((net.minecraft.world.item.ProjectileWeaponItem) Items.CROSSBOW).getAllSupportedProjectiles(new ItemStack(Items.CROSSBOW));
+        var steelLoads = Smithing.STEEL_CROSSBOW.get().getAllSupportedProjectiles(steelBow);
+        var steelHeld = Smithing.STEEL_CROSSBOW.get().getSupportedHeldProjectiles(steelBow);
+        h.assertTrue(ironLoads.test(bronzeBolt) && ironLoads.test(new ItemStack(Smithing.IRON_BOLT.get())) && !ironLoads.test(steelBolt), "the Iron Crossbow: bronze and iron bolts");
+        h.assertTrue(steelLoads.test(bronzeBolt) && steelLoads.test(new ItemStack(Smithing.IRON_BOLT.get())) && steelLoads.test(steelBolt)
+                && steelHeld.test(steelBolt) && !steelLoads.test(new ItemStack(Items.ARROW)) && !steelHeld.test(new ItemStack(Items.FIREWORK_ROCKET)), "the Steel Crossbow: every bolt, nothing else");
+        h.assertTrue(com.mechanical.equipment.Quiver.ARROWS.test(bronzeBolt) && com.mechanical.equipment.Quiver.ARROWS.test(steelBolt), "all bolts go in the quiver");
+        h.assertTrue(Smithing.BRONZE_BOLT.get().damage() == 3.0 && Smithing.STEEL_BOLT.get().damage() == 5.0
+                && Smithing.boltPierce(bronzeBolt) == 0.25F && Smithing.boltPierce(steelBolt) == 0.55F && Smithing.boltPierce(new ItemStack(Smithing.IRON_BOLT.get())) == 0.4F,
+                "bolts: bronze 3 / 25 %, iron 4 / 40 %, steel 5 / 55 %");
+        ItemStack steelHeads = Smithing.Pattern.BOLT_HEADS.result(new ItemStack(Smithing.HOT_STEEL_INGOT.get()));
+        h.assertTrue(steelHeads.is(Smithing.STEEL_BOLT_HEAD.get()) && steelHeads.getCount() == 4, "one hot Steel Ingot: 4 Steel Bolt Heads");
+        for (var b : List.of(Smithing.BRONZE_BOLT.get(), Smithing.STEEL_BOLT.get()))
+            h.assertTrue(FletchingRecipes.ALL.stream().anyMatch(r -> r.result().get() == b && r.count() == 4), "Fletching Table: 4 " + b);
+        ItemStack poorRough = new ItemStack(Bronze.ROUGH_CAST_BRONZE_BOLT_HEADS.get());
+        Bronze.markPoor(poorRough);
+        ItemStack poorHeads = Casting.ground(poorRough), goodHeads = Casting.ground(new ItemStack(Bronze.ROUGH_CAST_BRONZE_BOLT_HEADS.get()));
+        h.assertTrue(poorHeads.is(Bronze.BRONZE_BOLT_HEAD.get()) && poorHeads.getCount() == 4 && Bronze.isPoor(poorHeads) && !Bronze.isPoor(goodHeads),
+                "a rough bolt-heads casting grinds into 4 Bronze Bolt Heads, Poor Bronze kept");
+        ItemStack poorBolt = bronzeBolt.copy();
+        Bronze.markPoor(poorBolt);
+        h.assertTrue(SpecialArrowItem.baseDamage(poorBolt) == 3.0 - Bronze.POOR_ARROW_DAMAGE, "a Poor Bronze bolt hits as a poor bronze arrow does");
+        h.assertTrue(LaterAgeGear.isLaterAge(steelBow, WorldAge.IRON) && !LaterAgeGear.isLaterAge(new ItemStack(Items.CROSSBOW), WorldAge.IRON),
+                "monsters never spawn with a Steel Crossbow");
+        h.assertTrue(SpecialArrowItem.baseDamage(bronzeBolt) == 3.0 && SpecialArrowItem.baseDamage(steelBolt) == 5.0, "bronze and steel bolts fly with 3 and 5 base damage");
         ItemStack bolt = new ItemStack(Smithing.IRON_BOLT.get()), crossbow = new ItemStack(Items.CROSSBOW);
         h.assertTrue(((net.minecraft.world.item.ProjectileWeaponItem) Items.CROSSBOW).getAllSupportedProjectiles(crossbow).test(bolt), "the crossbow loads bolts");
         h.assertFalse(((net.minecraft.world.item.ProjectileWeaponItem) Items.CROSSBOW).getAllSupportedProjectiles(crossbow).test(new ItemStack(Items.ARROW)), "but no arrows");

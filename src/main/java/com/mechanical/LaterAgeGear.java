@@ -25,6 +25,7 @@ public final class LaterAgeGear {
         if (stack.isEmpty()) return false;
         if (stack.is(Items.BOW) || stack.is(Items.TRIDENT) || stack.isEnchanted()) return true;
         if (stack.is(Items.CROSSBOW)) return worldAge < WorldAge.IRON; // forged from iron parts in the Iron Age (Smithing)
+        if (stack.is(Smithing.STEEL_CROSSBOW.get())) return true; // Steel Age gear, and WorldAge has no Steel Age yet: never reached
         String id = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
         for (String metal : METALS) {
             if (!id.contains(metal)) continue;

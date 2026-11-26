@@ -1661,6 +1661,15 @@ TABS["steel_age"] = ("minecraft:block/blast_furnace_top", [
      has("steel_ingot")),
 ])
 # High Furnace rows (HighFurnace.java, gen_high_furnace.py) go here: TABS["steel_age"][1].extend([...])
+# the Steel Crossbow and its bolts (Smithing.java, gen_crossbows.py)
+TABS["steel_age"][1].extend([
+    ("steel_crossbow", "root", "steel_crossbow", G, "Windlass",
+     "Craft a Steel Crossbow Prod (2 Steel Plates either side of an Iron Tool Rod) and build a Steel Crossbow at the Tool Station: "
+     "twice the durability and faster bolts, but a slower charge. Only it shoots Steel Bolts", has("steel_crossbow")),
+    ("steel_bolt", "steel_crossbow", "steel_bolt", T, "Armour Piercer",
+     "Forge Steel Bolt Heads on the anvil (Bolt Heads pattern, 1 hot Steel Ingot gives 4) and fletch Steel Bolts: 5 damage, "
+     "through 55% of armour. Steel Crossbow only", has("steel_bolt")),
+])
 TABS["steel_age"][1].extend([
     ("silica_brick", "root", "silica_brick", T, "Silica Brick",
      "Crush Quartzite on the Stone Anvil, mix 2 Crushed Quartzite with Fire Clay and Quicklime into 4 Unfired Silica Bricks "
@@ -2201,11 +2210,15 @@ TABS["iron_age"][1].extend([
      "Forge a Saw Blade on the anvil (1 hot ingot) and assemble an Iron Saw (Leather, Stick): 900 uses and it saws a log faster. "
      "In steel, the Steel Saw: 1600 uses, faster still", has("iron_saw", "steel_saw")),
     ("crossbow", "forged", "minecraft:crossbow", G, "Crossbowman",
-     "Craft a Crossbow: 2 Iron Plates for the prod, an Iron Tool Rod for the trigger, 2 Sinew for the string and 2 Tool Rods for the stock",
+     "Craft an Iron Crossbow Prod (2 Iron Plates either side of an Iron Tool Rod trigger) and build a Crossbow at the Tool Station: "
+     "the prod, a string (Sinew) and a stock (Tool Rod). Other strings and stocks change its charge, bolt speed and durability",
      has("minecraft:crossbow")),
     ("iron_bolt", "crossbow", "iron_bolt", T, "Bodkin",
      "Forge Bolt Heads on the anvil (1 hot ingot gives 4) and fletch Iron Bolts: 4 damage, they punch through 40% of armour. Crossbow only",
      has("iron_bolt")),
+    ("bronze_bolt", "crossbow", "bronze_bolt", T, "Cheap Shot",
+     "Cast Bronze Bolt Heads in a Clay Bolt Heads Mold (2 units), grind them apart on the Whetstone and fletch Bronze Bolts: "
+     "3 damage, through 25% of armour. Any crossbow loads them", has("bronze_bolt")),
 ])
 
 # forged versions of the bronze tools (Smithing.java, gen_iron_age.py)
