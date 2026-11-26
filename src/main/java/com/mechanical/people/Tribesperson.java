@@ -151,6 +151,10 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     boolean travelling;
     /** Checks in a row that found them shut in a hole (DigOut). Not saved. */
     int trapped;
+    /** Checks in a row that found the camp without an elder (checkElder). Not saved. */
+    private int elderless;
+    /** Checks (600 ticks apart) a camp goes without its elder before it names a new one. */
+    static final int ELDERLESS_CHECKS = 4;
     /** A carcass left as a threat (CarcassGifts): the player armed folk keep an eye on, and until when. Not saved. */
     private Player watching;
     private long watchUntil;
@@ -589,26 +593,71 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         }
         if (level() instanceof ServerLevel) life.wake(); // the bed they lay in goes with them
         super.die(source);
-        if (leader && raid == null && level() instanceof ServerLevel level) appointSuccessor(level);
+        if ((leader || role() == TribeRole.ELDER) && raid == null && level() instanceof ServerLevel level) appointSuccessor(level);
+    }
+
+    /** Whether this one can lead or be led to a new leader: not a raider, caravan folk (they come whole), the Miner or the Oak Folk. */
+    private boolean mayLead() {
+        return group != null && raid == null && !role().caravan() && !role().oak() && role() != TribeRole.MINER;
+    }
+
+    /** The loaded others of this group who {@link #mayLead}. */
+    private List<? extends Tribesperson> kin(ServerLevel level) {
+        return level.getEntities(People.TRIBESPERSON.get(), t -> t != this && t.isAlive() && inGroup(t) && t.mayLead());
     }
 
     /**
-     * The group names a new leader: their elder, else whoever stood nearest (of the same visit first), who takes up the
-     * tribe's banner. Not for raiders, caravans (they come whole), the Miner or the Oak Folk.
+     * The group names a new leader when theirs (or their elder) dies: an elder it still has, else whoever stood nearest (of
+     * the same visit first).
      * <p>
-     * shortcut: only members in loaded chunks can be named; with none about, the group stays without one.
+     * shortcut: only members in loaded chunks can be named; a camp with none about names one later (checkElder).
      */
     private void appointSuccessor(ServerLevel level) {
-        if (group == null || role().caravan() || role().oak() || role() == TribeRole.MINER) return;
-        Tribesperson heir = level.getEntities(People.TRIBESPERSON.get(), t -> t != this && t.isAlive() && inGroup(t) && t.raid == null
-                        && !t.role().caravan() && !t.role().oak() && t.role() != TribeRole.MINER).stream()
+        if (!mayLead()) return;
+        kin(level).stream()
                 .min(java.util.Comparator.<Tribesperson>comparingInt(t -> java.util.Objects.equals(t.visit, visit) ? 0 : 1)
                         .thenComparingInt(t -> t.role() == TribeRole.ELDER ? 0 : 1)
                         .thenComparingDouble(t -> t.distanceToSqr(this)))
-                .orElse(null);
-        if (heir == null) return;
-        heir.leader = true;
-        if (heir.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) heir.setItemSlot(EquipmentSlot.HEAD, heir.tribe().banner(registryAccess()));
+                .ifPresent(Tribesperson::takeTheLead);
+    }
+
+    /**
+     * Leads from now on. At a camp or on a visit they become its Elder: the name, staff, cape, banner and barter that players
+     * know the leader by. A roaming band's leader stays what they were.
+     */
+    private void takeTheLead() {
+        leader = true;
+        if (home != null || visit != null) {
+            if (role() != TribeRole.ELDER) {
+                entityData.set(ROLE, TribeRole.ELDER.ordinal());
+                setCustomName(Component.translatable("entity.mechanical.tribesperson.named", tribeName,
+                        Component.translatable("entity.mechanical.tribesperson.role." + TribeRole.ELDER.id()), tribe().name()));
+                setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Mechanical.ELDERS_STAFF.get()));
+                setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+                offers = null;
+            }
+        }
+        if (getItemBySlot(EquipmentSlot.HEAD).isEmpty()) setItemSlot(EquipmentSlot.HEAD, tribe().banner(registryAccess()));
+    }
+
+    /**
+     * A camp (even one survivor) that has had no elder about for {@link #ELDERLESS_CHECKS} checks (dead before they could name
+     * one, or lost) names a new one from those at home.
+     * <p>
+     * shortcut: an elder who is only unloaded that long counts as gone, so the camp can end up with two.
+     */
+    void checkElder(ServerLevel level) {
+        if (!mayLead() || home == null || visit != null || newCamp != null || !blockPosition().closerThan(home, 32)) {
+            elderless = 0;
+            return;
+        }
+        var kin = kin(level);
+        if (role() == TribeRole.ELDER || kin.stream().anyMatch(t -> t.role() == TribeRole.ELDER)) {
+            elderless = 0;
+        } else if (++elderless >= ELDERLESS_CHECKS) {
+            elderless = 0;
+            takeTheLead();
+        }
     }
 
     /** Evening or night for camp folk, who belong at home then (NightHomeGoal). Not raiders, visitors, travellers, caravans or the Miner. */
@@ -624,6 +673,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
         DigOut.tick(this, level);
+        if ((tickCount + getId()) % 600 == 0) checkElder(level);
         long now = level.getGameTime();
         boolean night = level.isDarkOutside();
         // keep near home: wide by day, close to the fire at night, further while fighting

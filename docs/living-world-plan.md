@@ -122,8 +122,10 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
   står i en sådan går (eller flyttas) först när den laddas.
 - **Gräver sig upp (`DigOut`):** den som är instängd i ett hål (kan inte gå någonstans) i 5 s gräver ett trappsteg i
   sekunden uppåt. Bara naturlig mark, sten, växter och löv, aldrig byggen, och aldrig intill vatten eller lava.
-- **Ny ledare:** dör ledaren utser gruppen en ny (Elder först, annars den närmaste) som får stammens banner. Bara bland
-  dem i laddade chunks. Inte för räder, karavaner, Miner, Oak Folk.
+- **Ny ledare (v0.234.1):** dör ledaren eller lägrets Elder utses en ny (en kvarvarande Elder först, annars den
+  närmaste). I läger och besök blir den nya **Elder** (namn, stav, kappa, banner, byteshandel). Ett läger (även med en enda kvar)
+  som varit utan Elder i ungefär 2 minuter utser också en. Bara bland dem i laddade chunks; en Elder som är
+  oladdad så länge kan därför ge lägret två. Inte för räder, karavaner, Miner, Oak Folk.
 - **Dygnsrytm i byn:** morgon (äta, sträcka), dag (arbeta: hugga, samla, fiska, bygga), kväll (samlas vid elden), natt (sova, vakter).
 - **Försvar (byggt):** besökande stammar hjälper till mot monster och raiders vid ens eld (krigarna slåss, de andra flyr till elden).
 - **Carcass som gåva (byggt, en gåva per dag och stam räknas):** lämnar man en carcass hos en stam (Neutral eller högre) ses det som en generös gåva (+relation, mer för större djur). Under Neutral ses det som ett hot (-relation, krigarna blir vaksamma).

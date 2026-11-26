@@ -40,7 +40,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * awake further out; in the morning they are up and the beds are gone.</li>
  * <li>tribe_night_home: at night one shut in a plank pen far from the fire, who cannot walk home, is moved to the fire.</li>
  * <li>tribe_dig_out: one at the bottom of a dirt pit 3 deep digs a way up and out.</li>
- * <li>tribe_new_leader: when the leader dies the elder leads and wears the banner.</li>
+ * <li>tribe_new_leader: when the leader dies the elder leads and wears the banner; when a camp's elder dies, flagged as
+ * leader or not, another becomes the Elder (role, staff); a camp found without one names one too.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = MODID)
@@ -222,7 +223,31 @@ public final class TribeAiTest {
         h.assertTrue(!elder.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).isEmpty(), "with the banner");
         near.discard();
         elder.discard();
+        // a worldgen camp's elder carries no leader flag
+        UUID camp = UUID.randomUUID();
+        BlockPos fire = h.absolutePos(new BlockPos(8, 1, 8));
+        Tribesperson chief = person(h, TribeRole.ELDER, new BlockPos(6, 1, 6), fire, camp, false);
+        Tribesperson heir = person(h, TribeRole.GATHERER, new BlockPos(7, 1, 6), fire, camp, false);
+        Tribesperson other = person(h, TribeRole.WOODCUTTER, new BlockPos(11, 1, 11), fire, camp, false);
+        chief.kill(h.getLevel());
+        isElder(h, heir, "after the elder's death");
+        h.assertTrue(other.role() == TribeRole.WOODCUTTER, "only one is named");
+        heir.discard(); // gone without dying
+        Tribesperson third = person(h, TribeRole.FISHER, new BlockPos(9, 1, 9), fire, camp, false);
+        for (int i = 1; i < Tribesperson.ELDERLESS_CHECKS; i++) other.checkElder(h.getLevel());
+        h.assertTrue(other.role() == TribeRole.WOODCUTTER, "not at once");
+        other.checkElder(h.getLevel());
+        isElder(h, other, "in a camp left without one");
+        third.checkElder(h.getLevel());
+        h.assertTrue(third.role() == TribeRole.FISHER, "no second elder");
+        other.discard();
+        third.discard();
         h.succeed();
+    }
+
+    private static void isElder(GameTestHelper h, Tribesperson t, String when) {
+        h.assertTrue(t.role() == TribeRole.ELDER && t.isLeader() && t.getMainHandItem().is(com.mechanical.Mechanical.ELDERS_STAFF.get())
+                && t.getCustomName().getString().contains("Elder"), "a new Elder " + when + ", got " + t.role() + " " + t.getCustomName().getString());
     }
 
     private static String running(Tribesperson t) {
