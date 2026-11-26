@@ -10,12 +10,14 @@ import com.mechanical.people.AgeRebuild;
 import com.mechanical.people.ClimateZone;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -130,18 +132,96 @@ public final class PlaceStructure {
      * fields, rails and waystones. Plain logs, rough stone and cobblestone (worldgen leaves it lying about) cannot be told from nature.
      */
     private static boolean hasBuildings(LevelChunk chunk, int floor) {
-        Predicate<BlockState> built = s -> Retrogen.playerMade(s) || s.is(BlockTags.STONE_BRICKS) || s.is(BlockTags.RAILS)
-                || s.is(Tags.Blocks.GLASS_BLOCKS) || s.is(Tags.Blocks.GLASS_PANES) || s.is(Blocks.BRICKS)
-                || s.is(Blocks.COBBLESTONE_STAIRS) || s.is(Blocks.COBBLESTONE_SLAB) || s.is(Blocks.COBBLESTONE_WALL)
-                || s.is(Blocks.FARMLAND) || s.is(Waystones.WAYSTONE.get());
         LevelChunkSection[] sections = chunk.getSections();
         for (int i = 0; i < sections.length; i++) {
             int y0 = SectionPos.sectionToBlockCoord(chunk.getSectionYFromSectionIndex(i));
-            if (y0 + 15 < floor || sections[i].hasOnlyAir() || !sections[i].maybeHas(built)) continue;
+            if (y0 + 15 < floor || sections[i].hasOnlyAir() || !sections[i].maybeHas(PlaceStructure::built)) continue;
             for (int y = Math.max(0, floor - y0); y < 16; y++)
-                for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) if (built.test(sections[i].getBlockState(x, y, z))) return true;
+                for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) if (built(sections[i].getBlockState(x, y, z))) return true;
         }
         return false;
+    }
+
+    private static boolean built(BlockState s) {
+        return Retrogen.playerMade(s) || s.is(BlockTags.STONE_BRICKS) || s.is(BlockTags.RAILS)
+                || s.is(Tags.Blocks.GLASS_BLOCKS) || s.is(Tags.Blocks.GLASS_PANES) || s.is(Blocks.BRICKS)
+                || s.is(Blocks.COBBLESTONE_STAIRS) || s.is(Blocks.COBBLESTONE_SLAB) || s.is(Blocks.COBBLESTONE_WALL)
+                || s.is(Blocks.FARMLAND) || s.is(Waystones.WAYSTONE.get());
+    }
+
+    /**
+     * /structure waystone: two stones linked to each other, one on each column, on whatever ground is there. Null when
+     * both stand, otherwise why not (and then no block has changed).
+     */
+    public static String placeWaystones(ServerLevel level, int x1, int z1, int x2, int z2) {
+        if (level.dimension() != Level.OVERWORLD) return "Structures can only be placed in the Overworld";
+        if (Math.max(Math.abs(x1 - x2), Math.abs(z1 - z2)) < 6) return "The two waystones must be at least 6 blocks apart";
+        BlockPos[] ends = {new BlockPos(x1, 0, z1), new BlockPos(x2, 0, z2)};
+        for (BlockPos end : ends) {
+            for (int dx = -2; dx <= 2; dx += 4)
+                for (int dz = -2; dz <= 2; dz += 4) level.getChunk(end.getX() + dx >> 4, end.getZ() + dz >> 4);
+            // the dais is 5x5; it clears 5 blocks above its floor and the stone stands 3 high (water can raise it)
+            int y = Waystones.ground(level, end.getX(), end.getZ()).getY();
+            BoundingBox box = new BoundingBox(end.getX() - 2, y - 3, end.getZ() - 2, end.getX() + 2, y + 21, end.getZ() + 2);
+            String where = " at " + end.getX() + " " + end.getZ();
+            if (BlockPos.betweenClosedStream(box).anyMatch(p -> built(level.getBlockState(p))))
+                return "Buildings or another waystone are in the way" + where;
+            if (!level.getEntitiesOfClass(Entity.class, AABB.of(box), PlaceStructure::keep).isEmpty())
+                return "A player, pet, named animal, vehicle, armor stand or hanging item is in the way" + where;
+        }
+        Waystones.buildPair(level, ends[0], ends[1]);
+        return null;
+    }
+
+    /** Spots tried for a random far end; each one that is on land gets its chunks generated. */
+    private static final int FAR_TRIES = 8;
+
+    /**
+     * A linked pair with one end on x, z and the other somewhere on land as far off as the world's own pairs are
+     * ({@link Waystones#MIN} to {@link Waystones#MAX}). Returns the refusal (and null in {@code far}), or null with the
+     * far end's column in {@code far[0]}.
+     */
+    private static String placeWaystones(ServerLevel level, int x, int z, BlockPos[] far) {
+        var source = level.getChunkSource();
+        var biomes = source.getGenerator().getBiomeSource().createUncachedResolver(source.randomState());
+        int seaY = QuartPos.fromBlock(source.getGenerator().getSeaLevel());
+        var random = level.getRandom();
+        String refusal = "Found no land for the other waystone, try again";
+        for (int i = 0, tried = 0; i < 64 && tried < FAR_TRIES; i++) {
+            double angle = random.nextDouble() * Math.PI * 2, d = Waystones.MIN + random.nextDouble() * (Waystones.MAX - Waystones.MIN);
+            int x2 = x + (int) Math.round(Math.cos(angle) * d), z2 = z + (int) Math.round(Math.sin(angle) * d);
+            if (!Waystones.land(biomes, x2 >> 4, z2 >> 4, seaY)) continue;
+            tried++;
+            String r = placeWaystones(level, x, z, x2, z2);
+            if (r == null) {
+                far[0] = new BlockPos(x2, 0, z2);
+                return null;
+            }
+            refusal = r;
+            if (r.endsWith(" at " + x + " " + z) || level.dimension() != Level.OVERWORLD) break; // another far end won't help
+        }
+        return refusal;
+    }
+
+    private static int runRandomWaystones(CommandSourceStack source, int x, int z) {
+        BlockPos[] far = new BlockPos[1];
+        String refusal = placeWaystones(source.getLevel(), x, z, far);
+        if (refusal != null) {
+            source.sendFailure(Component.literal(refusal));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal("Built linked waystones at " + x + " " + z + " and " + far[0].getX() + " " + far[0].getZ()), true);
+        return 1;
+    }
+
+    private static int runWaystones(CommandSourceStack source, int x1, int z1, int x2, int z2) {
+        String refusal = placeWaystones(source.getLevel(), x1, z1, x2, z2);
+        if (refusal != null) {
+            source.sendFailure(Component.literal(refusal));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal("Built linked waystones at " + x1 + " " + z1 + " and " + x2 + " " + z2), true);
+        return 1;
     }
 
     /** How far out from the village's clearing the land slopes (one block per block) to meet what was there. */
@@ -254,7 +334,16 @@ public final class PlaceStructure {
             root.then(Commands.literal(kind).then(Commands.argument("x", IntegerArgumentType.integer(-29999000, 29999000))
                     .then(Commands.argument("z", IntegerArgumentType.integer(-29999000, 29999000))
                             .executes(ctx -> run(ctx.getSource(), kind, IntegerArgumentType.getInteger(ctx, "x"), IntegerArgumentType.getInteger(ctx, "z"))))));
+        root.then(Commands.literal("waystone").then(coordinate("x1").then(coordinate("z1")
+                .executes(ctx -> runRandomWaystones(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "x1"), IntegerArgumentType.getInteger(ctx, "z1")))
+                .then(coordinate("x2").then(coordinate("z2")
+                        .executes(ctx -> runWaystones(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "x1"), IntegerArgumentType.getInteger(ctx, "z1"),
+                                IntegerArgumentType.getInteger(ctx, "x2"), IntegerArgumentType.getInteger(ctx, "z2"))))))));
         event.getDispatcher().register(root);
+    }
+
+    private static RequiredArgumentBuilder<CommandSourceStack, Integer> coordinate(String name) {
+        return Commands.argument(name, IntegerArgumentType.integer(-29999000, 29999000));
     }
 
     private static int run(CommandSourceStack source, String kind, int x, int z) {

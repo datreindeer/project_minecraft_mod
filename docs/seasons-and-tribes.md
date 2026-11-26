@@ -494,6 +494,8 @@ Inga just nu. Alla frågor besvarades 2026-11-20.
 
 ## Placing structures and map markers
 
+`/structure waystone <x1> <z1> <x2> <z2>` builds two waystones exactly on those columns, linked to each other (saved with the world; the world's own pairs are not affected). Leave out x2 z2 and the other stone goes to a random spot on land 1000 to 10000 blocks away. They must be at least 6 blocks apart, and it is refused over buildings, another waystone, players, pets and the like.
+
 `/structure tribe_village <x> <z>` and `/structure ancient_oak <x> <z>` (game masters, Overworld) build one. It is saved like a worldgen one, so the land title, tribe visits and age rebuilds work; vanilla `/locate` does not find it. A village is centred exactly on x, z and the land is shaped to take it: hills are cut, dips and water filled, and a 12-block slope meets the land round it. An oak goes at the middle of the chunk and is refused on water or uneven ground. Both are refused where there are buildings (a player's, or a camp or ruin; a build of only plain logs, rough stone, cobblestone or earth is not recognised), over players, pets, named animals, vehicles, armor stands or hanging items, where the real ground differs from the generator's, and on another village or Ancient Oak. Biome is not checked.
 
-The dashboard map marks Ancient Oaks, waystones and tribe villages once their chunk has loaded. `/regen waystones <blocks>` also marks the stones already standing; keep the distance small, as it generates chunks within a single tick.
+The dashboard map marks Ancient Oaks, waystones and tribe villages once their chunk has loaded. A tribe village also shows its land (the chunks its palisade reaches) in the tribe's banner colour, with its name, like a player tribe. `/regen waystones <blocks>` also marks the stones already standing; keep the distance small, as it generates chunks within a single tick.

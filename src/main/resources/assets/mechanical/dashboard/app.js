@@ -300,6 +300,7 @@ const map = (() => {
   function setData(d) {
     mapData = d || {};
     paths = new Map(); loadedPaths = new Map();
+    for (const t of mapData.tribeVillages || []) paths.set(t.id, path(t.rings));
     for (const t of mapData.tribes || []) {
       paths.set(t.id, path(t.rings));
       if ((t.loaded || []).length) loadedPaths.set(t.id, path(t.loaded));
@@ -428,8 +429,11 @@ const map = (() => {
 
   /* Each tribe: a light fill, then its edge drawn only inside its own land (clipped), so two tribes sharing a border
      each keep their full colour band with a dark seam between, however alike the colours are. */
+  /** NPC villages first, so a player tribe is drawn on top where they meet. */
+  const lands = () => [...(mapData.tribeVillages || []), ...(mapData.tribes || [])];
+
   function territories() {
-    for (const t of mapData.tribes || []) {
+    for (const t of lands()) {
       const p = paths.get(t.id);
       ctx.save();
       blockSpace();
@@ -600,11 +604,13 @@ const map = (() => {
       const [x, y] = toScreen(v.label.x, v.label.z);
       if (x > -100 && y > -20 && x < w + 100 && y < h + 20) halo(v.name, x, y, 'italic 500 14px "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif', SAND, "center");
     }
-    for (const t of mapData.tribes || []) {
+    for (const t of lands()) {
       if (!t.label) continue;
       let [x, y] = toScreen(t.label.x, t.label.z);
       // The label chunk is often the pit's own chunk: drop the name below the fire instead of over it.
       if ((mapData.fires || []).some(f => { const [fx, fy] = toScreen(f.x + .5, f.z + .5); return Math.abs(fx - x) < 90 && Math.abs(fy - y) < 22; })) y += 34;
+      // an NPC village's label is its centre, where its landmark icon stands
+      if (t.id.startsWith("npc:") || t.id.startsWith("camp:")) y += 26;
       ctx.font = serif;
       const tw = ctx.measureText(t.name).width, left = x - (tw + 18) / 2;
       ctx.beginPath();
@@ -616,7 +622,7 @@ const map = (() => {
   }
 
   function tribeAt(bx, bz) {
-    for (const t of mapData.tribes || []) if (hit.isPointInPath(paths.get(t.id), bx, bz, "evenodd")) return t;
+    for (const t of lands().reverse()) if (hit.isPointInPath(paths.get(t.id), bx, bz, "evenodd")) return t;
     return null;
   }
 
@@ -632,18 +638,20 @@ const map = (() => {
     const t = tribeAt(bx + .5, bz + .5), v = t ? null : villageAt(bx + .5, bz + .5);
     const kept = t && loadedPaths.has(t.id) && hit.isPointInPath(loadedPaths.get(t.id), bx + .5, bz + .5) ? `<span class="kept">kept loaded</span>` : "";
     const l = landmarkAt(mouse[0], mouse[1]);
-    setHTML($("ro-land"), l ? `${markIcon(l.kind)}<b>${MARKS[l.kind].name}</b><span class="kept">${fmt(l.x)}, ${fmt(l.z)}</span>` : t ? `<span class="swatch" style="background:${esc(t.colour)}"></span><b>${esc(t.name)}</b>${kept}`
+    setHTML($("ro-land"), l ? `${markIcon(l.kind)}<b>${MARKS[l.kind].name}</b><span class="kept">${fmt(l.x)}, ${fmt(l.z)}</span>` : t ? `<span class="swatch" style="background:${esc(t.colour)}"></span><b>${esc(t.name)}</b>${t.id.startsWith("npc:") ? `<span class="kept">tribe village</span>` : t.id.startsWith("camp:") ? `<span class="kept">tribe camp</span>` : kept}`
       : v ? `<span class="swatch village"></span><b>${esc(v.name)}</b><span class="kept">village</span>` : "Unclaimed");
   }
 
   function renderLegend() {
     const list = mapData.tribes || [], vs = mapData.villages || [];
-    const found = Object.keys(MARKS).map(k => [k, (mapData.landmarks || []).filter(l => l.kind === k).length]).filter(([, n]) => n);
-    $("legend").hidden = !list.length && !vs.length && !found.length;
+    const npc = mapData.tribeVillages || [];
+    const found = Object.keys(MARKS).filter(k => k !== "tribe_village").map(k => [k, (mapData.landmarks || []).filter(l => l.kind === k).length]).filter(([, n]) => n);
+    $("legend").hidden = !list.length && !vs.length && !found.length && !npc.length;
     setHTML($("legend"), list.map(t => {
       const n = (data.tribes.find(d => d.id === t.id) || {}).chunks;
       return `<button type="button" data-id="${esc(t.id)}"><span class="swatch" style="background:${esc(t.colour)}"></span>${esc(t.name)}<span class="count">${n == null ? "" : fmt(n) + " ch"}</span></button>`;
     }).join("") + (list.some(t => (t.loaded || []).length) ? `<p class="key"><span class="swatch loaded"></span>Kept loaded (lives on while you're away)</p>` : "")
+      + (npc.length ? `<h3>Tribe villages</h3>` + npc.map(t => `<button type="button" data-npc="${esc(t.id)}"><span class="swatch" style="background:${esc(t.colour)}"></span>${esc(t.name)}<span class="count">${fmt(t.label.x)}, ${fmt(t.label.z)}</span></button>`).join("") : "")
       + (vs.length ? `<h3>Villages</h3>` + vs.map((v, i) => `<button type="button" data-village="${i}"><span class="swatch village"></span><i>${esc(v.name)}</i><span class="count">${esc(cap(v.kind))}</span></button>`).join("") : "")
       + (found.length ? `<h3>Places</h3>` + found.map(([k, n]) => `<p class="key">${markIcon(k)}${MARKS[k].plural}<span class="count">${fmt(n)}</span></p>`).join("") : ""));
   }
@@ -651,7 +659,8 @@ const map = (() => {
     const b = e.target.closest("button");
     if (!b) return;
     const v = b.dataset.village != null && (mapData.villages || [])[+b.dataset.village];
-    if (v) { touched = true; fit(bounds([v])); } else fitTribe(b.dataset.id);
+    const n = b.dataset.npc && (mapData.tribeVillages || []).find(t => t.id === b.dataset.npc);
+    if (v || n) { touched = true; fit(bounds([v || n])); } else fitTribe(b.dataset.id);
   });
 
   /* input */

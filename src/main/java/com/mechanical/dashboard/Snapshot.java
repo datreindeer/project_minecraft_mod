@@ -18,7 +18,11 @@ import com.mechanical.Mechanical;
 import com.mechanical.WorldAge;
 import com.mechanical.clan.Clans;
 import com.mechanical.clan.Territory;
+import com.mechanical.people.AgeRebuild;
+import com.mechanical.people.Neighbours;
+import com.mechanical.people.Settlements;
 import com.mechanical.people.Tribe;
+import com.mechanical.worldgen.TribeVillageStructure;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -182,6 +186,19 @@ public final class Snapshot {
     /** Village rings by the village record: a village never changes once recorded, so each is outlined once. */
     private static final Map<Villages.Village, List<int[]>> VILLAGE_OUTLINES = new HashMap<>();
 
+    private static final Map<BlockPos, List<int[]>> NPC_OUTLINES = new HashMap<>(), CAMP_OUTLINES = new HashMap<>();
+
+    /** The chunks a circle of {@code r} blocks round {@code c} reaches into. */
+    private static Set<Long> circle(BlockPos c, int r) {
+        Set<Long> out = new HashSet<>();
+        for (int cx = c.getX() - r >> 4; cx <= c.getX() + r >> 4; cx++)
+            for (int cz = c.getZ() - r >> 4; cz <= c.getZ() + r >> 4; cz++) {
+                int dx = c.getX() - Math.clamp(c.getX(), cx * 16, cx * 16 + 15), dz = c.getZ() - Math.clamp(c.getZ(), cz * 16, cz * 16 + 15);
+                if (dx * dx + dz * dz <= r * r) out.add(ChunkPos.pack(cx, cz));
+            }
+        return out;
+    }
+
     private static JsonArray json(List<int[]> rings) {
         JsonArray out = new JsonArray();
         for (int[] r : rings) {
@@ -286,6 +303,30 @@ public final class Snapshot {
             villages.add(j);
         }
         o.add("villages", villages);
+        // NPC tribe villages, from the record AgeRebuild keeps of them: their land is what clan.Lands announces, in whole chunks
+        JsonArray npc = new JsonArray();
+        for (AgeRebuild.Village v : AgeRebuild.Villages.get(overworld).villages) {
+            Tribe t = Tribe.of(v.tribe);
+            JsonObject j = new JsonObject();
+            j.addProperty("id", "npc:" + v.centre.asLong());
+            j.addProperty("name", tribeName(t));
+            j.addProperty("colour", String.format("#%06x", t.baseColour().getTextureDiffuseColor() & 0xFFFFFF));
+            j.add("rings", json(NPC_OUTLINES.computeIfAbsent(v.centre, c -> Outline.of(circle(c, TribeVillageStructure.WALL_R + 2)))));
+            j.add("label", point(new int[] {v.centre.getX(), v.centre.getZ()}));
+            npc.add(j);
+        }
+        // a tribe's camp built by a player camp (Neighbours.Settlement): its palisade ring, in its tribe's colour
+        for (Neighbours.Settlement s : Neighbours.get(overworld).settlements) {
+            Tribe t = Tribe.of(s.tribe);
+            JsonObject j = new JsonObject();
+            j.addProperty("id", "camp:" + s.centre.asLong());
+            j.addProperty("name", tribeName(t));
+            j.addProperty("colour", String.format("#%06x", t.baseColour().getTextureDiffuseColor() & 0xFFFFFF));
+            j.add("rings", json(CAMP_OUTLINES.computeIfAbsent(s.centre, c -> Outline.of(circle(c, Settlements.PALISADE_R + 2)))));
+            j.add("label", point(new int[] {s.centre.getX(), s.centre.getZ()}));
+            npc.add(j);
+        }
+        o.add("tribeVillages", npc);
         JsonArray landmarks = new JsonArray();
         for (Landmarks.Mark m : Landmarks.get(overworld).all()) {
             JsonObject j = new JsonObject();

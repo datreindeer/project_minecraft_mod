@@ -65,9 +65,9 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * <li>A5: at Friendly or better their leader or trader (TribeDialog) hands out a {@link RoadMarkerItem}; set down at most
  * {@link #MAX_LEN} blocks from their camp it becomes a {@link Road}. Up to {@link #FREE_LEN} blocks it is free, longer costs
  * Silver Coins ({@link #price}). Two of their folk walk out (RoadBuildGoal) and lay a winding earth path 2-3 wide (see buildCell)
- * cell by cell. The route is planned a section at a time ({@link #plan}, A* over the ground round the frontier, slopes and
- * water cost more, anyone's build, trees and unloaded ground are off limits), so only blocks that are natural ground,
- * plants or water are ever dug, filled or replaced. Water is crossed on a plank causeway only when there is no way round.</li>
+ * cell by cell. The route is planned a section at a time ({@link #plan}, A* over the ground round the frontier, slopes, water
+ * and trees or rock to cut cost more, anyone's build and unloaded ground are off limits), so only blocks that are natural
+ * ground, plants, trees, rock or water are ever dug, filled or replaced. Water is crossed on a plank causeway only when there is no way round.</li>
  * <li>A6: at {@link #TRADE_REP} or better a finished path can be widened into a trade road, same way: a worn track 3-4 wide in the local ground, with wheel ruts.</li>
  * <li>A7: the road never steps more than 1 block from cell to cell (cut and fill), and every 1-block step gets a slab of the
  * road's own ground (Dirt Path Slab, Sand Slab, ...).</li>
@@ -293,20 +293,52 @@ public final class RoadBuilding extends SavedData {
         return SmoothGround.ground(s) || s.getBlock() instanceof TrampledPathBlock || s.is(Blocks.DIRT_PATH) || s.is(Blocks.COARSE_DIRT) || groundStep(s);
     }
 
-    /** Plants, snow layers, leaves, air: cleared off the road freely. */
+    /** Plants, snow layers, leaves, air, and the trees and rock a road chops through ({@link #cuttable}): cleared off the road freely. */
     static boolean clearable(BlockState s) {
-        return s.isAir() || s.is(BlockTags.LEAVES) || s.canBeReplaced() && s.getFluidState().isEmpty();
+        return s.isAir() || s.is(BlockTags.LEAVES) || s.canBeReplaced() && s.getFluidState().isEmpty() || cuttable(s, 0);
     }
 
-    /** The column at x,z, or null if a road may not go there (a build, a tree, lava, ice, or not loaded). */
+    /** A tree's trunk (up to 24 blocks, the whole tree is cut down to the ground) or rock a road may cut through (up to 4 blocks deep). Never a build. */
+    static boolean cuttable(BlockState s, int depth) {
+        return s.is(BlockTags.LOGS) && depth < 24 || s.is(BlockTags.BASE_STONE_OVERWORLD) && depth < 4;
+    }
+
+    /** The column at x,z, or null if a road may not go there (a build, lava, ice, or not loaded). Trees and rock on it cost extra ({@link #CUT_COST}). */
     static Col column(ServerLevel level, int x, int z) {
         if (!level.hasChunk(x >> 4, z >> 4)) return null;
         BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).below();
         BlockState s = level.getBlockState(p);
-        while (s.is(Blocks.SNOW) && p.getY() > level.getMinY()) s = level.getBlockState(p = p.below());
+        int cut = 0;
+        while (p.getY() > level.getMinY() && (s.is(Blocks.SNOW) || cuttable(s, cut))) {
+            if (!s.is(Blocks.SNOW)) cut++;
+            s = level.getBlockState(p = p.below());
+        }
         if (level.getFluidState(p).is(FluidTags.WATER)) return new Col(p.getY(), true, 0);
-        return natural(s) ? new Col(p.getY(), false, 0) : null;
+        return natural(s) ? new Col(p.getY(), false, cut > 0 ? CUT_COST : 0) : null;
     }
+
+    /**
+     * Fells the tree {@code from} stands in: every log and leaf joined to it (6-connected) within 21x21 columns, from 4 blocks
+     * under it to 30 above, so no crown is left floating. Capped at 2000 blocks; a tree wider than that is only partly felled.
+     */
+    static void fell(ServerLevel level, BlockPos from) {
+        java.util.ArrayDeque<BlockPos> todo = new java.util.ArrayDeque<>(List.of(from));
+        Set<Long> seen = new HashSet<>(List.of(from.asLong()));
+        while (!todo.isEmpty() && seen.size() <= 2000) {
+            BlockPos p = todo.poll();
+            BlockState s = level.getBlockState(p);
+            if (!s.is(BlockTags.LOGS) && !s.is(BlockTags.LEAVES)) continue;
+            set(level, p, Blocks.AIR.defaultBlockState());
+            for (Direction d : Direction.values()) {
+                BlockPos n = p.relative(d);
+                if (Math.abs(n.getX() - from.getX()) <= 10 && Math.abs(n.getZ() - from.getZ()) <= 10 && n.getY() >= from.getY() - 4 && n.getY() <= from.getY() + 30
+                        && level.hasChunkAt(n) && seen.add(n.asLong())) todo.add(n);
+            }
+        }
+    }
+
+    /** Extra cost of a column with a tree or rock to cut: roads go round a cut when a way round is about as short. */
+    static final double CUT_COST = 3;
 
     /** Step cost between two columns: flat 1, a 1-block step a little more, anything steeper much more (it means digging); water 12; plus the meander cost. */
     static double cost(Col a, Col b) {
@@ -327,7 +359,7 @@ public final class RoadBuilding extends SavedData {
             int x = BlockPos.getX(kk), z = BlockPos.getZ(kk);
             if (x < minX || x > maxX || z < minZ || z > maxZ) return null;
             Col c = column(level, x, z);
-            return c == null ? null : new Col(c.y, c.water, meander(x, z, to, dx, dz));
+            return c == null ? null : new Col(c.y, c.water, meander(x, z, to, dx, dz) + c.wander);
         });
         long start = BlockPos.asLong(from.getX(), 0, from.getZ()), goal = BlockPos.asLong(to.getX(), 0, to.getZ());
         if (col.apply(start) == null) return null;
@@ -505,9 +537,11 @@ public final class RoadBuilding extends SavedData {
     private static boolean lay(ServerLevel level, Road r, BlockPos at, boolean step, Palette pal, int wear, boolean ruts, Direction side) {
         int y = at.getY(), x = at.getX(), z = at.getZ();
         BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).below();
-        int snow = 0; // snow layers lying on the column
-        while (level.getBlockState(top).is(Blocks.SNOW) && top.getY() > y) {
-            snow += level.getBlockState(top).getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS);
+        int snow = 0, cut = 0; // snow layers lying on the column; trees and rock cut down to the ground under them (as column)
+        while (top.getY() > y && (level.getBlockState(top).is(Blocks.SNOW) || cuttable(level.getBlockState(top), cut))) {
+            BlockState s = level.getBlockState(top);
+            if (s.is(Blocks.SNOW)) snow += s.getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS);
+            else cut++;
             top = top.below();
         }
         BlockState local = level.getBlockState(top);
@@ -534,6 +568,9 @@ public final class RoadBuilding extends SavedData {
             surface = step ? slab(pick) : pick;
         }
         set(level, surfacePos, surface);
+        for (int k = 1; k <= 24; k++) {
+            if (level.getBlockState(surfacePos.above(k)).is(BlockTags.LOGS)) { fell(level, surfacePos.above(k)); break; } // the tree in the way comes down whole
+        }
         for (int k = 1; k <= 2; k++) {
             BlockPos p = surfacePos.above(k);
             BlockState s = level.getBlockState(p);

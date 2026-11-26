@@ -1,5 +1,7 @@
 package com.mechanical.worldgen;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -7,7 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.mechanical.FirePit;
 import com.mechanical.Mechanical;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -16,6 +20,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -151,7 +158,7 @@ public final class Waystones {
         });
     }
 
-    private static boolean land(BiomeResolver biomes, int cx, int cz, int qy) {
+    static boolean land(BiomeResolver biomes, int cx, int cz, int qy) {
         Holder<Biome> b = biomes.getNoiseBiome(cx * 4 + 2, qy, cz * 4 + 2);
         return !b.is(BiomeTags.IS_OCEAN) && !b.is(BiomeTags.IS_DEEP_OCEAN) && !b.is(BiomeTags.IS_RIVER);
     }
@@ -269,6 +276,50 @@ public final class Waystones {
             build(level, cx * 16 + 8, cz * 16 + 8, toward(cx, cz, other[0], other[1]), random);
             return true;
         }
+    }
+
+    // ------------------------------------------------------------------ pairs set by hand
+
+    /** The pairs /structure waystone has built, by column: each end's column to the other's (BlockPos.asLong at y 0). */
+    public static final class Links extends SavedData {
+        private record Link(long from, long to) {
+            static final Codec<Link> CODEC = RecordCodecBuilder.create(i -> i.group(
+                    Codec.LONG.fieldOf("from").forGetter(Link::from), Codec.LONG.fieldOf("to").forGetter(Link::to)).apply(i, Link::new));
+        }
+
+        private static final Codec<Links> CODEC = Link.CODEC.listOf().xmap(Links::new,
+                d -> d.ends.entrySet().stream().map(e -> new Link(e.getKey(), e.getValue())).toList());
+        private static final SavedDataType<Links> TYPE = new SavedDataType<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "waystone_links"),
+                () -> new Links(List.of()), CODEC);
+
+        private final Map<Long, Long> ends = new LinkedHashMap<>();
+
+        private Links(List<Link> list) {
+            for (Link l : list) ends.put(l.from, l.to);
+        }
+
+        static Links get(ServerLevel level) {
+            return level.getServer().overworld().getDataStorage().computeIfAbsent(TYPE);
+        }
+    }
+
+    /** The column (y 0) the hand-set stone in column x, z leads to, or null. */
+    private static BlockPos linked(ServerLevel level, int x, int z) {
+        if (level.dimension() != Level.OVERWORLD) return null;
+        Long to = Links.get(level).ends.get(BlockPos.asLong(x, 0, z));
+        return to == null ? null : BlockPos.of(to);
+    }
+
+    /** Builds the two linked stones in columns a and b; their chunks must be loaded. */
+    static void buildPair(ServerLevel level, BlockPos a, BlockPos b) {
+        Links links = Links.get(level);
+        for (BlockPos[] end : new BlockPos[][] {{a, b}, {b, a}}) {
+            BlockPos here = end[0], there = end[1];
+            build(level, here.getX(), here.getZ(), toward(here.getX(), here.getZ(), there.getX(), there.getZ()), level.getRandom());
+            links.ends.put(BlockPos.asLong(here.getX(), 0, here.getZ()), BlockPos.asLong(there.getX(), 0, there.getZ()));
+            com.mechanical.dashboard.Landmarks.add(level, "waystone", here.getX(), here.getZ());
+        }
+        links.setDirty();
     }
 
     // ------------------------------------------------------------------ travel
@@ -430,13 +481,17 @@ public final class Waystones {
             long now = server.getGameTime();
             Long last = USED.get(sp.getUUID());
             if (last != null && now - last >= 0 && now - last < COOLDOWN_TICKS) return InteractionResult.CONSUME;
-            int[] other = partner(server, base.getX() >> 4, base.getZ() >> 4);
-            if (other == null || (base.getX() & 15) != 8 || (base.getZ() & 15) != 8) {
+            BlockPos to = linked(server, base.getX(), base.getZ()); // set by hand, else the world's own pair
+            if (to == null && (base.getX() & 15) == 8 && (base.getZ() & 15) == 8) {
+                int[] other = partner(server, base.getX() >> 4, base.getZ() >> 4);
+                if (other != null) to = new BlockPos(other[0] * 16 + 8, 0, other[1] * 16 + 8);
+            }
+            if (to == null) {
                 sp.sendOverlayMessage(Component.translatable("block.mechanical.waystone.silent"));
                 return InteractionResult.CONSUME;
             }
             USED.put(sp.getUUID(), now);
-            int tx = other[0] * 16 + 8, tz = other[1] * 16 + 8;
+            int tx = to.getX(), tz = to.getZ();
             teleport(sp, server, tx, tz, toward(tx, tz, base.getX(), base.getZ()));
             FirePit.award(sp, "wilderness/waystone");
             return InteractionResult.SUCCESS;
