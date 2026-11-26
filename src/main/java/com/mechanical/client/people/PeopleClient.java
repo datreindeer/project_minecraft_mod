@@ -19,6 +19,22 @@ public final class PeopleClient {
         event.registerEntityRenderer(People.MINER.get(), TribespersonRenderer::new);
     }
 
+    @SubscribeEvent
+    static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(TribeCapeModel.ELDER, TribeCapeModel::createElder);
+        event.registerLayerDefinition(TribeCapeModel.TRADER, TribeCapeModel::createTrader);
+        event.registerLayerDefinition(TribeCapeModel.OAK, TribeCapeModel::createOak);
+    }
+
+    /** Tribespeople are drawn by the player renderers (their state is an AvatarRenderState): the cape layer goes on those. */
+    @SubscribeEvent
+    static void addLayers(EntityRenderersEvent.AddLayers event) {
+        for (var skin : event.getSkins()) {
+            var renderer = event.getPlayerRenderer(skin);
+            if (renderer != null) renderer.addLayer(new TribeCapeLayer((net.minecraft.client.renderer.entity.player.AvatarRenderer<?>) renderer, event.getEntityModels()));
+        }
+    }
+
     /** An envoy speaks: show the talk screen (payload handlers run on the main thread). */
     @SubscribeEvent
     static void registerHandlers(RegisterClientPayloadHandlersEvent event) {

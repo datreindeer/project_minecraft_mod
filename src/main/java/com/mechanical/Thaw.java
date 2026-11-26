@@ -93,6 +93,7 @@ public final class Thaw {
 
     /** One more snow layer at p (a new layer on air where snow can lie), up to max; false when nothing changed. */
     static boolean pile(ServerLevel level, BlockPos p, int max) {
+        if (Magma.meltsSnow(level, p)) return false;
         BlockState s = level.getBlockState(p);
         if (s.is(Blocks.SNOW)) {
             int layers = s.getValue(SnowLayerBlock.LAYERS);
@@ -107,16 +108,15 @@ public final class Thaw {
     }
 
     /**
-     * Melt at the top of a column, if warm enough: a snow layer (on top, or one block down where a thick layer blocks the
+     * Melt at the top of a column, if warm enough (or a Magma Block warms the spot): a snow layer (on top, or one block down where a thick layer blocks the
      * heightmap) loses a layer, or all of them when catching up; ice just below the top turns to water.
      */
     static boolean melt(ServerLevel level, BlockPos top, boolean all) {
         Biome biome = level.getBiome(top).value();
-        if (temperature(level, biome, top) < MELT_AT) return false;
-        boolean changed = false;
+        boolean warm = temperature(level, biome, top) >= MELT_AT, changed = false;
         for (BlockPos p : new BlockPos[] {top, top.below()}) {
             BlockState s = level.getBlockState(p);
-            if (!s.is(Blocks.SNOW)) continue;
+            if (!s.is(Blocks.SNOW) || !warm && !Magma.meltsSnow(level, p)) continue;
             int layers = s.getValue(SnowLayerBlock.LAYERS);
             if (all || layers == 1) level.removeBlock(p, false);
             else level.setBlockAndUpdate(p, s.setValue(SnowLayerBlock.LAYERS, layers - 1));
@@ -124,7 +124,7 @@ public final class Thaw {
             break;
         }
         BlockPos below = top.below();
-        if (level.getBlockState(below).is(Blocks.ICE) && !com.mechanical.folklore.Beings.frostHeartNear(level, below)) {
+        if (level.getBlockState(below).is(Blocks.ICE) && (warm || Magma.meltsSnow(level, below)) && !com.mechanical.folklore.Beings.frostHeartNear(level, below)) {
             level.setBlockAndUpdate(below, Blocks.WATER.defaultBlockState());
             changed = true;
         }

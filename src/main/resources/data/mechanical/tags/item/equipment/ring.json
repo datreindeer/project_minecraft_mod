@@ -1,6 +1,7 @@
 {
   "values": [
     "mechanical:gold_ring",
-    "mechanical:silver_ring"
+    "mechanical:silver_ring",
+    "mechanical:electrum_ring"
   ]
 }

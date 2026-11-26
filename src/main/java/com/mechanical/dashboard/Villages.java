@@ -22,6 +22,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,7 +31,7 @@ import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 /**
- * The vanilla villages the dashboard map shows as named lands (map only, no gameplay). Found from the structure starts of chunks as they
+ * The vanilla villages the dashboard map shows as named lands (clan.Lands announces them by the same {@link #name}). Found from the structure starts of chunks as they
  * load, so nothing is ever loaded or scanned for them; recorded whether or not the dashboard runs, so the map knows old villages too.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
@@ -122,6 +123,12 @@ public final class Villages extends SavedData {
         String a = r.nextInt(3) < 2 ? kf[r.nextInt(kf.length)] : FIRST[r.nextInt(FIRST.length)];
         String b = r.nextBoolean() ? kl[r.nextInt(kl.length)] : LAST[r.nextInt(LAST.length)];
         return Character.toLowerCase(a.charAt(a.length() - 1)) == b.charAt(0) ? a + b.substring(1) : a + b; // Mill+ley = Milley, not Millley
+    }
+
+    /** The name of the village grown from {@code start}: the one the map shows. */
+    public static String name(ServerLevel level, StructureStart start) {
+        Identifier id = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(start.getStructure());
+        return name(level.getSeed(), start.getChunkPos(), kind(id == null ? "" : id.getPath()));
     }
 
     /** Only reads the loaded chunk's own structure starts (a map lookup), never another chunk. */

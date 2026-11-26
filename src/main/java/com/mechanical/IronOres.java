@@ -93,6 +93,9 @@ public final class IronOres {
     public static final DeferredItem<Item> LEADED_CUPEL = ITEMS.registerSimpleItem("leaded_cupel");
     public static final DeferredItem<Item> SILVER_NUGGET = ITEMS.registerSimpleItem("silver_nugget");
     public static final DeferredItem<Item> SILVER_INGOT = ITEMS.registerSimpleItem("silver_ingot");
+    /** Electrum: Gold and Silver 1:1 in a High Furnace (the metal table). */
+    public static final DeferredItem<Item> ELECTRUM_NUGGET = ITEMS.registerSimpleItem("electrum_nugget");
+    public static final DeferredItem<Item> ELECTRUM_INGOT = ITEMS.registerSimpleItem("electrum_ingot");
     public static final DeferredItem<Item> FLUX = ITEMS.registerSimpleItem("flux");
     public static final DeferredItem<Item> SALT = ITEMS.registerSimpleItem("salt");
     /** Salt-cured: no perishes_* tag, so they keep; a little less food than smoked. */

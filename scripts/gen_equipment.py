@@ -34,9 +34,9 @@ def tag_add(path, *values):
 
 SLOTS = {
     "cloak": [M + "otter_fur_cape", M + "ermine_mantle", M + "glider_cloak", M + "elkwight_cloak"],  # Elkwight Cloak: gen_elkwight.py
-    "neck": [M + "gold_necklace", M + "silver_necklace"],  # Jewelry (gen_p8smith.py)
+    "neck": [M + "gold_necklace", M + "silver_necklace", M + "electrum_necklace"],  # Jewelry (gen_p8smith.py)
     "back": [M + "leather_satchel", M + "steel_frame_pack"],
-    "ring": [M + "gold_ring", M + "silver_ring"],
+    "ring": [M + "gold_ring", M + "silver_ring", M + "electrum_ring"],
     "hip": [M + "quiver", M + "leather_pouch"],
     "charm": [M + "bone_charm", M + "fern_flower_charm"],  # the Elkwight's Bone Charm (gen_elkwight.py), the Fern Flower Charm (gen_flora.py)
 }

@@ -645,6 +645,13 @@ Ancient Oak-block ...), även de som inte går att få i survival.
   byarnas hus).
 - **Smyg** för att hugga en enda log (ger 2 Firewood). Hus av logs fälls aldrig (placerade löv räknas inte som naturliga).
 
+### Akaciaträd (paraplyakacia)
+Vanillas Acacia har ny form, i nyskapad terräng och från Acacia Sapling (träd som redan står är orörda). Tre sorter:
+**ungt** träd med en tunn krokig stam och en liten krona, **grenat** träd med kort stam som delar sig i 2–3 grenar som
+klättrar utåt till tunna platta kronor på olika höjd (vanligast), och **gammalt** lutande träd med en bred krona och en
+lägre gren åt andra hållet. Fällning, ved och saplings fungerar som förut. Kod: `TreeShapes` (umbrella-placers),
+`scripts/gen_trees.py`.
+
 ### Fällda träd (Felled Log) och att dra hem stockar
 Ett fällt träd (av spelare, woodcutters, bävrar eller Giant Deer) landar som stockar där block bara sitter ihop **ände mot
 ände** längs fibrerna: stammen blir en stock, varje gren tvärs fallriktningen en egen, en gren längs fallriktningen svänger
@@ -1775,8 +1782,16 @@ stenålders-loot (inget järn). Krossa krukan för att få innehållet.
 | Fishing Camp | Floder, stränder | 24 (letar upp en strandkant i chunken) | Torkställningar, brygga; krokar, fisk, sällan Crude Fishing Rod |
 | Flint Quarry | Slätt, flod, stony shore | 120 | Grus- och stengrop med Loose Flint; stenhuvuden, sällan Flint Knife |
 | Mammoth Bone Hut | Snöiga biomer | 220 | Kupol av benblock; Tusk, ben, sinew, sällan Bear Pelt |
-| Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker |
+| Hermit's Hut | Dark forest, old growth | 250 | Hydda med säng och en **eremit** (leatherworker) som byter stenålderssaker. Har namn efter eremiten, se *Namn på byar och hyddor* |
 | Elkwight Ruin | Scorched Barrens (bortom 2500 block) | mycket sällsynt | Stor raserad arena av Blackstone med **Rune Blackstone**, pelare, läktare, själveldar och tre kistor (lite guld och brons). Tät mörk dimma inne i ruinen så länge Elkwighten lever. Se *Scorched Barrens och Elkwight-ruinen* längre ned |
+
+### Namn på byar och hyddor ("now entering")
+- **Vanliga byar** (vanilla): går man in (inom 8 block från ett hus eller en gata) visas "You are now entering Oakford"
+  med "Village" under. Namnet är samma som på webbkartan och ändras aldrig. Framsteg: **Strangers in the Square**.
+- **Hermit's Hut:** inom 12 block från hyddan visas "You are now entering Wren's Hut" (eremitens namn) med "A hermit
+  lives here" under. Gäller så länge eremiten lever och är i närheten; hyddor i gamla världar känns igen på formen.
+  Framsteg: **Far From Anyone**.
+- Spelarstammars mark, stambyar och läger går före (se docs/seasons-and-tribes.md, Zontitel).
 
 ### Småsaker i landskapet (dekorationer)
 Små, vanliga saker som gör världen roligare att vandra i, byggs i nya chunks och läggs in i gamla orörda chunks (retrogen, nedan) (`scripts/gen_decorations.py`).
@@ -1923,7 +1938,7 @@ gruppen **en gång** när trädets omgivning först laddas (sparas i altaret, ä
 - **Worshippers**: har var sin plats runt stammen, sitter och ber med händerna lyfta mot trädet.
 - **Light-Bearers**: går långsamt runt eken med ett tänt ljus i varje hand (lågor, och de lyser upp omgivningen med
   dynamiskt ljus).
-- **Keeper** (ledaren): krona av giant deer-horn (Antler Crown), guldkantad mörkgrön dräkt med vit pälscape och
+- **Keeper** (ledaren): krona av giant deer-horn (Antler Crown), guldkantad mörkgrön dräkt med lövmantel och
   **Verdant Staff** med gröna partiklar och sken. Högerklick öppnar **questlinjen**.
 
 **Relation:** de är en stam som andra NPC-stammar (*Children of the Oak*, fridsamma, start 15) och syns på
@@ -1968,6 +1983,13 @@ ansiktet och pälsmantel i kylan, hudkappa på ryggen, stora halsband av tänder
 framför bröstet, hårknut, flätor över axlarna, skägg ner på bröstet, fjäderkrona i djungeln. Två av fyra i varje roll
 (tempererat) bär en tunika i stammens färg mot hudbyxor och mörkt bälte.
 
+- **Mantlar** (bara utseende; `scripts/gen_capes.py`, `client/people/TribeCapeLayer`): **Elder**, handelskaravanens **Trader**
+  (ledaren) och ekfolkets **Keeper** bär en mantel som höjer sig över axlarna, med skulpterade axelstycken, krage och spännen och
+  ett märke på ryggen. Tyget faller i veck, fladdrar bakåt när de går, viker undan för armar och ben och ligger på marken när de
+  sitter. Elder: stammens färg, ett hjortskallemärke, päls (varmt: ljust växttyg, djungel: papegojfjädrar), benplattor, hornspetsar
+  och bärnsten. Trader: karavanslagets tyg och märke, flätband, tofsar och mässingsspännen. Keeper: mossa, eklöv, bark, ekollon
+  och den gamla eken i guld. De ersätter den platta pälsmanteln och hudkappan på de tre.
+
 - **Klimat (v0.71.0):** varje stam bygger och klär sig efter klimatet där den bor, valt från biomet vid lägrets/byns mitt
   (ett jaktlag: där det föddes). Biomtaggar först, sedan temperatur:
   - **Kallt:** snöiga biom (`c:is_snowy`) och allt med bastemperatur under 0,15 (snöig slätt och taiga, Ice Spikes, Grove,
@@ -1976,13 +1998,13 @@ framför bröstet, hårknut, flätor över axlarna, skägg ner på bröstet, fj�
   - **Djungel:** djungel, gles djungel, bambudjungel, träsk, mangroveträsk och Willow Fen (`#is_jungle`, `c:is_swamp`).
   - **Tempererat:** allt annat.
 - **Kläder per klimat** (egna skins, rollens detaljer ovanpå: jägarens koger, rem, tandhalsband och krigsmålning, samlarens
-  förkläde och pung, fiskarens fiskbenshalsband, vedhuggarens armskydd, den äldstes mantel och bärnsten):
+  förkläde och pung, fiskarens fiskbenshalsband, vedhuggarens armskydd, den äldstes bärnsten):
   - *Kallt:* pälshuva med vit pälskant runt ansiktet (variant 4: huvan nere, pälskrage och pannband), lång hudrock till knät
     med pälskant och långa ärmar, pälsbyxor, pälsstövlar och ibland vantar. Ljusare hy.
   - *Tempererat:* som förut (hud, läder, flätade förkläden).
   - *Varmt:* lätta svepningar och kjolar av linne (växtfiber), bar överkropp för jägare och fiskare, huvudduk, sandaler. Mörkare hy.
   - *Djungel:* höftskynke (män) eller gräskjol och bröstsvepning (kvinnor), barfota, fjäderskrud på huvudet och nedför
-    nacken, armband, kroppsmålning i lera, ockra eller kol; den äldste bär en mantel av papegojfjädrar.
+    nacken, armband, kroppsmålning i lera, ockra eller kol; den äldstes mantel har papegojfjädrar.
   - **Stammens färg:** pannband, skärp, rockband och manschetter, huvudduk, höftskynken, fjäderspetsar och fållar färgas i
     stammens banderollfärg (skinnet har en grå mask som klienten färgar). Folk från före v0.71.0 klär sig tempererat.
 
@@ -3455,3 +3477,15 @@ kitteln, men bara krukans rätter går i) och man öser upp med Bowl. Smyg-höge
 | **Herb-Roasted Fish** | hel fisk + en köksört (crafting: Herb-Stuffed Fish) på Campfire 30 s | 7 hunger |
 
 Dubbla ingredienser ger dubbla rätten. Advancements (Stone Age): *Pot in the Embers* (efter *Clay Kiln*) → *Pottage*, *Fish with Herbs*.
+
+## Nether och End: stängda tills vidare (2026-11-25)
+
+Config `netherAndEndClosed = true` i `config/mechanical-local.toml` (false öppnar igen).
+
+- Ingen resa dit: portaler ger inget mål (ingen ny portal eller End-plattform byggs på andra sidan) och all annan resa
+  dit stoppas (även kommandon som `/execute in minecraft:the_nether run tp`).
+- Nether-portaler tänds inte utanför Nether; Eye of Ender går inte i End Portal Frame (att kasta ögat fungerar).
+- **Vägen hem är öppen:** i Nether kan portaler tändas och användas, End-utgången fungerar och respawn är oförändrad.
+- Går inte att få så länge: Blaze Rod (och därmed bryggning), Nether Quartz, Glowstone, Nether Wart, Netherite, Magma
+  Cream, Soul Sand/Soil, Ghast Tear, Crimson/Warped-trä (modens Sawn Crimson/Warped Planks), Chorus, Shulker, Elytra,
+  drakägget. Moden har inga egna advancements eller andra recept som kräver Nether/End.

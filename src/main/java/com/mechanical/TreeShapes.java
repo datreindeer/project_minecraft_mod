@@ -41,6 +41,11 @@ public final class TreeShapes {
     public static final DeferredHolder<FoliagePlacerType<?>, FoliagePlacerType<PalmFoliagePlacer>> PALM = FOLIAGE_PLACERS.register(
             "palm_foliage_placer", () -> new FoliagePlacerType<>(PalmFoliagePlacer.CODEC));
 
+    public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<UmbrellaTrunkPlacer>> UMBRELLA_TRUNK = TRUNK_PLACERS.register(
+            "umbrella_trunk_placer", () -> new TrunkPlacerType<>(UmbrellaTrunkPlacer.CODEC));
+    public static final DeferredHolder<FoliagePlacerType<?>, FoliagePlacerType<UmbrellaFoliagePlacer>> UMBRELLA = FOLIAGE_PLACERS.register(
+            "umbrella_foliage_placer", () -> new FoliagePlacerType<>(UmbrellaFoliagePlacer.CODEC));
+
     public static void init(IEventBus modEventBus) {
         TRUNK_PLACERS.register(modEventBus);
         FOLIAGE_PLACERS.register(modEventBus);
@@ -225,6 +230,115 @@ public final class TreeShapes {
         @Override
         protected boolean shouldSkipLocation(RandomSource random, int dx, int y, int dz, int currentRadius, boolean doubleTrunk) {
             return false;
+        }
+    }
+
+    /**
+     * Umbrella thorn acacia ({@code minecraft:acacia}, so worldgen and saplings), one of three shapes: a young tree with one
+     * small crown; a short bole forking into 2-3 limbs that climb outwards to crowns at different heights; or an old leaning
+     * trunk with a wide crown and a lower side limb. Every step sideways is a log of its own, so the logs always meet face to face.
+     */
+    public static class UmbrellaTrunkPlacer extends TrunkPlacer {
+        public static final MapCodec<UmbrellaTrunkPlacer> CODEC = RecordCodecBuilder.mapCodec(i -> trunkPlacerParts(i).apply(i, UmbrellaTrunkPlacer::new));
+
+        public UmbrellaTrunkPlacer(int baseHeight, int heightRandA, int heightRandB) {
+            super(baseHeight, heightRandA, heightRandB);
+        }
+
+        @Override
+        protected TrunkPlacerType<?> type() {
+            return UMBRELLA_TRUNK.get();
+        }
+
+        @Override
+        public List<FoliagePlacer.FoliageAttachment> placeTrunk(WorldGenLevel level, BiConsumer<BlockPos, BlockState> trunkSetter, RandomSource random,
+                                                                int treeHeight, BlockPos origin, TreeFeature tree) {
+            placeBelowTrunkBlock(level, trunkSetter, random, origin.below(), tree);
+            List<FoliagePlacer.FoliageAttachment> crowns = new ArrayList<>();
+            Direction lean = Direction.Plane.HORIZONTAL.getRandomDirection(random);
+            Direction side = random.nextBoolean() ? lean.getClockWise() : lean.getCounterClockWise();
+            int shape = random.nextInt(10);
+            placeLog(level, trunkSetter, random, origin, tree);
+            if (shape < 2) { // young: a thin crooked stem under one small flat crown
+                placeLog(level, trunkSetter, random, origin.above(), tree);
+                limb(level, trunkSetter, random, tree, crowns, origin.above(), lean, lean, treeHeight - 5 + random.nextInt(2), 1, -2);
+            } else if (shape < 7) { // forked: limbs from a low bole, the first the tallest with the widest crown
+                int bole = 1 + random.nextInt(2);
+                BlockPos fork = origin;
+                for (int y = 1; y <= bole; y++) placeLog(level, trunkSetter, random, fork = fork.above(), tree);
+                int rise = treeHeight - 1 - bole;
+                limb(level, trunkSetter, random, tree, crowns, fork, lean, random.nextBoolean() ? side : lean, rise, 2 + random.nextInt(2), 0);
+                limb(level, trunkSetter, random, tree, crowns, fork, lean.getOpposite(), lean.getOpposite(), rise - 2, 3, -1);
+                if (random.nextBoolean()) limb(level, trunkSetter, random, tree, crowns, fork, side, side, Math.max(2, rise - 3 - random.nextInt(2)), 2, -2);
+            } else { // old: the whole trunk leans to a wide crown, with a limb reaching the other way lower down
+                BlockPos fork = origin;
+                for (int y = 1; y <= 2; y++) placeLog(level, trunkSetter, random, fork = fork.above(), tree);
+                limb(level, trunkSetter, random, tree, crowns, fork, lean, lean, treeHeight - 2, 3, 0);
+                limb(level, trunkSetter, random, tree, crowns, fork, lean.getOpposite(), side, treeHeight - 5, 3, -2);
+            }
+            return crowns;
+        }
+
+        /**
+         * A limb climbing {@code rise} blocks from {@code from}, stepping {@code reach} blocks sideways on the way (alternating
+         * between {@code a} and {@code b}, so two different ones give a diagonal reach); its crown sits on its last log.
+         */
+        private void limb(WorldGenLevel level, BiConsumer<BlockPos, BlockState> trunkSetter, RandomSource random, TreeFeature tree,
+                          List<FoliagePlacer.FoliageAttachment> crowns, BlockPos from, Direction a, Direction b, int rise, int reach, int radiusOffset) {
+            BlockPos pos = from, last = null;
+            int steps = Math.min(reach, rise), done = 0;
+            for (int y = 1; y <= rise; y++) {
+                if (done < steps && (random.nextInt(3) != 0 || rise - y < steps - done)) { // mostly outwards early, forced at the end
+                    // the elbow: a log beside this one, and the limb climbs on from there (upright grain: no pale log ends on the sides)
+                    pos = pos.relative(done % 2 == 0 ? a : b);
+                    if (!placeLog(level, trunkSetter, random, pos, tree)) break;
+                    done++;
+                }
+                pos = pos.above();
+                if (!placeLog(level, trunkSetter, random, pos, tree)) break;
+                last = pos;
+            }
+            if (last != null) crowns.add(new FoliagePlacer.FoliageAttachment(last.above(), radiusOffset, false));
+        }
+    }
+
+    /**
+     * A flat, thin umbrella crown on a limb end: a wide ragged plate at the attachment, a smaller cap one block up and a few
+     * tufts under the middle. The plate stops 5 steps (x + z) from the limb so no leaf is ever far enough to decay.
+     */
+    public static class UmbrellaFoliagePlacer extends FoliagePlacer {
+        public static final MapCodec<UmbrellaFoliagePlacer> CODEC = RecordCodecBuilder.mapCodec(i -> foliagePlacerParts(i).apply(i, UmbrellaFoliagePlacer::new));
+
+        public UmbrellaFoliagePlacer(IntProvider radius, IntProvider offset) {
+            super(radius, offset);
+        }
+
+        @Override
+        protected FoliagePlacerType<?> type() {
+            return UMBRELLA.get();
+        }
+
+        @Override
+        protected void createFoliage(WorldGenLevel level, FoliageSetter foliageSetter, RandomSource random, TreeFeature tree, int treeHeight,
+                                     FoliageAttachment attachment, int foliageHeight, int leafRadius, int offset) {
+            BlockPos origin = attachment.pos().above(offset);
+            int radius = leafRadius + attachment.radiusOffsetXZ();
+            placeLeavesRow(level, foliageSetter, random, tree, origin, radius, 0, false);
+            placeLeavesRow(level, foliageSetter, random, tree, origin, Math.max(1, radius - 2), 1, false);
+            placeLeavesRow(level, foliageSetter, random, tree, origin, 1, -1, false);
+        }
+
+        @Override
+        public int foliageHeight(RandomSource random, int treeHeight, TreeFeature tree) {
+            return 2;
+        }
+
+        @Override
+        protected boolean shouldSkipLocation(RandomSource random, int dx, int y, int dz, int currentRadius, boolean doubleTrunk) {
+            if (y < 0) return dx + dz > 1 || dx + dz == 1 && random.nextBoolean(); // the tufts
+            if (dx + dz > (y == 0 ? 5 : 4)) return true;
+            int d = dx * dx + dz * dz, edge = currentRadius * currentRadius + currentRadius;
+            return d > edge || d > edge - currentRadius && random.nextInt(3) == 0; // a ragged rim
         }
     }
 

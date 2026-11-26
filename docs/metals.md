@@ -243,6 +243,7 @@ Tabellen nedan skrivs av `gen_metals.py` (ändra inte för hand):
 | Smälta | Smälter | Verklig | Densitet | Färg | Ingot / Nugget / Block | Ugnar |
 |---|---|---|---|---|---|---|
 | Gold | 1100° | 1064° | 19,3 | `FFC21E` | gold_ingot / gold_nugget / gold_block | HF, Clay Kiln 1100° (Raw Gold, 9 Gold Nugget) |
+| Electrum | 1100° | ≈1000–1060° | 14,9 | `FFE478` | electrum_ingot / electrum_nugget / electrum_block | HF |
 | Lead | 330° | 327° | 11,34 | `8C93A8` | lead_ingot / lead_nugget / lead_block | HF, Clay Kiln 800° (Raw Galena) |
 | Silver | 1000° | 962° | 10,49 | `F4F6FF` | silver_ingot / silver_nugget / silver_block | HF, Clay Kiln 1000° (Leaded Cupel) |
 | Copper | 1085° | 1085° | 8,96 | `FF7A2A` | copper_ingot / copper_nugget / copper_block | Crucible, Smelting Furnace, HF |
@@ -260,6 +261,8 @@ Tabellen nedan skrivs av `gen_metals.py` (ändra inte för hand):
 Legering: 9 copper + 1 tin → 10 bronze vid 950°; i degeln 9.0–11.5 % tin = bronze, 8.0–15.0 % = poor_bronze.
 
 Legering: 1 pig_iron + 2 wrought_iron → 3 steel vid 1500°.
+
+Legering: 1 gold + 1 silver → 2 electrum vid 1100°.
 <!-- metals:end -->
 
 ## 13. Ändrat i v0.208.0

@@ -589,6 +589,7 @@
     "mechanical:banded_furnace_casing",
     "mechanical:firebox",
     "mechanical:taphole",
-    "mechanical:high_furnace_front"
+    "mechanical:high_furnace_front",
+    "mechanical:electrum_block"
   ]
 }

@@ -14,7 +14,8 @@ import net.minecraft.util.Util;
 
 /**
  * "You are now entering X's land": a bark panel in the tribe page's style ({@link ClanScreen}) a quarter down the screen,
- * the tribe's pennant and name in its colour, and under it your standing ("Friendly 45"), or "Home" on your own.
+ * the tribe's pennant and name in its colour, and under it your standing ("Friendly 45"), or "Home" on your own. Vanilla
+ * villages and Hermit's Huts show their generated name the same way, with what they are under it.
  * Shown once per {@link Lands.Entered} for {@link #SHOW_MS}, fading in and out.
  */
 public final class LandTitle {
@@ -37,8 +38,14 @@ public final class LandTitle {
         return rep <= Tribe.HOSTILE ? 0 : rep < 0 ? 1 : rep < Tribe.FRIENDLY ? 2 : rep < 70 ? 3 : 4;
     }
 
-    /** The land's name: a player tribe's own, an NPC tribe's from its id. */
+    /** A named place (vanilla village, Hermit's Hut) rather than somebody's tribe land. */
+    private static boolean place(Lands.Entered land) {
+        return land.kind() == Lands.VILLAGE || land.kind() == Lands.HERMIT;
+    }
+
+    /** The land's name: a player tribe's, village's or hermit's own, an NPC tribe's from its id. */
     static Component name(Lands.Entered land) {
+        if (land.kind() == Lands.HERMIT) return Component.translatable("gui.mechanical.land.hut", land.name());
         if (land.kind() != Lands.TRIBE) return Component.literal(land.name());
         try {
             return Tribe.of(java.util.UUID.fromString(land.name())).name();
@@ -50,6 +57,8 @@ public final class LandTitle {
     static Component standing(Lands.Entered land) {
         if (land.kind() == Lands.HOME) return Component.translatable("gui.mechanical.land.home");
         if (land.kind() == Lands.CLAN) return null;
+        if (land.kind() == Lands.VILLAGE) return Component.translatable("gui.mechanical.land.village");
+        if (land.kind() == Lands.HERMIT) return Component.translatable("gui.mechanical.land.hermit");
         return Component.translatable("gui.mechanical.land.standing", Tribe.standing(land.rep()), land.rep());
     }
 
@@ -75,7 +84,8 @@ public final class LandTitle {
         if (a < 0.05F) return;
         var font = mc.font;
         int colour = 0xFF000000 | TribeTabList.dye(shown.colour());
-        Component title = Component.translatable("gui.mechanical.land.entering", name(shown).copy().withColor(lighten(colour)));
+        Component title = Component.translatable(place(shown) ? "gui.mechanical.land.entering_place" : "gui.mechanical.land.entering",
+                name(shown).copy().withColor(lighten(colour)));
         Component sub = standing(shown);
         int w = Math.max(font.width(title) + 14, sub == null ? 0 : font.width(sub)) + 2 * PAD;
         int h = PAD + 10 + (sub == null ? 0 : 12) + PAD - 2;
@@ -85,7 +95,7 @@ public final class LandTitle {
         TribeTabList.pennant(g, x + PAD, y + PAD - 2, alpha(colour, a));
         g.text(font, title, x + PAD + 14, y + PAD, alpha(TITLE, a));
         if (sub != null) {
-            int subColour = shown.kind() == Lands.HOME ? TEXT : STANDING[tier(shown.rep())];
+            int subColour = shown.kind() == Lands.HOME || place(shown) ? TEXT : STANDING[tier(shown.rep())];
             g.centeredText(font, sub, x + w / 2, y + PAD + 12, alpha(subColour, a));
         }
     }

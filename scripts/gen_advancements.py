@@ -1232,6 +1232,10 @@ TABS["wilderness"][1].extend([
     ("tribe_land", "tribe_visit", "minecraft:red_banner", T, "Their Land",
      "Walk into the land of another tribe: a village, a camp or another player tribe's Fire Pit. Their name and your standing show on screen",
      by_code()),
+    ("village_land", "root", "minecraft:bell", T, "Strangers in the Square",
+     "Walk into a village. Every village has a name of its own, shown on screen as you arrive", by_code()),
+    ("hermit_land", "village_land", "minecraft:cauldron", T, "Far From Anyone",
+     "Find a Hermit's Hut deep in the woods and learn who lives there", by_code()),
     ("tribe_guests", "tribe_visit", "minecraft:campfire", T, "A Night by the Fire",
      "When the leader asks at dusk, let the band stay the night. At dawn they leave you a gift", by_code()),
     ("tribe_neighbours", "tribe_guests", "hide_tent_slope", G, "Neighbours",
@@ -1680,6 +1684,14 @@ TABS["steel_age"][1].extend([
      "Cast an Iron Ingot Mold from pig iron in a Molding Flask: 4 ingots of any metal per pour, and it never cracks", has("iron_ingot_mold")),
     ("foundry_basin", "pour", "foundry_basin", T, "Cast in Bulk",
      "Pour a whole block into a Foundry Basin: 1800 mB of metal, or 250 mB of slag", has("bronze_block", "steel_block", "lead_block", "silver_block", "pig_iron_block", "wrought_iron_block", "slag_stone")),
+    ("electrum", "pour", "electrum_ingot", T, "Pale Gold",
+     "Throw Silver Ingots and Raw Gold into a High Furnace at 1100°: they mix themselves, 1 to 1, into Electrum. "
+     "What is left over of one stays pure, so melt them apart to pour pure gold or silver", has("electrum_ingot")),
+    ("electrum_jeweler", "electrum", "electrum_ring", G, "White Gold",
+     "Cast Electrum on the Steel Casting Table and set a gem in it: an Electrum Ring or Necklace gives three quarters of gold's bonus",
+     has("electrum_ring", "electrum_necklace")),
+    ("magma_lighting", "high_furnace", "crushed_magma", T, "Born of Fire",
+     "Light a High Furnace with a handful of Crushed Magma in a fuelled Firebox: it catches every time", by_code()),
     ("walloon_forge", "white_heat", "finery_hearth", G, "Walloon Forge",
      "Build a Finery Hearth and blow it with a Great Bellows: Pig Iron Ingots and Charcoal at 1300° are fined into Wrought Iron Ingots", by_code()),
     ("glassmaker", "white_heat", "minecraft:glass", T, "Glassmaker",
@@ -2515,6 +2527,17 @@ STEEL_AGE_MOVED = {
     "big_fire_pit", "whole_roast", "tool_loops", "steel_frame_pack", "gold_casting", "jeweler", "flawless_jewel", "silver_jeweler",
     "mortar", "sieve", "steel_pan", "pilaf", "gingerbread", "pickles", "knife_set", "sawmill",
 }
+
+
+# the Magma Block (Magma.java): found at ruined portals and under the sea
+TABS["bronze_age"][1].extend([
+    ("magma_heat", "root", "minecraft:magma_block", T, "Captive Heat",
+     "Take a Magma Block (ruined portals, the sea floor) with a pickaxe. It warms you against cold, keeps snow off the ground round it, "
+     "and under a Baking Stone, Clay Kiln or Smelting Furnace it is a 600° heat that never runs out", has("minecraft:magma_block")),
+    ("crushed_magma", "magma_heat", "crushed_magma", T, "Cinder Grit",
+     "Crush a Magma Block on the Stone Anvil into 4 Crushed Magma: it lights a High Furnace without fail, and goes into Fire Clay "
+     "(instead of Grog) and the Silica Brick mix (instead of Quicklime)", has("crushed_magma")),
+])
 
 
 def move_to_steel_age():

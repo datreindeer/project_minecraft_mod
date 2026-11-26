@@ -39,6 +39,9 @@ METALS = [
     dict(id="gold", name="Gold", melt=1100, real_melt="1064", density=19.3, color=0xFFC21E,
          ingot=V + "gold_ingot", nugget=V + "gold_nugget", block=V + "gold_block", ores={V + "raw_gold": 300}, coin=M + "gold_coin",
          also="Clay Kiln 1100° (Raw Gold, 9 Gold Nugget)"),
+    # gold and silver, 1:1 (ALLOYS), High Furnace only; real electrum is 12.5-15.5
+    dict(id="electrum", name="Electrum", melt=1100, real_melt="≈1000–1060", density=14.9, color=0xFFE478,
+         ingot=M + "electrum_ingot", nugget=M + "electrum_nugget", block=M + "electrum_block", solid=0xDCC46A),
     dict(id="lead", name="Lead", melt=330, real_melt="327", density=11.34, color=0x8C93A8,
          ingot=M + "lead_ingot", nugget=M + "lead_nugget", block=M + "lead_block", solid=0x5E6474, dents=3, ores={M + "raw_galena": 300}, also="Clay Kiln 800° (Raw Galena)"),
     dict(id="silver", name="Silver", melt=1000, real_melt="962", density=10.49, color=0xF4F6FF,
@@ -87,6 +90,7 @@ METALS = [
 ALLOYS = [
     dict(result="bronze", parts=[("copper", 9), ("tin", 1)], heat=950, crucible=dict(good=(9.0, 11.5), poor=(8.0, 15.0), poor_result="poor_bronze")),
     dict(result="steel", parts=[("pig_iron", 1), ("wrought_iron", 2)], heat=1500),
+    dict(result="electrum", parts=[("gold", 1), ("silver", 1)], heat=1100),
 ]
 
 CLAY_METALS = [m["id"] for m in METALS if m.get("casts")]  # ClayMoldBlock.METAL's values

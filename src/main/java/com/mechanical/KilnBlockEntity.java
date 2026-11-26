@@ -34,7 +34,8 @@ import net.minecraft.world.level.storage.ValueOutput;
  * Once lit (fire drill, or placed on a burning campfire) the fire burns fuel continuously, baking or not; when the
  * fuel runs out it goes out and must be lit again. Baking progress pauses (doesn't reset) while the fire is out.
  * <p>Heat (Bronze Age phase 2): the kiln has a temperature in degrees. Lit, it climbs {@link #RISE_PER_SEC}°/s toward
- * the burning fuel's natural max; out, it falls {@link #COOL_PER_SEC}°/s (faster in rain and cold). Each pump of a
+ * the burning fuel's natural max; out, it falls {@link #COOL_PER_SEC}°/s (faster in rain and cold). A Magma Block under it
+ * holds it at {@link Magma#HEAT}° for ever, lit or not. Each pump of a
  * {@link BellowsBlock} adds {@link #PUMP}° up to the fuel's bellows max; above the natural max it sinks
  * {@link #OVER_FALL_PER_SEC}°/s. Every recipe needs a temperature (hotter bakes faster, see {@link #speed}), and a new kiln's clay only fires at
  * {@link #FIRING_TEMP}° or more. Pumping at the {@link #CEILING} strains the clay; full strain cracks the kiln
@@ -383,7 +384,9 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
 
     /** One tick of heating or cooling. */
     private void heat(Level level) {
-        temp = Math.min(heatStep(temperature(), isLit(), maxTemp, ambient, level.isRainingAt(worldPosition.above(2)), level.getGameTime() < heldUntil), isCracked() ? CRACKED_MAX : CEILING);
+        boolean magma = Magma.under(level, worldPosition);
+        int natural = !isLit() ? Magma.HEAT : magma ? Math.max(maxTemp, Magma.HEAT) : maxTemp;
+        temp = Math.min(heatStep(temperature(), isLit() || magma, natural, ambient, level.isRainingAt(worldPosition.above(2)), level.getGameTime() < heldUntil), isCracked() ? CRACKED_MAX : CEILING);
     }
 
     /**
@@ -450,7 +453,11 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
         kiln.heat(level);
         kiln.keepMoltenHot(level);
         kiln.setChanged();
-        if (firing && kiln.isLit() && kiln.temp >= FIRING_TEMP) kiln.fire(state);
+        // a Magma Block under it is a fire that needs no lighting and no fuel (Magma.HEAT); only a lit fire burns fuel
+        boolean heated = kiln.isLit() || Magma.under(level, pos);
+        if (heated && !kiln.isLit() && working && level.getGameTime() % 10 == 0)
+            level.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 2.0, pos.getZ() + 0.5, 2, 0.08, 0.02, 0.08, 0.01);
+        if (firing && heated && kiln.temp >= FIRING_TEMP) kiln.fire(state);
         kiln.setState(kiln.isLit(), kiln.isLit() && working);
 
         if (!canBake) {
@@ -459,7 +466,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             return;
         }
         kiln.total = bake.ticks;
-        if (!kiln.isLit() || kiln.temp < bake.temp) return; // too cold: progress waits
+        if (!heated || kiln.temp < bake.temp) return; // too cold: progress waits
         kiln.partial += speed(kiln.temp, bake.temp);
         int steps = (int) kiln.partial;
         kiln.partial -= steps;

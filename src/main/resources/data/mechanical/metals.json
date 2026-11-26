@@ -17,6 +17,20 @@
       "coin": "mechanical:gold_coin"
     },
     {
+      "id": "electrum",
+      "melt": 1100,
+      "density": 14.9,
+      "color": "FFE478",
+      "melts": {
+        "mechanical:electrum_ingot": 200,
+        "mechanical:electrum_nugget": 22,
+        "mechanical:electrum_block": 1800
+      },
+      "ingot": "mechanical:electrum_ingot",
+      "nugget": "mechanical:electrum_nugget",
+      "block": "mechanical:electrum_block"
+    },
+    {
       "id": "lead",
       "melt": 330,
       "density": 11.34,
@@ -332,6 +346,20 @@
         ]
       ],
       "heat": 1500
+    },
+    {
+      "result": "electrum",
+      "parts": [
+        [
+          "gold",
+          1
+        ],
+        [
+          "silver",
+          1
+        ]
+      ],
+      "heat": 1100
     }
   ]
 }
