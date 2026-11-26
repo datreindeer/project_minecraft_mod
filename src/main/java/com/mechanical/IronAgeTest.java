@@ -140,7 +140,9 @@ public final class IronAgeTest {
         anvil.setPattern(Smithing.Pattern.TOOL_ROD);
         anvil.place(level, Ironworking.heated(new ItemStack(Smithing.STEEL_INGOT.get()), Smithing.HOT_STEEL_INGOT.get(), level.getGameTime()));
         anvil.strike(level, smith, steelHammer, InteractionHand.MAIN_HAND);
-        h.assertTrue(Ironworking.hits(anvil.item()) == 0, "no steel tool rod");
+        for (int i = 0; i < 3; i++) anvil.strike(level, smith, steelHammer, InteractionHand.MAIN_HAND);
+        h.assertTrue(dropped(level, h, anvilAt, Smithing.STEEL_TOOL_ROD.get()) == 1, "3 blows: a Steel Tool Rod, forged like an iron one");
+        anvil.place(level, Ironworking.heated(new ItemStack(Smithing.STEEL_INGOT.get()), Smithing.HOT_STEEL_INGOT.get(), level.getGameTime()));
         // the pattern wheel's pick (Smithing.ChoosePattern) is checked: a hammer in hand, a part the metal has
         h.assertTrue(!anvil.choosePattern(smith, Smithing.Pattern.TONG_ARMS) && anvil.pattern() == Smithing.Pattern.TOOL_ROD,
                 "no steel tong arms: the wheel's pick is refused");

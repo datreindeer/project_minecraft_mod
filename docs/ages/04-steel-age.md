@@ -19,6 +19,9 @@ behåller dem; de hänger nu under stålålderns rot.
 
 Kod: `Smithing`. Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
 
+- **Steel Tool Rod**: smids på städet av 1 het Steel Ingot, 3 slag (mönster Tool Rod, som Iron Tool Rod). Rod i Tool Station för dynamiska
+  verktyg (nivå 4, hållbarhet ×1,75, +1 skada). Texturer: `scripts/gen_tool_rods.py`. Test: `ToolsTest`.
+
 - **Stålverktyg** (Tool Station): smitt huvud med skafthål på ett träskaft, låst med en **Iron Tool Rod** som kil och
   beslag, ingen surrning: huvud + Iron Tool Rod + Tool Rod → Steel Pickaxe / Axe / Shovel / Hoe; Steel Spear (Spear Head
   + Iron Tool Rod + Tool Rod); Steel Sword (Sword Blade + Iron Tool Rod som parerstång och tånge + Leather som grepp);

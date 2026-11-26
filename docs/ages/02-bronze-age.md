@@ -414,6 +414,10 @@ Det fjärde draget ger det slipade huvudet (Copper Pickaxe Head osv.). Framstege
 Ett mjukt mellansteg mellan sten och brons. Monteras i **Tool Station**; receptet låses upp när man bär på det slipade
 huvudet. Hacka, yxa, spade och hacka (hoe) är vanillas kopparverktyg (vanillas egna recept är fortfarande avstängda).
 
+**Rods för dynamiska verktyg:** **Copper Tool Rod** (2 Copper Ingot i en kolumn = 2 rods; nivå 1, hållbarhet ×1,2) och **Bronze Tool Rod**
+(2 Bronze Ingot i en kolumn = 2 rods; nivå 2, ×1,35, +0,5 skada). Ingen gjutform eller städmönster finns för dem, så de dras direkt ur tackorna (1 tacka ensam är nugget-receptet).
+Skript: `scripts/gen_tool_rods.py`.
+
 | Verktyg | Huvud | Binding | Skaft |
 |---|---|---|---|
 | Copper Pickaxe | Copper Pickaxe Head | Cordage | Tool Rod |

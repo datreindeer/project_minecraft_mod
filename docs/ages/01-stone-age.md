@@ -34,6 +34,7 @@ Clay Kiln, och att få fram Crucible som behövs i bronsåldern.
 | Limestone / Slate / Gneiss / Marble ... Rock (20 sorter) | Loose rocks av modens bergarter där berget går i dagen (se Block) | Som Stone Rock: räknas som `#mechanical:rock_chunks`; 4 → stenens block (Slate Rock → Cobbled Slate) |
 | Firewood (25 sorter: Oak, Spruce, Birch, Jungle, Acacia, Dark Oak, Mangrove, Cherry, Pale Oak, Poplar, Aspen, Alder, Beech, Linden, Willow, Ash, Hazel, Pine, Yew, Rowan, Bird Cherry, Wild Apple, Plum, Olive, Date Palm) | Alla logs släpper **2 Firewood** av sitt träslag i stället för sig själva (även stripped logs och wood-block). Nether-stammar och bamboo släpper sig själva | Campfire, bränsle och Charcoal i Clay Kiln, 4 → 1 Log, **Firewood Pile** (vedhög, se Block) |
 | Tool Rod | Flint Knife ovanför valfri Log (kniven slits 1) | Skaft för Stone Pickaxe / Stone Axe |
+| Bone Tool Rod | Valfri kniv (`#mechanical:knives`) ovanför 2 Bone (kniven slits 1; 1 Bone + kniv är redan Bone Needle) | Rod i Tool Station för dynamiska verktyg (nivå 1, hållbarhet ×1,1) |
 | Clay Ball | Vanilla (lera i vatten) | Clay Kiln, Brick, Mold Bench (Unfired Crucible, lerformar) |
 | Raw Hide | Styckning av djur (se Mat) | Scraped Hide |
 | Scraped Hide | Raw Hide + Flint Knife (shapeless, kniven slits 1) | Läggs på Drying Rack → Leather (bronsåldern: garvas med Bark i en **Bronze Kettle**, 3 Leather av 2 hudar) |

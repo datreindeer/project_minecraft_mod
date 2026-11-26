@@ -441,7 +441,7 @@ public class Mechanical {
         Chemistry.init(modEventBus);
         StoneCrafts.init(modEventBus);
         Masonry.init(modEventBus);
-        WaterPower.init(); Sawmill.init(); WaterPowerTest.init(modEventBus); HighFurnace.init(); HighFurnaceTest.init(modEventBus); MetalsTest.init(modEventBus); Magma.init(); MagmaTest.init(modEventBus); com.mechanical.viewer.SeenItems.init(); com.mechanical.viewer.ViewerTest.init(modEventBus); com.mechanical.skills.Skills.init(); com.mechanical.skills.SkillsTest.init(modEventBus);
+        WaterPower.init(); Sawmill.init(); WaterPowerTest.init(modEventBus); HighFurnace.init(); HighFurnaceTest.init(modEventBus); MetalsTest.init(modEventBus); Magma.init(); MagmaTest.init(modEventBus); com.mechanical.viewer.SeenItems.init(); com.mechanical.viewer.ViewerTest.init(modEventBus); com.mechanical.skills.Skills.init(); com.mechanical.skills.SkillsTest.init(modEventBus); com.mechanical.tools.ToolsTest.init(modEventBus);
         registerMissingBlockItems();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);

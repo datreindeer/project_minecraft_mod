@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "K",
+    "B",
+    "B"
+  ],
+  "key": {
+    "K": "#mechanical:knives",
+    "B": "minecraft:bone"
+  },
+  "result": {
+    "id": "mechanical:bone_tool_rod",
+    "count": 1
+  }
+}

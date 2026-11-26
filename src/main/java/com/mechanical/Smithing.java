@@ -54,6 +54,11 @@ public final class Smithing {
     // ---- forged parts
     public static final DeferredItem<Item> IRON_PLATE = ITEMS.registerSimpleItem("iron_plate");
     public static final DeferredItem<Item> IRON_TOOL_ROD = ITEMS.registerSimpleItem("iron_tool_rod");
+    /** Dynamic tools' rods (docs/superpowers/specs/2026-11-26-dynamic-tools-design.md): steel is forged like iron, the rest crafted. */
+    public static final DeferredItem<Item> STEEL_TOOL_ROD = ITEMS.registerSimpleItem("steel_tool_rod");
+    public static final DeferredItem<Item> BONE_TOOL_ROD = ITEMS.registerSimpleItem("bone_tool_rod");
+    public static final DeferredItem<Item> COPPER_TOOL_ROD = ITEMS.registerSimpleItem("copper_tool_rod");
+    public static final DeferredItem<Item> BRONZE_TOOL_ROD = ITEMS.registerSimpleItem("bronze_tool_rod");
     public static final DeferredItem<Item> IRON_PICKAXE_HEAD = ITEMS.registerSimpleItem("iron_pickaxe_head");
     public static final DeferredItem<Item> IRON_AXE_HEAD = ITEMS.registerSimpleItem("iron_axe_head");
     public static final DeferredItem<Item> IRON_SHOVEL_HEAD = ITEMS.registerSimpleItem("iron_shovel_head");
@@ -174,7 +179,7 @@ public final class Smithing {
     /** What the anvil makes of a hot ingot, and in how many blows; null where that metal has no such part. */
     public enum Pattern {
         PLATE("plate", 1, 4, () -> IRON_PLATE.get(), () -> STEEL_PLATE.get()),
-        TOOL_ROD("tool_rod", 1, 3, () -> IRON_TOOL_ROD.get(), null),
+        TOOL_ROD("tool_rod", 1, 3, () -> IRON_TOOL_ROD.get(), () -> STEEL_TOOL_ROD.get()),
         PICKAXE_HEAD("pickaxe_head", 3, 6, () -> IRON_PICKAXE_HEAD.get(), () -> STEEL_PICKAXE_HEAD.get()),
         AXE_HEAD("axe_head", 3, 6, () -> IRON_AXE_HEAD.get(), () -> STEEL_AXE_HEAD.get()),
         SHOVEL_HEAD("shovel_head", 1, 5, () -> IRON_SHOVEL_HEAD.get(), () -> STEEL_SHOVEL_HEAD.get()),

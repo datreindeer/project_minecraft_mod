@@ -91,7 +91,7 @@ metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEn
 | Mönster | Tackor | Slag | Av järn | Av stål |
 |---|---|---|---|---|
 | Plate | 1 | 4 | Iron Plate | Steel Plate |
-| Tool Rod | 1 | 3 | Iron Tool Rod | – |
+| Tool Rod | 1 | 3 | Iron Tool Rod | Steel Tool Rod |
 | Pickaxe / Axe Head | 3 | 6 | Iron Pickaxe / Axe Head | Steel Pickaxe / Axe Head |
 | Shovel Head | 1 | 5 | Iron Shovel Head | Steel Shovel Head |
 | Hoe Head | 2 | 5 | Iron Hoe Head | Steel Hoe Head |
