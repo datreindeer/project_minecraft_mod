@@ -3,30 +3,378 @@
     "type": "minecraft:condition",
     "property": "minecraft:using_item",
     "on_false": {
-      "type": "minecraft:model",
-      "model": "mechanical:item/crude_bow"
+      "type": "minecraft:composite",
+      "models": [
+        {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/crude_bow/fixed"
+        },
+        {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 0,
+          "cases": [
+            {
+              "when": "stick",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crude_bow/rod_stick"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/crude_bow/rod"
+          }
+        },
+        {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 1,
+          "cases": [
+            {
+              "when": "cordage",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crude_bow/grip_cordage"
+              }
+            },
+            {
+              "when": "leather",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crude_bow/grip_leather"
+              }
+            },
+            {
+              "when": "sinew",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crude_bow/grip_sinew"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/crude_bow/grip"
+          }
+        },
+        {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 2,
+          "cases": [
+            {
+              "when": "twine",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crude_bow/string_twine"
+              }
+            },
+            {
+              "when": "string",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crude_bow/string_string"
+              }
+            },
+            {
+              "when": "sinew",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crude_bow/string_sinew"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/crude_bow/string"
+          }
+        }
+      ]
     },
     "on_true": {
       "type": "minecraft:range_dispatch",
       "property": "minecraft:use_duration",
       "scale": 0.05,
       "fallback": {
-        "type": "minecraft:model",
-        "model": "mechanical:item/crude_bow_pulling_0"
+        "type": "minecraft:composite",
+        "models": [
+          {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/crude_bow_pulling_0/fixed"
+          },
+          {
+            "type": "minecraft:select",
+            "property": "minecraft:custom_model_data",
+            "index": 0,
+            "cases": [
+              {
+                "when": "stick",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_0/rod_stick"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/crude_bow_pulling_0/rod"
+            }
+          },
+          {
+            "type": "minecraft:select",
+            "property": "minecraft:custom_model_data",
+            "index": 1,
+            "cases": [
+              {
+                "when": "cordage",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_0/grip_cordage"
+                }
+              },
+              {
+                "when": "leather",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_0/grip_leather"
+                }
+              },
+              {
+                "when": "sinew",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_0/grip_sinew"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/crude_bow_pulling_0/grip"
+            }
+          },
+          {
+            "type": "minecraft:select",
+            "property": "minecraft:custom_model_data",
+            "index": 2,
+            "cases": [
+              {
+                "when": "twine",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_0/string_twine"
+                }
+              },
+              {
+                "when": "string",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_0/string_string"
+                }
+              },
+              {
+                "when": "sinew",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_0/string_sinew"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/crude_bow_pulling_0/string"
+            }
+          }
+        ]
       },
       "entries": [
         {
           "threshold": 0.65,
           "model": {
-            "type": "minecraft:model",
-            "model": "mechanical:item/crude_bow_pulling_1"
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crude_bow_pulling_1/fixed"
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 0,
+                "cases": [
+                  {
+                    "when": "stick",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_1/rod_stick"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_1/rod"
+                }
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 1,
+                "cases": [
+                  {
+                    "when": "cordage",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_1/grip_cordage"
+                    }
+                  },
+                  {
+                    "when": "leather",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_1/grip_leather"
+                    }
+                  },
+                  {
+                    "when": "sinew",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_1/grip_sinew"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_1/grip"
+                }
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 2,
+                "cases": [
+                  {
+                    "when": "twine",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_1/string_twine"
+                    }
+                  },
+                  {
+                    "when": "string",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_1/string_string"
+                    }
+                  },
+                  {
+                    "when": "sinew",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_1/string_sinew"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_1/string"
+                }
+              }
+            ]
           }
         },
         {
           "threshold": 0.9,
           "model": {
-            "type": "minecraft:model",
-            "model": "mechanical:item/crude_bow_pulling_2"
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/crude_bow_pulling_2/fixed"
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 0,
+                "cases": [
+                  {
+                    "when": "stick",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_2/rod_stick"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_2/rod"
+                }
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 1,
+                "cases": [
+                  {
+                    "when": "cordage",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_2/grip_cordage"
+                    }
+                  },
+                  {
+                    "when": "leather",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_2/grip_leather"
+                    }
+                  },
+                  {
+                    "when": "sinew",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_2/grip_sinew"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_2/grip"
+                }
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 2,
+                "cases": [
+                  {
+                    "when": "twine",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_2/string_twine"
+                    }
+                  },
+                  {
+                    "when": "string",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_2/string_string"
+                    }
+                  },
+                  {
+                    "when": "sinew",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/crude_bow_pulling_2/string_sinew"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/crude_bow_pulling_2/string"
+                }
+              }
+            ]
           }
         }
       ]

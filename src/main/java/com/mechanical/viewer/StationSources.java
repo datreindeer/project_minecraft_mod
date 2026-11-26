@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import com.mechanical.ArmorStationRecipes;
 import com.mechanical.BloomeryBlockEntity;
 import com.mechanical.FletchingRecipes;
-import com.mechanical.Kettle;
 import com.mechanical.KilnBlockEntity;
 import com.mechanical.LeatherworkingRecipes;
 import com.mechanical.MoldBench;
@@ -50,9 +49,8 @@ public final class StationSources {
     private static List<ViewerRecipe> build() {
         List<ViewerRecipe> out = new ArrayList<>();
         for (ToolStationRecipes.Recipe r : ToolStationRecipes.ALL) {
-            List<Item> binding = r.dynamic() ? first(r.binding().get(), r.bindings()) : r.gluable() ? List.of(r.binding().get(), Kettle.HIDE_GLUE.get()) : List.of(r.binding().get());
-            out.add(new ViewerRecipe(Station.TOOL_STATION,
-                    List.of(new Slot(List.of(r.head().get()), 1, false), new Slot(binding, 1, false), new Slot(r.dynamic() ? first(r.rod().get(), r.rods()) : List.of(r.rod().get()), 1, false)),
+            out.add(new ViewerRecipe(Station.TOOL_STATION, java.util.stream.IntStream.range(0, 3)
+                    .mapToObj(i -> new Slot(first(r.parts().get(i), r.options(i)), 1, false)).toList(),
                     new ItemStack(r.result().get()), 0, UnlockKind.RECIPE_ID, r.id()));
         }
         station(out, Station.FLETCHING, FletchingRecipes.ALL);

@@ -59,6 +59,7 @@ public final class ToolsTest {
             smithingBonus(h);
             poorOnce(h);
             station(h);
+            bowsAndRods(h);
             looksFollowParts(h);
             h.succeed();
         } catch (RuntimeException e) {
@@ -118,16 +119,60 @@ public final class ToolsTest {
         }
     }
 
-    /** Every recipe built from its own parts (smithing 0) keeps the fresh stack's durability, mining speed and attack damage. */
+    /**
+     * Every dynamic recipe built from its own parts (smithing 0) keeps the fresh stack's durability, mining speed and attack damage,
+     * and a bow's draw time and arrow damage, a fishing rod's bites, as the Tool Station shows them.
+     */
     private static void defaultsUnchanged(GameTestHelper h) {
         for (var r : com.mechanical.ToolStationRecipes.ALL) {
-            if (ToolParts.binding(r.binding().get()) == null || ToolParts.rod(r.rod().get()) == null) continue; // the Yew Longbow's stave
+            if (!r.dynamic()) continue;
             ItemStack fresh = new ItemStack(r.result().get()), built = fresh.copy();
-            ToolParts.apply(built, r.binding().get(), r.rod().get(), new ToolParts.Parts(r.binding().get(), r.rod().get(), 0));
+            r.apply(built, r.head().get(), r.binding().get(), r.rod().get(), 0);
             for (var type : List.of(DataComponents.MAX_DAMAGE, DataComponents.TOOL, DataComponents.ATTRIBUTE_MODIFIERS))
                 h.assertTrue(java.util.Objects.equals(fresh.get(type), built.get(type)), r.id() + " keeps " + type + ": " + fresh.get(type) + " vs " + built.get(type));
             h.assertTrue(built.has(ToolParts.TOOL_PARTS.get()), r.id() + " gets tool_parts");
+            h.assertTrue(ToolParts.ranged(built).equals(ToolParts.Ranged.NONE) && ToolStats.of(built).equals(ToolStats.of(fresh)),
+                    r.id() + " keeps its ranged stats: " + ToolParts.ranged(built) + " " + ToolStats.of(built) + " vs " + ToolStats.of(fresh));
         }
+        h.assertTrue(ToolStats.drawTicks(new ItemStack(com.mechanical.BronzeTools.YEW_LONGBOW.get())) == 30 && ToolStats.drawTicks(new ItemStack(Mechanical.CRUDE_BOW.get())) == 20
+                && ((com.mechanical.BoneHookRodItem) Mechanical.CRUDE_FISHING_ROD.get()).lureTicks(new ItemStack(Mechanical.CRUDE_FISHING_ROD.get())) == 0, "today's draw and lure");
+    }
+
+    /**
+     * Bows: a Sinew string on the Crude Bow shoots x1.1 harder, draws in 20 / 0.95 ticks and lasts x1.2; a Cordage string on the Yew Longbow
+     * shoots 1 / 1.1. Fishing rods: a String line brings bites 2 s sooner. Each slot takes only its own kind of part.
+     */
+    private static void bowsAndRods(GameTestHelper h) {
+        Item sinew = com.mechanical.wildlife.Wildlife.SINEW.get(), cord = Mechanical.CORDAGE.get(), twine = Mechanical.TWINE.get(), rod = Mechanical.TOOL_ROD.get();
+        Item yew = com.mechanical.BronzeTools.YEW_STAVE.get();
+        var p = net.neoforged.neoforge.common.util.FakePlayerFactory.get(h.getLevel(), new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "bows"));
+        p.setData(Mechanical.UNLOCKED_TOOLS, com.mechanical.ToolStationRecipes.ALL.stream().map(com.mechanical.ToolStationRecipes.Recipe::id).toList());
+        ItemStack bow = result(p, sinew, twine, rod);
+        var ranged = ToolParts.ranged(bow);
+        h.assertTrue(bow.is(Mechanical.CRUDE_BOW.get()) && Math.abs(ranged.power() - 1.1F) < 1e-5 && ToolStats.drawTicks(bow) == Math.round(20 / 0.95F)
+                && Math.abs(bow.getMaxDamage() - 96 * 1.2F) <= 1, "sinew string (Smithing 1 may add one): " + bow + " " + ranged + " " + bow.getMaxDamage());
+        h.assertTrue(Math.abs(ToolStats.bowDamage(bow) - 3 * 0.7F * 1.1F) < 1e-4, "sinew string damage x" + ToolStats.bowDamage(bow));
+        h.assertTrue(bow.get(ToolParts.TOOL_PARTS.get()).head() == sinew
+                && bow.get(DataComponents.CUSTOM_MODEL_DATA).strings().equals(List.of("tool_rod", "twine", "sinew")), "the string is kept and named: " + bow.get(DataComponents.CUSTOM_MODEL_DATA));
+        h.assertTrue(ranged.onVanillaCurve(ToolStats.drawTicks(bow), 20) >= 20 && ranged.onVanillaCurve(ToolStats.drawTicks(bow) - 2, 20) < 20, "a full draw takes the bow's draw time");
+        ItemStack longbow = result(p, cord, Items.LEATHER, yew);
+        h.assertTrue(longbow.is(com.mechanical.BronzeTools.YEW_LONGBOW.get()) && Math.abs(ToolParts.ranged(longbow).power() - 1 / 1.1F) < 1e-5,
+                "cordage on the longbow: " + longbow + " " + ToolParts.ranged(longbow));
+        ItemStack line = result(p, Items.FLINT, Items.STRING, rod);
+        h.assertTrue(line.is(Mechanical.CRUDE_FISHING_ROD.get()) && ((com.mechanical.BoneHookRodItem) line.getItem()).lureTicks(line) == 40
+                && Math.abs(line.getMaxDamage() - 24 / 0.85F * 0.9F) <= 1, "string line: " + line + " " + ToolParts.ranged(line) + " " + line.getMaxDamage());
+        ItemStack bone = result(p, Mechanical.BONE_FISH_HOOK.get(), sinew, Items.BAMBOO);
+        h.assertTrue(bone.is(Mechanical.BONE_HOOK_FISHING_ROD.get()) && Mechanical.BONE_HOOK_FISHING_ROD.get().lureTicks(bone) == 100 + 20, "sinew line, bamboo rod: " + bone);
+        // kinds: a fishing line or a stave is no bowstring, a bow stave no fishing rod, the Yew Stave only the longbow's
+        h.assertTrue(result(p, Items.LEATHER, twine, rod).isEmpty(), "leather is no bowstring");
+        h.assertTrue(result(p, cord, twine, Items.BAMBOO).isEmpty(), "bamboo is no stave");
+        var recipes = com.mechanical.ToolStationRecipes.ALL;
+        var crude = recipes.stream().filter(r -> r.result().get() == Mechanical.CRUDE_BOW.get()).findFirst().orElseThrow();
+        var yewBow = recipes.stream().filter(r -> r.result().get() == com.mechanical.BronzeTools.YEW_LONGBOW.get()).findFirst().orElseThrow();
+        h.assertTrue(!crude.options(2).contains(yew) && yewBow.options(2).equals(List.of(yew)) && result(p, cord, twine, yew).is(com.mechanical.BronzeTools.YEW_LONGBOW.get()),
+                "the Yew Stave makes only the longbow: " + crude.options(2) + " / " + yewBow.options(2));
+        h.assertTrue(result(p, Items.FLINT, Items.LEATHER, Items.BAMBOO).isEmpty() && result(p, Mechanical.BONE_FISH_HOOK.get(), twine, yew).isEmpty(), "no leather line, no yew rod");
+        h.assertFalse(result(p, Items.FLINT, cord, Items.BAMBOO).isEmpty(), "a cordage line on bamboo");
     }
 
     /** Every dynamic recipe's tool has the composite item model scripts/gen_tool_parts.py writes (a new recipe needs a row there). */
@@ -213,7 +258,8 @@ public final class ToolsTest {
         shares(h, p, Items.IRON_PICKAXE, Smithing.IRON_PICKAXE_HEAD.get(), Items.LEATHER, rod, Items.IRON_PICKAXE);
         shares(h, p, Bronze.BRONZE_PICKAXE.get(), Smithing.IRON_PICKAXE_HEAD.get(), Items.LEATHER, rod, Items.IRON_PICKAXE);
         shares(h, p, Smithing.STEEL_SMITHING_HAMMER.get(), Smithing.STEEL_HAMMER_HEAD.get(), Smithing.IRON_TOOL_ROD.get(), rod, Smithing.STEEL_SMITHING_HAMMER.get());
-        shares(h, p, Mechanical.CRUDE_FISHING_ROD.get(), Items.FLINT, cord, rod, Mechanical.FLINT_SPEAR.get()); // selection no longer fits: best fit
+        shares(h, p, Mechanical.CRUDE_FISHING_ROD.get(), Items.FLINT, Items.LEATHER, rod, Mechanical.FLINT_SPEAR.get()); // selection no longer fits: best fit
+        shares(h, p, Mechanical.CRUDE_FISHING_ROD.get(), Items.FLINT, cord, rod, Mechanical.CRUDE_FISHING_ROD.get()); // a cordage line: the selection fits
         shares(h, p, Smithing.STEEL_QUARRY_HAMMER.get(), Smithing.STEEL_HAMMER_HEAD.get(), Smithing.IRON_TOOL_ROD.get(), rod, Smithing.STEEL_QUARRY_HAMMER.get());
         h.assertTrue(ToolParts.bindings(Items.FLINT).get(0) == Mechanical.CORDAGE.get(), "fixed order: tier, then id");
     }

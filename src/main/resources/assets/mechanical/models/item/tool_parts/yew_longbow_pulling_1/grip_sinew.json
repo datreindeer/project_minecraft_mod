@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "mechanical:item/tool_parts/yew_longbow_pulling_1/grip_sinew"
+  }
+}

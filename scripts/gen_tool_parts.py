@@ -419,11 +419,132 @@ def walk(node):
 BIND_DEFAULT = {n: b for _, n, b, *_ in TOOLS}
 
 
+# ---- bows and fishing rods (spec addendum): no head on a haft, so zones by the sprite's own colours instead of split()
+# A bow is string + grip + stave (custom_model_data strings 2, 1, 0), a fishing rod hook (fixed) + line + rod (strings 1, 0).
+# Every frame (pulling, cast) gets its own layers; the arrow and the hook are never recoloured.
+POLE = hexset("2a1e10", "2f2216", "3e2f1f", "5a4630", "7d6038", "a3834f")  # the bows' and rods' drawn wood
+LINE = hexset("826655", "634e42", "534237", "a08470")  # the crude bow's string, the fishing line and the line wound on the reel
+LINE_RAMP = {"cordage": BIND["cordage"], "sinew": BIND["sinew"], "string": [(150, 152, 156), (206, 208, 212), (246, 246, 248)]}
+# a taut bowstring has no dark edge (a lone shade takes the light, two shade and light): cordage and sinew as the Crude Bow and the Yew
+# Longbow draw them, twine a duller flax, spider silk near white
+BOWSTRING = {"cordage": [(99, 78, 66), (130, 102, 85)], "sinew": [(190, 160, 104), (226, 196, 150)],
+             "twine": [(150, 144, 128), (186, 178, 154)], "string": [(206, 208, 212), (246, 246, 248)]}
+STAVE_RAMP = {"stick": "minecraft:stick", "bamboo": "minecraft:bamboo"}
+BOW_FRAMES = ["", "_pulling_0", "_pulling_1", "_pulling_2"]
+ROD_FRAMES = ["", "_cast"]
+
+
+def rod_zones(x, y, c):
+    """A fishing rod's pixel: the line runs down the right from the tip (x + y >= 18), and its end is wound on the reel low on the pole."""
+    if c in LINE and (x >= 9 and x + y >= 18 or 5 <= x <= 7 and 11 <= y <= 13):
+        return "grip"  # the line sits in the binding slot
+    if c in POLE or c in LINE:
+        return "rod"
+    return "fixed"
+
+
+def crude_bow_zones(x, y, c):
+    return "string" if c in hexset("826655", "634e42") else "grip" if c in hexset("765636", "b5977d") else "rod" if c in POLE else "fixed"
+
+
+def yew_zones(x, y, c):
+    return "string" if c in hexset("e2c496") else "grip" if c in hexset("604228", "967046") else "fixed"
+
+
+# name, frames, zone(x, y, colour) -> layer, the parts per slot (rod, binding[, string]) with the default first (its layer is the sprite's own)
+RANGED = [
+    ("crude_bow", BOW_FRAMES, crude_bow_zones, [["tool_rod", "stick"], ["twine", "cordage", "leather", "sinew"], ["cordage", "twine", "string", "sinew"]]),
+    ("yew_longbow", BOW_FRAMES, yew_zones, [["yew_stave"], ["leather", "twine", "cordage", "sinew"], ["sinew", "twine", "cordage", "string"]]),
+] + [(n, ROD_FRAMES, rod_zones, [["tool_rod", "stick", "bamboo"], ["twine", "cordage", "string", "sinew"]])
+     for n in ("crude_fishing_rod", "bone_hook_fishing_rod", "bronze_hook_fishing_rod", "iron_hook_fishing_rod")]
+SLOT_LAYER = ["rod", "grip", "string"]  # custom_model_data string index -> zone (a fishing rod's line is its "grip" slot)
+
+
+def part_ramp(zone, part):
+    if zone == "rod":
+        return ramp(STAVE_RAMP[part])
+    if zone == "string":
+        return BOWSTRING[part]
+    return LINE_RAMP[part] if part in LINE_RAMP else BIND[part][:3]
+
+
+def build_ranged(name, frames, zone_of, slots, sheets):
+    """Each frame split into zones by colour, one recoloured layer per non-default part, and its model in the item definition a composite."""
+    composites, cells, count = {}, [], 0
+    for f in frames:
+        frame = name + f
+        im = texture(frame)
+        px = im.load()
+        zones = {}
+        for y in range(16):
+            for x in range(16):
+                if px[x, y][3]:
+                    assert px[x, y][3] == 255, f"{frame}: translucent pixel {(x, y)}"
+                    zones.setdefault(zone_of(x, y, px[x, y][:3]), set()).add((x, y))
+        layers = {k: layer(im, zones.get(k, set())) for k in ["fixed"] + SLOT_LAYER[:len(slots)]}
+        rebuilt = Image.new("RGBA", (16, 16))
+        for img in layers.values():
+            rebuilt.alpha_composite(img)
+        assert rebuilt.tobytes() == im.tobytes(), f"{frame}: default layers differ from the sprite"
+        for i, parts in enumerate(slots):
+            zone = SLOT_LAYER[i]
+            assert zones.get(zone) or len(parts) == 1, f"{frame}: no {zone} pixels"
+            shades = {px[p][:3] for p in zones.get(zone, ())}
+            for part in parts[1:]:
+                layers[f"{zone}_{part}"] = layer(im, zones[zone], recolour(shades, part_ramp(zone, part)))
+        model = template_model("mechanical", frame, False)
+        for k, img in layers.items():
+            write_png(ITEM_TEX / "tool_parts" / frame / f"{k}.png", img)
+            write_json(ASSETS / "mechanical/models/item/tool_parts" / frame / f"{k}.json",
+                       {**model, "textures": {"layer0": f"mechanical:item/tool_parts/{frame}/{k}"}})
+        count += len(layers)
+        composites[frame] = {"type": "minecraft:composite", "models": [ref(f"{frame}/fixed")] + [
+            select(i, {p: ref(f"{frame}/{SLOT_LAYER[i]}_{p}") for p in parts[1:]}, ref(f"{frame}/{SLOT_LAYER[i]}")) for i, parts in enumerate(slots)]}
+        if sheets and f in ("", "_pulling_2", "_cast"):
+            for i, parts in enumerate(slots):
+                for part in parts:
+                    c = layers["fixed"].copy()
+                    for j in range(len(slots)):
+                        c.alpha_composite(layers[f"{SLOT_LAYER[j]}_{part}" if j == i and part != parts[0] else SLOT_LAYER[j]])
+                    cells.append((f"{f[1:] or 'idle'} {SLOT_LAYER[i]} {part}", c))
+    if sheets:
+        S, cols = 8, 6
+        W = 16 * S + 12
+        img = Image.new("RGBA", (cols * W, (len(cells) + cols - 1) // cols * (W + 12)), (52, 52, 60, 255))
+        d = ImageDraw.Draw(img)
+        for i, (label, c) in enumerate(cells):
+            x, y = (i % cols) * W + 6, (i // cols) * (W + 12) + 14
+            d.text((x, y - 12), label, fill=(255, 255, 255, 255))
+            bg = Image.new("RGBA", (16, 16), (139, 139, 139, 255))
+            bg.alpha_composite(c)
+            img.paste(bg.resize((16 * S, 16 * S), Image.NEAREST), (x, y))
+        sheets.mkdir(parents=True, exist_ok=True)
+        img.save(sheets / f"parts_{name}.png")
+
+    # the item definition keeps its own frame logic (using_item / use_duration, fishing_rod/cast); each frame's model becomes its composite
+    path = ASSETS / "mechanical/items" / f"{name}.json"
+
+    def swap(node):
+        if isinstance(node, dict):
+            m = node.get("model") if node.get("type") == "minecraft:model" else None
+            if node.get("type") == "minecraft:composite":  # a second run: back to the frame it was made from
+                m = node["models"][0]["model"].replace("tool_parts/", "").rsplit("/", 1)[0]
+            if isinstance(m, str) and m.startswith("mechanical:item/") and m[16:] in composites:
+                return composites[m[16:]]
+            return {k: swap(v) for k, v in node.items()}
+        return [swap(v) for v in node] if isinstance(node, list) else node
+
+    data = swap(json.loads(path.read_text(encoding="utf-8")))
+    assert json.dumps(data).count("minecraft:composite") == len(frames), name
+    write_json(path, data)
+    return count
+
+
 def main():
     sheets = Path(sys.argv[sys.argv.index("--sheets") + 1]) if "--sheets" in sys.argv else None
     assert len({n for _, n, *_ in TOOLS}) == len(TOOLS)
-    total = sum(build(*t, sheets) for t in TOOLS)
-    for ns, name, *_ in TOOLS:  # every model the item definitions name exists
+    total = sum(build(*t, sheets) for t in TOOLS) + sum(build_ranged(*r, sheets) for r in RANGED)
+    for ns, name, *_ in TOOLS + [("mechanical", r[0]) for r in RANGED]:  # every model the item definitions name exists
         text = (ASSETS / ns / "items" / f"{name}.json").read_text(encoding="utf-8")
         for m in {v for k, v in walk(json.loads(text)) if k == "model" and isinstance(v, str)}:
             mns, path = m.split(":")

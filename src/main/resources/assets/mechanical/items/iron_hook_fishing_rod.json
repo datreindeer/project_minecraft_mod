@@ -3,12 +3,136 @@
     "type": "minecraft:condition",
     "property": "minecraft:fishing_rod/cast",
     "on_false": {
-      "type": "minecraft:model",
-      "model": "mechanical:item/iron_hook_fishing_rod"
+      "type": "minecraft:composite",
+      "models": [
+        {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/iron_hook_fishing_rod/fixed"
+        },
+        {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 0,
+          "cases": [
+            {
+              "when": "stick",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod/rod_stick"
+              }
+            },
+            {
+              "when": "bamboo",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod/rod_bamboo"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/iron_hook_fishing_rod/rod"
+          }
+        },
+        {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 1,
+          "cases": [
+            {
+              "when": "cordage",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod/grip_cordage"
+              }
+            },
+            {
+              "when": "string",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod/grip_string"
+              }
+            },
+            {
+              "when": "sinew",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod/grip_sinew"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/iron_hook_fishing_rod/grip"
+          }
+        }
+      ]
     },
     "on_true": {
-      "type": "minecraft:model",
-      "model": "mechanical:item/iron_hook_fishing_rod_cast"
+      "type": "minecraft:composite",
+      "models": [
+        {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/iron_hook_fishing_rod_cast/fixed"
+        },
+        {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 0,
+          "cases": [
+            {
+              "when": "stick",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod_cast/rod_stick"
+              }
+            },
+            {
+              "when": "bamboo",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod_cast/rod_bamboo"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/iron_hook_fishing_rod_cast/rod"
+          }
+        },
+        {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 1,
+          "cases": [
+            {
+              "when": "cordage",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod_cast/grip_cordage"
+              }
+            },
+            {
+              "when": "string",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod_cast/grip_string"
+              }
+            },
+            {
+              "when": "sinew",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_hook_fishing_rod_cast/grip_sinew"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/iron_hook_fishing_rod_cast/grip"
+          }
+        }
+      ]
     }
   }
 }

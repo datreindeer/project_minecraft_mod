@@ -18,7 +18,6 @@ import java.util.Set;
 import org.jspecify.annotations.Nullable;
 
 import com.mechanical.Bronze;
-import com.mechanical.Kettle;
 import com.mechanical.RecipeStationMenu;
 import com.mechanical.ToolStationMenu;
 import com.mechanical.ToolStationRecipes;
@@ -54,7 +53,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
     /** Type keys in list order; bows, fishing rods, the broom and buckets are here so they stay craftable. */
     private static final String[] TYPES = {"pickaxe", "axe", "shovel", "hoe", "sickle", "knife", "saw", "chisel", "smithing_hammer",
             "quarry_hammer", "spear", "sword", "tongs", "ard", "bow", "fishing_rod", "broom", "bucket"};
-    private static final String[] PARTS = {"head", "binding", "rod"};
+    private static final String[] PARTS = {"head", "binding", "rod"}, BOW_PARTS = {"string", "grip", "stave"}, ROD_PARTS = {"hook", "line", "rod"};
     private static final int W = 392, H = 226;
     private static final int TYPE_X = 7, TYPE_Y = 25, LIST_X = 7, LIST_Y = 64, LIST_W = 162, LIST_H = 62, ROW_W = 78, ROW_H = 18;
     private static final int PART_X = 178, PART_Y = 26, PART_STEP = 22, OUT_X = 358, OUT_Y = 44, BOX_X = 178, BOX_Y = 94, BOX_W = 206, BOX_H = 125;
@@ -63,6 +62,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
     /** The picked type, kept for the next time the station is opened. */
     private static String last;
     private String type;
+    private int followed = -1;
     private Set<String> seen = Set.of();
     private final java.util.Map<String, List<Integer>> byType = new java.util.HashMap<>();
     private List<String> known = List.of();
@@ -109,9 +109,10 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         return known;
     }
 
-    /** The picked type: the selected recipe's, else the last one, else the first known. */
+    /** The picked type: the selected recipe's (a new selection switches to it), else the last one, else the first known. */
     private @Nullable String type() {
         List<String> known = types();
+        if (menu.selected() >= 0 && menu.selected() != followed) type = type(ToolStationRecipes.ALL.get(followed = menu.selected()));
         if (type == null || !known.contains(type)) {
             int s = menu.selected();
             type = s >= 0 ? type(ToolStationRecipes.ALL.get(s)) : last;
@@ -123,11 +124,11 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
     /** The recipe the pockets are about: the one being built, else the selected one, else the first that takes the placed head. */
     private @Nullable Recipe active() {
         ItemStack out = menu.getSlot(ToolStationMenu.RESULT).getItem(), head = menu.getSlot(ToolStationMenu.HEAD).getItem();
-        if (!out.isEmpty()) for (Recipe r : ToolStationRecipes.ALL) if (out.is(r.result().get()) && head.is(r.head().get())) return r;
+        if (!out.isEmpty()) for (Recipe r : ToolStationRecipes.ALL) if (out.is(r.result().get()) && r.takesHead(head)) return r;
         int s = menu.selected();
-        if (s >= 0 && (head.isEmpty() || head.is(ToolStationRecipes.ALL.get(s).head().get()))) return ToolStationRecipes.ALL.get(s);
+        if (s >= 0 && (head.isEmpty() || ToolStationRecipes.ALL.get(s).takesHead(head))) return ToolStationRecipes.ALL.get(s);
         if (head.isEmpty()) return null;
-        for (Recipe r : ToolStationRecipes.ALL) if (head.is(r.head().get()) && ToolStationRecipes.isUnlocked(minecraft.player, r)) return r;
+        for (Recipe r : ToolStationRecipes.ALL) if (r.takesHead(head) && ToolStationRecipes.isUnlocked(minecraft.player, r)) return r;
         return null;
     }
 
@@ -135,16 +136,18 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         return seen.contains(BuiltInRegistries.ITEM.getKey(item).toString());
     }
 
-    /** The parts that would do in binding (1) or rod (2) slot, the recipe's own first, only ones the player has seen. */
+    /** The parts that would do in slot 0-2, the recipe's own first, only ones the player has seen. */
     private List<Item> options(Recipe r, int part) {
-        Item own = part == 1 ? r.binding().get() : r.rod().get();
+        Item own = r.parts().get(part);
         List<Item> out = new ArrayList<>(List.of(own));
-        if (r.dynamic()) {
-            for (Item i : part == 1 ? r.bindings() : r.rods()) if (i != own && seen(i)) out.add(i);
-        } else if (part == 1 && r.gluable() && seen(Kettle.HIDE_GLUE.get())) {
-            out.add(Kettle.HIDE_GLUE.get());
-        }
+        for (Item i : r.options(part)) if (i != own && seen(i)) out.add(i);
         return out;
+    }
+
+    /** The slot's name for this kind of recipe: head, binding, rod; string, grip, stave; hook, line, rod. */
+    public static String partKey(@Nullable Recipe r, int part) {
+        ToolParts.Kind kind = r == null ? ToolParts.Kind.TOOL : r.kind();
+        return (kind == ToolParts.Kind.BOW ? BOW_PARTS : kind == ToolParts.Kind.FISHING_ROD ? ROD_PARTS : PARTS)[part];
     }
 
     // ------------------------------------------------------------------ input
@@ -274,7 +277,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
             HideUi.slot(g, x, y);
             ItemStack placed = menu.getSlot(i).getItem();
             if (placed.isEmpty() && r != null) ghost(g, new ItemStack(r.parts().get(i)), x + 1, y + 1);
-            g.text(font, Component.translatable("gui.mechanical.tool_station." + PARTS[i]), x + 22, y + 1, LABEL, false);
+            g.text(font, Component.translatable("gui.mechanical.tool_station." + partKey(r, i)), x + 22, y + 1, LABEL, false);
             Hint hint = hint(r, i, placed);
             if (hint != null) g.text(font, cut(hint.text, leftPos + OUT_X - 34 - (x + 22)), x + 22, y + 10, hint.colour, false);
         }
@@ -305,14 +308,13 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
             if (part == 0 && !placed.isEmpty()) return new Hint(Component.translatable("gui.mechanical.tool_station.no_tool"), BAD, List.of());
             return null;
         }
-        if (part == 0) return new Hint(new ItemStack(r.head().get()).getHoverName(), TEXT, List.of());
-        if (!placed.isEmpty()) {
-            ToolParts.Part p = part == 1 ? ToolParts.binding(placed.getItem()) : ToolParts.rod(placed.getItem());
-            boolean ok = options(r, part).contains(placed.getItem()) || r.dynamic() && (part == 1 ? r.bindings() : r.rods()).contains(placed.getItem());
-            if (!ok && r.dynamic() && p != null && p.tier() > ToolParts.tier(r.head().get()))
+        if (part == 0 && !r.variable(0)) return new Hint(new ItemStack(r.head().get()).getHoverName(), TEXT, List.of());
+        if (!placed.isEmpty() && !r.options(part).contains(placed.getItem())) {
+            ToolParts.Part p = ToolParts.part(r.kind(), part, placed.getItem());
+            if (p != null && p.tier() > ToolParts.tier(r.head().get()))
                 return new Hint(Component.translatable("gui.mechanical.tool_station.needs_tier",
                         Component.translatable("gui.mechanical.tool_station.tier." + p.tier())), BAD, List.of());
-            if (!ok) return new Hint(Component.translatable("gui.mechanical.tool_station.wrong_" + PARTS[part]), BAD, List.of());
+            return new Hint(Component.translatable("gui.mechanical.tool_station.wrong_" + partKey(r, part)), BAD, List.of());
         }
         List<Item> options = options(r, part);
         List<Component> tip = new ArrayList<>();
@@ -350,30 +352,33 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         ItemStack plain = new ItemStack(r.result().get());
         g.text(font, cut((out.isEmpty() ? plain : out).getHoverName().copy().withStyle(ChatFormatting.BOLD), w), x, y, out.isEmpty() ? DIM : NAME, true);
         y += 13;
-        int[] col = {x + w - 68, x + w - 40, x + w - 12}; // centres of the three number columns
-        String[] heads = {"durability", "speed", "damage"};
+        ToolParts.Kind kind = r.kind();
+        // centres of the three number columns; a bow's seconds and multipliers need a little more room
+        int[] col = kind == ToolParts.Kind.TOOL ? new int[] {x + w - 68, x + w - 40, x + w - 12} : new int[] {x + w - 76, x + w - 44, x + w - 12};
+        String[] heads = columns(kind);
         for (int c = 0; c < 3; c++) {
+            if (heads[c].isEmpty()) continue;
             Component h = Component.translatable("gui.mechanical.tool_station.col." + heads[c]);
             g.text(font, h, col[c] - font.width(h) / 2, y, DIM, false);
         }
         y += 11;
         ToolStats.Stats base = ToolStats.of(plain);
         g.text(font, Component.translatable("gui.mechanical.tool_station.base"), x, y, LABEL, false);
-        numbers(g, col, y, new String[] {num(base.durability()), dec(base.speed()), dec(base.damage())}, new int[] {TEXT, TEXT, TEXT});
+        numbers(g, col, y, values(kind, base), new int[] {TEXT, TEXT, TEXT});
         y += 11;
         HideUi.seam(g, bx + 3, y, BOX_W - 6);
         y += 5;
         if (out.isEmpty()) {
             boolean full = !menu.getSlot(0).getItem().isEmpty() && !menu.getSlot(1).getItem().isEmpty() && !menu.getSlot(2).getItem().isEmpty();
-            String why = full ? "no_fit" : r.dynamic() ? "lay_parts" : "fixed";
+            String why = full ? "no_fit" : !r.dynamic() ? "fixed" : kind == ToolParts.Kind.TOOL ? "lay_parts" : "lay_parts." + type(r);
             wrapped(g, Component.translatable("gui.mechanical.tool_station." + why), x, y + 4, w, full ? BAD : DIM);
             return;
         }
         if (r.dynamic()) {
             ToolParts.Parts parts = out.get(ToolParts.TOOL_PARTS.get());
             if (parts != null) {
-                y = share(g, col, x, y, ToolStats.binding(r.binding().get(), parts.binding()));
-                y = share(g, col, x, y, ToolStats.rod(r.rod().get(), parts.rod()));
+                for (int slot = 0; slot < 3; slot++)
+                    if (r.variable(slot)) y = share(g, kind, col, x, y, ToolStats.share(kind, slot, r.parts().get(slot), parts.slot(slot)));
                 if (parts.smithing() > 0) {
                     g.item(Skill.SMITHING.icon(), x, y);
                     g.text(font, Component.translatable("gui.mechanical.tool_station.smithing", parts.smithing()), x + 18, y + 4, TEXT, false);
@@ -396,16 +401,42 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         y += 5;
         ToolStats.Stats now = ToolStats.of(out);
         g.text(font, Component.translatable("gui.mechanical.tool_station.result"), x, y, NAME, true);
-        numbers(g, col, y, new String[] {num(now.durability()), dec(now.speed()), dec(now.damage())},
-                new int[] {change(now.durability(), base.durability()), change(now.speed(), base.speed()), change(now.damage(), base.damage())});
+        boolean quickIsLow = kind == ToolParts.Kind.BOW; // a shorter draw is the better one
+        numbers(g, col, y, values(kind, now), new int[] {change(now.durability(), base.durability()),
+                quickIsLow ? change(base.speed(), now.speed()) : change(now.speed(), base.speed()), change(now.damage(), base.damage())});
+    }
+
+    /** Base or result numbers: durability, speed, damage; durability, draw seconds, arrow damage multiplier; durability, seconds sooner. */
+    public static String[] values(ToolParts.Kind kind, ToolStats.Stats s) {
+        return switch (kind) {
+            case BOW -> new String[] {num(s.durability()), seconds(s.speed()), "×" + factor(s.damage())};
+            case FISHING_ROD -> new String[] {num(s.durability()), s.speed() <= 0 ? "–" : "-" + seconds(s.speed()), ""};
+            default -> new String[] {num(s.durability()), dec(s.speed()), dec(s.damage())};
+        };
+    }
+
+    /** The ledger's column keys for this kind ("" for none). */
+    public static String[] columns(ToolParts.Kind kind) {
+        return kind == ToolParts.Kind.BOW ? new String[] {"durability", "draw", "power"}
+                : kind == ToolParts.Kind.FISHING_ROD ? new String[] {"durability", "bites", ""} : new String[] {"durability", "speed", "damage"};
+    }
+
+    private static String seconds(float s) {
+        return factor(s) + "s";
     }
 
     /** One part's row: its icon and name, and its factors against the recipe's own part ("–" where it changes nothing). */
-    private int share(GuiGraphicsExtractor g, int[] col, int x, int y, ToolStats.Share s) {
+    private int share(GuiGraphicsExtractor g, ToolParts.Kind kind, int[] col, int x, int y, ToolStats.Share s) {
         g.item(new ItemStack(s.part()), x, y);
         g.text(font, cut(new ItemStack(s.part()).getHoverName(), col[0] - 16 - (x + 18)), x + 18, y + 4, s.isDefault() ? DIM : TEXT, false);
-        numbers(g, col, y + 4, new String[] {times(s.durability()), times(s.speed()), plus(s.damage())},
-                new int[] {change(s.durability(), 1), change(s.speed(), 1), change(s.damage(), 0)});
+        String[] values = switch (kind) {
+            case BOW -> new String[] {times(s.durability()), times(s.speed()), times(s.damage())};
+            case FISHING_ROD -> new String[] {times(s.durability()), Math.abs(s.speed()) < 0.005 ? "–" : "-" + seconds(s.speed()), ""};
+            default -> new String[] {times(s.durability()), times(s.speed()), plus(s.damage())};
+        };
+        // a bow's draw-time factor is better below 1, and a rod's seconds sooner better above 0
+        int speed = kind == ToolParts.Kind.BOW ? change(1, s.speed()) : kind == ToolParts.Kind.FISHING_ROD ? change(s.speed(), 0) : change(s.speed(), 1);
+        numbers(g, col, y + 4, values, new int[] {change(s.durability(), 1), speed, kind == ToolParts.Kind.BOW ? change(s.damage(), 1) : change(s.damage(), 0)});
         return y + 16;
     }
 
@@ -489,7 +520,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
             List<Item> parts = r.parts(minecraft.player.getInventory());
             for (int i = 0; i < 3; i++) {
                 boolean has = minecraft.player.getInventory().countItem(parts.get(i)) > 0;
-                lines.add(Component.translatable("gui.mechanical.tool_station." + PARTS[i]).append(": ").append(new ItemStack(parts.get(i)).getHoverName())
+                lines.add(Component.translatable("gui.mechanical.tool_station." + partKey(r, i)).append(": ").append(new ItemStack(parts.get(i)).getHoverName())
                         .withStyle(has ? ChatFormatting.GREEN : ChatFormatting.RED));
             }
             g.setComponentTooltipForNextFrame(font, lines, mouseX, mouseY);
@@ -497,13 +528,13 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         }
         // the hint line of a pocket: every part that would do
         Recipe r = active();
-        for (int i = 1; i < 3 && r != null; i++) {
+        for (int i = r != null && r.variable(0) ? 0 : 1; i < 3 && r != null; i++) {
             int x = leftPos + PART_X + 22, y = topPos + PART_Y + i * PART_STEP + 9;
             if (mouseX < x || mouseX >= leftPos + OUT_X - 30 || mouseY < y || mouseY >= y + 10) continue;
             Hint hint = hint(r, i, menu.getSlot(i).getItem());
             if (hint == null || hint.tip.isEmpty()) return;
             List<Component> lines = new ArrayList<>();
-            lines.add(Component.translatable("gui.mechanical.tool_station.would_do." + PARTS[i]));
+            lines.add(Component.translatable("gui.mechanical.tool_station.would_do." + partKey(r, i)));
             lines.addAll(hint.tip);
             g.setComponentTooltipForNextFrame(font, lines, mouseX, mouseY);
         }

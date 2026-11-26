@@ -3,30 +3,322 @@
     "type": "minecraft:condition",
     "property": "minecraft:using_item",
     "on_false": {
-      "type": "minecraft:model",
-      "model": "mechanical:item/yew_longbow"
+      "type": "minecraft:composite",
+      "models": [
+        {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/yew_longbow/fixed"
+        },
+        {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/yew_longbow/rod"
+        },
+        {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 1,
+          "cases": [
+            {
+              "when": "twine",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow/grip_twine"
+              }
+            },
+            {
+              "when": "cordage",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow/grip_cordage"
+              }
+            },
+            {
+              "when": "sinew",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow/grip_sinew"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/yew_longbow/grip"
+          }
+        },
+        {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 2,
+          "cases": [
+            {
+              "when": "twine",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow/string_twine"
+              }
+            },
+            {
+              "when": "cordage",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow/string_cordage"
+              }
+            },
+            {
+              "when": "string",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow/string_string"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/yew_longbow/string"
+          }
+        }
+      ]
     },
     "on_true": {
       "type": "minecraft:range_dispatch",
       "property": "minecraft:use_duration",
       "scale": 0.03333333333333333,
       "fallback": {
-        "type": "minecraft:model",
-        "model": "mechanical:item/yew_longbow_pulling_0"
+        "type": "minecraft:composite",
+        "models": [
+          {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/fixed"
+          },
+          {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/rod"
+          },
+          {
+            "type": "minecraft:select",
+            "property": "minecraft:custom_model_data",
+            "index": 1,
+            "cases": [
+              {
+                "when": "twine",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/grip_twine"
+                }
+              },
+              {
+                "when": "cordage",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/grip_cordage"
+                }
+              },
+              {
+                "when": "sinew",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/grip_sinew"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/grip"
+            }
+          },
+          {
+            "type": "minecraft:select",
+            "property": "minecraft:custom_model_data",
+            "index": 2,
+            "cases": [
+              {
+                "when": "twine",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/string_twine"
+                }
+              },
+              {
+                "when": "cordage",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/string_cordage"
+                }
+              },
+              {
+                "when": "string",
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/string_string"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/yew_longbow_pulling_0/string"
+            }
+          }
+        ]
       },
       "entries": [
         {
           "threshold": 0.65,
           "model": {
-            "type": "minecraft:model",
-            "model": "mechanical:item/yew_longbow_pulling_1"
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/fixed"
+              },
+              {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/rod"
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 1,
+                "cases": [
+                  {
+                    "when": "twine",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/grip_twine"
+                    }
+                  },
+                  {
+                    "when": "cordage",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/grip_cordage"
+                    }
+                  },
+                  {
+                    "when": "sinew",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/grip_sinew"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/grip"
+                }
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 2,
+                "cases": [
+                  {
+                    "when": "twine",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/string_twine"
+                    }
+                  },
+                  {
+                    "when": "cordage",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/string_cordage"
+                    }
+                  },
+                  {
+                    "when": "string",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/string_string"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_1/string"
+                }
+              }
+            ]
           }
         },
         {
           "threshold": 0.9,
           "model": {
-            "type": "minecraft:model",
-            "model": "mechanical:item/yew_longbow_pulling_2"
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/fixed"
+              },
+              {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/rod"
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 1,
+                "cases": [
+                  {
+                    "when": "twine",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/grip_twine"
+                    }
+                  },
+                  {
+                    "when": "cordage",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/grip_cordage"
+                    }
+                  },
+                  {
+                    "when": "sinew",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/grip_sinew"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/grip"
+                }
+              },
+              {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 2,
+                "cases": [
+                  {
+                    "when": "twine",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/string_twine"
+                    }
+                  },
+                  {
+                    "when": "cordage",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/string_cordage"
+                    }
+                  },
+                  {
+                    "when": "string",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/string_string"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/yew_longbow_pulling_2/string"
+                }
+              }
+            ]
           }
         }
       ]

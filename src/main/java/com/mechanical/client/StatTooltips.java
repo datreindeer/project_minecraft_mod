@@ -60,7 +60,9 @@ public final class StatTooltips {
 
         com.mechanical.tools.ToolParts.Parts parts = stack.get(com.mechanical.tools.ToolParts.TOOL_PARTS.get());
         if (parts != null) {
-            lines.add(Component.translatable("tooltip.mechanical.tool_parts", new ItemStack(parts.rod()).getHoverName(), new ItemStack(parts.binding()).getHoverName()).withStyle(LABEL));
+            String key = stack.getItem() instanceof BowItem ? "tooltip.mechanical.bow_parts" : stack.getItem() instanceof FishingRodItem ? "tooltip.mechanical.fishing_rod_parts" : "tooltip.mechanical.tool_parts";
+            lines.add(Component.translatable(key, new ItemStack(parts.rod()).getHoverName(), new ItemStack(parts.binding()).getHoverName(),
+                    new ItemStack(parts.head()).getHoverName()).withStyle(LABEL));
             if (parts.smithing() > 0) lines.add(Component.translatable("tooltip.mechanical.tool_smithing", parts.smithing(),
                     Math.round(com.mechanical.tools.ToolStats.smithing(parts.smithing()) * 100)).withStyle(GOOD));
         }
@@ -94,9 +96,9 @@ public final class StatTooltips {
 
         // bows and the crossbow: what a fully drawn shot deals per point of the arrow's damage, and how long the draw takes
         if (stack.getItem() instanceof BowItem || stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) {
-            lines.add(Component.translatable("tooltip.mechanical.bow.damage_multiplier", value(multiplier(damageMultiplier(stack)))).withStyle(LABEL));
+            lines.add(Component.translatable("tooltip.mechanical.bow.damage_multiplier", value(multiplier(com.mechanical.tools.ToolStats.bowDamage(stack)))).withStyle(LABEL));
             int draw = stack.getItem() instanceof net.minecraft.world.item.CrossbowItem && event.getEntity() != null
-                    ? net.minecraft.world.item.CrossbowItem.getChargeDuration(stack, event.getEntity()) : drawTicks(stack);
+                    ? net.minecraft.world.item.CrossbowItem.getChargeDuration(stack, event.getEntity()) : com.mechanical.tools.ToolStats.drawTicks(stack);
             lines.add(Component.translatable("tooltip.mechanical.bow.draw_time", value(String.format(java.util.Locale.ROOT, "%.2f", draw / 20.0F).replaceAll("0$", "") + " s")).withStyle(LABEL));
             if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) use(lines, Component.translatable("tooltip.mechanical.crossbow.bolts_only").getString());
         }
@@ -111,10 +113,9 @@ public final class StatTooltips {
             lines.add(stat("Damage", value("2.0")));
         }
         if (stack.getItem() instanceof BoneHookRodItem rod) {
-            lines.add(stat("Bites", Component.literal(rod.lureTicks / 20 + " s sooner").withStyle(GOOD)));
+            int lure = rod.lureTicks(stack);
+            lines.add(stat("Bites", lure > 0 ? Component.literal(String.format(java.util.Locale.ROOT, "%.1f", lure / 20.0F).replace(".0", "") + " s sooner").withStyle(GOOD) : value("normal")));
             if (rod.luck > 0) lines.add(stat("Luck of the Sea", Component.literal("+" + rod.luck).withStyle(GOOD)));
-        } else if (stack.getItem() instanceof FishingRodItem && stack.is(Mechanical.CRUDE_FISHING_ROD.get())) {
-            lines.add(stat("Bites", value("normal")));
         }
 
         float insulation = Temperature.insulation(stack);
@@ -225,25 +226,6 @@ public final class StatTooltips {
 
     private static Component percent(float f) {
         return Component.literal(Math.round(f * 100) + "%").withStyle(f >= 0.75F ? GOOD : f >= 0.6F ? ChatFormatting.YELLOW : BAD);
-    }
-
-    /**
-     * Arrow damage is its base damage times its speed, so a full draw's speed is the multiplier: vanilla bow 3.0
-     * (BowItem: power 1 × 3), crossbow 3.15 (CrossbowItem.ARROW_POWER, private); the mod's bows scale the bow's.
-     */
-    private static float damageMultiplier(ItemStack stack) {
-        if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) return 3.15F;
-        float bow = 3.0F;
-        if (stack.getItem() instanceof com.mechanical.CrudeBowItem) return bow * (float) com.mechanical.CrudeBowItem.DAMAGE_FACTOR;
-        if (stack.getItem() instanceof com.mechanical.wildlife.mountain.HornBowItem) return bow * com.mechanical.wildlife.mountain.HornBowItem.SPEED_FACTOR;
-        if (stack.getItem() instanceof com.mechanical.YewLongbowItem) return bow * com.mechanical.YewLongbowItem.SPEED_FACTOR;
-        return bow;
-    }
-
-    /** Ticks to a full draw (the crossbow's 1.25 s without a holder to ask about Quick Charge). */
-    private static int drawTicks(ItemStack stack) {
-        if (stack.getItem() instanceof net.minecraft.world.item.CrossbowItem) return 25;
-        return stack.getItem() instanceof com.mechanical.YewLongbowItem ? com.mechanical.YewLongbowItem.DRAW_TICKS : BowItem.MAX_DRAW_DURATION;
     }
 
     /** ×3.0, ×3.15: one decimal, two when it needs them. */

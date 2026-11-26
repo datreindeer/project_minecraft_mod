@@ -101,3 +101,28 @@ görs och därmed de nya metallrods.
     bambu om det finns …). Delarna påverkar durability och hur snabbt fisken nappar (lure-tid).
 - Skills (samma gren): minnet av spelarutsatta block (ingen Mining-XP) sparas med världen i stället för i minnet.
 - Malmbalansen (Mining + Masonry staplas) och skills-tempot behålls som de är.
+
+## Bågar och fiskespön – byggarens val (Task 9, Claude)
+
+Receptet har en uttrycklig sort (`ToolParts.Kind`: TOOL, BOW, FISHING_ROD, FIXED) i stället för namnsökningen; broom och bucket är FIXED.
+Varje slot läser sortens egen tabell; en slot utan tabell tar bara receptets egen del. Faktorer relativt receptets standarddelar,
+så samma delar som förr = exakt samma stats (testat för alla recept).
+
+**Båge** (slot: sträng, grepp, stav; strängen är det enda "huvud" som är ett val och sparas i `tool_parts.head`):
+| Sträng | Dur | Dragfart | Kraft |  | Stav | Dur | Dragfart | Kraft |
+|---|---|---|---|---|---|---|---|---|
+| Twine | 0,7 | 1,1 | 0,85 |  | Stick | 0,75 | 1,1 | 0,85 |
+| Cordage | 1,0 | 1,0 | 1,0 |  | Tool Rod | 1,0 | 1,0 | 1,0 |
+| String | 0,9 | 1,05 | 1,05 |  | Yew Stave | 1,0 | 1,0 | 1,0 |
+| Sinew | 1,2 | 0,95 | 1,1 |  | | | | |
+Grepp = binding-tabellens Twine, Cordage, Leather, Sinew (durability och fart som där; fart = dragfart). Yew Stave går bara på
+Yew Longbow och den tar bara Yew Stave (staven avgör vilken båge det blir). Dragtid = bågens egen ÷ produkten av dragfart;
+kraft multiplicerar pilens fart (och därmed skadan) i `shoot`. Sinew Bow har inget Tool Station-recept och lämnas.
+
+**Fiskespö** (krok = huvudet som förut; lina, spö): linor Twine 0,85 / Cordage 1,0 / String 0,9 (+2 s tidigare napp) /
+Sinew 1,1 (+1 s); spön Stick 0,8 / Tool Rod 1,0 / Bamboo 1,15 (bara durability). Lure läggs på krokens (`BoneHookRodItem.lureTicks(stack)`);
+Crude Fishing Rod är nu en `BoneHookRodItem` med 0 egen lure (kastar som vanilla). Inga negativa lure-värden (FishingHook kapar vid 0).
+
+Komponenten `ranged_parts` (kraft, dragtid, lure) skrivs vid tillverkning och läses av item-klasserna; saknas den = dagens beteende.
+Utseende: `gen_tool_parts.py` RANGED delar varje bild (även pulling/cast) i zoner efter färg och färgar om sträng/lina, grepp och stav/spö.
+`shortcut:` bågens dragbild (use_duration-skalan i item-modellen) följer inte en ändrad dragtid.

@@ -359,8 +359,9 @@ public class Mechanical {
     public static final TagKey<Item> WHOLE_FISH = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MODID, "whole_fish"));
     /** Stone age ranged tools from the Tool Station: weaker and shorter-lived than the real ones. */
     public static final DeferredItem<CrudeBowItem> CRUDE_BOW = ITEMS.registerItem("crude_bow", CrudeBowItem::new, p -> p.durability(96).enchantable(1));
-    public static final DeferredItem<net.minecraft.world.item.FishingRodItem> CRUDE_FISHING_ROD = ITEMS.registerItem("crude_fishing_rod",
-            net.minecraft.world.item.FishingRodItem::new, p -> p.durability(24).enchantable(1));
+    /** A plain rod: no lure of its own, so its line's is all it gets (BoneHookRodItem casts as vanilla's FishingRodItem does). */
+    public static final DeferredItem<BoneHookRodItem> CRUDE_FISHING_ROD = ITEMS.registerItem("crude_fishing_rod",
+            p -> new BoneHookRodItem(p, 0, 0), p -> p.durability(24).enchantable(1));
 
     private static DeferredItem<Item> food(String name, int nutrition, float saturation) {
         return ITEMS.registerSimpleItem(name, p -> p.food(new FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturation).build()));

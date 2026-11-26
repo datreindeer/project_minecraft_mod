@@ -63,7 +63,6 @@ public class RecipeViewScreen extends Screen {
     private static final String[] FLAME = {"......#.......", ".....##.......", ".....###......", "....####..#...", "..#.#####.#...",
             "..#.#####.##..", ".##.##########", ".#############", "##############", "######.#######", "#####...######", ".###.....####.",
             ".###.....###..", "...###..###..."};
-    private static final String[] TOOL_PARTS = {"head", "binding", "rod"};
 
     private record Step(Item item, boolean usage, int tab, int page) {}
 
@@ -390,8 +389,8 @@ public class RecipeViewScreen extends Screen {
                     Item shown = input(g, s, x, y, mouseX, mouseY);
                     picked[i] = shown;
                     List<Component> lines = new ArrayList<>();
-                    if (r.station() == Station.TOOL_STATION && i < TOOL_PARTS.length)
-                        lines.add(Component.translatable("gui.mechanical.tool_station." + TOOL_PARTS[i]).withColor(LABEL));
+                    if (r.station() == Station.TOOL_STATION && i < 3)
+                        lines.add(Component.translatable("gui.mechanical.tool_station." + com.mechanical.client.ToolStationScreen.partKey(toolRecipe(r), i)).withColor(LABEL));
                     if (shown != null) lines.add(new ItemStack(shown).getHoverName().copy().withColor(TEXT));
                     if (s.tool()) lines.add(Component.literal("(").append(Component.translatable("viewer.mechanical.tool")).append(")").withColor(DIM));
                     int lw = ax - 6 - (x + 22), ly = y + 9 - lines.size() * 10 / 2 + 1;
@@ -402,7 +401,7 @@ public class RecipeViewScreen extends Screen {
                 }
                 HideUi.arrow(g, ax, cy - 8);
                 output(g, r, ox, cy - 13, mouseX, mouseY);
-                if (r.station() == Station.TOOL_STATION && n == 3) toolStats(g, r, picked[1], picked[2], bx + bw / 2, cy + 38);
+                if (r.station() == Station.TOOL_STATION && n == 3) toolStats(g, r, picked, bx + bw / 2, cy + 38);
             }
             default -> { // one in, one out
                 boolean fire = r.station() != Station.STONECUTTING;
@@ -422,21 +421,25 @@ public class RecipeViewScreen extends Screen {
         }
     }
 
-    /** The Tool Station's numbers for the parts shown (no Smithing), against the recipe's own parts: durability, speed, damage. */
-    private void toolStats(GuiGraphicsExtractor g, ViewerRecipe r, @Nullable Item binding, @Nullable Item rod, int cx, int y) {
-        ToolStationRecipes.Recipe tr = ToolStationRecipes.ALL.stream().filter(t -> t.id().equals(r.unlockId())).findFirst().orElse(null);
-        if (tr == null || !tr.dynamic() || binding == null || rod == null) return;
+    private static ToolStationRecipes.@Nullable Recipe toolRecipe(ViewerRecipe r) {
+        return ToolStationRecipes.ALL.stream().filter(t -> t.id().equals(r.unlockId())).findFirst().orElse(null);
+    }
+
+    /** The Tool Station's numbers for the parts shown (no Smithing), against the recipe's own parts, in the Tool Station's columns. */
+    private void toolStats(GuiGraphicsExtractor g, ViewerRecipe r, @Nullable Item[] picked, int cx, int y) {
+        ToolStationRecipes.Recipe tr = toolRecipe(r);
+        if (tr == null || !tr.dynamic() || java.util.Arrays.asList(picked).contains(null)) return;
         ItemStack plain = new ItemStack(tr.result().get()), built = plain.copy();
-        ToolParts.apply(built, tr.binding().get(), tr.rod().get(), new ToolParts.Parts(binding, rod, 0));
+        tr.apply(built, picked[0], picked[1], picked[2], 0);
         ToolStats.Stats base = ToolStats.of(plain), now = ToolStats.of(built);
-        String[] keys = {"durability", "speed", "damage"};
-        String[] vals = {now.durability() <= 0 ? "–" : String.valueOf(now.durability()), now.speed() <= 0 ? "–" : String.format(java.util.Locale.ROOT, "%.1f", now.speed()),
-                now.damage() <= 0 ? "–" : String.format(java.util.Locale.ROOT, "%.1f", now.damage())};
-        double[] a = {now.durability(), now.speed(), now.damage()}, b = {base.durability(), base.speed(), base.damage()};
-        int total = 0;
-        for (int i = 0; i < 3; i++) total += font.width(Component.translatable("gui.mechanical.tool_station.col." + keys[i])) + 3 + font.width(vals[i]) + (i < 2 ? 10 : 0);
+        String[] keys = com.mechanical.client.ToolStationScreen.columns(tr.kind()), vals = com.mechanical.client.ToolStationScreen.values(tr.kind(), now);
+        // a bow's draw time is better shorter
+        double flip = tr.kind() == ToolParts.Kind.BOW ? -1 : 1;
+        double[] a = {now.durability(), flip * now.speed(), now.damage()}, b = {base.durability(), flip * base.speed(), base.damage()};
+        int total = 0, cols = keys[2].isEmpty() ? 2 : 3;
+        for (int i = 0; i < cols; i++) total += font.width(Component.translatable("gui.mechanical.tool_station.col." + keys[i])) + 3 + font.width(vals[i]) + (i < cols - 1 ? 10 : 0);
         int x = cx - total / 2;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < cols; i++) {
             Component label = Component.translatable("gui.mechanical.tool_station.col." + keys[i]);
             g.text(font, label, x, y, DIM, false);
             x += font.width(label) + 3;

@@ -571,7 +571,8 @@ public final class GuiShots {
         java.util.List<String> seen = new java.util.ArrayList<>();
         for (Item i : List.of(Mechanical.TWINE.get(), Mechanical.CORDAGE.get(), Items.LEATHER, Items.STICK, Mechanical.TOOL_ROD.get(),
                 com.mechanical.Kettle.HIDE_GLUE.get(), com.mechanical.Smithing.BONE_TOOL_ROD.get(), com.mechanical.Smithing.COPPER_TOOL_ROD.get(),
-                com.mechanical.Smithing.BRONZE_TOOL_ROD.get(), com.mechanical.Bronze.BRONZE_PLATE.get()))
+                com.mechanical.Smithing.BRONZE_TOOL_ROD.get(), com.mechanical.Bronze.BRONZE_PLATE.get(), com.mechanical.wildlife.Wildlife.SINEW.get(), Items.STRING,
+                Items.BAMBOO, com.mechanical.BronzeTools.YEW_STAVE.get()))
             seen.add(BuiltInRegistries.ITEM.getKey(i).toString());
         p.setData(com.mechanical.viewer.SeenItems.SEEN.get(), List.copyOf(seen));
         var xp = new java.util.HashMap<>(p.getData(Skills.XP.get()));
@@ -609,13 +610,27 @@ public final class GuiShots {
             smith(p, com.mechanical.Casting.COPPER_PICKAXE_HEAD.get());
             lay(p, Items.COPPER_PICKAXE, Items.AIR, Mechanical.CORDAGE.get(), com.mechanical.Smithing.BRONZE_TOOL_ROD.get());
         }, big, null);
+        // bows: a Sinew string, a Leather grip and a Stick stave on the Crude Bow (string, grip, stave; draw and power columns)
+        inWorld("toolstation_bow", p -> {
+            smith(p, Mechanical.CORDAGE.get());
+            lay(p, Mechanical.CRUDE_BOW.get(), com.mechanical.wildlife.Wildlife.SINEW.get(), Items.LEATHER, Items.STICK);
+        }, big, null);
+        inWorld("toolstation_bow_fishing", p -> {
+            smith(p, Mechanical.BONE_FISH_HOOK.get());
+            lay(p, Mechanical.BONE_HOOK_FISHING_ROD.get(), Mechanical.BONE_FISH_HOOK.get(), Items.STRING, Items.BAMBOO);
+        }, big, null);
     }
 
     /** A tool as the Tool Station builds it from these parts. */
     private static ItemStack built(Item tool, Item binding, Item rod) {
+        return built(tool, null, binding, rod);
+    }
+
+    /** head: a bow's string (null: the recipe's own head). */
+    private static ItemStack built(Item tool, Item head, Item binding, Item rod) {
         var recipe = com.mechanical.ToolStationRecipes.ALL.stream().filter(r -> r.result().get() == tool).findFirst().orElseThrow();
         ItemStack stack = new ItemStack(tool);
-        com.mechanical.tools.ToolParts.apply(stack, recipe.binding().get(), recipe.rod().get(), new com.mechanical.tools.ToolParts.Parts(binding, rod, 0));
+        recipe.apply(stack, head == null ? recipe.head().get() : head, binding, rod, 0);
         return stack;
     }
 
@@ -640,6 +655,13 @@ public final class GuiShots {
                     new ItemStack(quarry), built(quarry, Items.LEATHER, com.mechanical.Smithing.BRONZE_TOOL_ROD.get())};
             for (int i = 0; i < stacks.length; i++) if (stacks[i] != null) p.getInventory().setItem(9 + i, stacks[i]);
             p.getInventory().setItem(0, built(axe, com.mechanical.Smithing.STEEL_PLATE.get(), com.mechanical.Smithing.STEEL_TOOL_ROD.get()));
+            // the hotbar: bows by string, grip and stave, then fishing rods by line and rod
+            Item bow = Mechanical.CRUDE_BOW.get(), sinew = com.mechanical.wildlife.Wildlife.SINEW.get(), twine = Mechanical.TWINE.get();
+            ItemStack[] ranged = {new ItemStack(bow), built(bow, sinew, Items.LEATHER, rod), built(bow, Items.STRING, twine, Items.STICK),
+                    built(com.mechanical.BronzeTools.YEW_LONGBOW.get(), cordage, twine, com.mechanical.BronzeTools.YEW_STAVE.get()),
+                    new ItemStack(Mechanical.CRUDE_FISHING_ROD.get()), built(Mechanical.CRUDE_FISHING_ROD.get(), Items.STRING, Items.BAMBOO),
+                    built(Mechanical.BONE_HOOK_FISHING_ROD.get(), sinew, Items.STICK), built(com.mechanical.Smithing.IRON_HOOK_FISHING_ROD.get(), cordage, Items.BAMBOO)};
+            for (int i = 0; i < ranged.length; i++) p.getInventory().setItem(1 + i, ranged[i]);
         }, () -> {
             mc.getWindow().setWindowed(1920, 1080);
             mc.options.guiScale().set(4);

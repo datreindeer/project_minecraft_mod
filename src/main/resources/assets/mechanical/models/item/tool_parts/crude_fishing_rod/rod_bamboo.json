@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld_rod",
+  "textures": {
+    "layer0": "mechanical:item/tool_parts/crude_fishing_rod/rod_bamboo"
+  }
+}

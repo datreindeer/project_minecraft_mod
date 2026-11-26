@@ -24,16 +24,19 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class ToolStationRecipes {
-    public record Recipe(Supplier<Item> result, Supplier<Item> head, Supplier<Item> binding, Supplier<Item> rod, Predicate<ItemStack> material) {
+    public record Recipe(Supplier<Item> result, Supplier<Item> head, Supplier<Item> binding, Supplier<Item> rod, Predicate<ItemStack> material,
+                         ToolParts.Kind kind) {
+        public Recipe(Supplier<Item> result, Supplier<Item> head, Supplier<Item> binding, Supplier<Item> rod, Predicate<ItemStack> material) {
+            this(result, head, binding, rod, material, ToolParts.Kind.TOOL);
+        }
+
         public String id() {
             return BuiltInRegistries.ITEM.getKey(result.get()).toString();
         }
 
-        /** Tools made of table parts take any allowed binding and rod; bows, fishing rods, the broom and buckets stay as they are (bows and rods follow later). */
+        /** Tools, bows and fishing rods take any allowed parts; the broom and buckets stay as they are. */
         public boolean dynamic() {
-            String path = BuiltInRegistries.ITEM.getKey(result.get()).getPath();
-            return ToolParts.binding(binding.get()) != null && ToolParts.rod(rod.get()) != null
-                    && !(path.contains("bow") || path.contains("fishing_rod") || path.contains("broom") || path.contains("bucket"));
+            return kind != ToolParts.Kind.FIXED;
         }
 
         /** How well the placed binding and rod fit this recipe's own: both 3, binding 2, rod 1, neither 0. */
@@ -42,22 +45,32 @@ public final class ToolStationRecipes {
         }
 
         public List<Item> bindings() {
-            return ToolParts.bindings(head.get());
+            return options(1);
         }
 
         public List<Item> rods() {
-            return ToolParts.rods(head.get(), rod.get());
+            return options(2);
         }
 
         public List<Item> parts() {
             return List.of(head.get(), binding.get(), rod.get());
         }
 
-        /** The parts this inventory would use: Hide Glue stands in for Cordage when there is no Cordage. */
+        /** What slot 0-2 takes: the allowed parts of a dynamic recipe, else its own part (and Hide Glue for a Cordage lashing). */
+        public List<Item> options(int slot) {
+            Item own = parts().get(slot);
+            if (dynamic()) return ToolParts.options(kind, slot, head.get(), own);
+            return slot == 1 && gluable() ? List.of(own, Kettle.HIDE_GLUE.get()) : List.of(own);
+        }
+
+        /** Whether the slot is a choice: a bow's string, binding and rod; never a tool's or fishing rod's head. */
+        public boolean variable(int slot) {
+            return ToolParts.variable(kind, slot);
+        }
+
+        /** The parts this inventory would use: its own where it has them, else the first allowed one it has (Hide Glue for Cordage). */
         public List<Item> parts(Inventory inventory) {
-            if (dynamic()) return List.of(head.get(), pick(inventory, binding.get(), bindings()), pick(inventory, rod.get(), rods()));
-            if (!gluable() || inventory.countItem(Mechanical.CORDAGE.get()) > 0 || inventory.countItem(Kettle.HIDE_GLUE.get()) == 0) return parts();
-            return List.of(head.get(), Kettle.HIDE_GLUE.get(), rod.get());
+            return List.of(pick(inventory, head.get(), options(0)), pick(inventory, binding.get(), options(1)), pick(inventory, rod.get(), options(2)));
         }
 
         private static Item pick(Inventory inventory, Item preferred, List<Item> allowed) {
@@ -71,8 +84,17 @@ public final class ToolStationRecipes {
         }
 
         public boolean matches(ItemStack head, ItemStack binding, ItemStack rod) {
-            if (dynamic()) return head.is(this.head.get()) && ToolParts.allowed(head.getItem(), this.rod.get(), binding.getItem(), rod.getItem());
-            return head.is(this.head.get()) && (binding.is(this.binding.get()) || gluable() && binding.is(Kettle.HIDE_GLUE.get())) && rod.is(this.rod.get());
+            return takesHead(head) && options(1).contains(binding.getItem()) && options(2).contains(rod.getItem());
+        }
+
+        /** Whether this head goes in: the recipe's own, or any allowed bowstring. */
+        public boolean takesHead(ItemStack head) {
+            return !head.isEmpty() && options(0).contains(head.getItem());
+        }
+
+        /** Writes the chosen parts (and the stats they give) on a fresh result; head is only kept where it is a choice. */
+        public void apply(ItemStack tool, Item head, Item binding, Item rod, int smithing) {
+            ToolParts.apply(tool, kind, parts(), new ToolParts.Parts(binding, rod, smithing, head));
         }
     }
 
@@ -87,15 +109,16 @@ public final class ToolStationRecipes {
             new Recipe(() -> Items.STONE_AXE, Mechanical.DOUBLE_STONE_AXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, STONE),
             new Recipe(Mechanical.FLINT_SPEAR, () -> Items.FLINT, Mechanical.CORDAGE, Mechanical.TOOL_ROD, FLINT),
             // ranged: "head" = bowstring / hook, "binding" = grip wrap / line
-            new Recipe(() -> Mechanical.CRUDE_BOW.get(), Mechanical.CORDAGE, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Mechanical.CORDAGE.get())),
-            new Recipe(() -> Mechanical.CRUDE_FISHING_ROD.get(), () -> Items.FLINT, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Mechanical.TWINE.get())),
+            new Recipe(() -> Mechanical.CRUDE_BOW.get(), Mechanical.CORDAGE, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Mechanical.CORDAGE.get()), ToolParts.Kind.BOW),
+            new Recipe(() -> Mechanical.CRUDE_FISHING_ROD.get(), () -> Items.FLINT, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Mechanical.TWINE.get()),
+                    ToolParts.Kind.FISHING_ROD),
             new Recipe(() -> Mechanical.TUSK_DAGGER.get(), () -> com.mechanical.wildlife.Wildlife.TUSK.get(), Mechanical.CORDAGE, () -> Items.LEATHER,
                     s -> s.is(com.mechanical.wildlife.Wildlife.TUSK.get())),
             new Recipe(() -> Mechanical.BONE_HOOK_FISHING_ROD.get(), () -> Mechanical.BONE_FISH_HOOK.get(), Mechanical.TWINE, Mechanical.TOOL_ROD,
-                    s -> s.is(Mechanical.BONE_FISH_HOOK.get())),
+                    s -> s.is(Mechanical.BONE_FISH_HOOK.get()), ToolParts.Kind.FISHING_ROD),
             new Recipe(() -> Farming.FLINT_SICKLE.get(), () -> Items.FLINT, Mechanical.TWINE, () -> Items.STICK, FLINT),
             // the Broom: "head" = a bundle of Straw, bound with Twine on a Tool Rod
-            new Recipe(() -> Mechanical.BROOM.get(), () -> Farming.STRAW.get(), Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Farming.STRAW.get())),
+            new Recipe(() -> Mechanical.BROOM.get(), () -> Farming.STRAW.get(), Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Farming.STRAW.get()), ToolParts.Kind.FIXED),
             // copper: cast heads, ground on the Whetstone; unlocked by holding the ground head
             new Recipe(() -> Items.COPPER_PICKAXE, Casting.COPPER_PICKAXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_PICKAXE_HEAD.get())),
             new Recipe(() -> Items.COPPER_AXE, Casting.COPPER_AXE_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Casting.COPPER_AXE_HEAD.get())),
@@ -113,9 +136,11 @@ public final class ToolStationRecipes {
             // the sword's "rod" is the leather-wrapped grip (as the Tusk Dagger's)
             new Recipe(Bronze.BRONZE_SWORD, Bronze.BRONZE_SWORD_BLADE, Mechanical.CORDAGE, () -> Items.LEATHER, s -> s.is(Bronze.BRONZE_SWORD_BLADE.get())),
             // more bronze tools (BronzeTools): the bucket's "binding" is its cordage bail, the tongs' "rod" a leather grip against the heat
-            new Recipe(() -> BronzeTools.BRONZE_BUCKET.get(), BronzeTools.BRONZE_BUCKET_BODY, Mechanical.CORDAGE, () -> Items.STICK, s -> s.is(BronzeTools.BRONZE_BUCKET_BODY.get())),
+            new Recipe(() -> BronzeTools.BRONZE_BUCKET.get(), BronzeTools.BRONZE_BUCKET_BODY, Mechanical.CORDAGE, () -> Items.STICK, s -> s.is(BronzeTools.BRONZE_BUCKET_BODY.get()),
+                    ToolParts.Kind.FIXED),
             new Recipe(BronzeTools.BRONZE_SICKLE, BronzeTools.BRONZE_SICKLE_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(BronzeTools.BRONZE_SICKLE_BLADE.get())),
-            new Recipe(() -> BronzeTools.BRONZE_HOOK_FISHING_ROD.get(), BronzeTools.BRONZE_FISH_HOOK, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(BronzeTools.BRONZE_FISH_HOOK.get())),
+            new Recipe(() -> BronzeTools.BRONZE_HOOK_FISHING_ROD.get(), BronzeTools.BRONZE_FISH_HOOK, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(BronzeTools.BRONZE_FISH_HOOK.get()),
+                    ToolParts.Kind.FISHING_ROD),
             new Recipe(BronzeTools.BRONZE_TONGS, BronzeTools.BRONZE_TONG_ARMS, Mechanical.TWINE, () -> Items.LEATHER, s -> s.is(BronzeTools.BRONZE_TONG_ARMS.get())),
             new Recipe(() -> BronzeTools.BRONZE_CHISEL.get(), BronzeTools.BRONZE_CHISEL_BLADE, Mechanical.TWINE, () -> Items.STICK, s -> s.is(BronzeTools.BRONZE_CHISEL_BLADE.get())),
             new Recipe(Ironworking.BRONZE_SMITHING_HAMMER, Ironworking.BRONZE_HAMMER_HEAD, Mechanical.CORDAGE, Mechanical.TOOL_ROD, s -> s.is(Ironworking.BRONZE_HAMMER_HEAD.get())),
@@ -125,7 +150,7 @@ public final class ToolStationRecipes {
             new Recipe(() -> FarmTools.BRONZE_ARD.get(), Bronze.BRONZE_HOE_HEAD, Bronze.BRONZE_PLATE, Mechanical.TOOL_ROD, s -> s.is(Bronze.BRONZE_HOE_HEAD.get())),
             // the Yew Longbow: "head" = a Sinew bowstring, "binding" = the leather grip, "rod" = the Yew Stave (unlocked by holding one)
             new Recipe(() -> BronzeTools.YEW_LONGBOW.get(), () -> com.mechanical.wildlife.Wildlife.SINEW.get(), () -> Items.LEATHER, BronzeTools.YEW_STAVE,
-                    s -> s.is(BronzeTools.YEW_STAVE.get())),
+                    s -> s.is(BronzeTools.YEW_STAVE.get()), ToolParts.Kind.BOW),
             // forged iron (Smithing): vanilla's iron tools, a leather wrap on a wooden haft; each unlocks with its forged part
             new Recipe(() -> Items.IRON_PICKAXE, Smithing.IRON_PICKAXE_HEAD, () -> Items.LEATHER, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_PICKAXE_HEAD.get())),
             new Recipe(() -> Items.IRON_AXE, Smithing.IRON_AXE_HEAD, () -> Items.LEATHER, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_AXE_HEAD.get())),
@@ -156,7 +181,8 @@ public final class ToolStationRecipes {
             new Recipe(() -> Smithing.STEEL_CHISEL.get(), Smithing.STEEL_CHISEL_BLADE, () -> Items.LEATHER, () -> Items.STICK, s -> s.is(Smithing.STEEL_CHISEL_BLADE.get())),
             // the tongs: forged arms riveted with an Iron Tool Rod pin, a leather grip against the heat
             new Recipe(Smithing.IRON_TONGS, Smithing.IRON_TONG_ARMS, Smithing.IRON_TOOL_ROD, () -> Items.LEATHER, s -> s.is(Smithing.IRON_TONG_ARMS.get())),
-            new Recipe(() -> Smithing.IRON_HOOK_FISHING_ROD.get(), Smithing.IRON_FISH_HOOK, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_FISH_HOOK.get())),
+            new Recipe(() -> Smithing.IRON_HOOK_FISHING_ROD.get(), Smithing.IRON_FISH_HOOK, Mechanical.TWINE, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_FISH_HOOK.get()),
+                    ToolParts.Kind.FISHING_ROD),
             // hammers: the iron quarry hammer as the bronze one (an Iron Plate round the haft), the steel smithing hammer as the steel tools
             new Recipe(Smithing.IRON_QUARRY_HAMMER, Smithing.IRON_HAMMER_HEAD, Smithing.IRON_PLATE, Mechanical.TOOL_ROD, s -> s.is(Smithing.IRON_HAMMER_HEAD.get())),
             new Recipe(Smithing.STEEL_SMITHING_HAMMER, Smithing.STEEL_HAMMER_HEAD, Smithing.IRON_TOOL_ROD, Mechanical.TOOL_ROD, s -> s.is(Smithing.STEEL_HAMMER_HEAD.get())));

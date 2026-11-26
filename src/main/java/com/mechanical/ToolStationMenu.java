@@ -2,7 +2,6 @@ package com.mechanical;
 
 import com.mechanical.skills.Skill;
 import com.mechanical.skills.Skills;
-import com.mechanical.tools.ToolParts;
 import net.minecraft.server.level.ServerPlayer;
 import java.util.List;
 
@@ -89,8 +88,7 @@ public class ToolStationMenu extends AbstractContainerMenu {
     /** Dynamic recipes write the chosen parts and this player's Smithing level onto the tool. */
     private ItemStack build(ToolStationRecipes.Recipe r, ItemStack head, ItemStack binding, ItemStack rod) {
         ItemStack tool = new ItemStack(r.result().get());
-        if (r.dynamic()) ToolParts.apply(tool, r.binding().get(), r.rod().get(),
-                new ToolParts.Parts(binding.getItem(), rod.getItem(), Skills.level(player, Skill.SMITHING)));
+        if (r.dynamic()) r.apply(tool, head.getItem(), binding.getItem(), rod.getItem(), Skills.level(player, Skill.SMITHING));
         return tool;
     }
 
