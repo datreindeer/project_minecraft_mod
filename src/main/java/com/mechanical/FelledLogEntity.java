@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import com.mechanical.skills.SkillPerks;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -1680,7 +1681,7 @@ public class FelledLogEntity extends Entity implements IEntityWithComplexSpawn {
         if (!TreeChopping.swing(level, player, hand, at, state)) return;
         int needed = state.getBlock() instanceof FallenLogBlock ? perStage * NOTCH_STAGES : perStage * (FallenLogBlock.LAST_STAGE + 1);
         if (!deepen(i, player, FallenLogBlock.SAW_STROKES / (double) needed)) return;
-        axe.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        if (!SkillPerks.keepsTool(player, axe)) axe.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
         if (state.getBlock() instanceof FallenLogBlock fallen) TreeChopping.hewDrops(level, at, fallen.wood(), FallenLogBlock.LAST_STAGE, axe, player);
         else Block.dropResources(state, level, at, null, player, axe);
         level.playSound(null, at, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.0F, 0.9F);

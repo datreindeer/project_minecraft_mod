@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import com.mechanical.skills.SkillPerks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -120,6 +121,10 @@ public class StoneAnvilBlockEntity extends BlockEntity {
         level.playSound(null, worldPosition, SoundEvents.GRAVEL_BREAK, SoundSource.BLOCKS, 1.0F, 0.9F);
         level.sendParticles(ParticleTypes.POOF, x, y, z, 4, 0.1, 0.05, 0.1, 0.01);
         Block.popResource(level, worldPosition.above(), out);
+        if (SkillPerks.MASON_EXTRA.roll(player)) {
+            ItemStack more = SkillPerks.extra(java.util.List.of(out));
+            if (!more.isEmpty()) Block.popResource(level, worldPosition.above(), more);
+        }
         sync();
     }
 

@@ -1,6 +1,7 @@
 package com.mechanical.skills;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -74,12 +75,40 @@ public final class Skills {
 
     /** Cooking XP for food a player takes out of a cooker: 5 per item; non-food and burnt food give nothing. */
     public static void cooked(Player p, ItemStack food) {
-        if (p instanceof ServerPlayer sp && food.has(DataComponents.FOOD) && !food.is(Mechanical.BURNT_FOOD.get()) && !food.is(Items.ROTTEN_FLESH)) addXp(sp, Skill.COOKING, 5 * food.getCount());
+        if (!(p instanceof ServerPlayer sp) || !food.has(DataComponents.FOOD) || food.is(Mechanical.BURNT_FOOD.get()) || food.is(Items.ROTTEN_FLESH)) return;
+        addXp(sp, Skill.COOKING, 5 * food.getCount());
+        if (SkillPerks.COOK_EXTRA.roll(sp)) SkillPerks.give(sp, SkillPerks.extra(List.of(food)));
     }
 
     /** False below the unlock level; otherwise a chance of effective level times perLevel. */
     public static boolean roll(ServerPlayer p, Skill s, int unlockLevel, double perLevel) {
         int lvl = effectiveLevel(p, s);
         return lvl >= unlockLevel && p.getRandom().nextDouble() < lvl * perLevel;
+    }
+
+    /** Perks of a skill in unlock order, for the skill screen. */
+    public static List<Perk> perks(Skill s) {
+        return SkillPerks.ALL.stream().filter(p -> p.skill() == s).toList();
+    }
+
+    /**
+     * Unlocks at {@code unlockLevel}; its chance (or bonus fraction) is effective level x {@code perLevel}, or {@code flat}
+     * when that is set. Text {@code langKey} takes the current percent.
+     */
+    public record Perk(Skill skill, int unlockLevel, String langKey, double perLevel, double flat) {
+        public boolean unlocked(Player p) {
+            return effectiveLevel(p, skill) >= unlockLevel;
+        }
+
+        /** The chance or bonus now, 0 while locked. */
+        public double value(Player p) {
+            int lvl = effectiveLevel(p, skill);
+            return lvl < unlockLevel ? 0 : flat > 0 ? flat : lvl * perLevel;
+        }
+
+        /** Rolls on the server with the level's random; never on the client. */
+        public boolean roll(Player p) {
+            return p instanceof ServerPlayer && p.level().getRandom().nextDouble() < value(p);
+        }
     }
 }

@@ -145,13 +145,18 @@ public final class Gemstones {
 
     /** What a Rough gem becomes on a wheel with grit of the given tier: empty if the grit is too soft for it. */
     static ItemStack cut(ItemStack rough, int grit, RandomSource random) {
+        return cut(rough, grit, random, 0, 0);
+    }
+
+    /** As above with Gold Smithing's flawless bonus and crack reduction (absolute chances). */
+    static ItemStack cut(ItemStack rough, int grit, RandomSource random, double flawlessBonus, double crackCut) {
         int hard = hardness(rough);
         if (hard == 0 || grit < hard) return ItemStack.EMPTY;
         String name = BuiltInRegistries.ITEM.getKey(rough.getItem()).getPath().substring("rough_".length());
         int margin = grit - hard;
         // nothing is harder than Diamond Dust, so a diamond gets the one-up chance on its own tier (after the crack check)
         float flawless = (margin >= 2 ? FLAWLESS_TWO_UP : margin == 1 || hard == 5 ? FLAWLESS_ONE_UP : 0) * (isFine(rough) ? 2 : 1);
-        String prefix = margin == 0 && random.nextFloat() < FLAW_CHANCE ? "flawed_" : random.nextFloat() < flawless ? "flawless_" : "";
+        String prefix = margin == 0 && random.nextFloat() < FLAW_CHANCE - crackCut ? "flawed_" : random.nextFloat() < flawless + flawlessBonus ? "flawless_" : "";
         if (prefix.isEmpty() && VANILLA.containsKey(name)) return new ItemStack(VANILLA.get(name));
         return new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MODID, prefix + name)));
     }

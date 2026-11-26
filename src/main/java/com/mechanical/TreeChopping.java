@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import com.mechanical.skills.SkillPerks;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -147,7 +148,9 @@ public final class TreeChopping {
 
     /** As above with a given number of chops for the stage (the Dugout Blank's stages are longer; see {@link DugoutBlankBlock}). */
     static boolean chop(ServerLevel level, Player player, InteractionHand hand, BlockPos at, BlockState state, ItemStack axe, int needed) {
-        return chop(level, player, hand, at, state, needed, () -> axe.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
+        return chop(level, player, hand, at, state, needed, () -> {
+            if (!SkillPerks.keepsTool(player, axe)) axe.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+        });
     }
 
     /** As above, {@code wear} wearing the tool when the stage completes (a held tool, or a knife from a worn bag). */

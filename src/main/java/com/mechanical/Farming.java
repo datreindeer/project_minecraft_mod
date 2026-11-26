@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import com.mechanical.skills.Skill;
+import com.mechanical.skills.SkillPerks;
 import com.mechanical.skills.Skills;
 import net.minecraft.server.level.ServerPlayer;
 import static com.mechanical.Mechanical.BLOCKS;
@@ -341,7 +342,10 @@ public final class Farming {
         BlockState state = event.getState();
         if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state) || climate(crop) == null) return;
         if (event.getLevel() instanceof ServerLevel server) Herbs.domesticate(server, event.getPos(), state, event.getDrops());
-        if (event.getBreaker() instanceof ServerPlayer sp) Skills.addXp(sp, Skill.FARMING, 6);
+        if (event.getBreaker() instanceof ServerPlayer sp) {
+            Skills.addXp(sp, Skill.FARMING, 6);
+            if (SkillPerks.FARM_HARVEST.roll(sp)) SkillPerks.addExtra(event);
+        }
         addSickleBonus(event.getDrops().stream().map(ItemEntity::getItem).toList(), event.getTool(), event.getLevel().getRandom());
         if (!harvestSoil(event.getLevel(), event.getPos().below(), crop, event.getDrops().stream().map(ItemEntity::getItem).toList())) return;
         event.getDrops().removeIf(e -> e.getItem().isEmpty());
@@ -480,6 +484,7 @@ public final class Farming {
                 if (bagSickle != null) bagSickle.hurt(1, event.getEntity());
                 else tool.hurtAndBreak(1, event.getEntity(), EquipmentSlot.MAINHAND);
             }
+            if (SkillPerks.FARM_HARVEST.roll(event.getEntity())) drops.add(SkillPerks.extra(drops));
             for (ItemStack s : drops) if (!s.isEmpty()) Block.popResource(server, pos, s);
             server.setBlock(pos, crop.getStateForAge(0), Block.UPDATE_ALL);
             if (event.getEntity() instanceof ServerPlayer sp) Skills.addXp(sp, Skill.FARMING, 6);

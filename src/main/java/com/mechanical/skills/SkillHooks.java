@@ -38,7 +38,7 @@ public final class SkillHooks {
     private static final Map<ResourceKey<Level>, LinkedHashSet<Long>> PLACED = new HashMap<>();
     private static final int MAX_PLACED = 20_000;
 
-    private static boolean paysMining(BlockState state) {
+    static boolean paysMining(BlockState state) {
         return state.is(ORES) || state.is(BlockTags.BASE_STONE_OVERWORLD);
     }
 
@@ -49,13 +49,17 @@ public final class SkillHooks {
         var placed = PLACED.get(event.getLevel().dimension());
         if (placed != null && placed.remove(event.getPos().asLong())) return;
         Skills.addXp(p, Skill.MINING, event.getState().is(ORES) ? 10 : 1);
+        if (event.getState().is(ORES) && SkillPerks.MINING_ORE.roll(p)) SkillPerks.addExtra(event);
     }
 
     @SubscribeEvent
     static void onPlace(BlockEvent.EntityPlaceEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer p) || !(event.getLevel() instanceof Level level)) return;
         BlockState state = event.getPlacedBlock();
-        if (state.getBlock() instanceof CropBlock) Skills.addXp(p, Skill.FARMING, 1);
+        if (state.getBlock() instanceof CropBlock crop) {
+            Skills.addXp(p, Skill.FARMING, 1);
+            if (!crop.isMaxAge(state) && SkillPerks.FARM_GROW.roll(p)) level.setBlock(event.getPos(), crop.getStateForAge(crop.getAge(state) + 1), Block.UPDATE_ALL);
+        }
         if (!paysMining(state)) return;
         var placed = PLACED.computeIfAbsent(level.dimension(), k -> new LinkedHashSet<>());
         placed.add(event.getPos().asLong());
@@ -68,7 +72,10 @@ public final class SkillHooks {
 
     @SubscribeEvent
     static void onFished(ItemFishedEvent event) {
-        if (event.getEntity() instanceof ServerPlayer p) Skills.addXp(p, Skill.FISHING, 15);
+        if (!(event.getEntity() instanceof ServerPlayer p)) return;
+        Skills.addXp(p, Skill.FISHING, 15);
+        // the event's drop list is a copy, so the extra fish goes straight to the player
+        if (SkillPerks.FISH_EXTRA.roll(p)) SkillPerks.give(p, SkillPerks.extra(event.getDrops()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

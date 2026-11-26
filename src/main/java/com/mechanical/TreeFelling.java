@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import com.mechanical.skills.Skill;
+import com.mechanical.skills.SkillPerks;
 import com.mechanical.skills.Skills;
 import net.minecraft.server.level.ServerPlayer;
 import java.util.ArrayDeque;
@@ -120,8 +121,9 @@ public final class TreeFelling {
         event.setNotifyClient(false); // otherwise Neo re-sends the old log to the client, hiding the stump
         ItemStack axe = player.getMainHandItem();
         fell(level, cut, tree, player.getDirection(), player, axe);
+        if (SkillPerks.WOOD_LOG.roll(player)) Block.popResource(level, cut, new ItemStack(event.getState().getBlock()));
         // one durability per log; breaks the axe if it runs out, the tree still falls
-        axe.hurtAndBreak(tree.logs().size(), player, EquipmentSlot.MAINHAND);
+        if (!SkillPerks.keepsTool(player, axe)) axe.hurtAndBreak(tree.logs().size(), player, EquipmentSlot.MAINHAND);
     }
 
     /** Fells {@code tree} cut at {@code cut}: it falls towards {@code direction} as a FallingTreeEntity, a stump is left. Also used by woodcutter NPCs. */

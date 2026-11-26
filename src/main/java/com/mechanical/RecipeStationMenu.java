@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import com.mechanical.skills.Skill;
+import com.mechanical.skills.SkillPerks;
 import com.mechanical.skills.Skills;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +77,10 @@ public class RecipeStationMenu extends AbstractContainerMenu {
             public void onTake(Player player, ItemStack carried) {
                 carried.onCraftedBy(player, carried.getCount());
                 if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
-                    if (RecipeStationMenu.this instanceof FletchingMenu) Skills.addXp(sp, Skill.FLETCHING, 8);
+                    if (RecipeStationMenu.this instanceof FletchingMenu) {
+                        Skills.addXp(sp, Skill.FLETCHING, 8);
+                        if (SkillPerks.FLETCH_EXTRA.roll(sp)) SkillPerks.give(sp, SkillPerks.extra(List.of(carried)));
+                    }
                     else if (RecipeStationMenu.this instanceof LeatherworkingMenu || RecipeStationMenu.this instanceof ArmorStationMenu)
                         Skills.addXp(sp, Skill.LEATHERWORKING, 15);
                 }
@@ -99,6 +103,8 @@ public class RecipeStationMenu extends AbstractContainerMenu {
     }
 
     private void consume(StationRecipe recipe) {
+        // Leatherworking L10: one ingredient item is saved
+        boolean save = (this instanceof LeatherworkingMenu || this instanceof ArmorStationMenu) && SkillPerks.LEATHER_SAVE.roll(player);
         for (int i = 0; i < recipe.parts().size(); i++) {
             StationRecipe.Part part = recipe.parts().get(i);
             if (part.tool()) {
@@ -106,7 +112,8 @@ public class RecipeStationMenu extends AbstractContainerMenu {
                 if (player.level() instanceof ServerLevel level) tool.hurtAndBreak(1, level, player instanceof ServerPlayer sp ? sp : null, item -> {});
                 inputs.setItem(i, tool);
             } else {
-                inputs.removeItem(i, part.count());
+                inputs.removeItem(i, part.count() - (save ? 1 : 0));
+                save = false;
             }
         }
     }

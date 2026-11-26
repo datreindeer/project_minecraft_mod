@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import com.mechanical.skills.SkillPerks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -106,8 +107,10 @@ public final class ArrowWounds {
         List<ItemStack> stuck = entity.getData(STUCK);
         if (stuck.isEmpty()) return;
         entity.setArrowCount(0);
+        Player shooter = entity.getLastHurtByPlayer();
         for (ItemStack arrow : stuck) {
-            ItemStack drop = level.getRandom().nextFloat() < breakChance(arrow.getItem()) ? new ItemStack(Items.FEATHER) : arrow.copy();
+            boolean breaks = level.getRandom().nextFloat() < breakChance(arrow.getItem()) && !(shooter != null && SkillPerks.HUNT_ARROW.roll(shooter));
+            ItemStack drop = breaks ? new ItemStack(Items.FEATHER) : arrow.copy();
             ItemEntity item = new ItemEntity(level, entity.getX(), entity.getY() + 0.3, entity.getZ(), drop);
             item.setDefaultPickUpDelay();
             level.addFreshEntity(item);

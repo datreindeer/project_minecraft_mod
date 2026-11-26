@@ -51,6 +51,9 @@ public final class SkillsTest {
             huntingXp(h, p);
             placedOreXp(h, p);
             cookedXp(h, p);
+            extraOre(h);
+            noDupeUnstackable(h);
+            perkUnlock(h);
             h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -135,5 +138,45 @@ public final class SkillsTest {
         h.assertTrue(Skills.xp(p, Skill.COOKING) == before, "rotten flesh and non-food pay nothing");
         Skills.cooked(p, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BREAD, 2));
         h.assertTrue(Skills.xp(p, Skill.COOKING) == before + 10, "bread pays 5 each");
+    }
+
+    private static ServerPlayer fresh(GameTestHelper h, String name) {
+        return net.neoforged.neoforge.common.util.FakePlayerFactory.get(h.getLevel(), new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), name));
+    }
+
+    private static void extraOre(GameTestHelper h) {
+        ServerPlayer q = fresh(h, "miner");
+        Skills.addXp(q, Skill.MINING, Skills.xpForLevel(100));
+        var level = h.getLevel();
+        net.minecraft.core.BlockPos pos = h.absolutePos(new net.minecraft.core.BlockPos(10, 1, 10));
+        for (int i = 0; i < 200; i++) {
+            level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.IRON_ORE.defaultBlockState());
+            q.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+            q.gameMode.destroyBlock(pos);
+        }
+        var items = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(pos).inflate(3));
+        int total = items.stream().mapToInt(e -> e.getItem().getCount()).sum();
+        items.forEach(net.minecraft.world.entity.Entity::discard);
+        h.assertTrue(total > 240, "Mining 100 gives extra ore: " + total + " drops from 200 ores");
+    }
+
+    private static void noDupeUnstackable(GameTestHelper h) {
+        var pick = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE);
+        pick.setDamageValue(5);
+        h.assertTrue(SkillPerks.extra(List.of(pick)).isEmpty(), "never an extra tool");
+        var ore = SkillPerks.extra(List.of(net.minecraft.world.item.ItemStack.EMPTY, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.RAW_IRON, 3)));
+        h.assertTrue(ore.is(net.minecraft.world.item.Items.RAW_IRON) && ore.getCount() == 1, "extra is one of the first stackable drop");
+    }
+
+    private static void perkUnlock(GameTestHelper h) {
+        ServerPlayer q = fresh(h, "novice");
+        Skills.addXp(q, Skill.MINING, Skills.xpForLevel(9));
+        Skills.Perk ore = Skills.perks(Skill.MINING).get(0);
+        h.assertTrue(ore.unlockLevel() == 10 && ore.langKey().equals("skill.mechanical.perk.mining.1"), "first Mining perk: " + ore);
+        h.assertTrue(!ore.unlocked(q) && ore.value(q) == 0, "locked at level 9");
+        for (int i = 0; i < 300; i++) h.assertTrue(!ore.roll(q), "level 9 never rolls the level 10 perk");
+        Skills.addXp(q, Skill.MINING, Skills.xpForLevel(10) - Skills.xpForLevel(9));
+        h.assertTrue(ore.unlocked(q) && Math.abs(ore.value(q) - 0.04) < 1e-9, "unlocked at level 10 with 4 %");
+        for (Skill s : Skill.values()) h.assertTrue(!Skills.perks(s).isEmpty(), "perks for " + s);
     }
 }

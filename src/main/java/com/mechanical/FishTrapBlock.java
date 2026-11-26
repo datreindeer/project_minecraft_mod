@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import com.mechanical.skills.Skill;
+import com.mechanical.skills.SkillPerks;
 import com.mechanical.skills.Skills;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
@@ -164,6 +165,7 @@ public class FishTrapBlock extends Block implements SimpleWaterloggedBlock {
                 player.getInventory().placeItemBackInInventory(new ItemStack(catchAt(level, pos, state, i)), Prediction.SERVER_ONLY);
             }
             if (player instanceof ServerPlayer sp) Skills.addXp(sp, Skill.FISHING, 5 * state.getValue(FISH));
+            if (SkillPerks.FISH_TRAP.roll(player)) SkillPerks.give(player, new ItemStack(catchAt(level, pos, state, 0)));
             level.setBlock(pos, state.setValue(FISH, 0).setValue(EELS, 0), Block.UPDATE_ALL);
             level.playSound(null, pos, SoundEvents.FISHING_BOBBER_SPLASH, SoundSource.BLOCKS, 0.6F, 1.2F);
         }

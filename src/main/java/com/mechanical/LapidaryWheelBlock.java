@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import com.mechanical.skills.Skill;
+import com.mechanical.skills.SkillPerks;
 import com.mechanical.skills.Skills;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -132,7 +133,7 @@ public class LapidaryWheelBlock extends Block {
             player.sendOverlayMessage(Component.translatable("message.mechanical.lapidary.grinding", progress, PASSES));
             return;
         }
-        ItemStack out = Gemstones.cut(rough, grit, level.getRandom());
+        ItemStack out = Gemstones.cut(rough, grit, level.getRandom(), SkillPerks.GOLD_FLAWLESS.value(player), SkillPerks.GOLD_CRACK.value(player));
         rough.consume(1, player);
         int charges = state.getValue(CHARGES) - 1;
         level.setBlockAndUpdate(pos, state.setValue(PROGRESS, 0).setValue(CHARGES, charges).setValue(GRIT, charges == 0 ? 0 : grit));

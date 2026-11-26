@@ -53,6 +53,7 @@
     "PlayerMixin",
     "TorchBlockMixin",
     "AbstractArrowMixin",
+    "ServerPlayerGameModeMixin",
     "EnchantmentHelperMixin",
     "InventoryMenuMixin",
     "SlotAccessor",

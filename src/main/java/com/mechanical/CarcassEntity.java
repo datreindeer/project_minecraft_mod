@@ -1,5 +1,7 @@
 package com.mechanical;
 
+import com.mechanical.skills.SkillPerks;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -524,6 +526,7 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
         if (stage() == 0 && !Butchery.yieldFor(animal).outer().isEmpty()) {
             // first pass: wool sheared / hide skinned / feathers plucked; keep holding to go on with the meat
             Butchery.dropOuter(level, this, animal, knife.hideMultiplier(), hungAt() != null);
+            if (SkillPerks.SLAUGHTER_HIDE.roll(player)) spawnAtLocation(level, new ItemStack(Butchery.yieldFor(animal).outer().getFirst().item().get()));
             spill(level, 1, 5);
             entityData.set(STAGE, 1);
             return;
@@ -531,6 +534,7 @@ public class CarcassEntity extends HeavyLoad implements IEntityWithComplexSpawn 
         boolean hung = hungAt() != null;
         if (spoiled()) player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.mechanical.carcass.spoiled"));
         Butchery.dropInner(level, this, animal, knife.yieldMultiplier(), trophy, hung, aged(), spoiled());
+        if (!spoiled() && SkillPerks.SLAUGHTER_MEAT.roll(player)) spawnAtLocation(level, new ItemStack(Butchery.yieldFor(animal).meat().get()));
         if (knife.tier() >= KnifeItem.RITUAL && !spoiled()) Butchery.dropRitual(level, this, animal); // the fine parts (F4)
         spill(level, 2, 10); // a pool around the remains
         player.stopUsingItem();

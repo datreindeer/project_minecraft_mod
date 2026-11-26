@@ -1,6 +1,7 @@
 package com.mechanical;
 
 import com.mechanical.skills.Skill;
+import com.mechanical.skills.SkillPerks;
 import com.mechanical.skills.Skills;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
@@ -57,7 +58,7 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
         level.playSound(null, worldPosition, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.7F, 0.8F + level.getRandom().nextFloat() * 0.3F);
         level.sendParticles(ParticleTypes.LAVA, x, y, z, 2, 0.1, 0.02, 0.1, 0.0);
         level.sendParticles(ParticleTypes.CRIT, x, y, z, 8, 0.15, 0.05, 0.15, 0.3);
-        hammer.hurtAndBreak(Ironworking.HAMMER_WEAR, player, hand);
+        if (!SkillPerks.SMITH_HAMMER.roll(player)) hammer.hurtAndBreak(Ironworking.HAMMER_WEAR, player, hand);
         struck();
         int done = Ironworking.hits(item) + 1;
         if (done < Ironworking.HITS) {
@@ -77,7 +78,7 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
     private void mint(ServerLevel level, Player player, ItemStack hammer, InteractionHand hand, double x, double y, double z) {
         level.playSound(null, worldPosition, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.5F, 1.4F + level.getRandom().nextFloat() * 0.2F);
         level.sendParticles(ParticleTypes.CRIT, x, y, z, 6, 0.15, 0.05, 0.15, 0.3);
-        hammer.hurtAndBreak(1, player, hand);
+        if (!SkillPerks.SMITH_HAMMER.roll(player)) hammer.hurtAndBreak(1, player, hand);
         struck();
         if (++hits < Coins.MINT_HITS) {
             sync();
@@ -108,7 +109,7 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
         }
         level.playSound(null, worldPosition, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.5F, 1.1F + level.getRandom().nextFloat() * 0.2F);
         level.sendParticles(ParticleTypes.CRIT, x, y, z, 6, 0.15, 0.05, 0.15, 0.3);
-        hammer.hurtAndBreak(1, player, hand);
+        if (!SkillPerks.SMITH_HAMMER.roll(player)) hammer.hurtAndBreak(1, player, hand);
         struck();
         if (++hits < FirePit.GRATE_HITS) {
             sync();
@@ -235,7 +236,7 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
         level.playSound(null, worldPosition, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.7F, 0.9F + level.getRandom().nextFloat() * 0.3F);
         level.sendParticles(ParticleTypes.CRIT, x, y, z, 8, 0.15, 0.05, 0.15, 0.3);
         level.sendParticles(ParticleTypes.SMALL_FLAME, x, y, z, 2, 0.1, 0.02, 0.1, 0.01);
-        hammer.hurtAndBreak(Smithing.wear(hammer), player, hand);
+        if (!SkillPerks.SMITH_HAMMER.roll(player)) hammer.hurtAndBreak(Smithing.wear(hammer), player, hand);
         struck();
         int done = Ironworking.hits(item) + 1;
         if (done < needed) {
@@ -243,6 +244,8 @@ public class BronzeAnvilBlockEntity extends StoneAnvilBlockEntity {
             sync();
             return;
         }
+        // Smithing L50: one ingot comes back cold; not from Blister Steel, whose result is the ingot
+        if (!blister && item.getItem() instanceof HotMetalItem metal && SkillPerks.SMITH_INGOT.roll(player)) Block.popResource(level, worldPosition.above(), new ItemStack(metal.cold()));
         int left = 1 + extra - ingots; // ingots the part didn't take stay on the anvil, hot, unworked
         if (left > 0) {
             item.remove(Ironworking.BLOOM_HITS.get());
