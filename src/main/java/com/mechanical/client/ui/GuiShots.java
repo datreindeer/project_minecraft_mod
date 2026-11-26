@@ -322,6 +322,7 @@ public final class GuiShots {
         for (String station : List.of("tool_station", "fletching_table", "leatherworking_bench", "armor_station", "mold_bench", "kiln", "bloomery_hearth", "furnace_tap", "high_furnace_front"))
             container("mod_" + station, () -> mod(station));
         toolStation();
+        toolVariants();
         inWorld("mod_pack", p -> {
             reset(p);
             Equipment.of(p).set(Accessory.BACK, new ItemStack(Mechanical.LEATHER_SATCHEL.get()));
@@ -608,6 +609,43 @@ public final class GuiShots {
             smith(p, com.mechanical.Casting.COPPER_PICKAXE_HEAD.get());
             lay(p, Items.COPPER_PICKAXE, Items.AIR, Mechanical.CORDAGE.get(), com.mechanical.Smithing.BRONZE_TOOL_ROD.get());
         }, big, null);
+    }
+
+    /** A tool as the Tool Station builds it from these parts. */
+    private static ItemStack built(Item tool, Item binding, Item rod) {
+        var recipe = com.mechanical.ToolStationRecipes.ALL.stream().filter(r -> r.result().get() == tool).findFirst().orElseThrow();
+        ItemStack stack = new ItemStack(tool);
+        com.mechanical.tools.ToolParts.apply(stack, recipe.binding().get(), recipe.rod().get(), new com.mechanical.tools.ToolParts.Parts(binding, rod, 0));
+        return stack;
+    }
+
+    /** Tools look like their parts: bronze pickaxes per rod (row 1) and per binding (row 2), steel axes and flint spears (row 3); then the steel axe in hand. */
+    private static void toolVariants() {
+        Minecraft mc = Minecraft.getInstance();
+        Item pick = com.mechanical.Bronze.BRONZE_PICKAXE.get(), axe = com.mechanical.Smithing.STEEL_AXE.get(), spear = Mechanical.FLINT_SPEAR.get();
+        Item cordage = Mechanical.CORDAGE.get(), rod = Mechanical.TOOL_ROD.get();
+        inWorld("tool_variants", p -> {
+            reset(p);
+            p.getInventory().clearContent();
+            ItemStack[] stacks = {
+                    new ItemStack(pick), built(pick, cordage, Items.STICK), built(pick, cordage, com.mechanical.Smithing.BONE_TOOL_ROD.get()),
+                    built(pick, cordage, com.mechanical.Smithing.COPPER_TOOL_ROD.get()), built(pick, cordage, com.mechanical.Smithing.BRONZE_TOOL_ROD.get()), null, null, null, null,
+                    built(pick, Mechanical.TWINE.get(), rod), built(pick, com.mechanical.Kettle.HIDE_GLUE.get(), rod), built(pick, Items.LEATHER, rod),
+                    built(pick, com.mechanical.wildlife.Wildlife.SINEW.get(), rod), built(pick, com.mechanical.Bronze.BRONZE_PLATE.get(), rod), null, null, null, null,
+                    new ItemStack(axe), built(axe, com.mechanical.Smithing.STEEL_PLATE.get(), com.mechanical.Smithing.STEEL_TOOL_ROD.get()),
+                    built(axe, Items.LEATHER, com.mechanical.Smithing.BONE_TOOL_ROD.get()), new ItemStack(spear), built(spear, Mechanical.TWINE.get(), Items.STICK)};
+            for (int i = 0; i < stacks.length; i++) if (stacks[i] != null) p.getInventory().setItem(9 + i, stacks[i]);
+            p.getInventory().setItem(0, built(axe, com.mechanical.Smithing.STEEL_PLATE.get(), com.mechanical.Smithing.STEEL_TOOL_ROD.get()));
+        }, () -> {
+            mc.getWindow().setWindowed(1920, 1080);
+            mc.options.guiScale().set(4);
+            mc.resizeGui();
+            show(new InventoryScreen(mc.player));
+        }, null);
+        inWorld("tool_variants_held", p -> {}, () -> {
+            mc.gui.setScreen(null);
+            mc.player.getInventory().setSelectedSlot(0);
+        }, null);
     }
 
     private static void skills() {

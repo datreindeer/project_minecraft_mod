@@ -1,6 +1,166 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mechanical:item/iron_quarry_hammer"
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "mechanical:item/tool_parts/iron_quarry_hammer/head"
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 0,
+        "cases": [
+          {
+            "when": "stick",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/rod_stick"
+            }
+          },
+          {
+            "when": "bone_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/rod_bone_tool_rod"
+            }
+          },
+          {
+            "when": "copper_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/rod_copper_tool_rod"
+            }
+          },
+          {
+            "when": "bronze_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/rod_bronze_tool_rod"
+            }
+          },
+          {
+            "when": "iron_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/rod_iron_tool_rod"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/iron_quarry_hammer/rod"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 1,
+        "cases": [
+          {
+            "when": "twine",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/binding_twine"
+            }
+          },
+          {
+            "when": "cordage",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/binding_cordage"
+            }
+          },
+          {
+            "when": "hide_glue",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/binding_hide_glue"
+            }
+          },
+          {
+            "when": "leather",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/binding_leather"
+            }
+          },
+          {
+            "when": "sinew",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/binding_sinew"
+            }
+          },
+          {
+            "when": "bronze_plate",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/binding_bronze_plate"
+            }
+          },
+          {
+            "when": "iron_plate",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/binding_iron_plate"
+            }
+          },
+          {
+            "when": "iron_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/iron_quarry_hammer/binding_iron_tool_rod"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 0,
+          "cases": [
+            {
+              "when": "stick",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_quarry_hammer/zone_stick"
+              }
+            },
+            {
+              "when": "bone_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_quarry_hammer/zone_bone_tool_rod"
+              }
+            },
+            {
+              "when": "copper_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_quarry_hammer/zone_copper_tool_rod"
+              }
+            },
+            {
+              "when": "bronze_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_quarry_hammer/zone_bronze_tool_rod"
+              }
+            },
+            {
+              "when": "iron_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/iron_quarry_hammer/zone_iron_tool_rod"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/iron_quarry_hammer/zone"
+          }
+        }
+      }
+    ]
   }
 }

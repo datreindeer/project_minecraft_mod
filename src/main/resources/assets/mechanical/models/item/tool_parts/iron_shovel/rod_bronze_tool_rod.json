@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "mechanical:item/tool_parts/iron_shovel/rod_bronze_tool_rod"
+  }
+}

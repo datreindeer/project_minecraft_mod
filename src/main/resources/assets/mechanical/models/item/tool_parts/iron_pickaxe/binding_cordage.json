@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "mechanical:item/tool_parts/iron_pickaxe/binding_cordage"
+  }
+}

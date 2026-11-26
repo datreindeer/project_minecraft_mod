@@ -1,6 +1,138 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mechanical:item/bronze_knife"
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "mechanical:item/tool_parts/bronze_knife/head"
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 0,
+        "cases": [
+          {
+            "when": "tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/rod_tool_rod"
+            }
+          },
+          {
+            "when": "bone_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/rod_bone_tool_rod"
+            }
+          },
+          {
+            "when": "copper_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/rod_copper_tool_rod"
+            }
+          },
+          {
+            "when": "bronze_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/rod_bronze_tool_rod"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/bronze_knife/rod"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 1,
+        "cases": [
+          {
+            "when": "twine",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/binding_twine"
+            }
+          },
+          {
+            "when": "cordage",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/binding_cordage"
+            }
+          },
+          {
+            "when": "hide_glue",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/binding_hide_glue"
+            }
+          },
+          {
+            "when": "leather",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/binding_leather"
+            }
+          },
+          {
+            "when": "sinew",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/binding_sinew"
+            }
+          },
+          {
+            "when": "bronze_plate",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_knife/binding_bronze_plate"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 0,
+          "cases": [
+            {
+              "when": "tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_knife/zone_tool_rod"
+              }
+            },
+            {
+              "when": "bone_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_knife/zone_bone_tool_rod"
+              }
+            },
+            {
+              "when": "copper_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_knife/zone_copper_tool_rod"
+              }
+            },
+            {
+              "when": "bronze_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_knife/zone_bronze_tool_rod"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/bronze_knife/zone"
+          }
+        }
+      }
+    ]
   }
 }

@@ -1,5 +1,6 @@
 package com.mechanical.tools;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -24,6 +25,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -124,6 +126,9 @@ public final class ToolParts {
                 b = known(binding(parts.binding()), parts.binding()), r = known(rod(parts.rod()), parts.rod());
         ItemStack fresh = new ItemStack(tool.getItem());
         tool.set(TOOL_PARTS.get(), parts);
+        // the item model picks its rod and binding layers by these (scripts/gen_tool_parts.py)
+        tool.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(),
+                List.of(BuiltInRegistries.ITEM.getKey(parts.rod()).getPath(), BuiltInRegistries.ITEM.getKey(parts.binding()).getPath()), List.of()));
         if (fresh.isDamageableItem()) {
             int durability = Math.round(fresh.getMaxDamage() / (db.durability() * dr.durability()) * (b.durability() * r.durability())
                     * (1 + SMITHING_BONUS_PER_LEVEL * parts.smithing()));

@@ -11,8 +11,91 @@
           "on_shelf"
         ],
         "model": {
-          "type": "minecraft:model",
-          "model": "mechanical:item/flint_spear"
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/flint_spear/head"
+            },
+            {
+              "type": "minecraft:select",
+              "property": "minecraft:custom_model_data",
+              "index": 0,
+              "cases": [
+                {
+                  "when": "stick",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/flint_spear/rod_stick"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/flint_spear/rod"
+              }
+            },
+            {
+              "type": "minecraft:select",
+              "property": "minecraft:custom_model_data",
+              "index": 1,
+              "cases": [
+                {
+                  "when": "twine",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/flint_spear/binding_twine"
+                  }
+                },
+                {
+                  "when": "cordage",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/flint_spear/binding_cordage"
+                  }
+                },
+                {
+                  "when": "hide_glue",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/flint_spear/binding_hide_glue"
+                  }
+                },
+                {
+                  "when": "leather",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/flint_spear/binding_leather"
+                  }
+                },
+                {
+                  "when": "sinew",
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "mechanical:item/tool_parts/flint_spear/binding_sinew"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:select",
+                "property": "minecraft:custom_model_data",
+                "index": 0,
+                "cases": [
+                  {
+                    "when": "stick",
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "mechanical:item/tool_parts/flint_spear/zone_stick"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "mechanical:item/tool_parts/flint_spear/zone"
+                }
+              }
+            }
+          ]
         }
       }
     ],

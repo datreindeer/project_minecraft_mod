@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "mechanical:item/tool_parts/iron_hoe/binding_iron_plate"
+  }
+}

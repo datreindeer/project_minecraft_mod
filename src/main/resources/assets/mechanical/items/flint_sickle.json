@@ -1,6 +1,68 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mechanical:item/flint_sickle"
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "mechanical:item/tool_parts/flint_sickle/head"
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 0,
+        "cases": [
+          {
+            "when": "tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/flint_sickle/rod_tool_rod"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/flint_sickle/rod"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 1,
+        "cases": [
+          {
+            "when": "cordage",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/flint_sickle/binding_cordage"
+            }
+          },
+          {
+            "when": "hide_glue",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/flint_sickle/binding_hide_glue"
+            }
+          },
+          {
+            "when": "leather",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/flint_sickle/binding_leather"
+            }
+          },
+          {
+            "when": "sinew",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/flint_sickle/binding_sinew"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/flint_sickle/zone"
+        }
+      }
+    ]
   }
 }

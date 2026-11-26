@@ -1,0 +1,89 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "mechanical:item/tool_parts/stone_pickaxe/head"
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 0,
+        "cases": [
+          {
+            "when": "stick",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/stone_pickaxe/rod_stick"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/stone_pickaxe/rod"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 1,
+        "cases": [
+          {
+            "when": "twine",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/stone_pickaxe/binding_twine"
+            }
+          },
+          {
+            "when": "cordage",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/stone_pickaxe/binding_cordage"
+            }
+          },
+          {
+            "when": "hide_glue",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/stone_pickaxe/binding_hide_glue"
+            }
+          },
+          {
+            "when": "leather",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/stone_pickaxe/binding_leather"
+            }
+          },
+          {
+            "when": "sinew",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/stone_pickaxe/binding_sinew"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 0,
+          "cases": [
+            {
+              "when": "stick",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/stone_pickaxe/zone_stick"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/stone_pickaxe/zone"
+          }
+        }
+      }
+    ]
+  }
+}

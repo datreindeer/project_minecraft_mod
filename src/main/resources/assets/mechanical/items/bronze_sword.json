@@ -1,6 +1,152 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mechanical:item/bronze_sword"
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "mechanical:item/tool_parts/bronze_sword/head"
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 0,
+        "cases": [
+          {
+            "when": "stick",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/rod_stick"
+            }
+          },
+          {
+            "when": "tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/rod_tool_rod"
+            }
+          },
+          {
+            "when": "bone_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/rod_bone_tool_rod"
+            }
+          },
+          {
+            "when": "copper_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/rod_copper_tool_rod"
+            }
+          },
+          {
+            "when": "bronze_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/rod_bronze_tool_rod"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/bronze_sword/rod"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 1,
+        "cases": [
+          {
+            "when": "twine",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/binding_twine"
+            }
+          },
+          {
+            "when": "cordage",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/binding_cordage"
+            }
+          },
+          {
+            "when": "hide_glue",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/binding_hide_glue"
+            }
+          },
+          {
+            "when": "leather",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/binding_leather"
+            }
+          },
+          {
+            "when": "sinew",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/binding_sinew"
+            }
+          },
+          {
+            "when": "bronze_plate",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_sword/binding_bronze_plate"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 0,
+          "cases": [
+            {
+              "when": "stick",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_sword/zone_stick"
+              }
+            },
+            {
+              "when": "tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_sword/zone_tool_rod"
+              }
+            },
+            {
+              "when": "bone_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_sword/zone_bone_tool_rod"
+              }
+            },
+            {
+              "when": "copper_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_sword/zone_copper_tool_rod"
+              }
+            },
+            {
+              "when": "bronze_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_sword/zone_bronze_tool_rod"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/bronze_sword/zone"
+          }
+        }
+      }
+    ]
   }
 }

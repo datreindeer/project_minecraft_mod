@@ -202,6 +202,8 @@ public final class ToolsTest {
     private static ItemStack bronzePick() {
         ItemStack pick = new ItemStack(Bronze.BRONZE_PICKAXE.get());
         applyBronzeRod(pick);
+        if (!pick.get(DataComponents.CUSTOM_MODEL_DATA).strings().equals(List.of("bronze_tool_rod", "leather")))
+            throw new IllegalStateException("the model strings name the rod, then the binding: " + pick.get(DataComponents.CUSTOM_MODEL_DATA));
         return pick;
     }
 

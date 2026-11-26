@@ -1,6 +1,138 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mechanical:item/bronze_hoe"
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "mechanical:item/tool_parts/bronze_hoe/head"
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 0,
+        "cases": [
+          {
+            "when": "stick",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/rod_stick"
+            }
+          },
+          {
+            "when": "bone_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/rod_bone_tool_rod"
+            }
+          },
+          {
+            "when": "copper_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/rod_copper_tool_rod"
+            }
+          },
+          {
+            "when": "bronze_tool_rod",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/rod_bronze_tool_rod"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:model",
+          "model": "mechanical:item/tool_parts/bronze_hoe/rod"
+        }
+      },
+      {
+        "type": "minecraft:select",
+        "property": "minecraft:custom_model_data",
+        "index": 1,
+        "cases": [
+          {
+            "when": "twine",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/binding_twine"
+            }
+          },
+          {
+            "when": "cordage",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/binding_cordage"
+            }
+          },
+          {
+            "when": "hide_glue",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/binding_hide_glue"
+            }
+          },
+          {
+            "when": "leather",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/binding_leather"
+            }
+          },
+          {
+            "when": "sinew",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/binding_sinew"
+            }
+          },
+          {
+            "when": "bronze_plate",
+            "model": {
+              "type": "minecraft:model",
+              "model": "mechanical:item/tool_parts/bronze_hoe/binding_bronze_plate"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:select",
+          "property": "minecraft:custom_model_data",
+          "index": 0,
+          "cases": [
+            {
+              "when": "stick",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_hoe/zone_stick"
+              }
+            },
+            {
+              "when": "bone_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_hoe/zone_bone_tool_rod"
+              }
+            },
+            {
+              "when": "copper_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_hoe/zone_copper_tool_rod"
+              }
+            },
+            {
+              "when": "bronze_tool_rod",
+              "model": {
+                "type": "minecraft:model",
+                "model": "mechanical:item/tool_parts/bronze_hoe/zone_bronze_tool_rod"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "mechanical:item/tool_parts/bronze_hoe/zone"
+          }
+        }
+      }
+    ]
   }
 }

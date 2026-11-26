@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mechanical:item/tool_parts/iron_spear/binding_bronze_plate"
+  }
+}

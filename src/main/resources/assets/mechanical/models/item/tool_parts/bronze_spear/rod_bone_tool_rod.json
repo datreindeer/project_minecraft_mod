@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mechanical:item/tool_parts/bronze_spear/rod_bone_tool_rod"
+  }
+}
