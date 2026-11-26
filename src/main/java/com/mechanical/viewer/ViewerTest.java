@@ -51,6 +51,8 @@ public final class ViewerTest {
             altOptionCountsAsSeen(h);
             codecRoundTrip(h);
             sourcesRebuildAfterInvalidate(h);
+            jsonSources(h);
+            emptyTagSkipped(h);
             h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -119,5 +121,38 @@ public final class ViewerTest {
         StationSources.invalidate();
         var after = StationSources.all();
         h.assertTrue(before != after && before.size() == after.size(), "invalidate gives a fresh list of the same size");
+    }
+
+    private static void jsonSources(GameTestHelper h) {
+        var server = h.getLevel().getServer();
+        var all = JsonSources.from(server.getRecipeManager(), server.registryAccess());
+        var twine = all.stream().filter(r -> r.station() == Station.CRAFTING_SHAPELESS && r.output().is(net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(
+                net.minecraft.resources.Identifier.fromNamespaceAndPath(MODID, "twine")))).findFirst();
+        h.assertTrue(twine.isPresent(), "a shapeless recipe for twine");
+        var fibre = net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(net.minecraft.resources.Identifier.fromNamespaceAndPath(MODID, "plant_fibre"));
+        h.assertTrue(twine.get().inputs().size() == 3 && twine.get().inputs().stream().allMatch(s -> s.options().contains(fibre)), "twine: three slots of plant fibre");
+        // the payload must fit vanilla's 1 MiB limit for custom payloads
+        var buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), h.getLevel().registryAccess());
+        CatalogPayload.CODEC.encode(buf, new CatalogPayload(all));
+        System.out.println("VIEWER catalog: " + all.size() + " recipes, " + buf.readableBytes() + " bytes");
+        h.assertTrue(buf.readableBytes() < 1_048_576, "catalog payload under 1 MiB: " + buf.readableBytes());
+        var back = CatalogPayload.CODEC.decode(buf);
+        h.assertTrue(back.recipes().size() == all.size(), "catalog payload round trip");
+    }
+
+    private static void emptyTagSkipped(GameTestHelper h) {
+        var recipe = new net.minecraft.world.item.crafting.ShapelessRecipe(new net.minecraft.world.item.crafting.Recipe.CommonInfo(true),
+                new net.minecraft.world.item.crafting.CraftingRecipe.CraftingBookInfo(net.minecraft.world.item.crafting.CraftingBookCategory.MISC, ""),
+                new net.minecraft.world.item.ItemStackTemplate(Items.STICK),
+                List.of(new net.minecraft.world.item.crafting.Ingredient(new net.neoforged.neoforge.common.crafting.ICustomIngredient() {
+                    // stands in for an empty tag, which Ingredient.of refuses to build
+                    public boolean test(ItemStack s) { return false; }
+                    public java.util.stream.Stream<net.minecraft.core.Holder<net.minecraft.world.item.Item>> items() { return java.util.stream.Stream.empty(); }
+                    public boolean isSimple() { return true; }
+                    public net.neoforged.neoforge.common.crafting.IngredientType<?> getType() { return null; }
+                })));
+        var holder = new net.minecraft.world.item.crafting.RecipeHolder<net.minecraft.world.item.crafting.Recipe<?>>(
+                ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MODID, "empty_tag_test")), recipe);
+        h.assertTrue(JsonSources.convert(holder).isEmpty(), "a recipe with an empty ingredient is skipped");
     }
 }
