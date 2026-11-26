@@ -12,22 +12,33 @@ public final class Note {
     /** Exactly one of text / itemId is set. */
     public record Piece(String text, String itemId, boolean bold) {}
 
-    private static final Pattern TOKEN = Pattern.compile("\\[\\[([^\\]]+)\\]\\]|\\*\\*(.+?)\\*\\*", Pattern.DOTALL);
+    private static final Pattern BOLD = Pattern.compile("\\*\\*(.+?)\\*\\*", Pattern.DOTALL);
+    private static final Pattern LINK = Pattern.compile("\\[\\[([^\\]]+)\\]\\]");
 
     private Note() {}
 
     public static List<Piece> parse(String raw) {
         List<Piece> out = new ArrayList<>();
-        Matcher m = TOKEN.matcher(raw);
+        Matcher m = BOLD.matcher(raw);
         int at = 0;
         while (m.find()) {
-            if (m.start() > at) out.add(new Piece(raw.substring(at, m.start()), null, false));
-            if (m.group(1) != null) out.add(new Piece(null, qualify(m.group(1)), false));
-            else out.add(new Piece(m.group(2), null, true));
+            spans(raw.substring(at, m.start()), false, out);
+            spans(m.group(1), true, out); // links inside bold stay links
             at = m.end();
         }
-        if (at < raw.length()) out.add(new Piece(raw.substring(at), null, false));
+        spans(raw.substring(at), false, out);
         return out;
+    }
+
+    private static void spans(String s, boolean bold, List<Piece> out) {
+        Matcher m = LINK.matcher(s);
+        int at = 0;
+        while (m.find()) {
+            if (m.start() > at) out.add(new Piece(s.substring(at, m.start()), null, bold));
+            out.add(new Piece(null, qualify(m.group(1)), bold));
+            at = m.end();
+        }
+        if (at < s.length()) out.add(new Piece(s.substring(at), null, bold));
     }
 
     public static Set<String> links(String raw) {

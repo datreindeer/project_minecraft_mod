@@ -1,6 +1,7 @@
 package com.mechanical.client.viewer;
 
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -53,7 +54,7 @@ public final class ClientNotes {
                 Map<String, String> out = new HashMap<>();
                 var res = manager.getResource(FILE);
                 if (res.isEmpty()) return out;
-                try (var in = new InputStreamReader(res.get().open(), java.nio.charset.StandardCharsets.UTF_8)) {
+                try (var in = new InputStreamReader(res.get().open(), StandardCharsets.UTF_8)) {
                     JsonObject root = JsonParser.parseReader(in).getAsJsonObject();
                     for (var e : root.entrySet()) {
                         if (e.getKey().startsWith("_") || !e.getValue().isJsonObject()) continue;

@@ -113,6 +113,10 @@ public final class ViewerTest {
         var want = List.of(new Note.Piece("3 ", null, false), new Note.Piece(null, "mechanical:plant_fibre", false),
                 new Note.Piece(" (", null, false), new Note.Piece("shapeless", null, true), new Note.Piece(")", null, false));
         if (!p.equals(want)) throw new IllegalStateException("note pieces: " + p);
+        var bp = Note.parse("**1 [[twine]] each**");
+        if (!bp.equals(List.of(new Note.Piece("1 ", null, true), new Note.Piece(null, "mechanical:twine", true), new Note.Piece(" each", null, true))))
+            throw new IllegalStateException("bold note pieces: " + bp);
+        if (!Note.links("**1 [[twine]] each**").equals(java.util.Set.of("mechanical:twine"))) throw new IllegalStateException("bold note links");
         var l = Note.links("[[a]] and [[minecraft:stick]]");
         if (!l.equals(java.util.Set.of("mechanical:a", "minecraft:stick"))) throw new IllegalStateException("note links: " + l);
     }
