@@ -2296,6 +2296,21 @@ GUI-generatorerna: efter `gen_copper_textures`, `gen_bloomery_textures`, `gen_sm
 Stammar, karavaner och bybor delar en handelsskärm (`client/people/TradeBoardScreen.java`) med porträtt, två spalter,
 priser som ikoner och en blinkning när köpet gått igenom.
 
+### Uppdragsskärmen (Quests)
+
+Vanillas avancemangsskärm är ersatt av en uppdragsskärm (L, knappen **Quests** i pausmenyn). Avancemangen ligger kvar
+bakom den, så allt framsteg finns kvar. Inga belöningar.
+- **Vänster:** kapitlen (de gamla flikarna) med framsteg per kapitel och totalt.
+- **Mitten:** uppdragsträdet. Dra för att flytta, scrolla för att zooma, ⛶ visar hela kapitlet. Grön med bock = klart,
+  guld = går att göra nu, mörk med hänglås = något annat kommer först. En stapel under noden = påbörjat.
+- **Höger:** utan valt uppdrag listan "Ready to do now". Med ett valt: vad du ska göra, checklista (t.ex. varje del av ett
+  djur i Hunting), vad som måste göras först och vad det leder till (klickbara). **Next quest** går till nästa möjliga.
+- Senast valt kapitel, läge och zoom sparas tills spelet stängs. Servern skickar alla modets avancemang, så även
+  uppdrag långt fram syns (`mixin/PlayerAdvancementsQuestMixin`).
+- Kod: `client/quests/`, `quests/` (layouten testas av gametestet `mechanical:quests`). `assets/mechanical/quests.json`
+  (ordning och checklistetexter) skrivs av `scripts/gen_advancements.py`; nodgrafiken av `scripts/gen_quest_textures.py`
+  (körs efter `gen_gui_textures.py`).
+
 ### Handelskaravaner (Trader Caravan)
 Vanillas **Wandering Trader** och hans **Trader Llamas** finns inte längre: ingen av dem kommer in i världen (inte heller
 från gamla sparfiler eller spawn eggs). I stället kommer en **handelskaravan** från en rik handelsstam (temperament

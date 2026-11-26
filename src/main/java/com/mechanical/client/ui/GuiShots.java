@@ -354,7 +354,139 @@ public final class GuiShots {
                 com.mechanical.people.TribeDialog.TRADE | com.mechanical.people.TribeDialog.YES_NO))), null);
         inWorld("screen_advancements", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(
                 mc.player.connection.getAdvancements())), null);
+        quests();
         inWorld("screen_stats", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.achievement.StatsScreen(null, mc.player.getStats())), null);
+    }
+
+    private static Identifier quest(String path) {
+        return Identifier.fromNamespaceAndPath(Mechanical.MODID, path);
+    }
+
+    /** Earns the quests (all their criteria, or the first {@code some}). */
+    private static void earn(ServerPlayer p, int some, String... paths) {
+        for (String path : paths) {
+            var holder = p.level().getServer().getAdvancements().get(quest(path));
+            holder.value().criteria().keySet().stream().sorted().limit(some).forEach(c -> p.getAdvancements().award(holder, c));
+        }
+    }
+
+    private static com.mechanical.client.quests.QuestScreen questScreen() {
+        return (com.mechanical.client.quests.QuestScreen) Minecraft.getInstance().gui.screen();
+    }
+
+    /** The quest screen in a w x h window at a GUI scale, turned to a quest (clicked with {@code pick}); hovering one. */
+    private static void questShot(String name, int w, int h, int scale, String at, boolean pick, String hover, int keys, int key) {
+        Minecraft mc = Minecraft.getInstance();
+        inWorld(name, p -> {}, () -> {
+            mc.getWindow().setWindowed(w, h);
+            mc.options.guiScale().set(scale);
+            mc.resizeGui();
+            show(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(mc.player.connection.getAdvancements()));
+            questScreen().show(quest(at), pick);
+            for (int i = 0; i < keys; i++) questScreen().keyPressed(new net.minecraft.client.input.KeyEvent(key, 0, 0));
+        }, hover == null ? null : () -> mc.gui.screen() instanceof com.mechanical.client.quests.QuestScreen s ? s.screenPos(quest(hover)) : null);
+    }
+
+    private static void quests() {
+        Minecraft mc = Minecraft.getInstance();
+        inWorld("quest_00_earn", p -> {
+            reset(p);
+            earn(p, 99, "stone_age/root", "stone_age/plant_fibre", "stone_age/twine", "stone_age/flint_knife", "stone_age/flint_axe",
+                    "stone_age/firewood", "stone_age/bark", "stone_age/campfire", "stone_age/light_fire", "stone_age/kiln",
+                    "stone_age/flint_pickaxe", "stone_age/stone_heads", "stone_age/ochre", "wilderness/root", "wilderness/butcher",
+                    "hunting/root", "hunting/deer", "hunting/roe_deer", "folklore/root", "food/root");
+            earn(p, 7, "stone_age/bark_collector");
+            earn(p, 2, "hunting/red_deer", "hunting/moose");
+        }, () -> {}, null);
+        questShot("quest_01_s3_overview", 1920, 1080, 3, "stone_age/root", false, null, 0, 0);
+        questShot("quest_02_s3_hover", 1920, 1080, 3, "stone_age/bark", true, "stone_age/bark_basket", 0, 0);
+        questShot("quest_03_s3_ready", 1920, 1080, 3, "stone_age/crucible", true, null, 0, 0);
+        questShot("quest_04_s3_checklist", 1920, 1080, 3, "stone_age/bark_collector", true, null, 0, 0);
+        questShot("quest_05_s2_hunting", 1920, 1080, 2, "hunting/red_deer", true, null, 0, 0);
+        questShot("quest_06_s2_wilderness", 1920, 1080, 2, "wilderness/root", false, null, 0, 0);
+        questShot("quest_07_s2_wilderness_far", 1920, 1080, 2, "wilderness/root", false, null, 4, 45 /* minus */);
+        questShot("quest_08_s4_overview", 1920, 1080, 4, "stone_age/root", false, null, 0, 0);
+        questShot("quest_09_s4_locked", 1920, 1080, 4, "stone_age/crude_stone", true, null, 0, 0);
+        questShot("quest_10_small_overview", 854, 480, 2, "bronze_age/root", false, null, 0, 0);
+        questShot("quest_11_small_detail", 854, 480, 2, "stone_age/light_fire", true, null, 0, 0);
+        questShot("quest_12_tiny_overview", 640, 480, 2, "stone_age/root", false, null, 0, 0);
+        questShot("quest_13_tiny_detail", 640, 480, 2, "hunting/moose", true, null, 0, 0);
+        inWorld("quest_17_wilderness_fit", p -> {}, () -> {
+            mc.getWindow().setWindowed(1920, 1080);
+            mc.options.guiScale().set(2);
+            mc.resizeGui();
+            show(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(mc.player.connection.getAdvancements()));
+            questScreen().show(quest("wilderness/root"), false);
+            press(questScreen(), "\u26F6");
+        }, null);
+        // real input, once frames have drawn: a drag moves the graph, a click on a node picks it, the wheel zooms, Next walks
+        // the ready quests, a sidebar row opens its chapter, and reopening comes back to where it was left
+        boolean[] played = {false};
+        inWorld("quest_18_input", p -> {}, () -> {
+            mc.getWindow().setWindowed(1920, 1080);
+            mc.options.guiScale().set(3);
+            mc.resizeGui();
+            show(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(mc.player.connection.getAdvancements()));
+            questScreen().show(quest("gemstones/root"), false);
+        }, () -> {
+            if (played[0] || !(mc.gui.screen() instanceof com.mechanical.client.quests.QuestScreen s)) return null;
+            played[0] = true;
+            report("open", s);
+            drag(s, 240, 200, 270, 215);
+            report("dragged", s);
+            int[] at = s.screenPos(quest("gemstones/root"));
+            drag(s, at[0], at[1], at[0], at[1]);
+            report("clicked the root", s);
+            s.mouseScrolled(240, 200, 0, -1);
+            report("wheel out", s);
+            press(s, Component.translatable("gui.mechanical.quests.next").getString() + " ▶");
+            report("next", s);
+            drag(s, 200, 300, 200, 300);
+            report("clicked at 200,300", s);
+            s.mouseClicked(mouseEvent(20, 55), false); // the second chapter in the sidebar
+            report("sidebar", s);
+            s.onClose();
+            show(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(mc.player.connection.getAdvancements()));
+            report("reopened", questScreen());
+            return null;
+        });
+        // the real ways in: the advancements key, and the pause menu's button
+        inWorld("quest_14_key", p -> {}, () -> {
+            mc.getWindow().setWindowed(1280, 720);
+            mc.options.guiScale().set(0);
+            mc.resizeGui();
+            mc.gui.setScreen(null);
+            net.minecraft.client.KeyMapping.click(com.mojang.blaze3d.platform.InputConstants.getKey(mc.options.keyAdvancements.saveString()));
+        }, null);
+        inWorld("quest_15_pause", p -> {}, () -> show(new net.minecraft.client.gui.screens.PauseScreen(true)), null);
+        inWorld("quest_16_pause_button", p -> {}, () -> {
+            show(new net.minecraft.client.gui.screens.PauseScreen(true));
+            press(mc.gui.screen(), Component.translatable("gui.advancements").getString());
+            System.out.println("QUESTSHOT pause button opened " + mc.gui.screen());
+        }, null);
+    }
+
+    private static net.minecraft.client.input.MouseButtonEvent mouseEvent(double x, double y) {
+        return new net.minecraft.client.input.MouseButtonEvent(x, y, new net.minecraft.client.input.MouseButtonInfo(0, 0));
+    }
+
+    private static void drag(Screen screen, double x, double y, double toX, double toY) {
+        screen.mouseClicked(mouseEvent(x, y), false);
+        if (x != toX || y != toY) screen.mouseDragged(mouseEvent(toX, toY), toX - x, toY - y);
+        screen.mouseReleased(mouseEvent(toX, toY));
+    }
+
+    private static void report(String what, com.mechanical.client.quests.QuestScreen s) {
+        System.out.println("QUESTSHOT " + what + ": " + s.camera() + " picked " + s.pickedId());
+    }
+
+    /** Presses the button labelled {@code label}, however deep in the screen's layout. */
+    private static void press(Screen screen, String label) {
+        for (var child : screen.children())
+            if (child instanceof net.minecraft.client.gui.components.Button b && b.getMessage().getString().equals(label)) {
+                b.onPress(new net.minecraft.client.input.KeyEvent(257, 0, 0));
+                return;
+            }
     }
 
     private static void filter(int from) {

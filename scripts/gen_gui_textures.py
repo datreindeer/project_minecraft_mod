@@ -543,13 +543,6 @@ def misc_textures():
     stitches(im, 24, 177, 138)
     save(im, MC / "book.png")
 
-    # advancement window (252x140), clear in the middle
-    im = new(256, 256)
-    panel(im, 0, 0, 252, 140)
-    fill(im, 9, 18, 234, 113, (0, 0, 0, 0))
-    frame(im, 8, 17, 236, 115, SLOT_DARK, SLOT_LIGHT)
-    save(im, MC / "advancements/window.png")
-
     # game mode switcher (125x75 of 128x128)
     im = new(128, 128)
     panel(im, 0, 0, 125, 75)
