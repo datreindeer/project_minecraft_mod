@@ -12,6 +12,7 @@ import com.mechanical.equipment.Equipment;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -79,6 +80,16 @@ public final class Skills {
         int after = level(p, s);
         // FakePlayers have no connection
         if (!(p instanceof FakePlayer)) PacketDistributor.sendToPlayer(p, new SkillPayload(s, amount, after > before ? after : 0));
+        if (after > before && !(p instanceof FakePlayer)) {
+            award(p, "stone_age/skill_level_up");
+            if (after >= 50) award(p, "stone_age/skill_50");
+            if (after >= 100) award(p, "stone_age/skill_100");
+        }
+    }
+
+    private static void award(ServerPlayer p, String path) {
+        var holder = p.level().getServer().getAdvancements().get(Identifier.fromNamespaceAndPath(Mechanical.MODID, path));
+        if (holder != null) p.getAdvancements().award(holder, "done");
     }
 
     /** Cooking XP for food a player takes out of a cooker: 5 per item; non-food and burnt food give nothing. */

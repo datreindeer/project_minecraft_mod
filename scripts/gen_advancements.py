@@ -935,6 +935,16 @@ TABS = {
     ]),
 }
 
+# skills (Skills.addXp awards these)
+TABS["stone_age"][1].extend([
+    ("skill_level_up", "root", "minecraft:experience_bottle", T, "Practice Makes Better",
+     "Raise any skill to level 2: press K to see your skills. They grow from doing things", by_code()),
+    ("skill_50", "skill_level_up", "minecraft:experience_bottle", G, "Journeyman",
+     "Raise any skill to level 50", by_code()),
+    ("skill_100", "skill_50", "minecraft:experience_bottle", C, "Master",
+     "Raise any skill to level 100", by_code()),
+])
+
 # fauna: waterfowl
 TABS["wilderness"][1].extend([
     ("pluck_swan", "pluck_goose", "plucked_swan", T, "Swan Song",

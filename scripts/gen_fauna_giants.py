@@ -196,7 +196,7 @@ shaped("rhino_horn_club", ["H", "C", "R"], {"H": M + "rhino_horn", "C": M + "cor
 shaped("shield_from_rhino_hide", ["PHP", "PPP", " P "], {"P": "#minecraft:planks", "H": M + "rhino_hide"}, "minecraft:shield",
        category="equipment")
 shapeless("ivory_figurine", [M + "mammoth_ivory", "#mechanical:knives"], M + "ivory_figurine", category="building")
-shapeless("bone_needle_from_rhino_horn", [M + "rhino_horn", "#mechanical:knives"], M + "bone_needle", 2, category="equipment")
+shapeless("bone_needle_from_rhino_horn", [M + "rhino_horn", "#mechanical:knives"], M + "bone_needle", 1, category="equipment")
 shapeless("twine_from_mammoth_wool", [M + "mammoth_wool"], M + "twine", 2)
 shaped("brown_wool_from_mammoth_wool", ["WW", "WW"], {"W": M + "mammoth_wool"}, "minecraft:brown_wool", category="building")
 shapeless("wool_thread_from_qiviut", [M + "qiviut"], M + "wool_thread", 2)

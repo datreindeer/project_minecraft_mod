@@ -128,7 +128,7 @@ recipe("poison_arrows_from_scorpion_venom", {"type": "minecraft:crafting_shaped"
 # the rattle on a stick: a Shell Rattle that keeps predators off like a torch
 shaped("shell_rattle_from_rattlesnake_rattle", [" R", "T ", "S "], {"R": M + "rattlesnake_rattle", "T": M + "twine", "S": "minecraft:stick"},
        M + "shell_rattle", category="equipment")
-shapeless("bone_needle_from_bighorn_horn", [M + "bighorn_horn", "#mechanical:knives"], M + "bone_needle", 3, category="equipment")
+shapeless("bone_needle_from_bighorn_horn", [M + "bighorn_horn", "#mechanical:knives"], M + "bone_needle", 1, category="equipment")
 # hump fat rendered into a candle, like tallow
 shapeless("candle_from_camel_hump_fat", [M + "camel_hump_fat", M + "twine"], "minecraft:candle")
 

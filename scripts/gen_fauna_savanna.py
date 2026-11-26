@@ -128,7 +128,7 @@ shapeless("leather_from_cheetah_pelt", [M + "cheetah_pelt", "#mechanical:knives"
 shapeless("signal_horn", [M + "gazelle_horn", "#mechanical:knives", M + "sinew"], M + "signal_horn", category="equipment")
 # an ostrich plume splits into plenty of fletching
 shapeless("feather_from_ostrich_feather", [M + "ostrich_feather", "#mechanical:knives"], MC + "feather", 4)
-shapeless("bone_needle_from_aardvark_claw", [M + "aardvark_claw", "#mechanical:knives"], M + "bone_needle", 2, category="equipment")
+shapeless("bone_needle_from_aardvark_claw", [M + "aardvark_claw", "#mechanical:knives"], M + "bone_needle", 1, category="equipment")
 # termites pounded into a sticky paste: a glue that does what Hide Glue does
 shapeless("chitin_paste", [M + "termites"] * 4, M + "chitin_paste")
 shaped("bellows_with_chitin_paste", ["PHP", "PHP", "GUG"], {"P": "#minecraft:planks", "H": M + "scraped_hide", "G": M + "chitin_paste",

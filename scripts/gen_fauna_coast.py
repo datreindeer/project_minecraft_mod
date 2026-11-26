@@ -96,7 +96,7 @@ shapeless("hide_glue_from_isinglass", [M + "isinglass"], M + "hide_glue", 2)
 # ivory: a knife (Flint Knife pattern), bone needles and fish hooks carved with a knife
 recipe("ivory_knife", {"type": "minecraft:crafting_shaped", "category": "equipment", "pattern": ["I ", "TS"],
                        "key": {"I": M + "walrus_ivory", "T": M + "twine", "S": "minecraft:stick"}, "result": {"id": M + "ivory_knife"}})
-shapeless("bone_needle_from_walrus_ivory", [M + "walrus_ivory", "#mechanical:knives"], M + "bone_needle", 2, "equipment")
+shapeless("bone_needle_from_walrus_ivory", [M + "walrus_ivory", "#mechanical:knives"], M + "bone_needle", 1, "equipment")
 shapeless("bone_fish_hook_from_walrus_ivory", [M + "walrus_ivory", "#mechanical:knives"], M + "bone_fish_hook", 3, "equipment")
 # walrus hide rope: the hide cut in one long spiral strip, the strongest rope there is
 shapeless("cordage_from_walrus_hide", [M + "walrus_hide", "#mechanical:knives"], M + "cordage", 6)

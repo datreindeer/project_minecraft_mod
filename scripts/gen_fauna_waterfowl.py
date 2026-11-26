@@ -90,7 +90,7 @@ for bird, boiled in EGGS.items():
 # ---- what the parts make ----
 shapeless("feather_from_swan_quill", [M + "swan_quill", "#mechanical:knives"], "minecraft:feather", 4)
 shapeless("bone_flute", [M + "hollow_bird_bone", "#mechanical:knives"], M + "bone_flute", 1, "equipment")
-shapeless("bone_needle_from_hollow_bird_bone", [M + "hollow_bird_bone", "minecraft:flint"], M + "bone_needle", 2, "equipment")
+shapeless("bone_needle_from_hollow_bird_bone", [M + "hollow_bird_bone", "minecraft:flint"], M + "bone_needle", 1, "equipment")
 shapeless("bone_fish_hook_from_heron_bill", [M + "heron_bill", "#mechanical:knives"], M + "bone_fish_hook", 2, "equipment")
 recipe("plume_headdress", {"type": "minecraft:crafting_shaped", "category": "equipment", "pattern": ["PQP", "LDL"],
                            "key": {"P": M + "heron_plume", "Q": [M + "swan_quill", M + "heron_plume"], "D": M + "down",

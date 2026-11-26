@@ -80,34 +80,37 @@ Bonusar per sten (Claude bestämde 2026-11-22, nattkörningen; kan ändras i `Je
 Flawless = ungefär fyra gånger så mycket, glänser och har aqua namn. Två ringar och ett halsband staplas. "Värme" är
 kylskydd som en rustningsdel (Temperature#insulation, läder 15 %).
 
-| Sten | Bonus | Vanlig | Flawless |
-|---|---|---|---|
-| Diamond | Armor Toughness | +0,5 | +2 |
-| Emerald | Luck | +0,5 | +2 |
-| Amethyst | Bryter block fortare | +5 % | +20 % |
-| Garnet | Värme | 5 % | 15 % |
-| Ruby | Max Health | +1 (½ hjärta) | +4 (2 hjärtan) |
-| Sapphire | Armor | +0,5 | +2 |
-| Topaz | Mining Efficiency | +1 | +4 |
-| Jade | Knockback Resistance | +2 % | +10 % |
-| Opal | Räckvidd mot entiteter | +0,25 | +1 block |
-| Turquoise | Säker fallhöjd | +0,5 | +2 block |
-| Peridot | Andas under vatten (Oxygen Bonus) | +0,5 | +2 |
-| Amber | Värme | 5 % | 15 % |
-| Clear Quartz | Räckvidd mot block | +0,25 | +1 block |
-| Rose Quartz | Smygfart | +0,05 | +0,2 |
-| Citrine | Värme | 5 % | 15 % |
-| Smoky Quartz | Brinner kortare | −10 % | −40 % |
-| Aquamarine | Fart i vatten | +0,1 | +0,4 |
-| Fluorite | Bryter fortare under vatten | +0,2 | +0,8 |
-| Celestine | Hopp | +0,02 | +0,08 |
-| Moonstone | Stegar upp | +0,1 | +0,5 block |
-| Tourmaline | Attack Speed | +0,1 | +0,4 |
-| Agate | Tål tryckvåg från explosioner | +5 % | +25 % |
-| Jasper | Attack Damage | +0,25 | +1 |
-| Carnelian | Gångfart | +2 % | +10 % |
-| Chalcedony | Går bättre i lera och snö (Movement Efficiency) | +0,05 | +0,25 |
-| Bloodstone | Max Health | +0,5 | +2 |
+| Sten | Bonus | Vanlig | Flawless  Skill |
+|---|---|---|---|---|
+| Diamond | Armor Toughness | +0,5 | +2 | Smithing |
+| Emerald | Luck | +0,5 | +2 | Gold Smithing |
+| Amethyst | Bryter block fortare | +5 % | +20 % | Mining |
+| Garnet | Värme | 5 % | 15 % | Smithing |
+| Ruby | Max Health | +1 (½ hjärta) | +4 (2 hjärtan) | Slaughter |
+| Sapphire | Armor | +0,5 | +2 | Masonry |
+| Topaz | Mining Efficiency | +1 | +4 | Mining |
+| Jade | Knockback Resistance | +2 % | +10 % | Woodcutting |
+| Opal | Räckvidd mot entiteter | +0,25 | +1 block | Gold Smithing |
+| Turquoise | Säker fallhöjd | +0,5 | +2 block | Fishing |
+| Peridot | Andas under vatten (Oxygen Bonus) | +0,5 | +2 | Farming |
+| Amber | Värme | 5 % | 15 % | Woodcutting |
+| Clear Quartz | Räckvidd mot block | +0,25 | +1 block | Gold Smithing |
+| Rose Quartz | Smygfart | +0,05 | +0,2 | Leatherworking |
+| Citrine | Värme | 5 % | 15 % | Cooking |
+| Smoky Quartz | Brinner kortare | −10 % | −40 % | Cooking |
+| Aquamarine | Fart i vatten | +0,1 | +0,4 | Fishing |
+| Fluorite | Bryter fortare under vatten | +0,2 | +0,8 | Mining |
+| Celestine | Hopp | +0,02 | +0,08 | Fletching |
+| Moonstone | Stegar upp | +0,1 | +0,5 block | Woodcutting |
+| Tourmaline | Attack Speed | +0,1 | +0,4 | Hunting |
+| Agate | Tål tryckvåg från explosioner | +5 % | +25 % | Masonry |
+| Jasper | Attack Damage | +0,25 | +1 | Hunting |
+| Carnelian | Gångfart | +2 % | +10 % | Hunting |
+| Chalcedony | Går bättre i lera och snö (Movement Efficiency) | +0,05 | +0,25 | Farming |
+| Bloodstone | Max Health | +0,5 | +2 | Slaughter |
+
+Skill-kolumnen: varje sten höjer också en färdighet (`Jewelry.SKILLS`, skärmen på K) medan smycket bärs: guld **+3** nivåer,
+electrum **+2**, silver **+1**, dubbelt om stenen är Flawless. Ringar och halsband staplas, effektiv nivå max 120.
 
 - Advancements (Steel Age-fliken): **Hearth of the Tribe** → **Whole Roast**; **A Place for Every Tool** →
   **Pack Mule**; **Goldsmith** → **Jeweler** → **Without Flaw**.

@@ -154,11 +154,11 @@ shaped("shield_from_tortoise_shell", ["PSP", "PHP", " P "], {"P": "#minecraft:pl
 shaped("shell_rattle", [" S", "TG", "R "], {"S": M + "tortoise_shell", "T": M + "twine", "G": "minecraft:gravel", "R": "minecraft:stick"},
        M + "shell_rattle", category="equipment")
 # buffalo horn: needles, and thin-scraped horn panes round a torch make a horn lantern
-shapeless("bone_needle_from_buffalo_horn", [M + "buffalo_horn", "#mechanical:knives"], M + "bone_needle", 2, category="equipment")
+shapeless("bone_needle_from_buffalo_horn", [M + "buffalo_horn", "#mechanical:knives"], M + "bone_needle", 1, category="equipment")
 shaped("lantern_from_buffalo_horn", [" C ", "HTH", " C "], {"C": M + "cordage", "H": M + "buffalo_horn", "T": "minecraft:torch"},
        "minecraft:lantern")
 # hornbill casque ("red ivory"): carved into needles; its yellow-orange colour ground into dye
-shapeless("bone_needle_from_hornbill_casque", [M + "hornbill_casque", "#mechanical:knives"], M + "bone_needle", 2, category="equipment")
+shapeless("bone_needle_from_hornbill_casque", [M + "hornbill_casque", "#mechanical:knives"], M + "bone_needle", 1, category="equipment")
 shapeless("orange_dye_from_hornbill_casque", [M + "hornbill_casque"], "minecraft:orange_dye", 2)
 # peacock feather: split into fletching feathers, or its eye-spot blue into dye
 shapeless("feather_from_peacock_feather", [M + "peacock_feather", "#mechanical:knives"], "minecraft:feather", 3)
