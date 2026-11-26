@@ -355,6 +355,7 @@ public final class GuiShots {
         inWorld("screen_advancements", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(
                 mc.player.connection.getAdvancements())), null);
         quests();
+        recipes();
         inWorld("screen_stats", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.achievement.StatsScreen(null, mc.player.getStats())), null);
     }
 
@@ -464,6 +465,28 @@ public final class GuiShots {
             press(mc.gui.screen(), Component.translatable("gui.advancements").getString());
             System.out.println("QUESTSHOT pause button opened " + mc.gui.screen());
         }, null);
+    }
+
+    /** The recipe viewer on {@code item} (U with {@code usage}), turned {@code pages - 1} pages on, or to its last tab; {@code give} is carried first, so it counts as seen. */
+    private static void recipeShot(String name, Supplier<Item> item, boolean usage, int pages, boolean lastTab, Supplier<List<Item>> give) {
+        inWorld(name, p -> {
+            reset(p);
+            for (Item i : give.get()) p.getInventory().add(new ItemStack(i));
+            com.mechanical.viewer.SeenItems.scan(p);
+        }, () -> {
+            var screen = com.mechanical.client.viewer.RecipeViewScreen.open(item.get(), usage);
+            if (lastTab) screen.showTab(-1);
+            for (int i = 1; i < pages; i++) screen.keyPressed(new net.minecraft.client.input.KeyEvent(com.mojang.blaze3d.platform.InputConstants.KEY_RIGHT, 0, 0));
+        }, null);
+    }
+
+    private static void recipes() {
+        recipeShot("recipes_twine", Mechanical.TWINE, false, 1, false, () -> List.of(Mechanical.PLANT_FIBRE.get()));
+        recipeShot("recipes_bronze_pickaxe", com.mechanical.Bronze.BRONZE_PICKAXE, false, 1, false, () -> List.of(com.mechanical.Bronze.BRONZE_PICKAXE_HEAD.get()));
+        recipeShot("recipes_stick_usage", () -> Items.STICK, true, 2, false, () -> List.of(Items.STICK));
+        // Twine is seen (a link with its icon), Oak Bark is not (???)
+        recipeShot("recipes_note", Mechanical.PLANT_FIBRE, false, 1, true, () -> List.of(Mechanical.PLANT_FIBRE.get(), Mechanical.TWINE.get()));
+        recipeShot("recipes_none", () -> Items.BEDROCK, false, 1, false, List::of);
     }
 
     private static net.minecraft.client.input.MouseButtonEvent mouseEvent(double x, double y) {
