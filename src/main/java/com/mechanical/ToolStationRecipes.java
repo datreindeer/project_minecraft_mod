@@ -36,6 +36,11 @@ public final class ToolStationRecipes {
                     && !(path.contains("bow") || path.contains("fishing_rod") || path.contains("broom") || path.contains("bucket"));
         }
 
+        /** How well the placed binding and rod fit this recipe's own: both 3, binding 2, rod 1, neither 0. */
+        public int score(ItemStack binding, ItemStack rod) {
+            return (binding.is(this.binding.get()) ? 2 : 0) + (rod.is(this.rod.get()) ? 1 : 0);
+        }
+
         public List<Item> bindings() {
             return ToolParts.bindings(head.get());
         }

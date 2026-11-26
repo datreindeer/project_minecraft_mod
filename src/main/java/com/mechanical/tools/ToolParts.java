@@ -82,11 +82,19 @@ public final class ToolParts {
 
     /** Every table binding / rod no higher than the head's tier. */
     public static java.util.List<Item> bindings(Item head) {
-        return BINDINGS.get().entrySet().stream().filter(e -> e.getValue().tier() <= tier(head)).map(Map.Entry::getKey).toList();
+        return ordered(BINDINGS.get(), head);
+    }
+
+    /** Fixed order (tier, then registry id) so auto-fill never depends on Map.of's iteration order. */
+    private static java.util.List<Item> ordered(Map<Item, Part> table, Item head) {
+        return table.entrySet().stream().filter(e -> e.getValue().tier() <= tier(head))
+                .sorted(java.util.Comparator.<Map.Entry<Item, Part>>comparingInt(e -> e.getValue().tier())
+                        .thenComparing(e -> BuiltInRegistries.ITEM.getKey(e.getKey()).toString()))
+                .map(Map.Entry::getKey).toList();
     }
 
     public static java.util.List<Item> rods(Item head) {
-        return RODS.get().entrySet().stream().filter(e -> e.getValue().tier() <= tier(head)).map(Map.Entry::getKey).toList();
+        return ordered(RODS.get(), head);
     }
 
     /** Head tier from its material, the registry path's first word: flint, stone and tusk 0, copper 1, bronze 2, iron 3, steel 4. */

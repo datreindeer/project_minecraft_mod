@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -32,6 +33,7 @@ public class ToolStationMenu extends AbstractContainerMenu {
             ToolStationMenu.this.slotsChanged(this);
         }
     };
+    private final DataSlot selected = DataSlot.standalone();
     private final ResultContainer result = new ResultContainer();
 
     public ToolStationMenu(int containerId, Inventory inventory) {
@@ -60,14 +62,19 @@ public class ToolStationMenu extends AbstractContainerMenu {
             }
         });
         addStandardInventorySlots(inventory, 8, 84);
+        selected.set(-1);
+        addDataSlot(selected);
     }
 
     @Override
     public void slotsChanged(Container container) {
         ItemStack head = inputs.getItem(HEAD), binding = inputs.getItem(BINDING), rod = inputs.getItem(ROD);
+        int chosen = selected.get();
+        // a clicked recipe is the only one that may produce; otherwise the recipe whose own binding and rod fit best (ties: first in ALL)
         ItemStack out = ToolStationRecipes.ALL.stream()
-                .filter(r -> r.matches(head, binding, rod) && ToolStationRecipes.isUnlocked(player, r))
-                .findFirst()
+                .filter(r -> r.matches(head, binding, rod) && ToolStationRecipes.isUnlocked(player, r)
+                        && (chosen < 0 || ToolStationRecipes.ALL.get(chosen) == r))
+                .max(java.util.Comparator.comparingInt(r -> r.score(binding, rod)))
                 .map(r -> Bronze.inheritPoor(build(r, head, binding, rod), inputs))
                 .orElse(ItemStack.EMPTY);
         result.setItem(0, out);
@@ -90,6 +97,7 @@ public class ToolStationMenu extends AbstractContainerMenu {
         if (index < 0 || index >= ToolStationRecipes.ALL.size()) return false;
         ToolStationRecipes.Recipe recipe = ToolStationRecipes.ALL.get(index);
         if (!ToolStationRecipes.isUnlocked(player, recipe)) return false;
+        selected.set(index);
         for (int i = 0; i < 3; i++) {
             ItemStack old = inputs.removeItemNoUpdate(i);
             if (!old.isEmpty()) player.getInventory().placeItemBackInInventory(old, Prediction.SERVER_ONLY);

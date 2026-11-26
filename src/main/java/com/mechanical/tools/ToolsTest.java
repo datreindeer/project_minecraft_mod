@@ -149,6 +149,38 @@ public final class ToolsTest {
         h.assertTrue(result(p, Items.FLINT, Mechanical.CORDAGE.get(), Smithing.BONE_TOOL_ROD.get()).isEmpty(), "tierBlocks: bone rod on flint (tier 1 > 0)");
         ItemStack plain = result(p, Bronze.BRONZE_PICKAXE_HEAD.get(), Mechanical.CORDAGE.get(), Mechanical.TOOL_ROD.get());
         h.assertFalse(ItemStack.isSameItemSameComponents(plain, bronze), "noMerge");
+        Item cord = Mechanical.CORDAGE.get(), twine = Mechanical.TWINE.get(), rod = Mechanical.TOOL_ROD.get(), plate = Bronze.BRONZE_PLATE.get();
+        Item hammer = com.mechanical.Ironworking.BRONZE_HAMMER_HEAD.get();
+        shares(h, p, -1, Items.FLINT, twine, Items.STICK, com.mechanical.Farming.FLINT_SICKLE.get());
+        shares(h, p, -1, Items.FLINT, cord, rod, Mechanical.FLINT_SPEAR.get());
+        shares(h, p, -1, Items.FLINT, twine, rod, Mechanical.CRUDE_FISHING_ROD.get());
+        shares(h, p, -1, hammer, plate, rod, com.mechanical.BronzeTools.BRONZE_QUARRY_HAMMER.get());
+        shares(h, p, -1, hammer, cord, rod, com.mechanical.Ironworking.BRONZE_SMITHING_HAMMER.get());
+        shares(h, p, -1, Bronze.BRONZE_HOE_HEAD.get(), plate, rod, com.mechanical.FarmTools.BRONZE_ARD.get());
+        shares(h, p, Items.IRON_PICKAXE, Smithing.IRON_PICKAXE_HEAD.get(), Items.LEATHER, rod, Items.IRON_PICKAXE);
+        shares(h, p, Smithing.STEEL_SMITHING_HAMMER.get(), Smithing.STEEL_HAMMER_HEAD.get(), Smithing.IRON_TOOL_ROD.get(), rod, Smithing.STEEL_SMITHING_HAMMER.get());
+        shares(h, p, Smithing.STEEL_QUARRY_HAMMER.get(), Smithing.STEEL_HAMMER_HEAD.get(), Smithing.IRON_TOOL_ROD.get(), rod, Smithing.STEEL_QUARRY_HAMMER.get());
+        h.assertTrue(ToolParts.bindings(Items.FLINT).get(0) == Mechanical.CORDAGE.get(), "fixed order: tier, then id");
+    }
+
+    private static void shares(GameTestHelper h, net.minecraft.server.level.ServerPlayer p, int ignored, Item head, Item binding, Item rod, Item expected) {
+        shares(h, p, (Item) null, head, binding, rod, expected);
+    }
+
+    /** selected: the recipe clicked in the screen (null = nothing selected); expected null = no result. */
+    private static void shares(GameTestHelper h, net.minecraft.server.level.ServerPlayer p, Item selected, Item head, Item binding, Item rod, Item expected) {
+        var menu = new com.mechanical.ToolStationMenu(1, p.getInventory());
+        if (selected != null) {
+            int i = 0;
+            while (com.mechanical.ToolStationRecipes.ALL.get(i).result().get() != selected) i++;
+            menu.clickMenuButton(p, i);
+        }
+        menu.slots.get(0).set(new ItemStack(head));
+        menu.slots.get(1).set(new ItemStack(binding));
+        menu.slots.get(2).set(new ItemStack(rod));
+        ItemStack got = menu.slots.get(3).getItem();
+        h.assertTrue(expected == null ? got.isEmpty() : got.is(expected), "shared head: " + net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(head) + " + "
+                + net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(binding) + " gave " + got + " not " + expected);
     }
 
     private static ItemStack result(net.minecraft.server.level.ServerPlayer p, Item head, Item binding, Item rod) {
