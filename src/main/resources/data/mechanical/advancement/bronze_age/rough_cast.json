@@ -50,6 +50,16 @@
           }
         ]
       }
+    },
+    "has_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:rough_cast_copper_tool_rod"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -58,7 +68,8 @@
       "has_1",
       "has_2",
       "has_3",
-      "has_4"
+      "has_4",
+      "has_5"
     ]
   ],
   "display": {

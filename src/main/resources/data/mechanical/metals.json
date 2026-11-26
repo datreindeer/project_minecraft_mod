@@ -89,7 +89,8 @@
         "axe_head": "mechanical:rough_cast_copper_axe_head",
         "shovel_head": "mechanical:rough_cast_copper_shovel_head",
         "hoe_head": "mechanical:rough_cast_copper_hoe_head",
-        "knife_blade": "mechanical:rough_cast_copper_knife_blade"
+        "knife_blade": "mechanical:rough_cast_copper_knife_blade",
+        "tool_rod": "mechanical:rough_cast_copper_tool_rod"
       }
     },
     {
@@ -128,7 +129,8 @@
         "chisel_blade": "mechanical:rough_cast_bronze_chisel_blade",
         "hammer_head": "mechanical:rough_cast_bronze_hammer_head",
         "anvil": "mechanical:rough_cast_bronze_anvil",
-        "tuyere": "mechanical:bronze_tuyere_nozzle"
+        "tuyere": "mechanical:bronze_tuyere_nozzle",
+        "tool_rod": "mechanical:rough_cast_bronze_tool_rod"
       }
     },
     {
@@ -165,7 +167,8 @@
         "chisel_blade": "mechanical:rough_cast_bronze_chisel_blade",
         "hammer_head": "mechanical:rough_cast_bronze_hammer_head",
         "anvil": "mechanical:rough_cast_bronze_anvil",
-        "tuyere": "mechanical:bronze_tuyere_nozzle"
+        "tuyere": "mechanical:bronze_tuyere_nozzle",
+        "tool_rod": "mechanical:rough_cast_bronze_tool_rod"
       },
       "poor": true
     },

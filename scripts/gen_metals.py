@@ -15,10 +15,10 @@ INGOT, NUGGET, BLOCK, STONE = 200, 22, 1800, 250  # mB (Molten.INGOT ..., Foundr
 # The clay-mold shapes (ClayMoldBlock.Shape) bronze casts; each gives rough_cast_bronze_<shape> unless named here.
 BRONZE_SHAPES = ["ingot", "pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade", "saw_blade", "plate", "spear_head",
                  "sword_blade", "kettle", "arrowheads", "bucket", "sickle_blade", "shears", "fish_hooks", "needles", "tongs",
-                 "chisel_blade", "hammer_head", "anvil", "tuyere"]
+                 "chisel_blade", "hammer_head", "anvil", "tuyere", "tool_rod"]
 BRONZE_CASTS = {s: M + {"ingot": "bronze_ingot", "tuyere": "bronze_tuyere_nozzle"}.get(s, f"rough_cast_bronze_{s}") for s in BRONZE_SHAPES}
 COPPER_CASTS = {"ingot": V + "copper_ingot", **{s: M + f"rough_cast_copper_{s}" for s in
-                ["pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade"]}}
+                ["pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade", "tool_rod"]}}
 
 # id: also the lang key, the save id and (for crucible metals) the Metal enum constant and the Clay Mold "metal" state.
 # melt: degrees a furnace must reach to melt it (real_melt only for the docs). density: g/cm³, decides the High Furnace's

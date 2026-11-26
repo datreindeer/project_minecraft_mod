@@ -107,6 +107,7 @@ public class KilnBlockEntity extends BaseContainerBlockEntity {
             new Recipe(s -> s.is(Casting.UNFIRED_CLAY_SHOVEL_HEAD_MOLD.get()), 1, () -> Casting.CLAY_SHOVEL_HEAD_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Casting.UNFIRED_CLAY_HOE_HEAD_MOLD.get()), 1, () -> Casting.CLAY_HOE_HEAD_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Casting.UNFIRED_CLAY_KNIFE_BLADE_MOLD.get()), 1, () -> Casting.CLAY_KNIFE_BLADE_MOLD_ITEM.get(), 400, 600),
+            new Recipe(s -> s.is(Casting.UNFIRED_CLAY_TOOL_ROD_MOLD.get()), 1, () -> Casting.CLAY_TOOL_ROD_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_SAW_BLADE_MOLD.get()), 1, () -> Bronze.CLAY_SAW_BLADE_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_PLATE_MOLD.get()), 1, () -> Bronze.CLAY_PLATE_MOLD_ITEM.get(), 400, 600),
             new Recipe(s -> s.is(Bronze.UNFIRED_CLAY_SPEAR_HEAD_MOLD.get()), 1, () -> Bronze.CLAY_SPEAR_HEAD_MOLD_ITEM.get(), 400, 600),

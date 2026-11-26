@@ -53,6 +53,7 @@ public final class ToolsTest {
     private static void test(GameTestHelper h) {
         try {
             rodsExist(h);
+            castRods(h);
             defaultsUnchanged(h);
             steelRodLonger(h);
             smithingBonus(h);
@@ -66,24 +67,55 @@ public final class ToolsTest {
         }
     }
 
-    /** Each rod is registered and made: bone, copper and bronze by a crafting recipe, steel by the anvil's Tool Rod pattern. */
+    /** Each rod is registered and made: bone by a crafting recipe, steel by the anvil's Tool Rod pattern, copper and bronze cast ({@link #castRods}). */
     private static void rodsExist(GameTestHelper h) {
         var level = h.getLevel();
-        Item bronzeIngot = net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MODID, "bronze_ingot"));
-        for (var c : List.of(
-                new Object[] {Smithing.BONE_TOOL_ROD.get(), List.of(com.mechanical.Mechanical.IRON_KNIFE.get(), Items.BONE, Items.BONE)},
-                new Object[] {Smithing.COPPER_TOOL_ROD.get(), List.of(Items.COPPER_INGOT, Items.COPPER_INGOT)},
-                new Object[] {Smithing.BRONZE_TOOL_ROD.get(), List.of(bronzeIngot, bronzeIngot)})) {
-            Item rod = (Item) c[0];
-            h.assertTrue(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(rod).getNamespace().equals(MODID), rod + " registered");
-            @SuppressWarnings("unchecked")
-            List<Item> in = (List<Item>) c[1];
-            var input = CraftingInput.of(1, in.size(), in.stream().map(ItemStack::new).toList());
-            var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level).orElseThrow(() -> h.assertionException("no recipe for " + rod));
-            h.assertTrue(recipe.value().assemble(input).is(rod), "recipe makes " + rod);
-            if (in.size() == 3) h.assertTrue(recipe.value().getRemainingItems(input).get(0).is(com.mechanical.Mechanical.IRON_KNIFE.get()), "the knife stays");
-        }
+        var input = CraftingInput.of(1, 3, List.of(new ItemStack(com.mechanical.Mechanical.IRON_KNIFE.get()), new ItemStack(Items.BONE), new ItemStack(Items.BONE)));
+        var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level).orElseThrow(() -> h.assertionException("no bone rod recipe"));
+        h.assertTrue(recipe.value().assemble(input).is(Smithing.BONE_TOOL_ROD.get()), "recipe makes the bone rod");
+        h.assertTrue(recipe.value().getRemainingItems(input).get(0).is(com.mechanical.Mechanical.IRON_KNIFE.get()), "the knife stays");
         h.assertTrue(Smithing.Pattern.TOOL_ROD.result(new ItemStack(Smithing.HOT_STEEL_INGOT.get())).is(Smithing.STEEL_TOOL_ROD.get()), "a hot Steel Ingot forges a Steel Tool Rod");
+        // the old 2-ingot crafting recipes are gone: copper and bronze rods are cast
+        Item bronzeIngot = Bronze.BRONZE_INGOT.get();
+        for (Item ingot : List.of(Items.COPPER_INGOT, bronzeIngot)) {
+            var column = CraftingInput.of(1, 2, List.of(new ItemStack(ingot), new ItemStack(ingot)));
+            h.assertTrue(level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, column, level).map(r -> r.value().assemble(column))
+                    .filter(out -> out.is(Smithing.COPPER_TOOL_ROD.get()) || out.is(Smithing.BRONZE_TOOL_ROD.get())).isEmpty(), "no 2-ingot rod recipe for " + ingot);
+        }
+    }
+
+    /** Copper and bronze rods: Mold Bench (4 Clay Balls) -> kiln -> pour a crucible into the placed mold -> take the casting -> Whetstone. */
+    private static void castRods(GameTestHelper h) {
+        var level = h.getLevel();
+        h.assertTrue(com.mechanical.MoldBench.ALL.stream().anyMatch(r -> r.result().get() == com.mechanical.Casting.UNFIRED_CLAY_TOOL_ROD_MOLD.get()
+                && r.parts().getFirst().count() == 4), "the Mold Bench shapes the rod mold from 4 Clay Balls");
+        h.assertTrue(com.mechanical.KilnBlockEntity.RECIPES.stream().anyMatch(r -> r.input().test(new ItemStack(com.mechanical.Casting.UNFIRED_CLAY_TOOL_ROD_MOLD.get()))
+                && r.result().get() == com.mechanical.Casting.CLAY_TOOL_ROD_MOLD_ITEM.get()), "the kiln fires the rod mold");
+        var mold = new net.minecraft.core.BlockPos(2, 2, 2);
+        h.setBlock(mold.below(), net.minecraft.world.level.block.Blocks.STONE);
+        var smith = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        for (var c : List.of(new Object[] {com.mechanical.Metal.COPPER, com.mechanical.Casting.ROUGH_CAST_COPPER_TOOL_ROD.get(), Smithing.COPPER_TOOL_ROD.get()},
+                new Object[] {com.mechanical.Metal.BRONZE, com.mechanical.Casting.ROUGH_CAST_BRONZE_TOOL_ROD.get(), Smithing.BRONZE_TOOL_ROD.get()},
+                new Object[] {com.mechanical.Metal.POOR_BRONZE, com.mechanical.Casting.ROUGH_CAST_BRONZE_TOOL_ROD.get(), Smithing.BRONZE_TOOL_ROD.get()})) {
+            var metal = (com.mechanical.Metal) c[0];
+            h.setBlock(mold, com.mechanical.Casting.CLAY_TOOL_ROD_MOLD.get());
+            smith.getInventory().clearContent();
+            smith.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,
+                    com.mechanical.CrucibleItem.molten(com.mechanical.CrucibleContents.EMPTY.add(metal, 4), level.getGameTime()));
+            var hit = new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(h.absolutePos(mold)), net.minecraft.core.Direction.UP, h.absolutePos(mold), false);
+            h.getBlockState(mold).useItemOn(smith.getMainHandItem(), level, smith, net.minecraft.world.InteractionHand.MAIN_HAND, hit);
+            var state = h.getBlockState(mold);
+            h.assertTrue(state.getValue(com.mechanical.ClayMoldBlock.FILL) == com.mechanical.ClayMoldBlock.Fill.MOLTEN, metal + " poured into the rod mold");
+            h.assertTrue(com.mechanical.CrucibleItem.contents(smith.getMainHandItem()).total() == 2, metal + ": the rod takes 2 units");
+            h.setBlock(mold, state.setValue(com.mechanical.ClayMoldBlock.FILL, com.mechanical.ClayMoldBlock.Fill.SOLID)); // set (100 ticks)
+            smith.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            h.getBlockState(mold).useWithoutItem(level, smith, hit);
+            ItemStack rough = ItemStack.EMPTY;
+            for (int i = 0; i < smith.getInventory().getContainerSize(); i++) if (smith.getInventory().getItem(i).is((Item) c[1])) rough = smith.getInventory().getItem(i);
+            h.assertTrue(rough.is((Item) c[1]), metal + " casts " + c[1] + ", got " + rough);
+            ItemStack rod = com.mechanical.Casting.ground(rough);
+            h.assertTrue(rod.is((Item) c[2]) && Bronze.isPoor(rod) == (metal == com.mechanical.Metal.POOR_BRONZE), metal + " grinds into " + rod);
+        }
     }
 
     /** Every recipe built from its own parts (smithing 0) keeps the fresh stack's durability, mining speed and attack damage. */

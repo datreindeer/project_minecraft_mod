@@ -57,6 +57,7 @@ public final class Casting {
     public static final DeferredItem<Item> UNFIRED_CLAY_SHOVEL_HEAD_MOLD = ITEMS.registerSimpleItem("unfired_clay_shovel_head_mold");
     public static final DeferredItem<Item> UNFIRED_CLAY_HOE_HEAD_MOLD = ITEMS.registerSimpleItem("unfired_clay_hoe_head_mold");
     public static final DeferredItem<Item> UNFIRED_CLAY_KNIFE_BLADE_MOLD = ITEMS.registerSimpleItem("unfired_clay_knife_blade_mold");
+    public static final DeferredItem<Item> UNFIRED_CLAY_TOOL_ROD_MOLD = ITEMS.registerSimpleItem("unfired_clay_tool_rod_mold");
 
     public static final DeferredBlock<ClayMoldBlock> CLAY_INGOT_MOLD = mold("clay_ingot_mold", ClayMoldBlock.Shape.INGOT);
     public static final DeferredBlock<ClayMoldBlock> CLAY_PICKAXE_HEAD_MOLD = mold("clay_pickaxe_head_mold", ClayMoldBlock.Shape.PICKAXE_HEAD);
@@ -64,12 +65,14 @@ public final class Casting {
     public static final DeferredBlock<ClayMoldBlock> CLAY_SHOVEL_HEAD_MOLD = mold("clay_shovel_head_mold", ClayMoldBlock.Shape.SHOVEL_HEAD);
     public static final DeferredBlock<ClayMoldBlock> CLAY_HOE_HEAD_MOLD = mold("clay_hoe_head_mold", ClayMoldBlock.Shape.HOE_HEAD);
     public static final DeferredBlock<ClayMoldBlock> CLAY_KNIFE_BLADE_MOLD = mold("clay_knife_blade_mold", ClayMoldBlock.Shape.KNIFE_BLADE);
+    public static final DeferredBlock<ClayMoldBlock> CLAY_TOOL_ROD_MOLD = mold("clay_tool_rod_mold", ClayMoldBlock.Shape.TOOL_ROD);
     public static final DeferredItem<BlockItem> CLAY_INGOT_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_ingot_mold", CLAY_INGOT_MOLD);
     public static final DeferredItem<BlockItem> CLAY_PICKAXE_HEAD_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_pickaxe_head_mold", CLAY_PICKAXE_HEAD_MOLD);
     public static final DeferredItem<BlockItem> CLAY_AXE_HEAD_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_axe_head_mold", CLAY_AXE_HEAD_MOLD);
     public static final DeferredItem<BlockItem> CLAY_SHOVEL_HEAD_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_shovel_head_mold", CLAY_SHOVEL_HEAD_MOLD);
     public static final DeferredItem<BlockItem> CLAY_HOE_HEAD_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_hoe_head_mold", CLAY_HOE_HEAD_MOLD);
     public static final DeferredItem<BlockItem> CLAY_KNIFE_BLADE_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_knife_blade_mold", CLAY_KNIFE_BLADE_MOLD);
+    public static final DeferredItem<BlockItem> CLAY_TOOL_ROD_MOLD_ITEM = ITEMS.registerSimpleBlockItem("clay_tool_rod_mold", CLAY_TOOL_ROD_MOLD);
 
     // cast heads come out rough and are ground on the Whetstone before the Tool Station takes them
     public static final DeferredItem<Item> ROUGH_CAST_COPPER_PICKAXE_HEAD = ITEMS.registerSimpleItem("rough_cast_copper_pickaxe_head");
@@ -77,6 +80,9 @@ public final class Casting {
     public static final DeferredItem<Item> ROUGH_CAST_COPPER_SHOVEL_HEAD = ITEMS.registerSimpleItem("rough_cast_copper_shovel_head");
     public static final DeferredItem<Item> ROUGH_CAST_COPPER_HOE_HEAD = ITEMS.registerSimpleItem("rough_cast_copper_hoe_head");
     public static final DeferredItem<Item> ROUGH_CAST_COPPER_KNIFE_BLADE = ITEMS.registerSimpleItem("rough_cast_copper_knife_blade");
+    // the dynamic tools' copper and bronze rods (Smithing.COPPER_TOOL_ROD / BRONZE_TOOL_ROD) are cast and ground the same way
+    public static final DeferredItem<Item> ROUGH_CAST_COPPER_TOOL_ROD = ITEMS.registerSimpleItem("rough_cast_copper_tool_rod");
+    public static final DeferredItem<Item> ROUGH_CAST_BRONZE_TOOL_ROD = ITEMS.registerSimpleItem("rough_cast_bronze_tool_rod");
     public static final DeferredItem<Item> COPPER_PICKAXE_HEAD = ITEMS.registerSimpleItem("copper_pickaxe_head");
     public static final DeferredItem<Item> COPPER_AXE_HEAD = ITEMS.registerSimpleItem("copper_axe_head");
     public static final DeferredItem<Item> COPPER_SHOVEL_HEAD = ITEMS.registerSimpleItem("copper_shovel_head");
@@ -96,7 +102,8 @@ public final class Casting {
     private static final Map<Supplier<Item>, Supplier<Item>> GROUND = Map.of(
             ROUGH_CAST_COPPER_PICKAXE_HEAD, COPPER_PICKAXE_HEAD, ROUGH_CAST_COPPER_AXE_HEAD, COPPER_AXE_HEAD,
             ROUGH_CAST_COPPER_SHOVEL_HEAD, COPPER_SHOVEL_HEAD, ROUGH_CAST_COPPER_HOE_HEAD, COPPER_HOE_HEAD,
-            ROUGH_CAST_COPPER_KNIFE_BLADE, COPPER_KNIFE_BLADE);
+            ROUGH_CAST_COPPER_KNIFE_BLADE, COPPER_KNIFE_BLADE, ROUGH_CAST_COPPER_TOOL_ROD, Smithing.COPPER_TOOL_ROD,
+            ROUGH_CAST_BRONZE_TOOL_ROD, Smithing.BRONZE_TOOL_ROD);
 
     public record OreUnits(Metal metal, int units) {}
 
@@ -116,7 +123,12 @@ public final class Casting {
 
     /** The ground head for a rough cast one (keeping Poor Bronze), or empty. */
     public static ItemStack ground(ItemStack rough) {
-        for (var e : GROUND.entrySet()) if (rough.is(e.getKey().get())) return new ItemStack(e.getValue().get());
+        for (var e : GROUND.entrySet()) {
+            if (!rough.is(e.getKey().get())) continue;
+            ItemStack out = new ItemStack(e.getValue().get());
+            if (Bronze.isPoor(rough)) Bronze.markPoor(out);
+            return out;
+        }
         return Bronze.ground(rough);
     }
 

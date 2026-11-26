@@ -364,6 +364,7 @@ flintkniv och spatel. Förr var de crafting-recept av Clay Balls, men mönstren 
 | Clay Pickaxe Head Mold / Axe Head Mold | 7 / 7 |
 | Clay Shovel Head Mold / Hoe Head Mold | 5 / 6 |
 | Clay Knife Blade Mold | 4 |
+| Clay Tool Rod Mold | 4 (koppar eller brons, se "Clay Molds") |
 | Clay Saw Blade Mold / Plate Mold | 5 / 8 |
 | Clay Spear Head Mold / Sword Blade Mold | 4 / 6 |
 | Clay Kettle Mold | 28 (= 7 Clay-block; bänken tar bara Clay Balls) |
@@ -378,7 +379,7 @@ Kod: `MoldBench` (registrering, recepten, menyn), `MoldBenchBlock`, `RecipeStati
 
 ### Clay Molds
 
-Sex formar. Unfired-formarna formas av Clay Balls i **Mold Bench** (se nedan, inte i crafting table) och bränns i
+Sju formar. Unfired-formarna formas av Clay Balls i **Mold Bench** (se nedan, inte i crafting table) och bränns i
 kilnen (600°, 20 s) till en form som ställs på marken (behöver fast mark under).
 
 | Form | Mold Bench (Clay Balls) | Enheter per gjutning | Ger |
@@ -389,6 +390,7 @@ kilnen (600°, 20 s) till en form som ställs på marken (behöver fast mark und
 | Clay Shovel Head Mold | 5 | 2 | Rough Cast Copper Shovel Head |
 | Clay Hoe Head Mold | 6 | 4 | Rough Cast Copper Hoe Head |
 | Clay Knife Blade Mold | 4 | 2 | Rough Cast Copper Knife Blade |
+| Clay Tool Rod Mold | 4 | 2 | Rough Cast Copper Tool Rod (brons: Rough Cast Bronze Tool Rod, Poor Bronze följer med) → slipas till Copper / Bronze Tool Rod |
 
 - **Hälla:** högerklicka på en tom form med Crucible of Molten Copper. Räcker inte metallen: "This mold takes 6 units
   of metal; the crucible holds 4". Formen fylls med glödande metall (syns i formen, animerad, lyser 9), lavaljud.
@@ -414,9 +416,11 @@ Det fjärde draget ger det slipade huvudet (Copper Pickaxe Head osv.). Framstege
 Ett mjukt mellansteg mellan sten och brons. Monteras i **Tool Station**; receptet låses upp när man bär på det slipade
 huvudet. Hacka, yxa, spade och hacka (hoe) är vanillas kopparverktyg (vanillas egna recept är fortfarande avstängda).
 
-**Rods för dynamiska verktyg:** **Copper Tool Rod** (2 Copper Ingot i en kolumn = 2 rods; nivå 1, hållbarhet ×1,2) och **Bronze Tool Rod**
-(2 Bronze Ingot i en kolumn = 2 rods; nivå 2, ×1,35, +0,5 skada). Ingen gjutform eller städmönster finns för dem, så de dras direkt ur tackorna (1 tacka ensam är nugget-receptet).
-Skript: `scripts/gen_tool_rods.py`.
+**Rods för dynamiska verktyg:** **Copper Tool Rod** (nivå 1, hållbarhet ×1,2) och **Bronze Tool Rod** (nivå 2, ×1,35,
++0,5 skada) **gjuts** som huvudena: Clay Tool Rod Mold (4 Clay Balls i Mold Bench, bränns i kilnen 600°; täljstensformen
+Soapstone Tool Rod Mold spricker aldrig), 2 enheter koppar eller brons → Rough Cast Copper / Bronze Tool Rod, 4 drag på
+Whetstone → rod. Poor Bronze följer med till rodden och verktyget (70 % hållbarhet). Inget crafting-recept.
+Skript: `scripts/gen_tool_rods.py` (form, gjutningar, texturer), `scripts/gen_metals.py` (gjutningen `tool_rod`). Test: `ToolsTest`.
 
 | Verktyg | Huvud | Binding | Skaft |
 |---|---|---|---|

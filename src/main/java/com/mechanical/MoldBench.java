@@ -50,6 +50,7 @@ public final class MoldBench {
             StationRecipe.of(Casting.UNFIRED_CLAY_SHOVEL_HEAD_MOLD::get, 1, of(() -> Items.CLAY_BALL, 5), null),
             StationRecipe.of(Casting.UNFIRED_CLAY_HOE_HEAD_MOLD::get, 1, of(() -> Items.CLAY_BALL, 6), null),
             StationRecipe.of(Casting.UNFIRED_CLAY_KNIFE_BLADE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 4), null),
+            StationRecipe.of(Casting.UNFIRED_CLAY_TOOL_ROD_MOLD::get, 1, of(() -> Items.CLAY_BALL, 4), null),
             StationRecipe.of(Bronze.UNFIRED_CLAY_SAW_BLADE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 5), null),
             StationRecipe.of(Bronze.UNFIRED_CLAY_PLATE_MOLD::get, 1, of(() -> Items.CLAY_BALL, 8), null),
             StationRecipe.of(Bronze.UNFIRED_CLAY_SPEAR_HEAD_MOLD::get, 1, of(() -> Items.CLAY_BALL, 4), null),

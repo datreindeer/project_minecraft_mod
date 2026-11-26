@@ -60,6 +60,16 @@
           }
         ]
       }
+    },
+    "has_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mechanical:clay_tool_rod_mold"
+          }
+        ]
+      }
     }
   },
   "requirements": [
@@ -69,7 +79,8 @@
       "has_2",
       "has_3",
       "has_4",
-      "has_5"
+      "has_5",
+      "has_6"
     ]
   ],
   "display": {

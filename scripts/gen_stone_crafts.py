@@ -27,7 +27,7 @@ jar = zipfile.ZipFile(sorted(glob.glob(str(ROOT / "build/moddev/artifacts/minecr
 # ClayMoldBlock.Shape, in order
 SHAPES = ["ingot", "pickaxe_head", "axe_head", "shovel_head", "hoe_head", "knife_blade", "saw_blade", "plate", "spear_head",
           "sword_blade", "kettle", "arrowheads", "bucket", "sickle_blade", "shears", "fish_hooks", "needles", "tongs",
-          "chisel_blade", "hammer_head", "anvil"]
+          "chisel_blade", "hammer_head", "anvil", "tool_rod"]
 SOAPSTONE = [(74, 88, 80), (94, 110, 100), (116, 130, 118), (138, 150, 138), (160, 170, 156)]  # gen_stone_families.py
 ALABASTER = [(200, 188, 160), (216, 206, 182), (230, 222, 202), (240, 234, 218), (250, 246, 236)]
 PUMICE = [(150, 148, 140), (172, 170, 162), (192, 190, 182), (210, 208, 200), (226, 224, 218)]
