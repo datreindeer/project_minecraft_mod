@@ -3,6 +3,8 @@
 - data/mechanical/advancement/<tab>/<id>.json for every row in TABS: four tabs (Stone Age, Wilderness & Hunting,
   Food & Farming, Bronze Age). Each row: id, parent, icon, frame, title, description, criteria. The parent is the step
   you need first, so the tree reads as the progression. Lang keys advancements.mechanical.<tab>.<id>.title/.description.
+- assets/mechanical/quests.json for the quest screen, which replaces the advancements screen (client/quests/): chapter and
+  quest order, and what each criterion of a multi-criteria quest is.
 - Every vanilla advancement in data/minecraft/advancement/{story,nether,end,adventure,husbandry}/ (listed from the merged
   jar) is overridden with a neoforge:never condition, so those tabs are gone. recipes/** (recipe-book unlocks) are kept.
 - Every item id used must have an item model definition (assets/<ns>/items/<id>.json in the mod or the jar) and every
@@ -2528,7 +2530,53 @@ def move_to_steel_age():
 move_to_steel_age()
 
 
+# ---------------------------------------------------------------- the quest screen (client.quests.QuestScreen)
+# assets/mechanical/quests.json: chapter order, quest order (siblings are drawn in this order) and, for quests with several
+# criteria, what each criterion is: the client is never sent criteria, only their names. A spec is an item id, "#tag",
+# or "@translation.key".
+
+QUESTS = RES / "assets/mechanical/quests.json"
+# criteria granted from Java, by name: their checklist text
+CODE_CRITERIA = {
+    "butchered": "Butcher the animal itself",
+    "cold": "Meet a tribe of the cold lands", "temperate": "Meet a tribe of the temperate lands",
+    "warm": "Meet a tribe of the warm lands", "eastern": "Meet a tribe of the eastern lands",
+    "jungle": "Meet a tribe of the jungle",
+    "herbs": "Trade with a Herb Caravan", "hunting": "Trade with a Hunters' Caravan", "mining": "Trade with a Miners' Caravan",
+    "jewelry": "Trade with a Jewellers' Caravan", "foraging": "Trade with a Foragers' Caravan",
+    "woodsman": "Trade with a Woodsmen's Caravan",
+}
+QUEST_UI = {
+    "title": "Quests", "done": "Done", "ready": "Ready", "locked": "Locked", "ready_now": "Ready to do now",
+    "state.done": "Completed", "state.ready": "Ready to do", "state.progress": "In progress", "state.locked": "Locked",
+    "what": "What to do", "progress": "Progress", "any_of": "Any one of these", "all_of": "Collect them all",
+    "first": "Do first", "follows": "Follows", "leads_to": "Leads to", "next": "Next quest", "chapter_done": "Chapter complete!",
+    "nothing_ready": "Nothing is ready here yet", "chapter_count": "%s / %s done", "ready_count": "%s ready",
+    "total": "All chapters", "fit": "Show whole chapter", "zoom_in": "Zoom in", "zoom_out": "Zoom out", "close": "Close",
+    "any_tag": "Any %s", "frame.task": "Task", "frame.goal": "Goal", "frame.challenge": "Challenge",
+    "hint": "Drag to move, scroll to zoom, click a quest",
+}
+
+
+def criterion_spec(tab, aid, name, c):
+    trigger, cond = c["trigger"], c.get("conditions", {})
+    if trigger == "minecraft:inventory_changed":
+        items = cond["items"][0]["items"]
+        return items
+    if trigger == "minecraft:consume_item":
+        return cond["item"]["items"]
+    if trigger == "minecraft:placed_block":
+        return cond["location"]["blocks"]
+    if trigger == "minecraft:tame_animal":
+        return "@entity." + cond["entity"]["predicate"]["minecraft:entity_type"].replace(":", ".")
+    if name == "stood_on":
+        return cond["player"]["predicate"]["minecraft:stepping_on"]["block"]["blocks"]
+    assert name in CODE_CRITERIA,f"{tab}/{aid}: no checklist text for criterion {name} ({trigger})"
+    return "@quests.mechanical.criterion." + name
+
+
 def build():
+    chapters = []
     out_root = D / "mechanical/advancement"
     lang = {}
     count = {}
@@ -2540,6 +2588,7 @@ def build():
             shutil.rmtree(out)
         out.mkdir(parents=True)
         ids = set()
+        quests = []
         for n, (aid, parent, icon, frame, title, desc, crit) in enumerate(rows):
             assert aid not in ids, f"duplicate {tab}/{aid}"
             assert (parent is None) == (n == 0), f"{tab}/{aid}: only the first row is the root"
@@ -2558,8 +2607,12 @@ def build():
             adv = {"parent": f"mechanical:{parent_folder}/{parent}"} if parent else {}
             adv |= {"criteria": dict(crit), "requirements": [[c] for c in crit] if isinstance(crit, AllOf) else [list(crit)],
                     "display": display}
+            quests.append([f"mechanical:{folder}/{aid}",
+                           {n: criterion_spec(tab, aid, n, c) for n, c in crit.items()} if len(crit) > 1 else {}])
             (out_root / folder / f"{aid}.json").write_text(json.dumps(adv, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        chapters.append({"id": tab, "quests": quests})
         count[tab] = len(rows)
+    QUESTS.write_text(json.dumps({"chapters": chapters}, separators=(",", ":")), encoding="utf-8")
 
     # hide the vanilla tabs (keep recipes/**)
     hidden = 0
@@ -2574,7 +2627,10 @@ def build():
     assert hidden > 100, hidden
 
     old = json.loads(LANG.read_text(encoding="utf-8"))
-    old = {k: v for k, v in old.items() if not k.startswith("advancements.mechanical.")} | lang
+    lang |= {"quests.mechanical.criterion." + k: v for k, v in CODE_CRITERIA.items()}
+    lang |= {"gui.mechanical.quests." + k: v for k, v in QUEST_UI.items()}
+    old = {k: v for k, v in old.items()
+           if not k.startswith(("advancements.mechanical.", "quests.mechanical.", "gui.mechanical.quests."))} | lang
     LANG.write_text(json.dumps(old, indent=2) + "\n", encoding="utf-8")
     print(f"advancements: {count} ({sum(count.values())}), vanilla hidden: {hidden}")
 

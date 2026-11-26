@@ -13,8 +13,6 @@
     "EntityLightMixin",
     "EyesLayerMixin",
     "LightCoordsMixin",
-    "AdvancementTabMixin",
-    "AdvancementsScreenMixin",
     "HumanoidModelMixin",
     "LivingEntityRendererMixin",
     "LivingEntityRendererInvoker",
@@ -34,6 +32,7 @@
   },
   "mixins": [
     "AbstractHorseMixin",
+    "PlayerAdvancementsQuestMixin",
     "MultiNoiseBiomeSourceMixin",
     "LivingEntityWaypointMixin",
     "EntityGetterMixin",
