@@ -80,6 +80,15 @@ public final class PlaceStructureTest {
         check(h, r != null && r.startsWith("Buildings"), "built over a player block: " + r);
         check(h, level.getBlockState(table).is(Blocks.CRAFTING_TABLE), "the player block is gone");
         check(h, level.getBlockState(table.offset(3, -1, 3)).equals(beside), "the ground changed after a refusal");
+        // a chest under a stone roof: the roof is the surface, the chest far below it
+        int hx = x + 960;
+        level.getChunk(hx >> 4, z >> 4);
+        BlockPos chest = new BlockPos(hx, level.getHeight(Heightmap.Types.MOTION_BLOCKING, hx, z), z);
+        level.setBlock(chest, Blocks.CHEST.defaultBlockState(), 2);
+        level.setBlock(chest.above(6), Blocks.STONE.defaultBlockState(), 2);
+        r = PlaceStructure.place(level, "tribe_village", hx, z);
+        check(h, r != null && r.startsWith("Buildings"), "built over a chest under a roof: " + r);
+        check(h, level.getBlockState(chest).is(Blocks.CHEST), "the chest is gone");
         h.succeed();
     }
 }
