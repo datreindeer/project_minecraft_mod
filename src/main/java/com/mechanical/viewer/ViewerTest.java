@@ -46,6 +46,11 @@ public final class ViewerTest {
     private static void test(GameTestHelper h) {
         try {
             seenItems(h);
+            stationSources(h);
+            toolStationKeyPart(h);
+            altOptionCountsAsSeen(h);
+            codecRoundTrip(h);
+            h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
             throw h.assertionException(e + " at " + java.util.Arrays.toString(java.util.Arrays.copyOf(e.getStackTrace(), 6)));
@@ -72,6 +77,39 @@ public final class ViewerTest {
         p.getEnderChestInventory().setItem(1, new ItemStack(Items.EMERALD));
         SeenItems.backfill(p);
         h.assertTrue(!SeenItems.seen(p).contains("minecraft:emerald"), "a second backfill does nothing (guard)");
-        h.succeed();
+    }
+
+    private static void stationSources(GameTestHelper h) {
+        var all = StationSources.all();
+        for (Station st : List.of(Station.TOOL_STATION, Station.FLETCHING, Station.ARMOR_STATION, Station.LEATHERWORKING, Station.MOLD_BENCH,
+                Station.PATTERN_BENCH, Station.KILN, Station.BLOOMERY)) {
+            h.assertTrue(all.stream().anyMatch(r -> r.station() == st), "recipes for " + st);
+        }
+    }
+
+    private static ViewerRecipe bronzePickaxe() {
+        return StationSources.all().stream().filter(r -> r.station() == Station.TOOL_STATION && r.unlockId().equals("mechanical:bronze_pickaxe")).findFirst().orElseThrow();
+    }
+
+    private static void toolStationKeyPart(GameTestHelper h) {
+        var r = bronzePickaxe();
+        var seen = java.util.Set.of("mechanical:cordage", "mechanical:tool_rod");
+        h.assertTrue(!r.unlocked(seen, List.of()), "no unlock without the recipe id");
+        h.assertTrue(r.unlocked(seen, List.of("mechanical:bronze_pickaxe")), "unlocked by the recipe id");
+    }
+
+    private static void altOptionCountsAsSeen(GameTestHelper h) {
+        var r = new ViewerRecipe(Station.CRAFTING_SHAPELESS, List.of(new Slot(List.of(Items.FLINT, Items.STICK), 1, false)), new ItemStack(Items.TORCH), 0, UnlockKind.ALL_SEEN, "");
+        h.assertTrue(r.unlocked(java.util.Set.of("minecraft:stick"), List.of()), "an alternative option counts as seen");
+        h.assertTrue(!r.unlocked(java.util.Set.of(), List.of()), "nothing seen is locked");
+    }
+
+    private static void codecRoundTrip(GameTestHelper h) {
+        var r = bronzePickaxe();
+        var buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), h.getLevel().registryAccess());
+        ViewerRecipe.CODEC.encode(buf, r);
+        var d = ViewerRecipe.CODEC.decode(buf);
+        h.assertTrue(d.station() == r.station() && d.inputs().equals(r.inputs()) && ItemStack.matches(d.output(), r.output())
+                && d.width() == r.width() && d.unlock() == r.unlock() && d.unlockId().equals(r.unlockId()), "codec round trip");
     }
 }
