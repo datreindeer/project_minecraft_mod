@@ -160,6 +160,7 @@ public final class ToolsTest {
         shares(h, p, Items.IRON_PICKAXE, Smithing.IRON_PICKAXE_HEAD.get(), Items.LEATHER, rod, Items.IRON_PICKAXE);
         shares(h, p, Bronze.BRONZE_PICKAXE.get(), Smithing.IRON_PICKAXE_HEAD.get(), Items.LEATHER, rod, Items.IRON_PICKAXE);
         shares(h, p, Smithing.STEEL_SMITHING_HAMMER.get(), Smithing.STEEL_HAMMER_HEAD.get(), Smithing.IRON_TOOL_ROD.get(), rod, Smithing.STEEL_SMITHING_HAMMER.get());
+        shares(h, p, Mechanical.CRUDE_FISHING_ROD.get(), Items.FLINT, cord, rod, Mechanical.FLINT_SPEAR.get()); // selection no longer fits: best fit
         shares(h, p, Smithing.STEEL_QUARRY_HAMMER.get(), Smithing.STEEL_HAMMER_HEAD.get(), Smithing.IRON_TOOL_ROD.get(), rod, Smithing.STEEL_QUARRY_HAMMER.get());
         h.assertTrue(ToolParts.bindings(Items.FLINT).get(0) == Mechanical.CORDAGE.get(), "fixed order: tier, then id");
     }

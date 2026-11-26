@@ -321,6 +321,7 @@ public final class GuiShots {
 
         for (String station : List.of("tool_station", "fletching_table", "leatherworking_bench", "armor_station", "mold_bench", "kiln", "bloomery_hearth", "furnace_tap", "high_furnace_front"))
             container("mod_" + station, () -> mod(station));
+        toolStation();
         inWorld("mod_pack", p -> {
             reset(p);
             Equipment.of(p).set(Accessory.BACK, new ItemStack(Mechanical.LEATHER_SATCHEL.get()));
@@ -559,6 +560,54 @@ public final class GuiShots {
             }
             return null;
         };
+    }
+
+    /** A bronze-age smith (Smithing 40) at the Tool Station: everything up to bronze known, the parts seen. */
+    private static void smith(ServerPlayer p, Item... carry) {
+        reset(p);
+        p.setData(Mechanical.UNLOCKED_TOOLS, com.mechanical.ToolStationRecipes.ALL.stream()
+                .filter(r -> com.mechanical.tools.ToolParts.tier(r.head().get()) <= 2).map(com.mechanical.ToolStationRecipes.Recipe::id).toList());
+        java.util.List<String> seen = new java.util.ArrayList<>();
+        for (Item i : List.of(Mechanical.TWINE.get(), Mechanical.CORDAGE.get(), Items.LEATHER, Items.STICK, Mechanical.TOOL_ROD.get(),
+                com.mechanical.Kettle.HIDE_GLUE.get(), com.mechanical.Smithing.BONE_TOOL_ROD.get(), com.mechanical.Smithing.COPPER_TOOL_ROD.get(),
+                com.mechanical.Smithing.BRONZE_TOOL_ROD.get(), com.mechanical.Bronze.BRONZE_PLATE.get()))
+            seen.add(BuiltInRegistries.ITEM.getKey(i).toString());
+        p.setData(com.mechanical.viewer.SeenItems.SEEN.get(), List.copyOf(seen));
+        var xp = new java.util.HashMap<>(p.getData(Skills.XP.get()));
+        xp.put(Skill.SMITHING.key(), Skills.xpForLevel(40));
+        p.setData(Skills.XP.get(), xp);
+        for (int i = 0; i < carry.length; i++) p.getInventory().setItem(18 + i, new ItemStack(carry[i]));
+        open(p, mod("tool_station"));
+    }
+
+    /** Clicks the recipe for {@code result} (as the screen would), then lays exactly these parts in the pockets. */
+    private static void lay(ServerPlayer p, Item result, Item head, Item binding, Item rod) {
+        var recipes = com.mechanical.ToolStationRecipes.ALL;
+        int i = 0;
+        while (recipes.get(i).result().get() != result) i++;
+        p.containerMenu.clickMenuButton(p, i);
+        Item[] parts = {head, binding, rod};
+        for (int k = 0; k < 3; k++) p.containerMenu.getSlot(k).set(new ItemStack(parts[k]));
+    }
+
+    private static void toolStation() {
+        Minecraft mc = Minecraft.getInstance();
+        Runnable big = () -> {
+            mc.getWindow().setWindowed(1920, 1080);
+            mc.options.guiScale().set(3);
+            mc.resizeGui();
+        };
+        inWorld("toolstation_empty", p -> smith(p), big, null);
+        inWorld("toolstation_bronze_pickaxe", p -> {
+            smith(p, Mechanical.CORDAGE.get(), Mechanical.TOOL_ROD.get());
+            lay(p, com.mechanical.Bronze.BRONZE_PICKAXE.get(), com.mechanical.Bronze.BRONZE_PICKAXE_HEAD.get(), Items.LEATHER,
+                    com.mechanical.Smithing.BRONZE_TOOL_ROD.get());
+        }, big, null);
+        // the copper pickaxe picked, no head yet (its ghost shows), a bronze rod: the rod pocket says why
+        inWorld("toolstation_tier", p -> {
+            smith(p, com.mechanical.Casting.COPPER_PICKAXE_HEAD.get());
+            lay(p, Items.COPPER_PICKAXE, Items.AIR, Mechanical.CORDAGE.get(), com.mechanical.Smithing.BRONZE_TOOL_ROD.get());
+        }, big, null);
     }
 
     private static void skills() {

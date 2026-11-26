@@ -17,6 +17,9 @@ public final class HideUi {
             GOOD = 0xFFA6D67E, BAD = 0xFFEC8C68;
     /** Lines and bars: the tan leather edge, its darker side, and the near-black behind a bar. */
     public static final int EDGE = 0xFF8A6A44, EDGE_DARK = 0xFF6A4F31, DARK = 0xFF160F09, STITCH = 0xFF8F714A;
+    /** The slot pocket and stamped-arrow colours of scripts/gen_gui_textures.py. */
+    public static final int SLOT_FILL = 0xFF55422F, SLOT_SHADE = 0xFF473424, SLOT_DARK = 0xFF160F09, SLOT_LIGHT = 0xFF7C5F3F, SLOT_MID = 0xFF352719,
+            ARROW = 0xFF1A120B, ARROW_LIP = 0xFF6E5438;
     /** Vanilla's container label colour, which is unreadable on dark hide (mixin GuiTextColorMixin swaps it). */
     public static final int VANILLA_LABEL = 0xFF404040;
 
@@ -59,6 +62,29 @@ public final class HideUi {
     /** An 18x18 item pocket; draw the item at x + 1, y + 1. */
     public static void slot(GuiGraphicsExtractor g, int x, int y) {
         g.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT, x, y, 18, 18);
+    }
+
+    /** A big result pocket, the same leather as the 18 px slot. */
+    public static void pocket(GuiGraphicsExtractor g, int x, int y, int w, int h) {
+        g.fill(x + 1, y + 1, x + w - 1, y + h - 1, SLOT_FILL);
+        g.fill(x + 1, y + 1, x + w - 1, y + 2, SLOT_SHADE);
+        g.fill(x + 1, y + 1, x + 2, y + h - 1, SLOT_SHADE);
+        g.fill(x, y, x + w - 1, y + 1, SLOT_DARK);
+        g.fill(x, y, x + 1, y + h - 1, SLOT_DARK);
+        g.fill(x + 1, y + h - 1, x + w, y + h, SLOT_LIGHT);
+        g.fill(x + w - 1, y + 1, x + w, y + h, SLOT_LIGHT);
+        g.fill(x + w - 1, y, x + w, y + 1, SLOT_MID);
+        g.fill(x, y + h - 1, x + 1, y + h, SLOT_MID);
+    }
+
+    /** The flint-headed arrow pressed into the leather, 22x15 as on the container textures. */
+    public static void arrow(GuiGraphicsExtractor g, int x, int y) {
+        int mid = 7, head = 8, shaft = 22 - head;
+        for (int i = 0; i < 22; i++) {
+            int half = i < shaft ? 1 : head - 1 - (i - shaft);
+            g.fill(x + i, y + mid + half + 1, x + i + 1, y + mid + half + 2, ARROW_LIP);
+            g.fill(x + i, y + mid - half, x + i + 1, y + mid + half + 1, ARROW);
+        }
     }
 
     private HideUi() {}

@@ -44,10 +44,11 @@ public class ToolStationMenu extends AbstractContainerMenu {
         super(Mechanical.TOOL_STATION_MENU.get(), containerId);
         this.access = access;
         this.player = inventory.player;
-        addSlot(new Slot(inputs, HEAD, 80, 17));
-        addSlot(new Slot(inputs, BINDING, 80, 35));
-        addSlot(new Slot(inputs, ROD, 80, 53));
-        addSlot(new Slot(result, 0, 134, 35) {
+        // positions match the pockets ToolStationScreen draws
+        addSlot(new Slot(inputs, HEAD, 179, 27));
+        addSlot(new Slot(inputs, BINDING, 179, 49));
+        addSlot(new Slot(inputs, ROD, 179, 71));
+        addSlot(new Slot(result, 0, 363, 49) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
@@ -61,7 +62,7 @@ public class ToolStationMenu extends AbstractContainerMenu {
                 super.onTake(player, carried);
             }
         });
-        addStandardInventorySlots(inventory, 8, 84);
+        addStandardInventorySlots(inventory, 8, 144);
         selected.set(-1);
         addDataSlot(selected);
     }
@@ -69,17 +70,20 @@ public class ToolStationMenu extends AbstractContainerMenu {
     @Override
     public void slotsChanged(Container container) {
         ItemStack head = inputs.getItem(HEAD), binding = inputs.getItem(BINDING), rod = inputs.getItem(ROD);
-        int chosen = selected.get();
-        boolean constrained = chosen >= 0 && head.is(ToolStationRecipes.ALL.get(chosen).head().get()); // another head ignores the selection
-        // a clicked recipe is the only one that may produce; otherwise the recipe whose own binding and rod fit best (ties: first in ALL)
+        ToolStationRecipes.Recipe chosen = selected.get() >= 0 ? ToolStationRecipes.ALL.get(selected.get()) : null;
+        // the clicked recipe wins when its parts fit; otherwise the recipe whose own binding and rod fit best (ties: first in ALL)
         ItemStack out = ToolStationRecipes.ALL.stream()
-                .filter(r -> r.matches(head, binding, rod) && ToolStationRecipes.isUnlocked(player, r)
-                        && (!constrained || ToolStationRecipes.ALL.get(chosen) == r))
-                .max(java.util.Comparator.comparingInt(r -> r.score(binding, rod)))
+                .filter(r -> r.matches(head, binding, rod) && ToolStationRecipes.isUnlocked(player, r))
+                .max(java.util.Comparator.<ToolStationRecipes.Recipe>comparingInt(r -> r == chosen ? 1 : 0).thenComparingInt(r -> r.score(binding, rod)))
                 .map(r -> Bronze.inheritPoor(build(r, head, binding, rod), inputs))
                 .orElse(ItemStack.EMPTY);
         result.setItem(0, out);
         broadcastChanges();
+    }
+
+    /** The recipe clicked in the screen (index into ToolStationRecipes.ALL), -1 for none; synced to the client. */
+    public int selected() {
+        return selected.get();
     }
 
     /** Dynamic recipes write the chosen parts and this player's Smithing level onto the tool. */

@@ -54,9 +54,7 @@ public class RecipeViewScreen extends Screen {
     private static final int W = 236, H = 176, TAB_W = 24, TAB_H = 22, TAB_STEP = 26;
     /** The body (between the header seam and the footer). */
     private static final int BODY_Y = 38, BODY_H = H - 38 - 30, NOTE_H = H - 38 - 8;
-    // the slot pocket and stamped-arrow colours of scripts/gen_gui_textures.py
-    private static final int SLOT = 0xFF55422F, SLOT_SHADE = 0xFF473424, SLOT_DARK = 0xFF160F09, SLOT_LIGHT = 0xFF7C5F3F, SLOT_MID = 0xFF352719,
-            ARROW = 0xFF1A120B, ARROW_LIP = 0xFF6E5438;
+    private static final int ARROW = HideUi.ARROW, ARROW_LIP = HideUi.ARROW_LIP;
     private static final String[] FLAME = {"......#.......", ".....##.......", ".....###......", "....####..#...", "..#.#####.#...",
             "..#.#####.##..", ".##.##########", ".#############", "##############", "######.#######", "#####...######", ".###.....####.",
             ".###.....###..", "...###..###..."};
@@ -373,7 +371,7 @@ public class RecipeViewScreen extends Screen {
                     int col = i % w, row = i / w;
                     if (row < 3 && col < 3) input(g, r.inputs().get(i), x + col * 18, y + row * 18, mouseX, mouseY);
                 }
-                arrow(g, x + 54 + 12, cy - 8);
+                HideUi.arrow(g, x + 54 + 12, cy - 8);
                 output(g, r, x + 100, cy - 13, mouseX, mouseY);
             }
             case TOOL_STATION, FLETCHING, ARMOR_STATION, LEATHERWORKING, MOLD_BENCH, PATTERN_BENCH -> {
@@ -395,7 +393,7 @@ public class RecipeViewScreen extends Screen {
                         ly += 10;
                     }
                 }
-                arrow(g, ax, cy - 8);
+                HideUi.arrow(g, ax, cy - 8);
                 output(g, r, ox, cy - 13, mouseX, mouseY);
             }
             default -> { // one in, one out
@@ -405,7 +403,7 @@ public class RecipeViewScreen extends Screen {
                 input(g, r.inputs().get(0), x, iy, mouseX, mouseY);
                 if (fire) stamp(g, FLAME, x + 2, iy + 21);
                 int ax = x + 18 + 14;
-                arrow(g, ax, cy - 8);
+                HideUi.arrow(g, ax, cy - 8);
                 output(g, r, ax + 22 + 14, cy - 13, mouseX, mouseY);
                 String[] heat = heat(r);
                 if (heat != null) {
@@ -430,7 +428,7 @@ public class RecipeViewScreen extends Screen {
     }
 
     private void output(GuiGraphicsExtractor g, ViewerRecipe r, int x, int y, int mouseX, int mouseY) {
-        pocket(g, x, y, 26, 26);
+        HideUi.pocket(g, x, y, 26, 26);
         g.item(r.output(), x + 5, y + 5);
         g.itemDecorations(font, r.output(), x + 5, y + 5);
         pocketHit(g, x, y, 26, r.output(), mouseX, mouseY);
@@ -457,29 +455,6 @@ public class RecipeViewScreen extends Screen {
     private static String time(int ticks) {
         int s = ticks / 20;
         return s < 60 ? s + " s" : s / 60 + " min" + (s % 60 > 0 ? " " + s % 60 + " s" : "");
-    }
-
-    /** A big result pocket, the same leather as the 18 px slot. */
-    private static void pocket(GuiGraphicsExtractor g, int x, int y, int w, int h) {
-        g.fill(x + 1, y + 1, x + w - 1, y + h - 1, SLOT);
-        g.fill(x + 1, y + 1, x + w - 1, y + 2, SLOT_SHADE);
-        g.fill(x + 1, y + 1, x + 2, y + h - 1, SLOT_SHADE);
-        g.fill(x, y, x + w - 1, y + 1, SLOT_DARK);
-        g.fill(x, y, x + 1, y + h - 1, SLOT_DARK);
-        g.fill(x + 1, y + h - 1, x + w, y + h, SLOT_LIGHT);
-        g.fill(x + w - 1, y + 1, x + w, y + h, SLOT_LIGHT);
-        g.fill(x + w - 1, y, x + w, y + 1, SLOT_MID);
-        g.fill(x, y + h - 1, x + 1, y + h, SLOT_MID);
-    }
-
-    /** The flint-headed arrow pressed into the leather, 22x15 as on the container textures. */
-    private static void arrow(GuiGraphicsExtractor g, int x, int y) {
-        int mid = 7, head = 8, shaft = 22 - head;
-        for (int i = 0; i < 22; i++) {
-            int half = i < shaft ? 1 : head - 1 - (i - shaft);
-            g.fill(x + i, y + mid + half + 1, x + i + 1, y + mid + half + 2, ARROW_LIP);
-            g.fill(x + i, y + mid - half, x + i + 1, y + mid + half + 1, ARROW);
-        }
     }
 
     /** A shape pressed into the leather: dark, with a light lip along its lower edges. */
