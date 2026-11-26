@@ -38,17 +38,23 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <li>tribe_visit_sit: a band staying at a player's fire sits down round it (seated, within 3.6 blocks), not milling about.</li>
  * <li>tribe_night_camp: at night camp folk lay out Straw Beds by their fire and sleep in them while the hunter keeps watch
  * awake further out; in the morning they are up and the beds are gone.</li>
+ * <li>tribe_night_home: at night one shut in a plank pen far from the fire, who cannot walk home, is moved to the fire.</li>
+ * <li>tribe_dig_out: one at the bottom of a dirt pit 3 deep digs a way up and out.</li>
+ * <li>tribe_new_leader: when the leader dies the elder leads and wears the banner.</li>
  * </ul>
  */
 @EventBusSubscriber(modid = MODID)
 public final class TribeAiTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] NAMES = {"tribe_fire_path", "tribe_visit_sit", "tribe_night_camp"};
+    private static final String[] NAMES = {"tribe_fire_path", "tribe_visit_sit", "tribe_night_camp", "tribe_night_home", "tribe_dig_out", "tribe_new_leader"};
 
     static {
         TEST_FUNCTIONS.register(NAMES[0], () -> TribeAiTest::firePath);
         TEST_FUNCTIONS.register(NAMES[1], () -> TribeAiTest::visitSit);
         TEST_FUNCTIONS.register(NAMES[2], () -> TribeAiTest::nightCamp);
+        TEST_FUNCTIONS.register(NAMES[3], () -> TribeAiTest::nightHome);
+        TEST_FUNCTIONS.register(NAMES[4], () -> TribeAiTest::digOut);
+        TEST_FUNCTIONS.register(NAMES[5], () -> TribeAiTest::newLeader);
     }
 
     static void init(IEventBus modEventBus) {
@@ -58,7 +64,7 @@ public final class TribeAiTest {
     @SubscribeEvent
     static void registerTests(RegisterGameTestsEvent event) {
         var env = event.registerEnvironment(Identifier.fromNamespaceAndPath(MODID, "tribe_ai"), new TestEnvironmentDefinition.AllOf(List.of()));
-        int[] ticks = {400, 600, 1200};
+        int[] ticks = {400, 600, 1200, 900, 600, 100};
         for (int i = 0; i < NAMES.length; i++) {
             ResourceKey<Consumer<GameTestHelper>> key = ResourceKey.create(Registries.TEST_FUNCTION, Identifier.fromNamespaceAndPath(MODID, NAMES[i]));
             event.registerTest(Identifier.fromNamespaceAndPath(MODID, NAMES[i]), new FunctionGameTestInstance(key, TestArea.of(env, ticks[i], true)));
@@ -170,6 +176,53 @@ public final class TribeAiTest {
                 })
                 .thenExecute(() -> folk.forEach(Tribesperson::discard))
                 .thenSucceed();
+    }
+
+    private static void nightHome(GameTestHelper h) {
+        floor(h);
+        BlockPos fire = h.absolutePos(new BlockPos(0, 1, 0));
+        h.setBlock(new BlockPos(0, 1, 0), Blocks.CAMPFIRE.defaultBlockState());
+        // a pen of planks (a build: not to be dug through) in the far corner
+        for (int x = 13; x <= 16; x++)
+            for (int z = 13; z <= 16; z++)
+                for (int y = 1; y <= 3; y++)
+                    if (x == 13 || x == 16 || z == 13 || z == 16) h.setBlock(new BlockPos(x, y, z), Blocks.OAK_PLANKS.defaultBlockState());
+        Tribesperson t = person(h, TribeRole.GATHERER, new BlockPos(15, 1, 15), fire, UUID.randomUUID(), true);
+        t.life.forcedPhase = CampLife.NIGHT;
+        h.succeedWhen(() -> {
+            h.assertTrue(t.distanceToSqr(Vec3.atBottomCenterOf(fire)) < 13 * 13, "brought home (at " + t.position() + ", goals " + running(t) + ")");
+            h.assertBlockPresent(Blocks.OAK_PLANKS, new BlockPos(13, 1, 15));
+            t.discard();
+        });
+    }
+
+    private static void digOut(GameTestHelper h) {
+        floor(h);
+        for (int x = 4; x <= 12; x++)
+            for (int z = 4; z <= 12; z++)
+                for (int y = 1; y <= 3; y++)
+                    if (x != 8 || z != 8) h.setBlock(new BlockPos(x, y, z), Blocks.DIRT.defaultBlockState());
+        Tribesperson t = person(h, TribeRole.GATHERER, new BlockPos(8, 1, 8), null, UUID.randomUUID(), true);
+        double start = t.getY();
+        h.assertTrue(DigOut.enclosed(h.getLevel(), h.absolutePos(new BlockPos(8, 1, 8))), "shut in the pit");
+        h.succeedWhen(() -> {
+            h.assertTrue(t.getY() >= start + 1.9 && !DigOut.enclosed(h.getLevel(), t.blockPosition()), "a way up out of the pit (at " + t.position() + ", trapped " + t.trapped + ")");
+            t.discard();
+        });
+    }
+
+    private static void newLeader(GameTestHelper h) {
+        floor(h);
+        UUID group = UUID.randomUUID();
+        Tribesperson old = person(h, TribeRole.HUNTER, new BlockPos(4, 1, 4), null, group, true);
+        Tribesperson near = person(h, TribeRole.GATHERER, new BlockPos(5, 1, 4), null, group, false);
+        Tribesperson elder = person(h, TribeRole.ELDER, new BlockPos(12, 1, 12), null, group, false);
+        old.kill(h.getLevel());
+        h.assertTrue(elder.isLeader() && !near.isLeader(), "the elder leads now");
+        h.assertTrue(!elder.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).isEmpty(), "with the banner");
+        near.discard();
+        elder.discard();
+        h.succeed();
     }
 
     private static String running(Tribesperson t) {

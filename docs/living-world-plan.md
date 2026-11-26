@@ -54,27 +54,29 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 
 - **A5** (`people/RoadBuilding.java`, `RoadMarkerItem`, `RoadBuildGoal`): vid Friendly får grannlägrets ledare och handlare
   knappen *Build a road*; man får en **Road Marker** och sätter den där vägen ska sluta (högst 1000 block från lägret).
-  Två av lägrets folk bygger en 2 block bred stig ruta för ruta. Rutten planeras en bit i taget med A* (32x32 block runt
-  fronten, bara laddad mark): lutning och vatten kostar mer, spelarbyggen, träd och allt som inte är naturlig mark är
-  förbjudet, och vid själva bygget lämnas en körfil som går in i något byggt. Vatten korsas på en plankbana bara när det
-  inte går runt. Vägjobben sparas (SavedData `mechanical:roads`).
+  Två av lägrets folk bygger en 2 block bred stig ruta för ruta. Rutten planeras med A* 96 block runt
+  fronten (v0.233.0; 24 rutor byggs innan den planerar om) och håller sig till **plan mark, även med omväg**: ett steg upp
+  eller ner kostar som 8 plana block extra, och mark som lutar bredvid vägen, stup, raviner och hål (4+ ner inom 7 block),
+  väggar, vattenkanter och byggen intill kostar också. Pucklar och gropar på 1-2 rutor jämnas bort. Spelarbyggen och allt
+  som inte är naturlig mark är förbjudet, och vid själva bygget lämnas en kolumn med något byggt i. Vatten korsas på en
+  plankbana bara när det inte går runt. Vägjobben sparas (SavedData `mechanical:roads`).
 - **Pris (bestämt av Claude, kan ändras):** gratis upp till 500 block, sedan **1 Silver Coin per påbörjade 50 block**
   (max 10), handelsvägen **dubbelt**. Gold Coin räknas som 10 Silver, växel i silver. Längden är fågelvägen läger → markör.
 - **A6:** vid rykte 60 och en färdig stig (din eller din spelarstams) knappen *Trade road*: samma rutt byggs om till en
   bredare, upptrampad väg. Byggt 2026-11-23 (v0.181.0), ersätter stenvägen; gamla stenvägar räknas fortfarande som väg.
   Hur vägarna ser ut (båda sorterna, v0.179.1): ett **upptrampat spår, ingen sten**. Rutten slingrar sig
   (A* dras mot en mjukt slingrande linje upp till 4 block åt sidan, så även en väg över slätt mark böjer sig), bredden
-  vandrar (stig 2–3, handelsväg 3–4: en extra fil på ena sidan där ett brus säger det, bara där marken redan ligger i
-  vägens höjd) och kanterna fransar ut i gräset runt om med Worn Grass, gräs, tuvor och någon blomma. Själva marken är
+  vandrar (stig 2–3, handelsväg 3–4). Vägen läggs med en fyrkantig pensel (2x2 stig, 3x3 handelsväg), så det blir inga
+  luckor i svängar, och **varje kolumn i vägen blir väg** (v0.233.0: inget gräs, inga gräspucklar mellan hjulspår, inga
+  gruskorn på gräsmark). Kanterna är ojämna genom en extra kolumn på ena sidan där ett brus säger det. **Alla vilda växter**
+  (gräs, blommor, buskar, svampar, plantor; aldrig grödor) tas bort på vägen och 1-2 block bredvid. Marken är
   fläckig av fullhöga jordblock i brusfläckar, aldrig ränder (`RoadBuilding.palette`; marken 4 block ut på var sida röstar,
-  annars biomen): Coarse Dirt, Rooted Dirt och Packed Mud med enstaka gruskorn på gräs; Coarse Dirt, Podzol och Rooted Dirt
-  i taiga; Packed Sand och Sand i öken (Packed Red Sand och Red Sand i badlands) med strödda Coarse Dirt, grus och lite
+  och sand, snö m.m. gäller bara när den är i klar majoritet mot vanlig mark, annars biomen): Coarse Dirt, Rooted Dirt och
+  Packed Mud på gräs; Coarse Dirt, Podzol och Rooted Dirt i taiga; Packed Sand och Sand i öken (Packed Red Sand och Red
+  Sand i badlands) med strödda Coarse Dirt, grus och lite
   Packed Mud, mörkare i två brutna hjulspår; Packed Mud, Rooted Dirt och Coarse Dirt i träsk; Packed Snow i snö, med jord
   i hjulspåren och snön som låg där tillbaka (lika djup på kanterna, 2 lager mindre på spåret); Loess och Peat blandas in
-  där de är traktens mark, Chalk Block bara som enstaka korn. Gräs bredvid spåret är aldrig högt (Tall Grass blir Short
-  Grass). Ingen Dirt Path (lägre än grannarna, så den får mörk kantskugga)
-  och ingen Trodden Path (dess gräskant tar årstidens färg och blir mörkgrå). Handelsvägen har sträckor med två hjulspår
-  och en gräspuckel emellan. En skärning i en backe mjukas upp: kolumnen närmast vägen blir en slab av sin egen mark ett
+  där de är traktens mark, Chalk Block bara som enstaka korn. En skärning i en backe mjukas upp: kolumnen närmast vägen blir en slab av sin egen mark ett
   halvsteg över vägen och nästa kolumn ett helt block över, så det blir trappsteg i stället för en vägg; där vägen ligger
   ett block över marken får marken bredvid en slab. Fyllning Dirt (Sand i öken). Över vatten plankor på stigen och en
   kavelväg av stockar på tvären på handelsvägen (gran i kall trakt, annars ek).
@@ -85,9 +87,10 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
   fullhög jord (Coarse Dirt, Rooted Dirt, Packed Mud, lite grus) i stället för Trodden Path.
   Över en å i en skärning spänner `Trails` en hög gångbro i strändernas höjd (räcke, stolpar), och stigar till en Tribe
   Village eller Ancient Oak går runt palissaden/stammen till porten (v0.182.0, se `docs/biomes.md`).
-- **A8/A9:** fönster av 3x3 chunks runt varje byggare och fronten (`mechanical:road_window`, följer med varje sekund);
+- **A8/A9:** fönster av 3x3 chunks runt varje byggare, och under bygget 13x13 runt fronten så att rutten ser 96 block
+  (`mechanical:road_window`, följer med varje sekund);
   en stam med färdig handelsväg forceladdar sitt läger 3x3 (`mechanical:road_base`) och dess handlare följs av fönstret
-  tills de är hemma. Byggarna arbetar dag och natt. MSPT inte mätt för vägar ännu.
+  tills de är hemma. Byggarna arbetar på dagen och går hem till kvällen (v0.234.0). MSPT inte mätt för vägar ännu.
 
 - Obs: lägerålder (`CampAge`) räknas för brinnande eldar i laddade chunks, så en eld i en stams forceladdade läger åldrar
   lägret även när ingen är där.
@@ -113,6 +116,14 @@ Befintligt som det här bygger på: `Clans` (spelarstammar, Fire Pit som centrum
 - **Idle-animationer:** sitta och tälja, kolla vapnet, rota i väskan, äta, prata med varandra (vända sig mot varandra, gestikulera),
   sträcka på sig, värma händerna vid elden.
 - **Natt:** alla utom krigarna lägger ut en Straw Bed på marken nära elden och sover till morgonen. Krigarna vaktar.
+- **Hem före mörkret (v0.234.0, `NightHomeGoal`):** från kvällen (10500) släpper lägerfolk mer än 20 block från elden
+  ärenden och vägbygge och går hem. Kommer de inte fram (ingen framgång på 20 s av natten, eller ute 90 s av natten)
+  flyttas de hem till elden. Inte för räder, besökare, karavaner, Miner, Oak Folk. Oladdade chunks tickar inte, så den som
+  står i en sådan går (eller flyttas) först när den laddas.
+- **Gräver sig upp (`DigOut`):** den som är instängd i ett hål (kan inte gå någonstans) i 5 s gräver ett trappsteg i
+  sekunden uppåt. Bara naturlig mark, sten, växter och löv, aldrig byggen, och aldrig intill vatten eller lava.
+- **Ny ledare:** dör ledaren utser gruppen en ny (Elder först, annars den närmaste) som får stammens banner. Bara bland
+  dem i laddade chunks. Inte för räder, karavaner, Miner, Oak Folk.
 - **Dygnsrytm i byn:** morgon (äta, sträcka), dag (arbeta: hugga, samla, fiska, bygga), kväll (samlas vid elden), natt (sova, vakter).
 - **Försvar (byggt):** besökande stammar hjälper till mot monster och raiders vid ens eld (krigarna slåss, de andra flyr till elden).
 - **Carcass som gåva (byggt, en gåva per dag och stam räknas):** lämnar man en carcass hos en stam (Neutral eller högre) ses det som en generös gåva (+relation, mer för större djur). Under Neutral ses det som ett hot (-relation, krigarna blir vaksamma).

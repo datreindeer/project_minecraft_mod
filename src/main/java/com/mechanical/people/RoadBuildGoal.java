@@ -11,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * A road builder at work (RoadBuilding): walks out to the next cell of the road, lays it after a few swings, and on to the
- * next, day and night until it is done (a road job is short work for them). When the road is done, walks home along it (the window of loaded chunks follows).
+ * next, all day; from the evening they are at home (NightHomeGoal) and go on in the morning. When the road is done, walks home along it (the window of loaded chunks follows).
  */
 class RoadBuildGoal extends Goal {
     static final int WORK = 20;
@@ -26,14 +26,14 @@ class RoadBuildGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if ((mob.tickCount + mob.getId()) % 10 != 0 || mob.getTarget() != null || mob.errand != null || mob.home() == null) return false;
+        if ((mob.tickCount + mob.getId()) % 10 != 0 || mob.getTarget() != null || mob.errand != null || mob.home() == null || mob.curfew()) return false;
         road = RoadBuilding.get(((ServerLevel) mob.level()).getServer()).roadOf(mob.getUUID());
         return road != null && (!road.done() || !mob.blockPosition().closerThan(mob.home(), RoadBuilding.HOME_R - 4));
     }
 
     @Override
     public boolean canContinueToUse() {
-        return mob.getTarget() == null && road != null && RoadBuilding.get(((ServerLevel) mob.level()).getServer()).roadOf(mob.getUUID()) == road
+        return mob.getTarget() == null && !mob.curfew() && road != null && RoadBuilding.get(((ServerLevel) mob.level()).getServer()).roadOf(mob.getUUID()) == road
                 && (!road.done() || !mob.blockPosition().closerThan(mob.home(), RoadBuilding.HOME_R - 4));
     }
 

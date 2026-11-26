@@ -149,6 +149,8 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     /** A walk to another camp and back (ErrandGoal), not saved; walking it wears paths. */
     ErrandGoal.Errand errand;
     boolean travelling;
+    /** Checks in a row that found them shut in a hole (DigOut). Not saved. */
+    int trapped;
     /** A carcass left as a threat (CarcassGifts): the player armed folk keep an eye on, and until when. Not saved. */
     private Player watching;
     private long watchUntil;
@@ -432,6 +434,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
             }
         });
         goalSelector.addGoal(3, new RaidGoal(this));
+        goalSelector.addGoal(3, new NightHomeGoal(this));
         goalSelector.addGoal(3, new ButcherCarcassGoal(this));
         goalSelector.addGoal(3, new VisitGoal(this));
         goalSelector.addGoal(3, new RoadBuildGoal(this));
@@ -586,6 +589,33 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
         }
         if (level() instanceof ServerLevel) life.wake(); // the bed they lay in goes with them
         super.die(source);
+        if (leader && raid == null && level() instanceof ServerLevel level) appointSuccessor(level);
+    }
+
+    /**
+     * The group names a new leader: their elder, else whoever stood nearest (of the same visit first), who takes up the
+     * tribe's banner. Not for raiders, caravans (they come whole), the Miner or the Oak Folk.
+     * <p>
+     * shortcut: only members in loaded chunks can be named; with none about, the group stays without one.
+     */
+    private void appointSuccessor(ServerLevel level) {
+        if (group == null || role().caravan() || role().oak() || role() == TribeRole.MINER) return;
+        Tribesperson heir = level.getEntities(People.TRIBESPERSON.get(), t -> t != this && t.isAlive() && inGroup(t) && t.raid == null
+                        && !t.role().caravan() && !t.role().oak() && t.role() != TribeRole.MINER).stream()
+                .min(java.util.Comparator.<Tribesperson>comparingInt(t -> java.util.Objects.equals(t.visit, visit) ? 0 : 1)
+                        .thenComparingInt(t -> t.role() == TribeRole.ELDER ? 0 : 1)
+                        .thenComparingDouble(t -> t.distanceToSqr(this)))
+                .orElse(null);
+        if (heir == null) return;
+        heir.leader = true;
+        if (heir.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) heir.setItemSlot(EquipmentSlot.HEAD, heir.tribe().banner(registryAccess()));
+    }
+
+    /** Evening or night for camp folk, who belong at home then (NightHomeGoal). Not raiders, visitors, travellers, caravans or the Miner. */
+    boolean curfew() {
+        int phase = life.phase();
+        return home != null && raid == null && visit == null && leaveAt < 0 && newCamp == null && role() != TribeRole.MINER && !role().oak()
+                && (phase == CampLife.EVENING || phase == CampLife.NIGHT);
     }
 
     // ---- ticking ----
@@ -593,6 +623,7 @@ public class Tribesperson extends PathfinderMob implements Merchant, RangedAttac
     @Override
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
+        DigOut.tick(this, level);
         long now = level.getGameTime();
         boolean night = level.isDarkOutside();
         // keep near home: wide by day, close to the fire at night, further while fighting

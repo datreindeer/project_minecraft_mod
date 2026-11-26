@@ -45,6 +45,9 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.StemBlock;
+import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -66,10 +69,10 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
  * <li>A5: at Friendly or better their leader or trader (TribeDialog) hands out a {@link RoadMarkerItem}; set down at most
  * {@link #MAX_LEN} blocks from their camp it becomes a {@link Road}. Up to {@link #FREE_LEN} blocks it is free, longer costs
  * Silver Coins ({@link #price}). Two of their folk walk out (RoadBuildGoal) and lay a winding earth path 2-3 wide (see buildCell)
- * cell by cell. The route is planned a section at a time ({@link #plan}, A* over the ground round the frontier, slopes, water
- * and trees or rock to cut cost more, anyone's build and unloaded ground are off limits), so only blocks that are natural
+ * cell by cell. The route is planned a section at a time ({@link #plan}, A* over the ground {@link #PLAN_R} blocks round the
+ * frontier, keeping to flat land: slopes, drops, banks, water and trees or rock to cut cost more, anyone's build and unloaded ground are off limits), so only blocks that are natural
  * ground, plants, trees, rock or water are ever dug, filled or replaced. Water is crossed on a plank causeway only when there is no way round.</li>
- * <li>A6: at {@link #TRADE_REP} or better a finished path can be widened into a trade road, same way: a worn track 3-4 wide in the local ground, with wheel ruts.</li>
+ * <li>A6: at {@link #TRADE_REP} or better a finished path can be widened into a trade road, same way: a worn track 3-4 wide in the local ground.</li>
  * <li>A7: the road never steps more than 1 block from cell to cell (cut and fill), and every 1-block step gets a slab of the
  * road's own ground (Dirt Path Slab, Sand Slab, ...).</li>
  * <li>A8/A9: the chunks round each walker (builders and, on a finished trade road, its traders) and round the frontier are
@@ -82,8 +85,9 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 public final class RoadBuilding extends SavedData {
     public static final int MAX_LEN = 1000, FREE_LEN = 500, BLOCKS_PER_SILVER = 50, TRADE_REP = 60;
     public static final int PATH = 0, TRADE = 1;
-    /** How far from the frontier one section is planned (it fits in the frontier's 3x3 chunks), builders per road, camp edge. */
-    static final int PLAN_R = 16, BUILDERS = 2, START_OUT = Settlements.PALISADE_R + 3, HOME_R = 24, LOST_CHECKS = 30;
+    /** How far from the frontier a route is planned (the window loads that far while building) and how much of it is kept before
+     * planning again, so it always sees well past what it lays. Builders per road, camp edge. */
+    static final int PLAN_R = 96, COMMIT = 24, BUILDERS = 2, START_OUT = Settlements.PALISADE_R + 3, HOME_R = 24, LOST_CHECKS = 30;
     static final TicketController WINDOW = new TicketController(Identifier.fromNamespaceAndPath(Mechanical.MODID, "road_window"), RoadBuilding::validateWindow);
     static final TicketController BASE = new TicketController(Identifier.fromNamespaceAndPath(Mechanical.MODID, "road_base"), RoadBuilding::validateBase);
 
@@ -294,9 +298,15 @@ public final class RoadBuilding extends SavedData {
         return SmoothGround.ground(s) || s.getBlock() instanceof TrampledPathBlock || s.is(Blocks.DIRT_PATH) || s.is(Blocks.COARSE_DIRT) || groundStep(s);
     }
 
+    /** Grass, ferns, flowers, bushes, mushrooms, saplings: whatever grows wild, never a sown crop. Not snow, not water plants. */
+    static boolean plant(BlockState s) {
+        if (s.isAir() || s.is(Blocks.SNOW) || !s.getFluidState().isEmpty() || s.getBlock() instanceof CropBlock || s.getBlock() instanceof StemBlock) return false;
+        return s.getBlock() instanceof VegetationBlock || s.canBeReplaced() || s.is(BlockTags.FLOWERS) || s.is(BlockTags.SAPLINGS);
+    }
+
     /** Plants, snow layers, leaves, air, and the trees and rock a road chops through ({@link #cuttable}): cleared off the road freely. */
     static boolean clearable(BlockState s) {
-        return s.isAir() || s.is(BlockTags.LEAVES) || s.canBeReplaced() && s.getFluidState().isEmpty() || cuttable(s, 0);
+        return s.isAir() || plant(s) || s.is(BlockTags.LEAVES) || s.canBeReplaced() && s.getFluidState().isEmpty() || cuttable(s, 0);
     }
 
     /** A tree's trunk (up to 24 blocks, the whole tree is cut down to the ground) or rock a road may cut through (up to 4 blocks deep). Never a build. */
@@ -310,8 +320,8 @@ public final class RoadBuilding extends SavedData {
         BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).below();
         BlockState s = level.getBlockState(p);
         int cut = 0;
-        while (p.getY() > level.getMinY() && (s.is(Blocks.SNOW) || cuttable(s, cut))) {
-            if (!s.is(Blocks.SNOW)) cut++;
+        while (p.getY() > level.getMinY() && (s.is(Blocks.SNOW) || plant(s) || cuttable(s, cut))) {
+            if (cuttable(s, cut)) cut++;
             s = level.getBlockState(p = p.below());
         }
         if (level.getFluidState(p).is(FluidTags.WATER)) return new Col(p.getY(), true, 0);
@@ -348,36 +358,72 @@ public final class RoadBuilding extends SavedData {
     /** Extra cost of a column with a tree or rock to cut: roads go round a cut when a way round is about as short. */
     static final double CUT_COST = 3;
 
-    /** Step cost between two columns: flat 1, a 1-block step a little more, anything steeper much more (it means digging); water 12; plus the meander cost. */
+    /** Step cost between two columns: flat 1; a 1-block step as much as 8 flat blocks more (a long way round is better); steeper far more; water 12; plus the column's extra cost. */
     static double cost(Col a, Col b) {
         int dh = Math.abs(a.y - b.y);
-        return 1 + (dh <= 1 ? dh * 0.5 : 2 + (dh - 1) * 4) + (b.water ? 12 : 0) + b.wander;
+        return 1 + (dh == 0 ? 0 : dh == 1 ? 8 : 20 * dh) + (b.water ? 12 : 0) + b.wander;
+    }
+
+    private static final int[][] AROUND = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
+
+    /**
+     * What it costs to run a road past the land round a column: ground that rises or falls beside it (a hillside), a drop of
+     * 4 or more near it (cliff, ravine, hole), a wall of 5, a build right by it, a bank.
+     */
+    private static double rough(int x, int z, Col c, java.util.function.BiFunction<Integer, Integer, java.util.Optional<Col>> raw) {
+        double slope = 0, drop = 0, wall = 0, build = 0, bank = 0;
+        for (int[] d : AROUND)
+            for (int k : new int[] {1, 2, 3, 5, 7}) {
+                var found = raw.apply(x + d[0] * k, z + d[1] * k);
+                if (found == null) continue; // outside the planned box or not loaded
+                if (found.isEmpty()) {
+                    if (k <= 2) build = 4;
+                    continue;
+                }
+                Col n = found.get();
+                if (k == 2) slope += Math.min(3, Math.abs(n.y - c.y));
+                if (n.y <= c.y - 4) drop = Math.max(drop, k <= 3 ? 40 : 10);
+                if (n.y >= c.y + 5 && k <= 3) wall = 6;
+                if (n.water && !c.water && k <= 3) bank = 4;
+            }
+        return slope * 0.6 + drop + wall + build + bank;
     }
 
     /**
      * A* from {@code from} toward {@code to} over the columns in {@code box} (x/z only), 4-connected: the path to {@code to}
-     * if it lies in the box and can be reached, else to the reachable column closest to it. Columns as BlockPos (y =
-     * ground), from first; just {@code from} if nothing better is reachable, null if {@code from} itself is unusable.
+     * if it lies in the box and can be reached; else to the edge of the box where going on is cheapest, nearer the end than
+     * here (so it picks the way round, not the closest foot of a hill); else to the reachable column closest to the end.
+     * Columns as BlockPos (y = ground), from first; just {@code from} if nothing better is reachable, null if {@code from}
+     * itself is unusable.
      */
     public static List<BlockPos> plan(ServerLevel level, BlockPos from, BlockPos to, int minX, int minZ, int maxX, int maxZ) {
         double len = Math.max(1, Math.sqrt(from.distSqr(new BlockPos(to.getX(), from.getY(), to.getZ())))), dx = (to.getX() - from.getX()) / len,
                 dz = (to.getZ() - from.getZ()) / len;
+        Map<Long, java.util.Optional<Col>> seen = new HashMap<>();
+        // null: outside the box or not loaded; empty: no road may go there
+        java.util.function.BiFunction<Integer, Integer, java.util.Optional<Col>> raw = (x, z) -> {
+            if (x < minX || x > maxX || z < minZ || z > maxZ || !level.hasChunk(x >> 4, z >> 4)) return null;
+            return seen.computeIfAbsent(BlockPos.asLong(x, 0, z), k -> java.util.Optional.ofNullable(column(level, x, z)));
+        };
         Map<Long, Col> cols = new HashMap<>();
         java.util.function.LongFunction<Col> col = k -> cols.computeIfAbsent(k, kk -> {
             int x = BlockPos.getX(kk), z = BlockPos.getZ(kk);
-            if (x < minX || x > maxX || z < minZ || z > maxZ) return null;
-            Col c = column(level, x, z);
-            return c == null ? null : new Col(c.y, c.water, meander(x, z, to, dx, dz) + c.wander);
+            var found = raw.apply(x, z);
+            if (found == null || found.isEmpty()) return null;
+            Col c = found.get();
+            return new Col(c.y, c.water, meander(x, z, to, dx, dz) + rough(x, z, c, raw) + c.wander);
         });
         long start = BlockPos.asLong(from.getX(), 0, from.getZ()), goal = BlockPos.asLong(to.getX(), 0, to.getZ());
+        // the road's own last cell may be of ground that is no wild ground (packed mud): the road goes on from it all the same
+        if (col.apply(start) == null && level.hasChunkAt(from) && roadBlock(level.getBlockState(from))) cols.put(start, new Col(from.getY(), false, 0));
         if (col.apply(start) == null) return null;
         Map<Long, Double> g = new HashMap<>();
         Map<Long, Long> came = new HashMap<>();
         PriorityQueue<Node> open = new PriorityQueue<>((a, b) -> Double.compare(a.f, b.f));
         g.put(start, 0.0);
         open.add(new Node(h(start, goal), start));
-        long best = start;
-        double bestH = h(start, goal);
+        long best = start, edge = start;
+        double startH = h(start, goal), bestH = startH, edgeScore = Double.MAX_VALUE;
         Set<Long> closed = new HashSet<>();
         while (!open.isEmpty()) {
             long cur = open.poll().pos;
@@ -388,9 +434,14 @@ public final class RoadBuilding extends SavedData {
                 best = cur;
             }
             if (cur == goal) break;
+            int cx = BlockPos.getX(cur), cz = BlockPos.getZ(cur);
+            if ((cx == minX || cx == maxX || cz == minZ || cz == maxZ) && hc < startH && g.get(cur) + 1.5 * hc < edgeScore) {
+                edgeScore = g.get(cur) + 1.5 * hc;
+                edge = cur;
+            }
             Col c = col.apply(cur);
             for (Direction d : Direction.Plane.HORIZONTAL) {
-                long n = BlockPos.asLong(BlockPos.getX(cur) + d.getStepX(), 0, BlockPos.getZ(cur) + d.getStepZ());
+                long n = BlockPos.asLong(cx + d.getStepX(), 0, cz + d.getStepZ());
                 Col nc = col.apply(n);
                 if (nc == null || closed.contains(n)) continue;
                 double ng = g.get(cur) + cost(c, nc);
@@ -402,7 +453,8 @@ public final class RoadBuilding extends SavedData {
             }
         }
         List<BlockPos> path = new ArrayList<>();
-        for (Long k = best; k != null; k = came.get(k)) path.add(new BlockPos(BlockPos.getX(k), cols.get(k).y, BlockPos.getZ(k)));
+        long last = closed.contains(goal) || edge == start ? best : edge;
+        for (Long k = last; k != null; k = came.get(k)) path.add(new BlockPos(BlockPos.getX(k), cols.get(k).y, BlockPos.getZ(k)));
         java.util.Collections.reverse(path);
         return path;
     }
@@ -417,7 +469,7 @@ public final class RoadBuilding extends SavedData {
     static double meander(int x, int z, BlockPos to, double dx, double dz) {
         double rx = x - to.getX(), rz = z - to.getZ(), along = -(rx * dx + rz * dz), side = rx * -dz + rz * dx;
         double want = (smooth((int) Math.floor(along), 0, 11, 16) - 0.5) * 2.6 * MEANDER * Math.min(1, along / 12);
-        return Math.abs(side - want) * 0.35;
+        return Math.min(0.4, Math.abs(side - want) * 0.2); // capped: it bends the track, it must never outweigh a way round
     }
 
     static final int MEANDER = 4;
@@ -432,8 +484,11 @@ public final class RoadBuilding extends SavedData {
      * block, two half steps, never a staircase).
      */
     static void append(Road r, List<BlockPos> path) {
-        for (BlockPos p : path) {
+        for (int i = 0; i < path.size(); i++) {
+            BlockPos p = path.get(i);
             int y = p.getY();
+            if (i >= 2 && i + 2 < path.size()) // the middle height of 5 in a row: a bump or dip 1-2 long is cut or filled
+                y = path.subList(i - 2, i + 3).stream().mapToInt(BlockPos::getY).sorted().toArray()[2];
             if (!r.cells.isEmpty()) {
                 BlockPos last = r.cell(r.cells.size() - 1);
                 if (last.getX() == p.getX() && last.getZ() == p.getZ()) continue;
@@ -446,6 +501,7 @@ public final class RoadBuilding extends SavedData {
 
     /** Plans the next section from the frontier (once its ground is loaded). False if the way is blocked. */
     boolean planNext(ServerLevel level, Road r) {
+        if (r.cells.size() > 3 * MAX_LEN) return false; // wandering to and fro: give up
         BlockPos from = r.cells.isEmpty() ? r.start() : r.cell(r.cells.size() - 1);
         if (!level.hasChunksAt(from.offset(-PLAN_R, 0, -PLAN_R), from.offset(PLAN_R, 0, PLAN_R))) return true; // wait for the window
         List<BlockPos> path = plan(level, from, r.end, from.getX() - PLAN_R, from.getZ() - PLAN_R, from.getX() + PLAN_R, from.getZ() + PLAN_R);
@@ -453,7 +509,9 @@ public final class RoadBuilding extends SavedData {
             if (path != null && reached(path.getFirst(), r.end)) r.planned = true;
             return r.planned;
         }
+        int keep = r.cells.size() + COMMIT + 1;
         append(r, path);
+        if (!reached(path.getLast(), r.end) && r.cells.size() > keep) r.cells.subList(keep, r.cells.size()).clear();
         if (reached(r.cell(r.cells.size() - 1), r.end)) r.planned = true;
         setDirty();
         return true;
@@ -471,47 +529,82 @@ public final class RoadBuilding extends SavedData {
     }
 
     /**
-     * Lays cell {@code i}. Path: 2 lanes; trade road: 3. Where a smooth noise says so, one more lane on one side (laid only
-     * where the ground is level with the road already), so the width wobbles and the edges are ragged. The middle is worn
-     * most, patches come in blobs, the outer lanes fray into the grass round it (Worn Grass, the odd tuft or flower), and a
-     * trade road has stretches of two wheel tracks with grass between. A cell the road steps up onto gets a slab of its own ground (a half
-     * step each side), and the bank just outside the road is softened to a half step (a slab of its ground).
+     * Lays cell {@code i}: a square brush, 2x2 for a path and 3x3 for a trade road, so there are no holes in bends or on
+     * the slant, all of it road. Where a smooth noise says so one more column sticks out on one side (laid only where the
+     * ground is level with the road already), so the edges are ragged. Each column takes its height from the road cell it
+     * belongs to ({@link #owner}), so a later cell never undoes a step. A cell the road steps up onto gets a slab of its own
+     * ground (a half step each side), the bank just outside the road is softened to a half step, and every plant on the road
+     * and along it is cleared.
      */
     public static void buildCell(ServerLevel level, Road r, int i) {
         BlockPos c = r.cell(i);
         BlockPos prev = i > 0 ? r.cell(i - 1) : null, next = i + 1 < r.cells.size() ? r.cell(i + 1) : null;
         Direction along = prev != null ? dir(prev, c) : next != null ? dir(c, next) : Direction.NORTH;
-        boolean step = prev != null && prev.getY() == c.getY() - 1 || next != null && next.getY() == c.getY() - 1;
         Palette pal = palette(level, c);
-        Direction side = along.getClockWise();
-        boolean trade = r.kind == TRADE;
-        int lo = trade ? -1 : 0, hi = 1;
+        boolean xSide = along.getAxis() == Direction.Axis.Z;
+        int lo = brush(r), hi = 1;
+        for (int dx = lo; dx <= hi; dx++)
+            for (int dz = lo; dz <= hi; dz++) layColumn(level, r, i, c.getX() + dx, c.getZ() + dz, pal, 1);
         double wobble = smooth(c.getX(), c.getZ(), 1, 7);
-        boolean ruts = pal.dashes.length > 0 || pal.cold || trade && smooth(c.getX(), c.getZ(), 2, 8) > 0.5; // where the tracks are what shows, always
-        int left = lo, right = hi; // the lanes actually laid
-        for (int lane = lo - 1; lane <= hi + 1; lane++) {
-            boolean extra = lane < lo || lane > hi;
-            if (lane < lo && wobble > 0.35 || lane > hi && wobble < 0.65) continue;
-            int wear = extra ? 2 : lane == 0 ? 0 : 1;
-            if (lay(level, r, c.relative(side, lane), step, pal, wear, ruts, side) && extra) {
-                left = Math.min(left, lane);
-                right = Math.max(right, lane);
-            }
+        if (wobble < 0.35 || wobble > 0.65) {
+            int out = wobble < 0.35 ? lo - 1 : hi + 1;
+            layColumn(level, r, i, c.getX() + (xSide ? out : 0), c.getZ() + (xSide ? 0 : out), pal, 2);
         }
-        soften(level, c.relative(side, left - 1), side.getOpposite(), c.getY());
-        soften(level, c.relative(side, right + 1), side, c.getY());
-        trimTall(level, c.relative(side, left - 1));
-        trimTall(level, c.relative(side, right + 1));
+        for (int k = lo; k <= hi; k++) {
+            soften(level, r, i, new BlockPos(c.getX() + lo - 1, 0, c.getZ() + k), Direction.WEST, c.getY());
+            soften(level, r, i, new BlockPos(c.getX() + hi + 1, 0, c.getZ() + k), Direction.EAST, c.getY());
+            soften(level, r, i, new BlockPos(c.getX() + k, 0, c.getZ() + lo - 1), Direction.NORTH, c.getY());
+            soften(level, r, i, new BlockPos(c.getX() + k, 0, c.getZ() + hi + 1), Direction.SOUTH, c.getY());
+        }
+        for (int dx = lo - 2; dx <= hi + 2; dx++)
+            for (int dz = lo - 2; dz <= hi + 2; dz++) clearPlants(level, c.getX() + dx, c.getZ() + dz);
     }
 
-    /** No tall grass or large fern right beside the track (it would hide it): short grass or a fern instead. */
-    private static void trimTall(ServerLevel level, BlockPos at) {
+    /** The brush runs from this offset to 1, both ways: 2x2 for a path, 3x3 for a trade road. */
+    private static int brush(Road r) {
+        return r.kind == TRADE ? -1 : 0;
+    }
+
+    /** Whether column x,z lies in the brush of any cell near {@code i}: road, which the banks' softening must leave alone. */
+    private static boolean onRoad(Road r, int i, int x, int z) {
+        int lo = brush(r);
+        for (int j = Math.max(0, i - 6); j <= Math.min(r.cells.size() - 1, i + 6); j++) {
+            BlockPos c = r.cell(j);
+            if (x - c.getX() >= lo && x - c.getX() <= 1 && z - c.getZ() >= lo && z - c.getZ() <= 1) return true;
+        }
+        return false;
+    }
+
+    /** The cell near {@code i} column x,z belongs to: the one running through it, else the one whose brush is centred nearest. */
+    private static int owner(Road r, int i, int x, int z) {
+        int twice = brush(r) + 1, best = i, bestD = Integer.MAX_VALUE; // twice the brush's centre offset
+        for (int j = Math.max(0, i - 4); j <= Math.min(r.cells.size() - 1, i + 4); j++) {
+            BlockPos c = r.cell(j);
+            if (c.getX() == x && c.getZ() == z) return j;
+            int dx = 2 * (x - c.getX()) - twice, dz = 2 * (z - c.getZ()) - twice, d = dx * dx + dz * dz;
+            if (d < bestD) {
+                bestD = d;
+                best = j;
+            }
+        }
+        return best;
+    }
+
+    private static void layColumn(ServerLevel level, Road r, int i, int x, int z, Palette pal, int wear) {
+        int j = owner(r, i, x, z);
+        BlockPos c = r.cell(j);
+        boolean step = j > 0 && r.cell(j - 1).getY() == c.getY() - 1 || j + 1 < r.cells.size() && r.cell(j + 1).getY() == c.getY() - 1;
+        lay(level, r, new BlockPos(x, c.getY(), z), step, pal, wear, onRoad(r, i, x, z));
+    }
+
+    /** Takes away every wild plant standing on column x,z (tall ones whole). */
+    private static void clearPlants(ServerLevel level, int x, int z) {
+        BlockPos at = new BlockPos(x, 0, z);
         if (!level.hasChunkAt(at)) return;
-        BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at);
-        BlockState s = level.getBlockState(p);
-        if (!s.is(Blocks.TALL_GRASS) && !s.is(Blocks.LARGE_FERN)) return;
-        set(level, p.above(), Blocks.AIR.defaultBlockState());
-        set(level, p, (s.is(Blocks.TALL_GRASS) ? Blocks.SHORT_GRASS : Blocks.FERN).defaultBlockState());
+        BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at).below();
+        while (p.getY() > level.getMinY() && (plant(level.getBlockState(p)) || level.getBlockState(p).is(Blocks.SNOW))) p = p.below();
+        for (int k = 3; k >= 1; k--) // from the top, so a tall plant's lower half is not left to drop
+            if (plant(level.getBlockState(p.above(k)))) level.setBlock(p.above(k), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
     }
 
     /** Ground slabs and stairs (EarthBlocks, laid by roads and by worldgen.SmoothGround on 1-block steps): natural ground too. */
@@ -538,48 +631,48 @@ public final class RoadBuilding extends SavedData {
     }
 
     /**
-     * One lane column: dig down or fill up to the road's height, then the surface and 2 blocks of headroom. Never touches a
-     * build. {@code wear} 0 is the worn middle, 1 an outer lane, 2 the ragged extra lane (laid only where the ground is level
-     * with the road already). Over water: planks (path) or a causeway of logs laid across (trade road). True if laid.
+     * One road column: dig down or fill up to the road's height, then the surface and 2 blocks of headroom. Never touches a
+     * build ({@code own}: this road's own blocks there may be laid over). {@code wear} 2 is the ragged extra column (laid only
+     * where the ground is level with the road already). Over water: planks (path) or a causeway of logs laid across (trade
+     * road).
      */
-    private static boolean lay(ServerLevel level, Road r, BlockPos at, boolean step, Palette pal, int wear, boolean ruts, Direction side) {
+    private static void lay(ServerLevel level, Road r, BlockPos at, boolean step, Palette pal, int wear, boolean own) {
         int y = at.getY(), x = at.getX(), z = at.getZ();
+        if (!level.hasChunkAt(at)) return;
         BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).below();
         int snow = 0, cut = 0; // snow layers lying on the column; trees and rock cut down to the ground under them (as column)
-        while (top.getY() > y && (level.getBlockState(top).is(Blocks.SNOW) || cuttable(level.getBlockState(top), cut))) {
+        while (top.getY() > level.getMinY()) {
             BlockState s = level.getBlockState(top);
             if (s.is(Blocks.SNOW)) snow += s.getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS);
-            else cut++;
+            else if (top.getY() > y && cuttable(s, cut)) cut++;
+            else if (!plant(s)) break;
             top = top.below();
         }
-        BlockState local = level.getBlockState(top);
         boolean localWet = level.getFluidState(top).is(FluidTags.WATER);
-        if (wear == 2 && (top.getY() != y || localWet || !natural(local))) return false;
+        if (wear == 2 && (top.getY() != y || localWet || !natural(level.getBlockState(top)))) return;
         boolean upgrade = r.kind == TRADE;
-        java.util.function.Predicate<BlockState> ours = s -> upgrade ? roadBlock(s) : natural(s);
-        // check the whole column first: anything someone built, and the lane is left as it is
+        java.util.function.Predicate<BlockState> ours = s -> upgrade || own ? roadBlock(s) : natural(s);
+        // check the whole column first: anything someone built, and the column is left as it is
         for (int yy = Math.max(top.getY(), y + 2); yy >= Math.min(top.getY(), y); yy--) {
             BlockState s = level.getBlockState(new BlockPos(x, yy, z));
-            if (!clearable(s) && !ours.test(s) && !s.getFluidState().is(FluidTags.WATER)) return false;
+            if (!clearable(s) && !ours.test(s) && !s.getFluidState().is(FluidTags.WATER)) return;
         }
-        List<BlockPos> tree = null; // a tree in the way comes down whole, or the lane is not laid
+        List<BlockPos> tree = null; // a tree in the way comes down whole, or the column is not laid
         for (int k = 1; k <= 24 && tree == null; k++) {
             BlockPos log = new BlockPos(x, y + k, z);
             if (!level.getBlockState(log).is(BlockTags.LOGS)) continue;
             tree = treeOf(level, log);
-            if (tree == null) return false;
+            if (tree == null) return;
         }
-        boolean localOk = soil(local, level, top);
         for (int yy = top.getY(); yy > y; yy--) set(level, new BlockPos(x, yy, z), Blocks.AIR.defaultBlockState());
         for (int yy = top.getY() + 1; yy < y; yy++) set(level, new BlockPos(x, yy, z), pal.fill);
         BlockPos surfacePos = new BlockPos(x, y, z);
         BlockState surface;
-        boolean grassy = false;
         if (level.getFluidState(surfacePos).is(FluidTags.WATER)) {
-            surface = upgrade ? pal.log.defaultBlockState().setValue(RotatedPillarBlock.AXIS, side.getAxis()) : pal.planks.defaultBlockState();
+            Direction.Axis across = Math.abs(r.end.getZ() - r.base.getZ()) > Math.abs(r.end.getX() - r.base.getX()) ? Direction.Axis.X : Direction.Axis.Z;
+            surface = upgrade ? pal.log.defaultBlockState().setValue(RotatedPillarBlock.AXIS, across) : pal.planks.defaultBlockState();
         } else {
-            BlockState pick = pick(pal, x, z, wear, ruts, localOk ? local : null);
-            grassy = pick.is(Blocks.GRASS_BLOCK) || pick.is(TrampledPaths.WORN_GRASS);
+            BlockState pick = pick(pal, x, z);
             surface = step ? slab(pick) : pick;
         }
         set(level, surfacePos, surface);
@@ -589,34 +682,19 @@ public final class RoadBuilding extends SavedData {
             BlockState s = level.getBlockState(p);
             if (!s.isAir() && (clearable(s) || ours.test(s))) set(level, p, Blocks.AIR.defaultBlockState());
         }
-        if (surface.getBlock() instanceof TrampledPathBlock) set(level, surfacePos, TrampledPathBlock.connect(surface, level, surfacePos));
         if (!step && !surface.is(pal.planks) && !surface.is(pal.log)) {
-            double h = hash01(x, z, 9);
-            BlockState cover = null;
-            // snow that lay here goes back: as deep on the grassy edges, 2 layers less where the track is trodden
-            int layers = snow == 0 ? (pal.cold && (grassy || wear == 2) ? 1 : 0) : Math.min(7, grassy || wear == 2 ? snow : snow - 2);
-            if (layers > 0) cover = Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, layers);
-            else if (grassy && !pal.cold) cover = h < 0.03 ? Blocks.DANDELION.defaultBlockState() : h < 0.05 ? Blocks.POPPY.defaultBlockState()
-                    : h < 0.32 ? Blocks.SHORT_GRASS.defaultBlockState() : null;
-            if (cover != null && cover.canSurvive(level, surfacePos.above())) set(level, surfacePos.above(), cover);
+            // snow that lay here goes back: as deep on the ragged edge, 2 layers less where the track is trodden
+            int layers = snow == 0 ? (pal.cold && wear == 2 ? 1 : 0) : Math.min(7, wear == 2 ? snow : snow - 2);
+            if (layers > 0) {
+                BlockState cover = Blocks.SNOW.defaultBlockState().setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, layers);
+                if (cover.canSurvive(level, surfacePos.above())) set(level, surfacePos.above(), cover);
+            }
         }
-        return true;
     }
 
-    /**
-     * The block for one lane column, all by smooth noise so the track is mottled, never striped. Outer lanes fray into
-     * {@code local} (the earth that was there, or null; grass frays as Worn Grass or grass), the extra lane mostly. On a
-     * trade road's rutted stretches the middle is a hump of the land's own ground (grass) between two bare wheel tracks.
-     * Elsewhere grass creeps into the track in blobs, and the bare earth is mottled from the palette with a few specks.
-     */
-    private static BlockState pick(Palette p, int x, int z, int wear, boolean ruts, BlockState local) {
-        boolean grass = local != null && local.is(Blocks.GRASS_BLOCK);
-        BlockState worn = TrampledPaths.WORN_GRASS.get().defaultBlockState().setValue(TrampledPathBlock.PERSISTENT, true);
-        double fray = smooth(x, z, 7, 3) * 0.75 + hash01(x, z, 8) * 0.25, roll = hash01(x, z, 3);
-        if (local != null && (wear == 1 && grass && fray > 0.56 || wear == 2 && fray > 0.3)) return grass && fray < (wear == 2 ? 0.6 : 0.78) ? worn : local;
-        if (ruts && wear == 0 && local != null) return grass && roll < 0.65 ? worn : local; // the hump between two wheel tracks
-        if (grass && smooth(x, z, 12, 4) > 0.66) return roll < 0.6 ? worn : local;
-        if (ruts && wear == 1 && p.dashes.length > 0 && hash01(x, z, 14) < 0.5) return p.dashes[(int) (hash01(x, z, 15) * p.dashes.length)];
+    /** The block for one road column, by smooth noise so the track is mottled, never striped: bare earth from the palette, patches of the darker kinds, a few specks. Never grass. */
+    private static BlockState pick(Palette p, int x, int z) {
+        if (p.dashes.length > 0 && smooth(x, z, 14, 3) > 0.68) return p.dashes[(int) (hash01(x, z, 15) * p.dashes.length)];
         if (hash01(x, z, 4) < p.speckRate) return p.specks[(int) (hash01(x, z, 16) * p.specks.length)];
         double v = Math.clamp((smooth(x, z, 6, 3.5) - 0.5) * 2.8 + (hash01(x, z, 10) - 0.5) * 0.45 + 0.5, 0, 0.999);
         return p.earth[(int) (v * p.earth.length)];
@@ -628,8 +706,9 @@ public final class RoadBuilding extends SavedData {
      * of standing as a wall; where the road stands a block above the land, a slab on the land makes a half step down.
      * Natural ground only.
      */
-    private static void soften(ServerLevel level, BlockPos at, Direction out, int y) {
-        if (cutDown(level, at, y, true)) cutDown(level, at.relative(out), y, false);
+    private static void soften(ServerLevel level, Road r, int i, BlockPos at, Direction out, int y) {
+        BlockPos beyond = at.relative(out);
+        if (!onRoad(r, i, at.getX(), at.getZ()) && cutDown(level, at, y, true) && !onRoad(r, i, beyond.getX(), beyond.getZ())) cutDown(level, beyond, y, false);
     }
 
     /** Lowers a bank column 1-3 blocks above road height {@code y}: to a slab at y+1, or a full block of its top at y+1. True if it was a bank. */
@@ -638,8 +717,8 @@ public final class RoadBuilding extends SavedData {
         if (!level.hasChunkAt(at)) return false;
         BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).below();
         boolean snowy = level.getBlockState(top.above()).is(Blocks.SNOW);
-        while (level.getBlockState(top).is(Blocks.SNOW) && top.getY() > level.getMinY()) {
-            snowy = true;
+        while ((level.getBlockState(top).is(Blocks.SNOW) || plant(level.getBlockState(top))) && top.getY() > level.getMinY()) {
+            snowy |= level.getBlockState(top).is(Blocks.SNOW);
             top = top.below();
         }
         BlockState t = level.getBlockState(top);
@@ -709,7 +788,7 @@ public final class RoadBuilding extends SavedData {
         }
         int ground = PLAIN, best = 0;
         for (int k = RED; k <= SNOW; k++)
-            if (votes[k] > best && votes[k] >= votes[PLAIN]) {
+            if (votes[k] > best && votes[k] > votes[PLAIN]) {
                 ground = k;
                 best = votes[k];
             }
@@ -723,13 +802,13 @@ public final class RoadBuilding extends SavedData {
         BlockState coarse = Blocks.COARSE_DIRT.defaultBlockState(), gravel = Blocks.GRAVEL.defaultBlockState(), packed = Blocks.PACKED_MUD.defaultBlockState(),
                 rooted = Blocks.ROOTED_DIRT.defaultBlockState();
         BlockState fill = Blocks.DIRT.defaultBlockState();
-        BlockState[] earth, specks = {gravel}, dashes = {};
+        BlockState[] earth, specks = {coarse}, dashes = {};
         double speckRate = 0.012;
         boolean conifer = false;
         if (ground == RED) {
             BlockState rs = Blocks.RED_SAND.defaultBlockState(), pr = EarthBlocks.PACKED_RED_SAND.get().defaultBlockState();
             earth = new BlockState[] {pr, rs, pr};
-            specks = new BlockState[] {coarse, coarse, gravel, packed};
+            specks = new BlockState[] {coarse, coarse, packed};
             speckRate = 0.14;
             dashes = new BlockState[] {coarse, coarse, packed};
             fill = rs;
@@ -737,9 +816,9 @@ public final class RoadBuilding extends SavedData {
             // packed and loose sand: scattered coarse dirt, gravel and a little packed mud, darker in the two broken wheel tracks
             BlockState sd = Blocks.SAND.defaultBlockState(), ps = EarthBlocks.PACKED_SAND.get().defaultBlockState();
             earth = new BlockState[] {ps, sd, ps};
-            specks = new BlockState[] {coarse, coarse, gravel, packed};
+            specks = new BlockState[] {coarse, coarse, packed};
             speckRate = 0.14;
-            dashes = new BlockState[] {coarse, coarse, gravel, packed};
+            dashes = new BlockState[] {coarse, coarse, packed};
             fill = sd;
         } else if (ground == WET) {
             earth = new BlockState[] {packed, rooted, coarse, packed, rooted}; // no mud: it is near black
@@ -862,7 +941,7 @@ public final class RoadBuilding extends SavedData {
         }
     }
 
-    /** The chunks this road wants loaded now: 3x3 round each walker, and round the frontier while building. */
+    /** The chunks this road wants loaded now: 3x3 round each walker, and while building as far round the frontier as a route is planned. */
     static Set<Long> window(Road r) {
         Set<Long> want = new HashSet<>();
         List<Long> centres = new ArrayList<>();
@@ -870,11 +949,16 @@ public final class RoadBuilding extends SavedData {
             Long c = r.lastChunk.get(id);
             if (c != null) centres.add(c);
         }
-        if (!r.done()) centres.add(ChunkPos.pack(r.frontier()));
         if (!r.done() && r.walkers.size() < BUILDERS) centres.add(ChunkPos.pack(r.base)); // so new builders can be found at their camp
         for (long c : centres)
             for (int dx = -1; dx <= 1; dx++)
                 for (int dz = -1; dz <= 1; dz++) want.add(ChunkPos.pack(ChunkPos.getX(c) + dx, ChunkPos.getZ(c) + dz));
+        if (!r.done()) {
+            ChunkPos f = ChunkPos.containing(r.frontier());
+            int reach = (PLAN_R + 15) / 16;
+            for (int dx = -reach; dx <= reach; dx++)
+                for (int dz = -reach; dz <= reach; dz++) want.add(ChunkPos.pack(f.x() + dx, f.z() + dz));
+        }
         return want;
     }
 

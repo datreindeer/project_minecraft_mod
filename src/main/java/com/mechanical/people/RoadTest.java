@@ -36,6 +36,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <li>road_steps: a 3-block rise is cut into, so the road climbs 1 block a cell, each step a ground slab (no stone);</li>
  * <li>road_trade: a trade road is earth in the local ground (mottled earth on grass, sand, packed mud and coarse dirt on sand), never stone bricks or cobblestone;</li>
  * <li>road_builders: a tribesperson walks the road and lays it cell by cell over time;</li>
+ * <li>road_flat: the route goes the long way round a low ridge on flat ground; every column of the brush is road (no grass
+ * left in it, bends included) and nothing grows on it;</li>
  * <li>road_price: free to 500 blocks, 1 Silver per started 50 beyond, double for a trade road, none past 1000; paying
  * takes silver first and changes a Gold Coin;</li>
  * <li>road_window: the force-loaded chunks follow a builder who moves far off, and the old ones are let go.</li>
@@ -44,8 +46,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid = MODID)
 public final class RoadTest {
     private static final DeferredRegister<Consumer<GameTestHelper>> TEST_FUNCTIONS = DeferredRegister.create(Registries.TEST_FUNCTION, MODID);
-    private static final String[] NAMES = {"road_route", "road_steps", "road_builders", "road_price", "road_window", "road_trade"};
-    private static final int[] TICKS = {20, 20, 600, 20, 40, 20};
+    private static final String[] NAMES = {"road_route", "road_steps", "road_builders", "road_price", "road_window", "road_trade", "road_flat"};
+    private static final int[] TICKS = {20, 20, 600, 20, 40, 20, 20};
 
     static {
         TEST_FUNCTIONS.register("road_route", () -> RoadTest::route);
@@ -54,6 +56,7 @@ public final class RoadTest {
         TEST_FUNCTIONS.register("road_price", () -> RoadTest::price);
         TEST_FUNCTIONS.register("road_window", () -> RoadTest::window);
         TEST_FUNCTIONS.register("road_trade", () -> RoadTest::trade);
+        TEST_FUNCTIONS.register("road_flat", () -> RoadTest::flat);
     }
 
     public static void init(IEventBus modEventBus) {
@@ -174,6 +177,31 @@ public final class RoadTest {
         h.succeed();
     }
 
+    private static void flat(GameTestHelper h) {
+        floor(h);
+        for (int z = 0; z <= 11; z++) h.setBlock(new BlockPos(8, 1, z), Blocks.DIRT.defaultBlockState());
+        for (int x = 2; x <= 14; x += 2)
+            for (int z = 5; z <= 15; z += 2) if (x != 8) h.setBlock(new BlockPos(x, 1, z), Blocks.POPPY.defaultBlockState());
+        ServerLevel level = h.getLevel();
+        List<BlockPos> path = plan(h, new BlockPos(2, 0, 6), new BlockPos(14, 0, 6));
+        int ground = h.absolutePos(BlockPos.ZERO).getY();
+        h.assertTrue(path != null && path.getLast().equals(h.absolutePos(new BlockPos(14, 0, 6))), "route reaches the end: " + path);
+        h.assertTrue(path.stream().allMatch(p -> p.getY() == ground), "the route keeps to flat ground: " + path);
+        RoadBuilding.Road r = road(h, path, RoadBuilding.PATH);
+        for (int i = 0; i < r.cells.size(); i++) RoadBuilding.buildCell(level, r, i);
+        for (long cell : r.cells) {
+            BlockPos c = BlockPos.of(cell);
+            for (int dx = 0; dx <= 1; dx++)
+                for (int dz = 0; dz <= 1; dz++) {
+                    BlockPos p = c.offset(dx, 0, dz);
+                    BlockState s = level.getBlockState(p);
+                    h.assertTrue(!s.is(Blocks.GRASS_BLOCK) && !s.isAir(), "a patch in the road at " + p + ": " + s);
+                    h.assertTrue(level.getBlockState(p.above()).isAir(), "something left on the road at " + p + ": " + level.getBlockState(p.above()));
+                }
+        }
+        h.succeed();
+    }
+
     private static void builders(GameTestHelper h) {
         floor(h);
         ServerLevel level = h.getLevel();
@@ -188,7 +216,6 @@ public final class RoadTest {
         h.assertTrue(r.built == 0, "nothing laid at once");
         h.succeedWhen(() -> {
             if (!r.done() || r.cells.size() < 7) h.fail("planned " + r.planned + ", laid " + r.built + " of " + r.cells.size() + " cells, builder at " + builder.blockPosition() + ", dark " + level.isDarkOutside());
-            // a natural road leaves some cells as grass (ragged edges, the hump between ruts), so check the road as a whole
             long laid = java.util.stream.IntStream.range(0, r.cells.size()).filter(i -> !level.getBlockState(r.cell(i)).is(Blocks.GRASS_BLOCK)).count();
             h.assertTrue(laid * 2 >= r.cells.size(), "most cells laid, " + laid + " of " + r.cells.size());
             data.remove(level, r);
