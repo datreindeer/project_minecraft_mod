@@ -99,12 +99,6 @@ public final class Skills {
         if (SkillPerks.COOK_EXTRA.roll(sp)) SkillPerks.give(sp, SkillPerks.extra(List.of(food)));
     }
 
-    /** False below the unlock level; otherwise a chance of effective level times perLevel. */
-    public static boolean roll(ServerPlayer p, Skill s, int unlockLevel, double perLevel) {
-        int lvl = effectiveLevel(p, s);
-        return lvl >= unlockLevel && p.getRandom().nextDouble() < lvl * perLevel;
-    }
-
     /** Perks of a skill in unlock order, for the skill screen. */
     public static List<Perk> perks(Skill s) {
         return SkillPerks.ALL.stream().filter(p -> p.skill() == s).toList();

@@ -50,6 +50,9 @@ public final class SkillsTest {
             stationXp(h, p);
             huntingXp(h, p);
             placedOreXp(h, p);
+            farmingXp(h, p);
+            silkOreXp(h, p);
+            fluidStoneXp(h, p);
             cookedXp(h, p);
             extraOre(h);
             noDupeUnstackable(h);
@@ -80,8 +83,6 @@ public final class SkillsTest {
         Skills.addXp(p, Skill.MINING, 2700);
         h.assertTrue(Skills.level(p, Skill.MINING) == 10, "2700 xp is level 10");
         h.assertTrue(Skills.level(p, Skill.FARMING) == 1, "other skills untouched");
-        for (int i = 0; i < 200; i++) h.assertTrue(!Skills.roll(p, Skill.MINING, 11, 1.0), "roll below unlock is false");
-        h.assertTrue(Skills.roll(p, Skill.MINING, 10, 1.0), "chance 10 x 1.0 always hits at unlock");
     }
 
     private static void miningXp(GameTestHelper h, ServerPlayer p) {
@@ -95,6 +96,50 @@ public final class SkillsTest {
         h.assertTrue(Skills.xp(p, Skill.MINING) == before + 10, "ore gives 10 Mining, got " + (Skills.xp(p, Skill.MINING) - before));
         p.gameMode.destroyBlock(stone);
         h.assertTrue(Skills.xp(p, Skill.MINING) == before + 11, "stone gives 1 Mining, got " + (Skills.xp(p, Skill.MINING) - before));
+    }
+
+    private static void farmingXp(GameTestHelper h, ServerPlayer p) {
+        var level = h.getLevel();
+        var wheat = net.minecraft.world.level.block.Blocks.WHEAT;
+        net.minecraft.core.BlockPos pos = h.absolutePos(new net.minecraft.core.BlockPos(3, 2, 6)), soil = pos.below();
+        level.setBlockAndUpdate(soil, net.minecraft.world.level.block.Blocks.FARMLAND.defaultBlockState());
+        var seeds = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WHEAT_SEEDS);
+        p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, seeds);
+        var hit = new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(soil), net.minecraft.core.Direction.UP, soil, false);
+        int before = Skills.xp(p, Skill.FARMING);
+        seeds.useOn(new net.minecraft.world.item.context.UseOnContext(level, p, net.minecraft.world.InteractionHand.MAIN_HAND, seeds, hit));
+        h.assertTrue(level.getBlockState(pos).is(wheat), "player planted wheat");
+        h.assertTrue(Skills.xp(p, Skill.FARMING) == before, "planting pays no Farming XP");
+        p.gameMode.destroyBlock(pos);
+        h.assertTrue(Skills.xp(p, Skill.FARMING) == before, "breaking an unripe crop pays nothing");
+        level.setBlockAndUpdate(pos, wheat.defaultBlockState().setValue(net.minecraft.world.level.block.CropBlock.AGE, 7));
+        p.gameMode.destroyBlock(pos);
+        h.assertTrue(Skills.xp(p, Skill.FARMING) == before + 7, "a ripe crop pays 7, got " + (Skills.xp(p, Skill.FARMING) - before));
+    }
+
+    private static void silkOreXp(GameTestHelper h, ServerPlayer p) {
+        var level = h.getLevel();
+        net.minecraft.core.BlockPos pos = h.absolutePos(new net.minecraft.core.BlockPos(4, 1, 6));
+        level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.IRON_ORE.defaultBlockState());
+        var pick = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE);
+        pick.enchant(level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT)
+                .getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SILK_TOUCH), 1);
+        p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, pick);
+        int before = Skills.xp(p, Skill.MINING);
+        p.gameMode.destroyBlock(pos);
+        h.assertTrue(Skills.xp(p, Skill.MINING) == before, "a silk-touched ore pays no Mining XP");
+    }
+
+    private static void fluidStoneXp(GameTestHelper h, ServerPlayer p) {
+        var level = h.getLevel();
+        net.minecraft.core.BlockPos pos = h.absolutePos(new net.minecraft.core.BlockPos(5, 1, 6));
+        var stone = net.minecraft.world.level.block.Blocks.COBBLESTONE.defaultBlockState();
+        level.setBlockAndUpdate(pos, stone);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.event.level.BlockEvent.FluidPlaceBlockEvent(level, pos, pos.above(), stone));
+        p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+        int before = Skills.xp(p, Skill.MINING);
+        p.gameMode.destroyBlock(pos);
+        h.assertTrue(Skills.xp(p, Skill.MINING) == before, "generator stone pays no Mining XP");
     }
 
     private static void stationXp(GameTestHelper h, ServerPlayer p) {

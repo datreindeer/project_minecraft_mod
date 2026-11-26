@@ -48,8 +48,17 @@ public final class SkillHooks {
         if (!(event.getBreaker() instanceof ServerPlayer p) || !paysMining(event.getState())) return;
         var placed = PLACED.get(event.getLevel().dimension());
         if (placed != null && placed.remove(event.getPos().asLong())) return;
-        Skills.addXp(p, Skill.MINING, event.getState().is(ORES) ? 10 : 1);
-        if (event.getState().is(ORES) && SkillPerks.MINING_ORE.roll(p)) SkillPerks.addExtra(event);
+        boolean ore = event.getState().is(ORES);
+        // silk touch gives the ore block back, which can be placed and mined again: no XP, no extra
+        if (ore && event.getDrops().stream().anyMatch(d -> d.getItem().getItem() == event.getState().getBlock().asItem())) return;
+        Skills.addXp(p, Skill.MINING, ore ? 10 : 1);
+        if (ore && SkillPerks.MINING_ORE.roll(p)) SkillPerks.addExtra(event);
+    }
+
+    /** Stone and cobble made by lava meeting water pay nothing either. */
+    @SubscribeEvent
+    static void onFluidPlace(BlockEvent.FluidPlaceBlockEvent event) {
+        if (event.getLevel() instanceof Level level) remember(level, event.getPos());
     }
 
     @SubscribeEvent
@@ -57,12 +66,15 @@ public final class SkillHooks {
         if (!(event.getEntity() instanceof ServerPlayer p) || !(event.getLevel() instanceof Level level)) return;
         BlockState state = event.getPlacedBlock();
         if (state.getBlock() instanceof CropBlock crop) {
-            Skills.addXp(p, Skill.FARMING, 1);
             if (!crop.isMaxAge(state) && SkillPerks.FARM_GROW.roll(p)) level.setBlock(event.getPos(), crop.getStateForAge(crop.getAge(state) + 1), Block.UPDATE_ALL);
         }
         if (!paysMining(state)) return;
+        remember(level, event.getPos());
+    }
+
+    private static void remember(Level level, net.minecraft.core.BlockPos pos) {
         var placed = PLACED.computeIfAbsent(level.dimension(), k -> new LinkedHashSet<>());
-        placed.add(event.getPos().asLong());
+        placed.add(pos.asLong());
         if (placed.size() > MAX_PLACED) {
             var it = placed.iterator();
             it.next();

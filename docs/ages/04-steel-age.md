@@ -80,7 +80,7 @@ Bonusar per sten (Claude bestämde 2026-11-22, nattkörningen; kan ändras i `Je
 Flawless = ungefär fyra gånger så mycket, glänser och har aqua namn. Två ringar och ett halsband staplas. "Värme" är
 kylskydd som en rustningsdel (Temperature#insulation, läder 15 %).
 
-| Sten | Bonus | Vanlig | Flawless  Skill |
+| Sten | Bonus | Vanlig | Flawless | Skill |
 |---|---|---|---|---|
 | Diamond | Armor Toughness | +0,5 | +2 | Smithing |
 | Emerald | Luck | +0,5 | +2 | Gold Smithing |

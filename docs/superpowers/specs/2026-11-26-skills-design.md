@@ -43,7 +43,7 @@ kan höja en skill.
 |---|---|---|
 | Mining | malm bruten (`#c:ores`, `BlockDropsEvent`) / sten bruten | 10 / 1 |
 | Woodcutting | träd fällt (`TreeFelling.onBreak`), per stock | 3 per stock |
-| Farming | mogen gröda skördad (`Farming.onDrops`, staked) / planterad | 6 / 1 |
+| Farming | mogen gröda skördad (`Farming.onDrops`, staked) | 7 (ingen XP för planterad) |
 | Fishing | fångst (`ItemFishedEvent`) / fiskfälla tömd, per fisk | 15 / 5 |
 | Slaughter | styckning (`Butchery.awardButchered`) | 20 |
 | Hunting | vilt dödat (`LivingDeathEvent`, `Butchery.leavesCarcass`) | 25 |

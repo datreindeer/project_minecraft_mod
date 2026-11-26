@@ -343,7 +343,7 @@ public final class Farming {
         if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state) || climate(crop) == null) return;
         if (event.getLevel() instanceof ServerLevel server) Herbs.domesticate(server, event.getPos(), state, event.getDrops());
         if (event.getBreaker() instanceof ServerPlayer sp) {
-            Skills.addXp(sp, Skill.FARMING, 6);
+            Skills.addXp(sp, Skill.FARMING, 7);
             if (SkillPerks.FARM_HARVEST.roll(sp)) SkillPerks.addExtra(event);
         }
         addSickleBonus(event.getDrops().stream().map(ItemEntity::getItem).toList(), event.getTool(), event.getLevel().getRandom());
@@ -487,7 +487,7 @@ public final class Farming {
             if (SkillPerks.FARM_HARVEST.roll(event.getEntity())) drops.add(SkillPerks.extra(drops));
             for (ItemStack s : drops) if (!s.isEmpty()) Block.popResource(server, pos, s);
             server.setBlock(pos, crop.getStateForAge(0), Block.UPDATE_ALL);
-            if (event.getEntity() instanceof ServerPlayer sp) Skills.addXp(sp, Skill.FARMING, 6);
+            if (event.getEntity() instanceof ServerPlayer sp) Skills.addXp(sp, Skill.FARMING, 7);
             server.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
