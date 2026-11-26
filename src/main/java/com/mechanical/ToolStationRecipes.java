@@ -90,6 +90,25 @@ public final class ToolStationRecipes {
         }
     }
 
+    /**
+     * The Tool Station's type pockets in order (client.ToolStationScreen): one per tool type, {@link #TYPE_POCKETS} at most (its 9x2
+     * grid). Bows and crossbows share the ranged "bow" pocket, whose recipe list holds all four.
+     */
+    public static final List<String> TYPES = List.of("pickaxe", "axe", "shovel", "hoe", "sickle", "knife", "saw", "chisel", "smithing_hammer",
+            "quarry_hammer", "spear", "sword", "tongs", "ard", "bow", "fishing_rod", "broom", "bucket");
+    public static final int TYPE_POCKETS = 18;
+
+    /** A recipe's type key (one of {@link #TYPES}), from its result's registry path. */
+    public static String type(Recipe r) {
+        String p = BuiltInRegistries.ITEM.getKey(r.result().get()).getPath();
+        for (String t : new String[] {"pickaxe", "quarry_hammer", "smithing_hammer", "fishing_rod", "shovel", "sickle", "chisel", "spear", "sword",
+                "tongs", "bucket", "broom", "saw", "axe", "hoe", "knife"})
+            if (p.contains(t)) return t;
+        if (p.contains("dagger")) return "knife";
+        if (p.endsWith("_ard")) return "ard";
+        return p.contains("bow") ? "bow" : p; // crossbows too
+    }
+
     private static final Predicate<ItemStack> STONE = s -> s.is(Mechanical.ROCK_CHUNKS);
     private static final Predicate<ItemStack> FLINT = s -> s.is(Items.FLINT);
 

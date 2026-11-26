@@ -50,9 +50,6 @@ import net.minecraft.world.item.ItemStack;
  * a ledger of what each part does to durability, speed and damage. Slot positions are ToolStationMenu's.
  */
 public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> {
-    /** Type keys in list order; bows, fishing rods, the broom and buckets are here so they stay craftable. */
-    private static final String[] TYPES = {"pickaxe", "axe", "shovel", "hoe", "sickle", "knife", "saw", "chisel", "smithing_hammer",
-            "quarry_hammer", "spear", "sword", "tongs", "ard", "bow", "fishing_rod", "broom", "bucket"};
     private static final String[] PARTS = {"head", "binding", "rod"}, BOW_PARTS = {"string", "grip", "stave"}, ROD_PARTS = {"hook", "line", "rod"},
             CROSSBOW_PARTS = {"prod", "string", "stock"};
     private static final int W = 392, H = 226;
@@ -81,16 +78,8 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
 
     // ------------------------------------------------------------------ model
 
-    /** A recipe's type key, from its result's registry path. */
     static String type(Recipe r) {
-        String p = BuiltInRegistries.ITEM.getKey(r.result().get()).getPath();
-        if (p.contains("crossbow")) return "crossbow";
-        for (String t : new String[] {"pickaxe", "quarry_hammer", "smithing_hammer", "fishing_rod", "shovel", "sickle", "chisel", "spear", "sword",
-                "tongs", "bucket", "broom", "saw", "axe", "hoe", "knife"})
-            if (p.contains(t)) return t;
-        if (p.contains("dagger")) return "knife";
-        if (p.endsWith("_ard")) return "ard";
-        return p.contains("bow") ? "bow" : p;
+        return ToolStationRecipes.type(r);
     }
 
     /** The unlocked recipes (indices into ALL) by type, and the types that have any: worked out once a frame. */
@@ -100,7 +89,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
             Recipe r = ToolStationRecipes.ALL.get(i);
             if (ToolStationRecipes.isUnlocked(minecraft.player, r)) byType.computeIfAbsent(type(r), k -> new ArrayList<>()).add(i);
         }
-        known = java.util.Arrays.stream(TYPES).filter(byType::containsKey).toList();
+        known = ToolStationRecipes.TYPES.stream().filter(byType::containsKey).toList();
     }
 
     private List<Integer> recipes(String t) {
@@ -372,7 +361,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
         y += 5;
         if (out.isEmpty()) {
             boolean full = !menu.getSlot(0).getItem().isEmpty() && !menu.getSlot(1).getItem().isEmpty() && !menu.getSlot(2).getItem().isEmpty();
-            String why = full ? "no_fit" : !r.dynamic() ? "fixed" : kind == ToolParts.Kind.TOOL ? "lay_parts" : "lay_parts." + type(r);
+            String why = full ? "no_fit" : !r.dynamic() ? "fixed" : kind == ToolParts.Kind.TOOL ? "lay_parts" : "lay_parts." + (kind == ToolParts.Kind.CROSSBOW ? "crossbow" : type(r));
             wrapped(g, Component.translatable("gui.mechanical.tool_station." + why), x, y + 4, w, full ? BAD : DIM);
             return;
         }

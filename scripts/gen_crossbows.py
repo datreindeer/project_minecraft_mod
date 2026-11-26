@@ -367,14 +367,14 @@ LANG = {
     '  "tooltip.mechanical.fishing_rod_parts": "Rod: %1$s  Line: %2$s",': {
         "tooltip.mechanical.crossbow_parts": "Stock: %1$s  String: %2$s",
         "gui.mechanical.tool_station.prod": "Prod", "gui.mechanical.tool_station.stock": "Stock",
-        "gui.mechanical.tool_station.type.crossbow": "Crossbow",
         "gui.mechanical.tool_station.wrong_stock": "Not a stock for this crossbow",
         "gui.mechanical.tool_station.would_do.stock": "Stocks that would do:",
         "gui.mechanical.tool_station.lay_parts.crossbow": "Lay in a prod, a string and a stock to see what each part does."},
     '  "tooltip.mechanical.crossbow.bolts_only": "Loads Iron Bolts only",': {
         "tooltip.mechanical.crossbow.all_bolts": "Loads bolts only: Bronze, Iron and Steel"},
 }
-REPLACE = {'  "tooltip.mechanical.crossbow.bolts_only": "Loads Iron Bolts only",': '  "tooltip.mechanical.crossbow.bolts_only": "Loads Bronze and Iron Bolts only",'}
+REPLACE = {'  "tooltip.mechanical.crossbow.bolts_only": "Loads Iron Bolts only",': '  "tooltip.mechanical.crossbow.bolts_only": "Loads Bronze and Iron Bolts only",',
+           '  "gui.mechanical.tool_station.type.bow": "Bow",': '  "gui.mechanical.tool_station.type.bow": "Bows & Crossbows",'}  # one ranged pocket
 lang = R / "lang/en_us.json"
 text = lang.read_bytes().decode("utf-8")
 nl = "\r\n" if "\r\n" in text else "\n"

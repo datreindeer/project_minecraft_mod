@@ -61,6 +61,7 @@ public final class ToolsTest {
             station(h);
             bowsAndRods(h);
             crossbows(h);
+            typePockets(h);
             castBoltHeads(h);
             looksFollowParts(h);
             h.succeed();
@@ -212,6 +213,13 @@ public final class ToolsTest {
         h.assertTrue(result(p, ironProd, sinew, Items.LEATHER).isEmpty() && result(p, ironProd, Items.LEATHER, rod).isEmpty(), "leather is neither stock nor string");
         var share = ToolStats.share(ToolParts.Kind.CROSSBOW, 1, sinew, Items.STRING);
         h.assertTrue(Math.abs(share.speed() - 0.95F / 1.05F) < 1e-5 && Math.abs(share.damage() - 1.05F / 1.1F) < 1e-5, "the station's share for a String string: " + share);
+    }
+
+    /** Every recipe shows in the station: its type has a pocket, and the pockets fit the screen's grid. */
+    private static void typePockets(GameTestHelper h) {
+        for (var r : com.mechanical.ToolStationRecipes.ALL)
+            h.assertTrue(com.mechanical.ToolStationRecipes.TYPES.contains(com.mechanical.ToolStationRecipes.type(r)), r.id() + " has no type pocket: " + com.mechanical.ToolStationRecipes.type(r));
+        h.assertTrue(com.mechanical.ToolStationRecipes.TYPES.size() <= com.mechanical.ToolStationRecipes.TYPE_POCKETS, "the type pockets fit the 9x2 grid");
     }
 
     /** Bronze Bolt Heads: Mold Bench (3 Clay Balls) -> kiln -> pour bronze or Poor Bronze (2 units) -> rough casting -> 4 heads on the Whetstone. */
