@@ -54,6 +54,7 @@ public final class SkillsTest {
             extraOre(h);
             noDupeUnstackable(h);
             perkUnlock(h);
+            jewelryBonus(h);
             h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -166,6 +167,27 @@ public final class SkillsTest {
         h.assertTrue(SkillPerks.extra(List.of(pick)).isEmpty(), "never an extra tool");
         var ore = SkillPerks.extra(List.of(net.minecraft.world.item.ItemStack.EMPTY, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.RAW_IRON, 3)));
         h.assertTrue(ore.is(net.minecraft.world.item.Items.RAW_IRON) && ore.getCount() == 1, "extra is one of the first stackable drop");
+    }
+
+    private static void jewelryBonus(GameTestHelper h) {
+        ServerPlayer q = fresh(h, "jeweller");
+        Skills.addXp(q, Skill.MINING, Skills.xpForLevel(10));
+        h.assertTrue(Skills.effectiveLevel(q, Skill.MINING) == 10, "no jewelry, level 10");
+        var topaz = new com.mechanical.Jewelry.Jewel("topaz", false);
+        var ring = com.mechanical.equipment.Equipment.of(q);
+        ring.set(com.mechanical.equipment.Accessory.RING_1, com.mechanical.Jewelry.make(com.mechanical.Jewelry.GOLD_RING.get(), topaz));
+        h.assertTrue(Skills.effectiveLevel(q, Skill.MINING) == 13, "gold topaz ring +3");
+        h.assertTrue(Skills.effectiveLevel(q, Skill.FARMING) == 1, "other skills unchanged");
+        ring.set(com.mechanical.equipment.Accessory.RING_1, com.mechanical.Jewelry.make(com.mechanical.Jewelry.GOLD_RING.get(), new com.mechanical.Jewelry.Jewel("topaz", true)));
+        h.assertTrue(Skills.effectiveLevel(q, Skill.MINING) == 16, "flawless gold +6");
+        ring.set(com.mechanical.equipment.Accessory.NECK, com.mechanical.Jewelry.make(com.mechanical.Jewelry.SILVER_NECKLACE.get(), topaz));
+        h.assertTrue(Skills.effectiveLevel(q, Skill.MINING) == 17, "plus silver necklace +1");
+        ring.set(com.mechanical.equipment.Accessory.RING_1, net.minecraft.world.item.ItemStack.EMPTY);
+        h.assertTrue(Skills.effectiveLevel(q, Skill.MINING) == 11, "ring removed, +1 left");
+        Skills.addXp(q, Skill.MINING, Skills.xpForLevel(100));
+        ring.set(com.mechanical.equipment.Accessory.RING_1, com.mechanical.Jewelry.make(com.mechanical.Jewelry.GOLD_RING.get(), new com.mechanical.Jewelry.Jewel("topaz", true)));
+        ring.set(com.mechanical.equipment.Accessory.RING_2, com.mechanical.Jewelry.make(com.mechanical.Jewelry.GOLD_RING.get(), new com.mechanical.Jewelry.Jewel("topaz", true)));
+        h.assertTrue(Skills.effectiveLevel(q, Skill.MINING) == 113, "100 + 6 + 6 + 1 = 113");
     }
 
     private static void perkUnlock(GameTestHelper h) {

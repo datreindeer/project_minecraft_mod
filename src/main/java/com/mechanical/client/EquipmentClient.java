@@ -219,6 +219,8 @@ public final class EquipmentClient {
     @SubscribeEvent
     static void onTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
+        var skill = com.mechanical.Jewelry.skillOf(stack);
+        if (skill != null) event.getToolTip().add(Component.literal("+" + com.mechanical.Jewelry.skillLevels(stack) + " ").append(Component.translatable(skill.langKey())).withStyle(ChatFormatting.GOLD));
         for (Accessory slot : Accessory.values()) {
             if (slot == Accessory.RING_2 || slot == Accessory.HIP_2 || !Equipment.fits(slot, stack)) continue;
             event.getToolTip().add(1, Component.translatable("tooltip.mechanical.worn_in",

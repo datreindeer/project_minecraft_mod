@@ -12,6 +12,8 @@ import java.util.function.Supplier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import com.mechanical.skills.Skill;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -97,6 +99,34 @@ public final class Jewelry {
         b("carnelian", Attributes.MOVEMENT_SPEED, MUL, 0.02, 0.1, 0xF49646);
         b("chalcedony", Attributes.MOVEMENT_EFFICIENCY, ADD, 0.05, 0.25, 0xC8D4E0);
         b("bloodstone", Attributes.MAX_HEALTH, ADD, 0.5, 2, 0x3C6E4C);
+    }
+
+    /** The skill each gem raises while worn (spec "Smycken"); garnet, amber and citrine are the builder's pick by theme. */
+    public static final Map<String, Skill> SKILLS = Map.ofEntries(
+            Map.entry("topaz", Skill.MINING), Map.entry("amethyst", Skill.MINING), Map.entry("fluorite", Skill.MINING),
+            Map.entry("diamond", Skill.SMITHING), Map.entry("garnet", Skill.SMITHING),
+            Map.entry("jade", Skill.WOODCUTTING), Map.entry("moonstone", Skill.WOODCUTTING), Map.entry("amber", Skill.WOODCUTTING),
+            Map.entry("peridot", Skill.FARMING), Map.entry("chalcedony", Skill.FARMING),
+            Map.entry("aquamarine", Skill.FISHING), Map.entry("turquoise", Skill.FISHING),
+            Map.entry("bloodstone", Skill.SLAUGHTER), Map.entry("ruby", Skill.SLAUGHTER),
+            Map.entry("jasper", Skill.HUNTING), Map.entry("tourmaline", Skill.HUNTING), Map.entry("carnelian", Skill.HUNTING),
+            Map.entry("smoky_quartz", Skill.COOKING), Map.entry("citrine", Skill.COOKING),
+            Map.entry("agate", Skill.MASONRY), Map.entry("sapphire", Skill.MASONRY),
+            Map.entry("clear_quartz", Skill.GOLD_SMITHING), Map.entry("opal", Skill.GOLD_SMITHING), Map.entry("emerald", Skill.GOLD_SMITHING),
+            Map.entry("rose_quartz", Skill.LEATHERWORKING), Map.entry("celestine", Skill.FLETCHING));
+
+    /** The skill a worn piece raises, or null. */
+    public static Skill skillOf(ItemStack stack) {
+        Jewel jewel = stack.get(JEWEL.get());
+        return jewel == null ? null : SKILLS.get(jewel.gem());
+    }
+
+    /** Levels a piece gives its skill: gold 3, electrum 2, silver 1, doubled when Flawless; 0 for other items. */
+    public static int skillLevels(ItemStack stack) {
+        Jewel jewel = stack.get(JEWEL.get());
+        if (jewel == null) return 0;
+        double s = strength(stack.getItem());
+        return (s == 1.0 ? 3 : s == ELECTRUM_STRENGTH ? 2 : 1) * (jewel.flawless() ? 2 : 1);
     }
 
     private static void b(String gem, Holder<Attribute> attribute, AttributeModifier.Operation op, double normal, double flawless, int colour) {

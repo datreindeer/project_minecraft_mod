@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.mechanical.Jewelry;
 import com.mechanical.Mechanical;
+import com.mechanical.equipment.Accessory;
+import com.mechanical.equipment.Equipment;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.component.DataComponents;
@@ -53,9 +56,14 @@ public final class Skills {
         return level(xp(p, s));
     }
 
-    /** Jewelry bonus; Task 4 wires it. */
+    /** Levels from worn rings and necklace (the synced equipment, so the client sees it too). */
     public static int bonus(Player p, Skill s) {
-        return 0;
+        int sum = 0;
+        for (Accessory a : new Accessory[] {Accessory.RING_1, Accessory.RING_2, Accessory.NECK}) {
+            ItemStack piece = Equipment.get(p, a);
+            if (Jewelry.skillOf(piece) == s) sum += Jewelry.skillLevels(piece);
+        }
+        return sum;
     }
 
     public static int effectiveLevel(Player p, Skill s) {
