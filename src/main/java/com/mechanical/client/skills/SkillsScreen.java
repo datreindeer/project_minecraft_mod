@@ -94,7 +94,7 @@ public class SkillsScreen extends Screen {
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         int row = rowAt(event.x(), event.y());
-        if (event.button() == 0 && row >= 0) {
+        if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && row >= 0) {
             pick(SKILLS[row]);
             return true;
         }

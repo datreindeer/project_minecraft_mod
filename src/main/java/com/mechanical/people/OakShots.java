@@ -183,7 +183,7 @@ public final class OakShots {
                         if (QUEST_SHOTS[n].equals("focus_done")) { // click the third token (the screen's layout: 12 tokens 18 wide, 4 apart)
                             int left = (mc.getWindow().getGuiScaledWidth() - 340) / 2 + 40, top = Math.max(2, (mc.getWindow().getGuiScaledHeight() - 208) / 2);
                             mc.gui.screen().mouseClicked(new net.minecraft.client.input.MouseButtonEvent(left + 2 * 22 + 9, top + 158 + 9,
-                                    new net.minecraft.client.input.MouseButtonInfo(0, 0)), false);
+                                    new net.minecraft.client.input.MouseButtonInfo(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT, 0)), false);
                         }
                     } else {
                         shot(mc, "quest_" + QUEST_SHOTS[n]);

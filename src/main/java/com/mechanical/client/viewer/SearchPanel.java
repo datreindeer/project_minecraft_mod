@@ -73,11 +73,12 @@ final class SearchPanel {
     /** Every frame: the recipe book can move the screen, and effects can come and go. */
     private void layout() {
         boolean effects = screen instanceof InventoryScreen && !Minecraft.getInstance().player.getActiveEffects().isEmpty();
-        x = screen.getLeftPos() + screen.getImageWidth() + GAP + (effects ? EFFECTS : 0);
-        cols = Math.min(MAX_COLS, (screen.width - GAP - x - 14) / 18);
+        int free = screen.getLeftPos() + screen.getImageWidth() + GAP + (effects ? EFFECTS : 0); // as far left as it may reach
+        cols = Math.min(MAX_COLS, (screen.width - GAP - free - 14) / 18);
         rows = (screen.height - 2 * GAP - HEAD - FOOT) / 18;
         shown = cols >= MIN_COLS && rows >= 1;
         w = cols * 18 + 14;
+        x = screen.width - GAP - w;
         h = HEAD + rows * 18 + FOOT;
         y = (screen.height - h) / 2;
         box.setX(x + 7);
@@ -165,9 +166,9 @@ final class SearchPanel {
             return false;
         swallowRelease = true; // the screen never saw the press: its release would throw a carried stack "outside"
         Item item = itemAt(mx, my);
-        if (item != null && (button == 0 || button == 1)) {
+        if (item != null && (button == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT || button == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_RIGHT)) {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            RecipeViewerClient.open(screen, item, button == 1);
+            RecipeViewerClient.open(screen, item, button == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_RIGHT);
         }
         return true;
     }

@@ -241,18 +241,18 @@ public class RecipeViewScreen extends Screen {
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (super.mouseClicked(event, doubleClick)) return true;
         int button = event.button();
-        if (button != 0 && button != 1) return false;
+        if (button != com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && button != com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_RIGHT) return false;
         for (Hit hit : hits) {
             if (!hit.has(event.x(), event.y())) continue;
             if (hit.click != null) {
-                if (button != 0) return false;
+                if (button != com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT) return false;
                 click();
                 hit.click.run();
                 return true;
             }
             if (hit.stack != null) {
                 click();
-                go(hit.stack.getItem(), button == 1);
+                go(hit.stack.getItem(), button == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_RIGHT);
                 return true;
             }
         }

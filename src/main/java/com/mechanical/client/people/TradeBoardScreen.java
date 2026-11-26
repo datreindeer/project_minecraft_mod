@@ -400,7 +400,7 @@ public abstract class TradeBoardScreen extends Screen {
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         List<Row> all = rows();
         int i = dealAt(all, event.x(), event.y());
-        if (i >= 0 && event.button() == 0) {
+        if (i >= 0 && event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT) {
             if (all.get(i).blocked() == null) {
                 pending = i;
                 pendingStock = all.get(i).stock();

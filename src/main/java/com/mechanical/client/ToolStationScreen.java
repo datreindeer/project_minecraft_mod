@@ -163,7 +163,7 @@ public class ToolStationScreen extends AbstractContainerScreen<ToolStationMenu> 
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == 0) {
+        if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT) {
             List<String> known = types();
             int t = typeAt(event.x(), event.y(), known.size());
             if (t >= 0) {

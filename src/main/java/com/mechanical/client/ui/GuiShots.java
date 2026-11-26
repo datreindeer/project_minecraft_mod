@@ -188,7 +188,7 @@ public final class GuiShots {
     private static void click(int index) {
         int[] at = row(index);
         if (at != null) Minecraft.getInstance().gui.screen().mouseClicked(new net.minecraft.client.input.MouseButtonEvent(at[0], at[1],
-                new net.minecraft.client.input.MouseButtonInfo(0, 0)), false);
+                new net.minecraft.client.input.MouseButtonInfo(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT, 0)), false);
     }
 
     /** The centre of row {@code index} on the open trade screen. */
@@ -769,7 +769,7 @@ public final class GuiShots {
     }
 
     private static net.minecraft.client.input.MouseButtonEvent mouseEvent(double x, double y) {
-        return new net.minecraft.client.input.MouseButtonEvent(x, y, new net.minecraft.client.input.MouseButtonInfo(0, 0));
+        return new net.minecraft.client.input.MouseButtonEvent(x, y, new net.minecraft.client.input.MouseButtonInfo(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT, 0));
     }
 
     private static void drag(Screen screen, double x, double y, double toX, double toY) {

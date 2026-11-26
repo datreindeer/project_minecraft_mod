@@ -357,7 +357,7 @@ public class QuestScreen extends Screen implements ClientAdvancements.Listener {
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (super.mouseClicked(event, doubleClick)) return true;
-        if (event.button() != 0) return false;
+        if (event.button() != com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT) return false;
         for (Hit hit : hits)
             if (hit.click != null && hit.has(event.x(), event.y())) {
                 minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance

@@ -380,7 +380,7 @@ public final class MpShots {
             for (var c : mc().gui.screen() == null ? List.<net.minecraft.client.gui.components.events.GuiEventListener>of() : mc().gui.screen().children())
                 if (c instanceof net.minecraft.client.gui.components.Button b && b.getMessage().getString().toLowerCase(Locale.ROOT).contains("trade")) {
                     var click = new net.minecraft.client.input.MouseButtonEvent(b.getX() + b.getWidth() / 2.0, b.getY() + b.getHeight() / 2.0,
-                            new net.minecraft.client.input.MouseButtonInfo(0, 0));
+                            new net.minecraft.client.input.MouseButtonInfo(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT, 0));
                     Object before = mc().gui.screen();
                     b.onPress(click);
                     boolean took = before != mc().gui.screen();
