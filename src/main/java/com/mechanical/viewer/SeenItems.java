@@ -37,7 +37,7 @@ public final class SeenItems {
     public static final Supplier<AttachmentType<List<String>>> SEEN = Mechanical.ATTACHMENTS.register("seen_items", () -> AttachmentType
             .<List<String>>builder(() -> List.of())
             .serialize(Codec.STRING.listOf().fieldOf("items"))
-            .sync(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()))
+            .sync((holder, to) -> holder == to, ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()))
             .copyOnDeath()
             .build());
     /** Set once old players have been given what they unlocked before the viewer existed. */

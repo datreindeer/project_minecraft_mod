@@ -67,9 +67,10 @@ public final class StationSources {
 
     private static void station(List<ViewerRecipe> out, Station station, List<StationRecipe> recipes) {
         for (StationRecipe r : recipes) {
-            boolean always = r.unlockedBy() == null;
+            boolean open = r.unlockedBy() == null;
             out.add(new ViewerRecipe(station, r.parts().stream().map(StationSources::slot).toList(), r.assemble(), 0,
-                    always ? UnlockKind.ALWAYS : UnlockKind.RECIPE_ID, always ? "" : r.id()));
+                    open ? UnlockKind.STATION_SEEN : UnlockKind.RECIPE_ID,
+                    open ? BuiltInRegistries.ITEM.getKey(station.icon().getItem()).toString() : r.id()));
         }
     }
 

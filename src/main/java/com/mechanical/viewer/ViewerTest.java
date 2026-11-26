@@ -49,6 +49,7 @@ public final class ViewerTest {
             stationSources(h);
             toolStationKeyPart(h);
             altOptionCountsAsSeen(h);
+            stationNeedsSeenStation(h);
             codecRoundTrip(h);
             sourcesRebuildAfterInvalidate(h);
             jsonSources(h);
@@ -106,6 +107,22 @@ public final class ViewerTest {
         var r = new ViewerRecipe(Station.CRAFTING_SHAPELESS, List.of(new Slot(List.of(Items.FLINT, Items.STICK), 1, false)), new ItemStack(Items.TORCH), 0, UnlockKind.ALL_SEEN, "");
         h.assertTrue(r.unlocked(java.util.Set.of("minecraft:stick"), List.of()), "an alternative option counts as seen");
         h.assertTrue(!r.unlocked(java.util.Set.of(), List.of()), "nothing seen is locked");
+    }
+
+    private static void stationNeedsSeenStation(GameTestHelper h) {
+        var seen = new java.util.HashSet<>(java.util.Set.of("minecraft:feather", "minecraft:stick", "minecraft:oak_planks", "minecraft:clay_ball"));
+        var bolt = net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MODID, "iron_bolt"));
+        for (ViewerRecipe r : StationSources.all()) {
+            if (!r.unlocked(seen, List.of())) continue;
+            h.assertTrue(!r.makes(bolt), "no Iron Bolt for a Stone Age player");
+            h.assertTrue(r.station() != Station.PATTERN_BENCH && r.station() != Station.MOLD_BENCH, "no " + r.station() + " recipe for a Stone Age player");
+        }
+        var r = StationSources.all().stream().filter(x -> x.makes(bolt)).findFirst().orElseThrow();
+        h.assertTrue(r.unlock() == UnlockKind.STATION_SEEN, "the Iron Bolt waits for its station");
+        for (Slot s : r.inputs()) if (!s.options().isEmpty()) seen.add(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(s.options().get(0)).toString());
+        h.assertTrue(!r.unlocked(seen, List.of()), "all inputs but no station: still locked");
+        seen.add(r.unlockId());
+        h.assertTrue(r.unlocked(seen, List.of()), "station and all inputs seen: unlocked");
     }
 
     private static void noteParse() {

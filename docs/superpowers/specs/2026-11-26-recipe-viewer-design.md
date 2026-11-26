@@ -61,7 +61,7 @@ Valt av användaren: **A**.
 4. Allt + textsidor (byggsätt A).
 5. **Upplåst** (ändrat efter granskningen, eftersom "en ingrediens" lät en Stick låsa upp järnålderns recept):
    - **Java-stationerna** behåller sin egen regel: `unlockedBy` i `ToolStationRecipes`/`StationRecipe` (nyckeldelen,
-     t.ex. Bronze Pickaxe Head), `UNLOCKED_TOOLS` som redan räknas ut, och `unlockedBy == null` = alltid upplåst.
+     t.ex. Bronze Pickaxe Head), `UNLOCKED_TOOLS` som redan räknas ut, och `unlockedBy == null` = upplåst när spelaren sett stationens item och minst ett alternativ i varje ingångsplats.
      Kiln och Bloomery: upplåsta när spelaren sett något item som receptets ingångs-predikat matchar.
    - **JSON-recept** (crafting, stonecutting, matlagning): upplåsta när spelaren har sett **varje** ingrediens
      (en slot med flera möjliga items räknas som sedd om något av dem är sett).

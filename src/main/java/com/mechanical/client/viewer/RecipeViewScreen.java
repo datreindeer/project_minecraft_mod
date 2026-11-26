@@ -416,10 +416,12 @@ public class RecipeViewScreen extends Screen {
         }
     }
 
-    /** Draws the slot's current option (they take turns every second); returns it. */
+    /** Draws the slot's current seen option (they take turns every second); returns it. Unseen alternatives never show: they would spoil later ages. */
     private @Nullable Item input(GuiGraphicsExtractor g, Slot s, int x, int y, int mouseX, int mouseY) {
         if (s.options().isEmpty()) return null;
-        Item shown = s.options().get(ticks / 20 % s.options().size());
+        List<Item> known = s.options().stream().filter(i -> seen.contains(BuiltInRegistries.ITEM.getKey(i).toString())).toList();
+        if (known.isEmpty()) known = s.options().subList(0, 1); // the recipe is unlocked, so only a non-key slot gets here
+        Item shown = known.get(ticks / 20 % known.size());
         ItemStack stack = new ItemStack(shown, Math.max(1, s.count()));
         g.item(stack, x + 1, y + 1);
         g.itemDecorations(font, stack, x + 1, y + 1);

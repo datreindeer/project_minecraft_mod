@@ -34,6 +34,8 @@ public record ViewerRecipe(Station station, List<Slot> inputs, ItemStack output,
             case RECIPE_ID -> unlockedTools.contains(unlockId);
             case ALL_SEEN -> inputs.stream().allMatch(s -> s.options().isEmpty() || anySeen(s, seen));
             case ANY_SEEN -> !inputs.isEmpty() && anySeen(inputs.get(0), seen);
+            // a station recipe with no unlock: the station item itself must be seen too, or every age's recipes would show at once
+            case STATION_SEEN -> seen.contains(unlockId) && inputs.stream().allMatch(s -> s.options().isEmpty() || anySeen(s, seen));
         };
     }
 
