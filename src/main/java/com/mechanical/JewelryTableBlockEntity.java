@@ -1,5 +1,7 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skill;
+import com.mechanical.skills.Skills;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -147,7 +149,7 @@ public class JewelryTableBlockEntity extends BlockEntity {
             level.playSound(null, worldPosition, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.3F, 1.8F);
             if (player instanceof ServerPlayer sp) {
                 FirePit.award(sp, "iron_age/jeweler");
-                com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.GOLD_SMITHING, 40);
+                Skills.addXp(sp, Skill.GOLD_SMITHING, 40);
                 if (jewel.flawless()) FirePit.award(sp, "iron_age/flawless_jewel");
             }
             sync();

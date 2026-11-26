@@ -1,5 +1,8 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skill;
+import com.mechanical.skills.Skills;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.List;
 
 import net.minecraft.util.Prediction;
@@ -50,7 +53,7 @@ public class ToolStationMenu extends AbstractContainerMenu {
             @Override
             public void onTake(Player player, ItemStack carried) {
                 carried.onCraftedBy(player, carried.getCount());
-                if (player instanceof net.minecraft.server.level.ServerPlayer sp) com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.SMITHING, 10);
+                if (player instanceof ServerPlayer sp) Skills.addXp(sp, Skill.SMITHING, 10);
                 for (int i = 0; i < 3; i++) inputs.removeItem(i, 1);
                 super.onTake(player, carried);
             }

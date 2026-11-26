@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skills;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,8 +175,7 @@ public class CookwareBlockEntity extends BlockEntity {
             return;
         }
         for (ItemStack s : items) {
-            if (done) com.mechanical.skills.Skills.cooked(player, s);
-
+            if (done) Skills.cooked(player, s);
             player.getInventory().placeItemBackInInventory(s, Prediction.SERVER_ONLY);
         }
         items.clear();

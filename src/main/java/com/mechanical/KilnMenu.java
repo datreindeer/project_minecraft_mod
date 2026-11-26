@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skills;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -64,7 +65,7 @@ public class KilnMenu extends AbstractContainerMenu {
 
             @Override
             public void onTake(Player player, ItemStack carried) {
-                com.mechanical.skills.Skills.cooked(player, carried);
+                Skills.cooked(player, carried);
                 super.onTake(player, carried);
             }
         });
@@ -129,7 +130,7 @@ public class KilnMenu extends AbstractContainerMenu {
         if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);
         else slot.setChanged();
         if (stack.getCount() == copy.getCount()) return ItemStack.EMPTY;
-        slot.onTake(player, copy); // the whole taken stack, for the Cooking XP
+        slot.onTake(player, copy.copyWithCount(copy.getCount() - stack.getCount())); // only what moved, for the Cooking XP
         return copy;
     }
 

@@ -1,5 +1,7 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skill;
+import com.mechanical.skills.Skills;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -74,9 +76,9 @@ public class RecipeStationMenu extends AbstractContainerMenu {
             public void onTake(Player player, ItemStack carried) {
                 carried.onCraftedBy(player, carried.getCount());
                 if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
-                    if (RecipeStationMenu.this instanceof FletchingMenu) com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.FLETCHING, 8);
+                    if (RecipeStationMenu.this instanceof FletchingMenu) Skills.addXp(sp, Skill.FLETCHING, 8);
                     else if (RecipeStationMenu.this instanceof LeatherworkingMenu || RecipeStationMenu.this instanceof ArmorStationMenu)
-                        com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.LEATHERWORKING, 15);
+                        Skills.addXp(sp, Skill.LEATHERWORKING, 15);
                 }
                 current().ifPresent(RecipeStationMenu.this::consume);
                 super.onTake(player, carried);

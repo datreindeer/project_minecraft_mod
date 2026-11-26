@@ -1,5 +1,7 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skill;
+import com.mechanical.skills.Skills;
 import static com.mechanical.Mechanical.BLOCKS;
 import static com.mechanical.Mechanical.ITEMS;
 import static com.mechanical.Mechanical.MODID;
@@ -148,7 +150,7 @@ public final class StoneCrafts {
     /** Called by the Stone Anvil when a piece is crushed, for the "Rubble" advancement. */
     static void crushedBy(Player player, ItemStack piece) {
         if (!(player instanceof ServerPlayer p)) return;
-        com.mechanical.skills.Skills.addXp(p, com.mechanical.skills.Skill.MASONRY, 5);
+        Skills.addXp(p, Skill.MASONRY, 5);
         if (is(piece, "conglomerate") || is(piece, "shale")) Kettle.award(p, Identifier.fromNamespaceAndPath(MODID, "bronze_age/rubble"));
     }
 

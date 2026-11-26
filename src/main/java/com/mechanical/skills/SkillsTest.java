@@ -49,6 +49,8 @@ public final class SkillsTest {
             miningXp(h, p);
             stationXp(h, p);
             huntingXp(h, p);
+            placedOreXp(h, p);
+            cookedXp(h, p);
             h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -106,5 +108,32 @@ public final class SkillsTest {
         int before = Skills.xp(p, Skill.HUNTING);
         cow.hurtServer(level, level.damageSources().playerAttack(p), 1000F);
         h.assertTrue(Skills.xp(p, Skill.HUNTING) == before + 25, "killing a cow gives 25 Hunting, got " + (Skills.xp(p, Skill.HUNTING) - before));
+    }
+
+    private static void placedOreXp(GameTestHelper h, ServerPlayer p) {
+        var level = h.getLevel();
+        net.minecraft.core.BlockPos pos = h.absolutePos(new net.minecraft.core.BlockPos(6, 1, 6)), below = pos.below();
+        level.setBlockAndUpdate(below, net.minecraft.world.level.block.Blocks.COBBLESTONE.defaultBlockState());
+        var ore = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_ORE);
+        p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ore);
+        var hit = new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(below), net.minecraft.core.Direction.UP, below, false);
+        ore.useOn(new net.minecraft.world.item.context.UseOnContext(level, p, net.minecraft.world.InteractionHand.MAIN_HAND, ore, hit));
+        h.assertTrue(level.getBlockState(pos).is(net.minecraft.world.level.block.Blocks.IRON_ORE), "player placed the ore");
+        p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+        int before = Skills.xp(p, Skill.MINING);
+        p.gameMode.destroyBlock(pos);
+        h.assertTrue(Skills.xp(p, Skill.MINING) == before, "a placed ore gives no Mining XP");
+        level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.IRON_ORE.defaultBlockState());
+        p.gameMode.destroyBlock(pos);
+        h.assertTrue(Skills.xp(p, Skill.MINING) == before + 10, "a set (generated) ore still gives 10");
+    }
+
+    private static void cookedXp(GameTestHelper h, ServerPlayer p) {
+        int before = Skills.xp(p, Skill.COOKING);
+        Skills.cooked(p, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ROTTEN_FLESH, 3));
+        Skills.cooked(p, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STICK, 3));
+        h.assertTrue(Skills.xp(p, Skill.COOKING) == before, "rotten flesh and non-food pay nothing");
+        Skills.cooked(p, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BREAD, 2));
+        h.assertTrue(Skills.xp(p, Skill.COOKING) == before + 10, "bread pays 5 each");
     }
 }

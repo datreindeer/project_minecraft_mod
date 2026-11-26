@@ -1,5 +1,6 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skills;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -103,7 +104,7 @@ public class BakingStoneBlock extends Block {
         if (level instanceof ServerLevel server) {
             server.setBlock(pos, state.setValue(CONTENTS, Contents.EMPTY), Block.UPDATE_ALL);
             Block.popResource(server, pos.above(), new ItemStack(out));
-            if (out == Items.BREAD) com.mechanical.skills.Skills.cooked(player, new ItemStack(out));
+            if (out == Items.BREAD) Skills.cooked(player, new ItemStack(out));
         }
         return InteractionResult.SUCCESS;
     }

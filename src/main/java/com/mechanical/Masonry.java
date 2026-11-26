@@ -1,5 +1,7 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skill;
+import com.mechanical.skills.Skills;
 import static com.mechanical.Mechanical.MODID;
 
 import java.util.ArrayList;
@@ -194,7 +196,7 @@ public final class Masonry {
             if (player == null || !player.getAbilities().instabuild) mortar.shrink(1);
             if (player instanceof ServerPlayer p) {
                 Kettle.award(p, Identifier.fromNamespaceAndPath(MODID, "iron_age/repointed"));
-                com.mechanical.skills.Skills.addXp(p, com.mechanical.skills.Skill.MASONRY, 5);
+                Skills.addXp(p, Skill.MASONRY, 5);
             }
         }
         return true;
@@ -204,7 +206,7 @@ public final class Masonry {
     static void scrubbedBy(Player player) {
         if (!(player instanceof ServerPlayer p)) return;
         Kettle.award(p, Identifier.fromNamespaceAndPath(MODID, "bronze_age/weathered"));
-        com.mechanical.skills.Skills.addXp(p, com.mechanical.skills.Skill.MASONRY, 5);
+        Skills.addXp(p, Skill.MASONRY, 5);
     }
 
     // ---------------------------------------------------------------- game test

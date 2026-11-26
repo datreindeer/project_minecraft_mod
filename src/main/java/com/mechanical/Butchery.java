@@ -1,5 +1,7 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skill;
+import com.mechanical.skills.Skills;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -215,7 +217,7 @@ public final class Butchery {
      * shared between animals (hides, meat, feathers), so each animal's advancement also needs that very animal cut up.
      */
     static void awardButchered(net.minecraft.server.level.ServerPlayer player, EntityType<?> type) {
-        com.mechanical.skills.Skills.addXp(player, com.mechanical.skills.Skill.SLAUGHTER, 20);
+        Skills.addXp(player, Skill.SLAUGHTER, 20);
         if (player instanceof net.neoforged.neoforge.common.util.FakePlayer) return;
         String path = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(type).getPath();
         var holder = player.level().getServer().getAdvancements().get(net.minecraft.resources.Identifier.fromNamespaceAndPath(Mechanical.MODID, "hunting/" + path));

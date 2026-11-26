@@ -1,5 +1,7 @@
 package com.mechanical;
 
+import com.mechanical.skills.Skill;
+import com.mechanical.skills.Skills;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -147,7 +149,7 @@ public class LapidaryWheelBlock extends Block {
         }
         player.sendOverlayMessage(Component.translatable("message.mechanical.lapidary." + result, out.getHoverName()));
         if (player instanceof net.minecraft.server.level.ServerPlayer sp && !result.equals("cracked"))
-            com.mechanical.skills.Skills.addXp(sp, com.mechanical.skills.Skill.GOLD_SMITHING, result.equals("flawless") ? 30 : 10);
+            Skills.addXp(sp, Skill.GOLD_SMITHING, result.equals("flawless") ? 30 : 10);
         player.getInventory().placeItemBackInInventory(out, net.minecraft.util.Prediction.SERVER_ONLY);
     }
 }
