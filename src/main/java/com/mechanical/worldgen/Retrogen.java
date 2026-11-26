@@ -259,7 +259,7 @@ public final class Retrogen {
      * sand...), and building blocks (planks, wooden slabs/stairs, doors, trapdoors, fences, beds, wool, glass, torches, ladders,
      * crafting tables). Villages, ruins and our own camps count too, which only means fewer chunks are touched.
      */
-    static boolean playerMade(BlockState s) {
+    public static boolean playerMade(BlockState s) {
         if (s.hasBlockEntity()) return !(s.is(Blocks.BEE_NEST) || s.is(Blocks.SPAWNER) || s.is(Blocks.TRIAL_SPAWNER) || s.is(Blocks.VAULT)
                 || s.is(Blocks.SUSPICIOUS_SAND) || s.is(Blocks.SUSPICIOUS_GRAVEL) || s.is(Blocks.SCULK_SENSOR) || s.is(Blocks.SCULK_SHRIEKER)
                 || s.is(Blocks.SCULK_CATALYST) || s.is(Blocks.CREAKING_HEART));

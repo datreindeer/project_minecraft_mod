@@ -15,6 +15,7 @@ import com.mechanical.Mechanical;
 import com.mechanical.TrampledPathBlock;
 import com.mechanical.TrampledPaths;
 import com.mechanical.worldgen.ModBiomes;
+import com.mechanical.worldgen.Retrogen;
 import com.mechanical.worldgen.SmoothGround;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -318,23 +319,30 @@ public final class RoadBuilding extends SavedData {
     }
 
     /**
-     * Fells the tree {@code from} stands in: every log and leaf joined to it (6-connected) within 21x21 columns, from 4 blocks
-     * under it to 30 above, so no crown is left floating. Capped at 2000 blocks; a tree wider than that is only partly felled.
+     * The tree {@code from} stands in: every log and leaf joined to it (6-connected) within 21x21 columns, from 4 blocks under
+     * it to 30 above, so no crown is left floating. Null if it cannot be felled whole: it touches a player-made block (a log
+     * house, a plank roof), or it is over 2000 blocks. Nothing is removed here; {@link #lay} removes it.
      */
-    static void fell(ServerLevel level, BlockPos from) {
+    static List<BlockPos> treeOf(ServerLevel level, BlockPos from) {
         java.util.ArrayDeque<BlockPos> todo = new java.util.ArrayDeque<>(List.of(from));
         Set<Long> seen = new HashSet<>(List.of(from.asLong()));
-        while (!todo.isEmpty() && seen.size() <= 2000) {
+        List<BlockPos> tree = new ArrayList<>();
+        while (!todo.isEmpty()) {
             BlockPos p = todo.poll();
             BlockState s = level.getBlockState(p);
-            if (!s.is(BlockTags.LOGS) && !s.is(BlockTags.LEAVES)) continue;
-            set(level, p, Blocks.AIR.defaultBlockState());
+            if (!s.is(BlockTags.LOGS) && !s.is(BlockTags.LEAVES)) {
+                if (Retrogen.playerMade(s)) return null;
+                continue;
+            }
+            if (tree.size() >= 2000) return null;
+            tree.add(p);
             for (Direction d : Direction.values()) {
                 BlockPos n = p.relative(d);
                 if (Math.abs(n.getX() - from.getX()) <= 10 && Math.abs(n.getZ() - from.getZ()) <= 10 && n.getY() >= from.getY() - 4 && n.getY() <= from.getY() + 30
                         && level.hasChunkAt(n) && seen.add(n.asLong())) todo.add(n);
             }
         }
+        return tree;
     }
 
     /** Extra cost of a column with a tree or rock to cut: roads go round a cut when a way round is about as short. */
@@ -554,6 +562,13 @@ public final class RoadBuilding extends SavedData {
             BlockState s = level.getBlockState(new BlockPos(x, yy, z));
             if (!clearable(s) && !ours.test(s) && !s.getFluidState().is(FluidTags.WATER)) return false;
         }
+        List<BlockPos> tree = null; // a tree in the way comes down whole, or the lane is not laid
+        for (int k = 1; k <= 24 && tree == null; k++) {
+            BlockPos log = new BlockPos(x, y + k, z);
+            if (!level.getBlockState(log).is(BlockTags.LOGS)) continue;
+            tree = treeOf(level, log);
+            if (tree == null) return false;
+        }
         boolean localOk = soil(local, level, top);
         for (int yy = top.getY(); yy > y; yy--) set(level, new BlockPos(x, yy, z), Blocks.AIR.defaultBlockState());
         for (int yy = top.getY() + 1; yy < y; yy++) set(level, new BlockPos(x, yy, z), pal.fill);
@@ -568,9 +583,7 @@ public final class RoadBuilding extends SavedData {
             surface = step ? slab(pick) : pick;
         }
         set(level, surfacePos, surface);
-        for (int k = 1; k <= 24; k++) {
-            if (level.getBlockState(surfacePos.above(k)).is(BlockTags.LOGS)) { fell(level, surfacePos.above(k)); break; } // the tree in the way comes down whole
-        }
+        if (tree != null) for (BlockPos p : tree) set(level, p, Blocks.AIR.defaultBlockState());
         for (int k = 1; k <= 2; k++) {
             BlockPos p = surfacePos.above(k);
             BlockState s = level.getBlockState(p);
