@@ -68,6 +68,7 @@ public final class DashboardTest {
             throw h.assertionException("dashboard: guard let an exception through");
         }
 
+        landmarks(h);
         JsonObject status = JsonParser.parseString(Snapshot.status(server)).getAsJsonObject();
         for (String k : List.of("name", "version", "uptimeSec", "tps", "mspt", "online", "max", "memUsedMb", "memMaxMb", "loadedChunks", "entities",
                 "day", "time", "season", "month", "dayOfMonth", "year", "worldAge"))
@@ -194,6 +195,15 @@ public final class DashboardTest {
         check(h, p == 0x91BD59 && s == 0xBFB755, "plains and savanna grass as in game: " + Integer.toHexString(p) + " " + Integer.toHexString(s));
         check(h, MapTiles.Tint.FOLIAGE.colour(plains, 0, 0) != MapTiles.Tint.FOLIAGE.colour(savanna, 0, 0), "leaves differ between biomes");
         check(h, MapTiles.Tint.WATER.colour(plains, 0, 0) != MapTiles.Tint.WATER.colour(swamp, 0, 0), "water differs between biomes");
+    }
+
+    private static void landmarks(GameTestHelper h) {
+        Landmarks.add(h.getLevel(), "waystone", 12345678, 8);
+        Landmarks.add(h.getLevel(), "waystone", 12345678, 8);
+        var list = JsonParser.parseString(Snapshot.map(h.getLevel().getServer())).getAsJsonObject().getAsJsonArray("landmarks");
+        long n = list.asList().stream().map(e -> e.getAsJsonObject()).filter(m -> m.get("x").getAsInt() == 12345678
+                && m.get("z").getAsInt() == 8 && m.get("kind").getAsString().equals("waystone")).count();
+        check(h, n == 1, "a landmark added twice is in the map once, not " + n);
     }
 
     private static int shade(MapTiles.Tint tint, GameTestHelper h, BlockPos pos, MapColor.Brightness b) {

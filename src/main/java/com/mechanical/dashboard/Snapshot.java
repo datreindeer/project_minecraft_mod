@@ -286,6 +286,15 @@ public final class Snapshot {
             villages.add(j);
         }
         o.add("villages", villages);
+        JsonArray landmarks = new JsonArray();
+        for (Landmarks.Mark m : Landmarks.get(overworld).all()) {
+            JsonObject j = new JsonObject();
+            j.addProperty("kind", m.kind());
+            j.addProperty("x", m.x());
+            j.addProperty("z", m.z());
+            landmarks.add(j);
+        }
+        o.add("landmarks", landmarks);
         return o.toString();
     }
 }

@@ -309,7 +309,10 @@ public final class Waystones {
     public static BlockPos teleport(Entity entity, ServerLevel level, int x, int z, Direction faceIfBuilt) {
         level.getChunk(x >> 4, z >> 4);
         BlockPos base = findStone(level, x, z);
-        if (base == null) base = build(level, x, z, faceIfBuilt, level.getRandom());
+        if (base == null) {
+            base = build(level, x, z, faceIfBuilt, level.getRandom());
+            if (level.dimension() == Level.OVERWORLD) com.mechanical.dashboard.Landmarks.add(level, "waystone", x, z);
+        }
         Direction face = level.getBlockState(base).getValue(HorizontalDirectionalBlock.FACING);
         BlockPos stand = standingSpot(level, base, face);
         Look look = level.getBlockState(base).getValue(LOOK);

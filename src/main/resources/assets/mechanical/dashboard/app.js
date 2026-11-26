@@ -330,7 +330,10 @@ const map = (() => {
   function fitAll() {
     const b = bounds(mapData.tribes || []);
     if (b) fit(b);
-    else if ((mapData.players || []).length) { cx = mapData.players[0].x; cz = mapData.players[0].z; }
+    else {
+      const at = (mapData.players || [])[0] || (mapData.landmarks || [])[0];
+      if (at) { cx = at.x; cz = at.z; }
+    }
   }
 
   function fitTribe(id) {
@@ -403,6 +406,7 @@ const map = (() => {
     grid(bx0, bz0, bx1, bz1);
     villages();
     territories();
+    landmarks();
     fires();
     players();
     labels();
@@ -469,6 +473,50 @@ const map = (() => {
     }
     ctx.restore();
   }
+
+  /* Landmarks: an old oak, a waystone with its glowing rune, a tribe's hide tent. Each is drawn in a 24x24 box round its spot. */
+  const MARKS = {
+    ancient_oak: { name: "Ancient Oak", plural: "Ancient Oaks", parts: [
+      ["M-2.5 11 L-1.8 2 L-6 -1 L-4 -2 L-1 0 L1 0 L4 -2 L6 -1 L1.8 2 L2.5 11 L6 12 L-6 12 Z", "#8a6238"],
+      ["M-5 3 C-10 4 -13 -1 -10 -4 C-12 -8 -7 -11 -4 -9 C-3 -13 4 -13 5 -9 C9 -11 13 -7 10 -4 C13 0 9 4 5 2 C3 4 -3 4 -5 3 Z", "#5f9a48"],
+      ["M-6 -5 C-6 -8 -2 -9 -1 -7 C-1 -5 -4 -4 -6 -5 Z M2 -9 C4 -10 7 -8 5 -6 C3 -6 2 -7 2 -9 Z", "#9cc96a"]] },
+    waystone: { name: "Waystone", plural: "Waystones", parts: [
+      ["M-8 12 L-6 8 L6 8 L8 12 Z", "#6f675b"],
+      ["M-5 8 L-4.5 -7 L0 -12 L4.5 -7 L5 8 Z", "#b9b1a2"],
+      ["M0 -7 L2.8 -3 L0 1 L-2.8 -3 Z M-1 2 L1 2 L1 6 L-1 6 Z", "#7fe0e0"]] },
+    tribe_village: { name: "Tribe village", plural: "Tribe villages", parts: [
+      ["M-11 10 L0 -9 L11 10 Z", "#c9955c"],
+      ["M-4 10 L0 1 L4 10 Z", "#3b2a1c"],
+      ["M0 -9 L-4 -13 L-2.8 -13.6 L0 -10.5 L2.8 -13.6 L4 -13 Z", "#e8dcc0"]] },
+  };
+  for (const m of Object.values(MARKS)) m.paths = m.parts.map(([d, fill]) => [new Path2D(d), fill]);
+
+  function landmarks() {
+    const k = Math.min(1.25, Math.max(.7, Math.sqrt(s)));
+    for (const l of mapData.landmarks || []) {
+      const m = MARKS[l.kind];
+      const [x, y] = toScreen(l.x + .5, l.z + .5);
+      if (!m || x < -30 || y < -30 || x > w + 30 || y > h + 30) continue;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(k, k);
+      ctx.lineJoin = "round";
+      ctx.lineWidth = 3.5; ctx.strokeStyle = HALO;
+      for (const [p] of m.paths) ctx.stroke(p); // one dark rim round the whole shape, under every fill
+      for (const [p, fill] of m.paths) { ctx.fillStyle = fill; ctx.fill(p); }
+      ctx.restore();
+    }
+  }
+
+  /** The landmark within 14 screen pixels of the pointer, or null. */
+  function landmarkAt(sx, sy) {
+    return (mapData.landmarks || []).find(l => {
+      const [x, y] = toScreen(l.x + .5, l.z + .5);
+      return MARKS[l.kind] && Math.hypot(x - sx, y - sy) < 14;
+    }) || null;
+  }
+
+  const markIcon = kind => `<svg class="mark" viewBox="-14 -14 28 28" aria-hidden="true">${MARKS[kind].parts.map(([d, fill]) => `<path d="${d}" fill="${fill}"/>`).join("")}</svg>`;
 
   function flame(x, y, r) {
     ctx.beginPath();
@@ -583,18 +631,21 @@ const map = (() => {
     $("ro-pos").textContent = `X ${bx}   Z ${bz}`;
     const t = tribeAt(bx + .5, bz + .5), v = t ? null : villageAt(bx + .5, bz + .5);
     const kept = t && loadedPaths.has(t.id) && hit.isPointInPath(loadedPaths.get(t.id), bx + .5, bz + .5) ? `<span class="kept">kept loaded</span>` : "";
-    setHTML($("ro-land"), t ? `<span class="swatch" style="background:${esc(t.colour)}"></span><b>${esc(t.name)}</b>${kept}`
+    const l = landmarkAt(mouse[0], mouse[1]);
+    setHTML($("ro-land"), l ? `${markIcon(l.kind)}<b>${MARKS[l.kind].name}</b><span class="kept">${fmt(l.x)}, ${fmt(l.z)}</span>` : t ? `<span class="swatch" style="background:${esc(t.colour)}"></span><b>${esc(t.name)}</b>${kept}`
       : v ? `<span class="swatch village"></span><b>${esc(v.name)}</b><span class="kept">village</span>` : "Unclaimed");
   }
 
   function renderLegend() {
     const list = mapData.tribes || [], vs = mapData.villages || [];
-    $("legend").hidden = !list.length && !vs.length;
+    const found = Object.keys(MARKS).map(k => [k, (mapData.landmarks || []).filter(l => l.kind === k).length]).filter(([, n]) => n);
+    $("legend").hidden = !list.length && !vs.length && !found.length;
     setHTML($("legend"), list.map(t => {
       const n = (data.tribes.find(d => d.id === t.id) || {}).chunks;
       return `<button type="button" data-id="${esc(t.id)}"><span class="swatch" style="background:${esc(t.colour)}"></span>${esc(t.name)}<span class="count">${n == null ? "" : fmt(n) + " ch"}</span></button>`;
     }).join("") + (list.some(t => (t.loaded || []).length) ? `<p class="key"><span class="swatch loaded"></span>Kept loaded (lives on while you're away)</p>` : "")
-      + (vs.length ? `<h3>Villages</h3>` + vs.map((v, i) => `<button type="button" data-village="${i}"><span class="swatch village"></span><i>${esc(v.name)}</i><span class="count">${esc(cap(v.kind))}</span></button>`).join("") : ""));
+      + (vs.length ? `<h3>Villages</h3>` + vs.map((v, i) => `<button type="button" data-village="${i}"><span class="swatch village"></span><i>${esc(v.name)}</i><span class="count">${esc(cap(v.kind))}</span></button>`).join("") : "")
+      + (found.length ? `<h3>Places</h3>` + found.map(([k, n]) => `<p class="key">${markIcon(k)}${MARKS[k].plural}<span class="count">${fmt(n)}</span></p>`).join("") : ""));
   }
   $("legend").addEventListener("click", e => {
     const b = e.target.closest("button");

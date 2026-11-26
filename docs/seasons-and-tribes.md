@@ -491,3 +491,9 @@ Varje fas: advancements, `mod_version`-bump, registry och anteckningar, ålders-
 ## Öppna frågor
 
 Inga just nu. Alla frågor besvarades 2026-11-20.
+
+## Placing structures and map markers
+
+`/structure tribe_village <x> <z>` and `/structure ancient_oak <x> <z>` (game masters, Overworld) build one at the middle of the chunk holding x, z. It is saved like a worldgen one, so the land title, tribe visits and age rebuilds work; vanilla `/locate` does not find it. It is refused on water or uneven ground (a village needs at most 8 blocks of rise across 48), where there are buildings (a player's, or a camp or ruin), and on another village or Ancient Oak. Biome is not checked, and the ground is not levelled as in worldgen.
+
+The dashboard map marks Ancient Oaks, waystones and tribe villages once their chunk has loaded. `/regen waystones <blocks>` also marks the stones already standing; keep the distance small, as it generates chunks within a single tick.

@@ -115,9 +115,10 @@ public final class Regen {
         if (other == null) return false;
         level.getChunk(cx, cz); // a chunk generated now builds its own stone
         int x = cx * 16 + 8, z = cz * 16 + 8;
-        if (Waystones.findStone(level, x, z) != null) return false;
-        Waystones.build(level, x, z, Waystones.toward(cx, cz, other[0], other[1]), level.getRandom());
-        return true;
+        boolean missing = Waystones.findStone(level, x, z) == null;
+        if (missing) Waystones.build(level, x, z, Waystones.toward(cx, cz, other[0], other[1]), level.getRandom());
+        com.mechanical.dashboard.Landmarks.add(level, "waystone", x, z); // standing ones too: this marks stones older than the map's markers
+        return missing;
     }
 
     /** Builds every waystone end within blocks of center; returns {ends built, ends already standing}. */

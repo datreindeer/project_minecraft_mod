@@ -209,6 +209,7 @@ tr.away td { color: var(--ash); }
 .legend button:hover { background: rgba(214, 164, 78, .12); }
 .legend .count { margin-left: auto; padding-left: 14px; color: var(--ash); font-size: 13px; }
 .legend h3 { font-size: 14px; color: var(--ash); padding: 10px 10px 2px; margin-top: 6px; border-top: 1px solid var(--seam); }
+.legend h3:first-child { margin-top: 0; border-top: 0; padding-top: 2px; }
 .legend .key { display: flex; align-items: center; padding: 6px 10px 2px; color: var(--ash); font-size: 13px; max-width: 250px; }
 .legend button i { font-family: var(--serif); }
 /* Legend keys drawn like the map: the kept-loaded wash with its dashed edge, a village's sand dashes on dark. */
@@ -240,3 +241,6 @@ tr.away td { color: var(--ash); }
   .legend { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* landmark icons in the legend and the readout (the same shapes the map draws) */
+.mark { width: 18px; height: 18px; flex: none; vertical-align: middle; margin-right: 6px; }

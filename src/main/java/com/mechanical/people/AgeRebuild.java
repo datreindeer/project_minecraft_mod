@@ -108,7 +108,12 @@ public final class AgeRebuild {
         var structure = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getValue(TribeVillageStructure.ID);
         var start = structure == null ? null : event.getChunk().getStartForStructure(structure);
         if (start != null && start.isValid() && start.getPieces().getFirst() instanceof TribeVillageStructure.Piece piece)
-            FOUND.add(new Village(piece.centre(), piece.seed(), piece.climate().ordinal(), WorldAge.STONE, List.of())); // generated in the Stone Age
+            found(piece);
+    }
+
+    /** A village built just now or whose start chunk loaded; /structure hands its own in, as its chunk is loaded already. */
+    public static void found(TribeVillageStructure.Piece piece) {
+        FOUND.add(new Village(piece.centre(), piece.seed(), piece.climate().ordinal(), WorldAge.STONE, List.of())); // generated in the Stone Age
     }
 
     @SubscribeEvent
