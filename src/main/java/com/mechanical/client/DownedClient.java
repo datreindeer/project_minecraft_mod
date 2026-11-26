@@ -56,7 +56,9 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
  */
 @EventBusSubscriber(modid = Mechanical.MODID, value = Dist.CLIENT)
 public final class DownedClient {
-    public static final KeyMapping KEY = new KeyMapping("key.mechanical.downed", com.mojang.blaze3d.platform.InputConstants.KEY_R, KeyMapping.Category.MULTIPLAYER);
+    /** In the world only, so it shares R with the recipe viewer's key (screens only) without a conflict. */
+    public static final KeyMapping KEY = new KeyMapping("key.mechanical.downed", net.neoforged.neoforge.client.settings.KeyConflictContext.IN_GAME,
+            com.mojang.blaze3d.platform.InputConstants.Type.KEYBOARD, com.mojang.blaze3d.platform.InputConstants.KEY_R, KeyMapping.Category.MULTIPLAYER);
     static final Identifier HUD = Identifier.fromNamespaceAndPath(Mechanical.MODID, "downed");
     private static final Identifier VIGNETTE = Identifier.withDefaultNamespace("textures/misc/vignette.png");
     /** Present on a downed or waking player: true when carried on someone's shoulders. */

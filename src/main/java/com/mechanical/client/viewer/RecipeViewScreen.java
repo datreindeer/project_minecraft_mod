@@ -93,6 +93,7 @@ public class RecipeViewScreen extends Screen {
     private final List<Hit> hits = new ArrayList<>();
     private int left, top;
     private Button prev, next;
+    private @Nullable Item hovered;
 
     private RecipeViewScreen(@Nullable Screen parent, Item item, boolean usage) {
         super(Component.empty());
@@ -141,6 +142,11 @@ public class RecipeViewScreen extends Screen {
         tab = Math.floorMod(i, tabs.size());
         page = 0;
         noteScroll = 0;
+    }
+
+    /** The item link under the mouse in the last frame, for the R and U keys. */
+    public @Nullable Item hoveredItem() {
+        return hovered;
     }
 
     // ------------------------------------------------------------------ data
@@ -297,10 +303,13 @@ public class RecipeViewScreen extends Screen {
         }
         super.extractRenderState(g, mouseX, mouseY, a);
 
+        hovered = null;
         for (Hit hit : hits)
             if (hit.has(mouseX, mouseY)) {
-                if (hit.stack != null) g.setTooltipForNextFrame(font, hit.stack, mouseX, mouseY);
-                else if (hit.tip != null) g.setTooltipForNextFrame(font, hit.tip, mouseX, mouseY);
+                if (hit.stack != null) {
+                    hovered = hit.stack.getItem();
+                    g.setTooltipForNextFrame(font, hit.stack, mouseX, mouseY);
+                } else if (hit.tip != null) g.setTooltipForNextFrame(font, hit.tip, mouseX, mouseY);
                 break;
             }
     }

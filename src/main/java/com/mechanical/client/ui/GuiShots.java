@@ -487,6 +487,67 @@ public final class GuiShots {
         // Twine is seen (a link with its icon), Oak Bark is not (???)
         recipeShot("recipes_note", Mechanical.PLANT_FIBRE, false, 1, true, () -> List.of(Mechanical.PLANT_FIBRE.get(), Mechanical.TWINE.get()));
         recipeShot("recipes_none", () -> Items.BEDROCK, false, 1, false, List::of);
+        Minecraft mc = Minecraft.getInstance();
+        // the panel beside the inventory, searching every bronze item (all seen), the first one hovered
+        inWorld("search_panel", p -> {
+            reset(p);
+            p.getInventory().setItem(10, new ItemStack(com.mechanical.Bronze.BRONZE_INGOT.get(), 7));
+            List<String> seen = new ArrayList<>(p.getData(com.mechanical.viewer.SeenItems.SEEN.get()));
+            for (Item i : BuiltInRegistries.ITEM) {
+                String id = BuiltInRegistries.ITEM.getKey(i).toString();
+                if (id.contains("bronze") && !seen.contains(id)) seen.add(id);
+            }
+            p.setData(com.mechanical.viewer.SeenItems.SEEN.get(), seen);
+        }, () -> {
+            show(new InventoryScreen(mc.player));
+            searchBox().setValue("bronze");
+        }, () -> {
+            var box = searchBox();
+            return box == null ? null : new int[] {box.getX() + 9, box.getY() + 25 + 9};
+        });
+        // the box focused, then a real R key (and its letter): it types, no viewer opens, though the mouse is on the pickaxe
+        inWorld("search_typing", GuiShots::reset, () -> {
+            show(new InventoryScreen(mc.player));
+            var box = searchBox();
+            box.setValue("");
+            mc.gui.screen().setFocused(box);
+        }, () -> {
+            if (!(mc.gui.screen() instanceof InventoryScreen s)) return null;
+            if (ticks == 45) {
+                typeKey(com.mojang.blaze3d.platform.InputConstants.KEY_R, 'r');
+                System.out.println("GUISHOT search_typing: box '" + searchBox().getValue() + "', screen " + mc.gui.screen().getClass().getSimpleName());
+            }
+            return new int[] {s.getLeftPos() + 16, s.getTopPos() + 172};
+        });
+        // R over the Twine in the inventory opens its recipe
+        inWorld("recipes_hover", p -> {
+            reset(p);
+            p.getInventory().setItem(10, new ItemStack(Mechanical.TWINE.get(), 5));
+            p.getInventory().setItem(11, new ItemStack(Mechanical.PLANT_FIBRE.get(), 9));
+            com.mechanical.viewer.SeenItems.scan(p);
+        }, () -> show(new InventoryScreen(mc.player)), () -> {
+            if (!(mc.gui.screen() instanceof InventoryScreen s)) return null;
+            if (ticks == 45) typeKey(com.mojang.blaze3d.platform.InputConstants.KEY_R, 0);
+            for (var slot : s.getMenu().slots)
+                if (slot.getItem().is(Mechanical.TWINE.get())) return new int[] {s.getLeftPos() + slot.x + 8, s.getTopPos() + slot.y + 8};
+            return null;
+        });
+    }
+
+    private static net.minecraft.client.gui.components.EditBox searchBox() {
+        for (var child : Minecraft.getInstance().gui.screen().children())
+            if (child instanceof net.minecraft.client.gui.components.EditBox box) return box;
+        return null;
+    }
+
+    /** A key pressed and let go through the keyboard handler, as a player would, with its letter typed when {@code ch} is set. */
+    private static void typeKey(int key, int ch) {
+        Minecraft mc = Minecraft.getInstance();
+        long window = mc.getWindow().handle();
+        var event = new net.minecraft.client.input.KeyEvent(key, 0, 0);
+        mc.keyboardHandler.keyPress(window, 1, event);
+        if (ch > 0) mc.keyboardHandler.charTyped(window, new net.minecraft.client.input.CharacterEvent(ch));
+        mc.keyboardHandler.keyPress(window, 0, event);
     }
 
     private static net.minecraft.client.input.MouseButtonEvent mouseEvent(double x, double y) {
