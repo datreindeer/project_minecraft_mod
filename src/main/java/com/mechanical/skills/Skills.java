@@ -87,7 +87,7 @@ public final class Skills {
         }
     }
 
-    private static void award(ServerPlayer p, String path) {
+    public static void award(ServerPlayer p, String path) {
         var holder = p.level().getServer().getAdvancements().get(Identifier.fromNamespaceAndPath(Mechanical.MODID, path));
         if (holder != null) p.getAdvancements().award(holder, "done");
     }

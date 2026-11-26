@@ -22,6 +22,8 @@ import net.minecraft.world.item.ItemStack;
 public class ToolStationMenu extends AbstractContainerMenu {
     public static final int HEAD = 0, BINDING = 1, ROD = 2, RESULT = 3;
     private static final int INV_START = 4, INV_END = 40;
+    private static final java.util.Set<Item> METAL_RODS = java.util.Set.of(Smithing.COPPER_TOOL_ROD.get(), Smithing.BRONZE_TOOL_ROD.get(),
+            Smithing.IRON_TOOL_ROD.get(), Smithing.STEEL_TOOL_ROD.get());
 
     private final ContainerLevelAccess access;
     private final Player player;
@@ -56,7 +58,10 @@ public class ToolStationMenu extends AbstractContainerMenu {
             @Override
             public void onTake(Player player, ItemStack carried) {
                 carried.onCraftedBy(player, carried.getCount());
-                if (player instanceof ServerPlayer sp) Skills.addXp(sp, Skill.SMITHING, 10);
+                if (player instanceof ServerPlayer sp) {
+                    Skills.addXp(sp, Skill.SMITHING, 10);
+                    if (METAL_RODS.contains(inputs.getItem(ROD).getItem())) Skills.award(sp, "bronze_age/better_haft");
+                }
                 for (int i = 0; i < 3; i++) inputs.removeItem(i, 1);
                 super.onTake(player, carried);
             }

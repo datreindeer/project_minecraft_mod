@@ -44,14 +44,6 @@ public final class ToolStationRecipes {
             return (binding.is(this.binding.get()) ? 2 : 0) + (rod.is(this.rod.get()) ? 1 : 0);
         }
 
-        public List<Item> bindings() {
-            return options(1);
-        }
-
-        public List<Item> rods() {
-            return options(2);
-        }
-
         public List<Item> parts() {
             return List.of(head.get(), binding.get(), rod.get());
         }

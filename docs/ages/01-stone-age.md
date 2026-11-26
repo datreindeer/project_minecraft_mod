@@ -126,6 +126,41 @@ Flint Pickaxe ligger kvar i rutnätet och tappar 1 i hållbarhet per knackning.
 
 Crude-verktygen lagas med rocks.
 
+### Delar och nivåer (dynamiska verktyg)
+
+Tool Station bygger verktyg av **vilket huvud som helst + bindning + skaft**; delarna ändrar stats och utseende. Tabellvärdena är faktorer
+mot receptets egna delar (samma delar som förr = exakt samma stats som förr). Delens nivå får inte vara högre än huvudets (flint, sten och
+tusk: 0, koppar 1, brons 2, järn 3, stål 4). Smithing-nivån ger +0,5 % hållbarhet per nivå. Gäller hacka, yxa, spade, hacka (hoe), lie,
+kniv, såg, mejsel, smedshammare, stenbrottshammare, spjut, svärd, tång och ard. Inte kvast eller hink.
+
+| Skaft (rod) | Nivå | Hållbarhet | Fart | Skada |
+|---|---|---|---|---|
+| Stick | 0 | ×0,8 | ×1,0 | +0 |
+| Tool Rod | 0 | ×1,0 | ×1,0 | +0 |
+| Leather (bara som grepp på svärd, kniv, tång) | 0 | ×1,0 | ×1,0 | +0 |
+| Bone Tool Rod | 1 | ×1,1 | ×1,0 | +0 |
+| Copper Tool Rod | 1 | ×1,2 | ×0,98 | +0 |
+| Bronze Tool Rod | 2 | ×1,35 | ×0,98 | +0,5 |
+| Iron Tool Rod | 3 | ×1,5 | ×0,96 | +0,5 |
+| Steel Tool Rod | 4 | ×1,75 | ×0,96 | +1,0 |
+
+| Bindning | Nivå | Hållbarhet | Fart |
+|---|---|---|---|
+| Twine | 0 | ×0,85 | ×1,0 |
+| Cordage | 0 | ×1,0 | ×1,0 |
+| Hide Glue | 0 | ×1,05 | ×1,0 |
+| Leather | 0 | ×1,1 | ×1,03 |
+| Sinew | 0 | ×1,1 | ×1,0 |
+| Bronze Plate | 2 | ×1,25 | ×0,95 |
+| Iron Plate | 3 | ×1,25 | ×0,95 |
+| Steel Plate | 4 | ×1,25 | ×0,95 |
+| Iron Tool Rod | 3 | ×1,3 | ×1,0 |
+
+**Bågar** (sträng, grepp, stav): sträng Twine (hållbarhet ×0,7, draget ×1,1 snabbare, pilfart ×0,85), Cordage (×1,0), String (×0,9, ×1,05, pilfart ×1,05),
+Sinew (×1,2, draget ×0,95, pilfart ×1,1); grepp ur bindningstabellen (Twine, Cordage, Leather, Sinew); stav Stick (×0,75, snabbare ×1,1, pilfart ×0,85),
+Tool Rod (×1,0); Yew Stave bara på Yew Longbow. **Fiskespön** (lina, skaft): lina Twine (×0,85), Cordage (×1,0), String (×0,9, napp 2 s snabbare),
+Sinew (×1,1, napp 1 s snabbare); skaft Stick (×0,8), Tool Rod (×1,0), Bamboo (×1,15).
+
 ### Flint Spear (Tool Station)
 Huvud: **Flint**, bindning: **Cordage**, skaft: **Tool Rod**. Fungerar som vanilla Stone Spear: 2 skada vid stöt (vänsterklick), håll in högerklick och spring för ansats (skadan beror på farten). Hållbarhet 100.
 Låses upp i Tool Station när man har Flint. Ersätter Stone Spear (vanilla-receptet borttaget).

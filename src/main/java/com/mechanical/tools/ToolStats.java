@@ -65,14 +65,6 @@ public final class ToolStats {
         return ToolParts.ranged(stack).drawTicks(stack.getItem() instanceof com.mechanical.YewLongbowItem ? com.mechanical.YewLongbowItem.DRAW_TICKS : BowItem.MAX_DRAW_DURATION);
     }
 
-    public static Share binding(Item defaultBinding, Item binding) {
-        return share(ToolParts.binding(defaultBinding), ToolParts.binding(binding), defaultBinding, binding);
-    }
-
-    public static Share rod(Item defaultRod, Item rod) {
-        return share(ToolParts.rod(defaultRod), ToolParts.rod(rod), defaultRod, rod);
-    }
-
     /** The part in slot 0-2 of a recipe of this kind against the recipe's own. */
     public static Share share(ToolParts.Kind kind, int slot, Item defaultItem, Item item) {
         ToolParts.Part def = ToolParts.part(kind, slot, defaultItem), chosen = ToolParts.part(kind, slot, item);

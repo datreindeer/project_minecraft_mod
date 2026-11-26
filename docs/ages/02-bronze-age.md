@@ -413,6 +413,8 @@ Det fjärde draget ger det slipade huvudet (Copper Pickaxe Head osv.). Framstege
 
 ## Kopparverktyg (byggda)
 
+Delar, nivåer och faktorer för skaft och bindningar: se *Delar och nivåer* i 01-stone-age.md. Quest: **A Better Haft** (ta ett verktyg med metallskaft från Tool Station).
+
 Ett mjukt mellansteg mellan sten och brons. Monteras i **Tool Station**; receptet låses upp när man bär på det slipade
 huvudet. Hacka, yxa, spade och hacka (hoe) är vanillas kopparverktyg (vanillas egna recept är fortfarande avstängda).
 

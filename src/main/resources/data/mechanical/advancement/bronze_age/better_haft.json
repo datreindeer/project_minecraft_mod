@@ -1,0 +1,28 @@
+{
+  "parent": "mechanical:bronze_age/copper_tools",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "mechanical:copper_tool_rod"
+    },
+    "title": {
+      "translate": "advancements.mechanical.bronze_age.better_haft.title"
+    },
+    "description": {
+      "translate": "advancements.mechanical.bronze_age.better_haft.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  }
+}

@@ -836,6 +836,8 @@ TABS = {
         ("copper_tools", "sharpen", "minecraft:copper_axe", T, "Coppersmith",
          "Assemble a Copper Axe, Shovel, Hoe or Knife at the Tool Station",
          has("minecraft:copper_axe", "minecraft:copper_shovel", "minecraft:copper_hoe", "copper_knife")),
+        ("better_haft", "copper_tools", "copper_tool_rod", T, "A Better Haft",
+         "Take a tool with a metal Tool Rod (copper, bronze, iron or steel) from the Tool Station: the rod lasts and hits harder", by_code()),
         ("tin", "copper_pickaxe", "cassiterite", T, "Tin",
          "Mine Tin Ore with the Copper Pickaxe and crush the Cassiterite on the Stone Anvil", has("crushed_tin_ore")),
         ("bronze", "tin", "bronze_ingot", C, "Bronze!",

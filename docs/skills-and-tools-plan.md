@@ -26,17 +26,13 @@ egen design innan det byggs. Här står det användaren redan bestämt.
 - Verktyget **ser ut som sina delar** (en textur per del och material).
 - Gamla verktyg i AmandaTest **görs om automatiskt** till dynamiska med motsvarande delar och samma slitage.
 - **Smithing-level** ger lite bonus (förslag: +0,5 % durability per level), visad som egen rad i stats.
-- **Receptvisaren (R/U) måste klara dem.** Redan på plats: `ViewerRecipe.output` skickas med alla komponenter (verktyget
-  ritas med sina delar), `makes` matchar på item-typ (R på vilken Pickaxe som helst hittar receptet), och en slot är en
-  lista alternativ (alla heads/bindings/rods; bara sedda visas). Måste byggas med verktygen:
-  - `StationSources`: ett recept per verktygstyp (head-slot = alla heads för typen, binding = alla bindings, rod = alla
-    rods), i stället för dagens ett recept per färdigt verktyg i `ToolStationRecipes.ALL`. Upplåsning: nyckeldelen
-    (headet), som i dag.
-  - Nivåregeln (rod ≤ head) kan inte visas av slots som växlar var för sig: `RecipeViewScreen` ska låta headet styra
-    (rod-sloten visar bara rods som passar det head som visas just nu) och visa en rad om regeln.
-  - Statsen: receptsidan för ett verktyg visar samma stats-ruta som nya Tool Station (vad varje del bidrar med), helst
-    samma kod.
-  - `SeenItems.backfill` och `UNLOCKED_TOOLS`-id:n byter form när verktygen blir ett item per typ – gamla id:n måste
-    översättas.
-- Tool Station byggs om: vänster = välj verktygstyp, mitten = input-slots som ändras efter typen, med bakgrundsbild i
-  varje slot som visar vad som ska dit, höger = färdigt verktyg, dess stats och vad varje del bidrar med.
+- **Byggt (v0.225.0), angreppssätt A:** verktygens item-typer finns kvar (huvudets material = itemet), delarna är en
+  komponent `tool_parts` (binding, rod, Smithing-nivå) och vanillas komponenter (`MAX_DAMAGE`, verktygsfart, attackskada)
+  räknas om när verktyget tas ut ur Tool Station. Ett verktyg utan `tool_parts` har receptets standarddelar och ändrar
+  aldrig stats vid laddning, så gamla verktyg är orörda. Delar och faktorer: *Delar och nivåer* i `docs/ages/01-stone-age.md`.
+- **Receptvisaren:** det blev inte ett recept per verktygstyp. `ToolStationRecipes.Recipe` har kvar ett recept per
+  verktyg, men varje slot är en lista alternativ (alla tillåtna bindings och rods, filtrerade på nivå mot headet, bara
+  sedda visas) och receptsidan visar samma stats-ruta som Tool Station. Upplåsning är fortfarande nyckeldelen (headet),
+  så `UNLOCKED_TOOLS`-id:n och `SeenItems.backfill` behövde inte ändra form.
+- **Tool Station-skärmen:** vänster verktygslista, mitten tre slots med spökbild, höger färdigt verktyg med stats och
+  vad varje del bidrar med. Quest: A Better Haft (metallskaft).

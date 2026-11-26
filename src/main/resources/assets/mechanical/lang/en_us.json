@@ -5350,6 +5350,8 @@
   "advancements.mechanical.bronze_age.copper_pickaxe.description": "Tool Station: Copper Pickaxe Head + Cordage + Tool Rod. It mines Tin Ore",
   "advancements.mechanical.bronze_age.copper_tools.title": "Coppersmith",
   "advancements.mechanical.bronze_age.copper_tools.description": "Assemble a Copper Axe, Shovel, Hoe or Knife at the Tool Station",
+  "advancements.mechanical.bronze_age.better_haft.title": "A Better Haft",
+  "advancements.mechanical.bronze_age.better_haft.description": "Take a tool with a metal Tool Rod (copper, bronze, iron or steel) from the Tool Station: the rod lasts and hits harder",
   "advancements.mechanical.bronze_age.tin.title": "Tin",
   "advancements.mechanical.bronze_age.tin.description": "Mine Tin Ore with the Copper Pickaxe and crush the Cassiterite on the Stone Anvil",
   "advancements.mechanical.bronze_age.bronze.title": "Bronze!",

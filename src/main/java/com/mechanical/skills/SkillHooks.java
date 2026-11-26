@@ -4,10 +4,10 @@ import static com.mechanical.Mechanical.MODID;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-
-import com.mojang.serialization.Codec;
+import java.util.List;
 
 import com.mechanical.Butchery;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -41,10 +41,10 @@ public final class SkillHooks {
     static final class Placed extends SavedData {
         static final int MAX = 20_000;
         static final Codec<Placed> CODEC = Codec.LONG.listOf().xmap(Placed::new, d -> new ArrayList<>(d.set));
-        static final SavedDataType<Placed> TYPE = new SavedDataType<>(Identifier.fromNamespaceAndPath(MODID, "placed_blocks"), () -> new Placed(java.util.List.of()), CODEC);
+        static final SavedDataType<Placed> TYPE = new SavedDataType<>(Identifier.fromNamespaceAndPath(MODID, "placed_blocks"), () -> new Placed(List.of()), CODEC);
         private final LinkedHashSet<Long> set;
 
-        Placed(java.util.List<Long> positions) {
+        Placed(List<Long> positions) {
             set = new LinkedHashSet<>(positions);
         }
 

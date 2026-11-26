@@ -7,7 +7,7 @@ Fjärde åldern (användarens beslut 2026-11-24: stålet blir en egen ålder). J
 från Cementation Pot, vikt med 6 slag av **Iron Smithing Hammer**, se *4. Steel* i [03-iron-age.md](03-iron-age.md)),
 **Smithing Hearth**, **Iron Bellows**, och vattenkraften (**Water Wheel**, **Wooden Shaft**, **Gearbox**). Heta Steel Ingots
 smids på städet efter samma mönster som järnet (tabellen under *Smide av järn* i 03): **Steel Plate** och stålets huvuden
-och blad (ingen Tool Rod av stål).
+och blad.
 
 Advancements: egen flik, **Steel Age** (rot: *Steel Age*, en Steel Ingot). Stegen som fanns innan fliken (Steelsmith, Steel
 Clad, Goldsmith, Up and Down, Ground Fine m.fl.) har kvar sina id:n (`mechanical:iron_age/...`), så den som redan tagit dem
@@ -16,6 +16,8 @@ behåller dem; de hänger nu under stålålderns rot.
 Åldern slutar med ångåldern (Zinc och mässing, Coked Coal i stor skala, maskiner av stål).
 
 ## 1. Stålverktyg och stålrustning (byggd)
+
+Steel Tool Rod är nivå 4 som skaft (×1,75 hållbarhet, +1,0 skada); se *Delar och nivåer* i 01-stone-age.md.
 
 Kod: `Smithing`. Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.
 

@@ -93,7 +93,7 @@ public final class ToolParts {
 
         /**
          * Ticks to a full draw for a bow whose own full draw takes {@code base}.
-         * shortcut: the pulling frames (use_duration scale in the item model) keep the bow's own draw time; add a client range property if the factors grow past ~10 %.
+         * shortcut: the pulling frames (use_duration scale in the item model) are tuned to a ~16-21 tick draw; add a client range property if the draw factors go further.
          */
         public int drawTicks(int base) {
             return Math.max(1, Math.round(base * draw));
@@ -163,14 +163,6 @@ public final class ToolParts {
             Items.STICK, new Part(0, 0.8F, 1, 0),
             Mechanical.TOOL_ROD.get(), new Part(0, 1.0F, 1, 0),
             Items.BAMBOO, new Part(0, 1.15F, 1, 0)));
-
-    public static Part rod(Item item) {
-        return RODS.get().get(item);
-    }
-
-    public static Part binding(Item item) {
-        return BINDINGS.get().get(item);
-    }
 
     /** A part in this slot of this kind of recipe; null when the slot has no table or the item isn't in it. */
     public static Part part(Kind kind, int slot, Item item) {

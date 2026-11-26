@@ -73,6 +73,8 @@ client/`SmithingHearthRenderer`. Data: `scripts/gen_iron_age.py`. Test: `IronAge
 
 ### Smide av järn (byggd)
 
+Iron Tool Rod är nivå 3 som skaft (×1,5 hållbarhet, +0,5 skada) och kan även vara bindning; se *Delar och nivåer* i 01-stone-age.md.
+
 Järn smids, det gjuts inte (beslut 2026-11-20). Kod: `Smithing` (items, mönster, stålverktyg), `HotMetalItem` (het
 metall), `BronzeAnvilBlockEntity` (smidet), `BloomeryBlockEntity` / `KilnBlockEntity` (värmning),
 `ToolStationRecipes`, `ArmorStationRecipes`. Data: `scripts/gen_iron_age.py`. Test: `IronAgeTest`.

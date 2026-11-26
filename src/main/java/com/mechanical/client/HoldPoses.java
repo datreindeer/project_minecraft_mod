@@ -172,7 +172,7 @@ public final class HoldPoses {
             return extensions(SHOULDER_POSE, Fp.SHOULDER);
         if (item == Mechanical.FLINT_SPEAR.get() || item == com.mechanical.Bronze.BRONZE_SPEAR.get() || item == com.mechanical.Smithing.STEEL_SPEAR.get())
             return extensions(SPEAR_LOW_POSE, e -> e.isCrouching() && !e.isUsingItem(), Fp.SPEAR_LOW); // otherwise vanilla's spear poses
-        if (item == Mechanical.CRUDE_FISHING_ROD.get() || item instanceof com.mechanical.BoneHookRodItem) return extensions(ROD_POSE, null);
+        if (item instanceof com.mechanical.BoneHookRodItem) return extensions(ROD_POSE, null);
         if (item instanceof com.mechanical.PanItem) return extensions(PAN_POSE, LivingEntity::isUsingItem, Fp.PAN);
         if (item instanceof com.mechanical.FlintAndSteelItem) return extensions(STRIKE_POSE, Fp.STRIKE);
         if (item instanceof com.mechanical.FireDrillItem) return extensions(FIRE_DRILL_POSE, Fp.FIRE_DRILL);
