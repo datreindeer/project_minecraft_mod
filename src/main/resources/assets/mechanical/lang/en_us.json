@@ -6212,7 +6212,7 @@
   "gui.mechanical.skills.level_up": "%s %s!",
   "gui.mechanical.skills.how.smithing": "Forge on an anvil and take tools from the Tool Station.",
   "gui.mechanical.skills.how.mining": "Break ore, and stone a little.",
-  "gui.mechanical.skills.how.farming": "Harvest ripe crops and plant new ones.",
+  "gui.mechanical.skills.how.farming": "Harvest ripe crops.",
   "gui.mechanical.skills.how.fishing": "Catch fish, and empty fish traps.",
   "gui.mechanical.skills.how.slaughter": "Butcher carcasses.",
   "gui.mechanical.skills.how.woodcutting": "Fell trees: every log counts.",
