@@ -80,6 +80,15 @@ public final class ToolParts {
         return BINDINGS.get().get(item);
     }
 
+    /** Every table binding / rod no higher than the head's tier. */
+    public static java.util.List<Item> bindings(Item head) {
+        return BINDINGS.get().entrySet().stream().filter(e -> e.getValue().tier() <= tier(head)).map(Map.Entry::getKey).toList();
+    }
+
+    public static java.util.List<Item> rods(Item head) {
+        return RODS.get().entrySet().stream().filter(e -> e.getValue().tier() <= tier(head)).map(Map.Entry::getKey).toList();
+    }
+
     /** Head tier from its material, the registry path's first word: flint, stone and tusk 0, copper 1, bronze 2, iron 3, steel 4. */
     public static int tier(Item head) {
         String path = BuiltInRegistries.ITEM.getKey(head).getPath();

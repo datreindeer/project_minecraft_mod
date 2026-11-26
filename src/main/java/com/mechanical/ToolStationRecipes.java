@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import com.mechanical.tools.ToolParts;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,14 +29,35 @@ public final class ToolStationRecipes {
             return BuiltInRegistries.ITEM.getKey(result.get()).toString();
         }
 
+        /** Tools made of table parts take any allowed binding and rod; bows, fishing rods, the broom and buckets stay as they are (bows and rods follow later). */
+        public boolean dynamic() {
+            String path = BuiltInRegistries.ITEM.getKey(result.get()).getPath();
+            return ToolParts.binding(binding.get()) != null && ToolParts.rod(rod.get()) != null
+                    && !(path.contains("bow") || path.contains("fishing_rod") || path.contains("broom") || path.contains("bucket"));
+        }
+
+        public List<Item> bindings() {
+            return ToolParts.bindings(head.get());
+        }
+
+        public List<Item> rods() {
+            return ToolParts.rods(head.get());
+        }
+
         public List<Item> parts() {
             return List.of(head.get(), binding.get(), rod.get());
         }
 
         /** The parts this inventory would use: Hide Glue stands in for Cordage when there is no Cordage. */
         public List<Item> parts(Inventory inventory) {
+            if (dynamic()) return List.of(head.get(), pick(inventory, binding.get(), bindings()), pick(inventory, rod.get(), rods()));
             if (!gluable() || inventory.countItem(Mechanical.CORDAGE.get()) > 0 || inventory.countItem(Kettle.HIDE_GLUE.get()) == 0) return parts();
             return List.of(head.get(), Kettle.HIDE_GLUE.get(), rod.get());
+        }
+
+        private static Item pick(Inventory inventory, Item preferred, List<Item> allowed) {
+            if (inventory.countItem(preferred) > 0) return preferred;
+            return allowed.stream().filter(i -> inventory.countItem(i) > 0).findFirst().orElse(preferred);
         }
 
         /** Hafting with Hide Glue (Kettle) instead of a Cordage lashing. */
@@ -43,6 +66,7 @@ public final class ToolStationRecipes {
         }
 
         public boolean matches(ItemStack head, ItemStack binding, ItemStack rod) {
+            if (dynamic()) return head.is(this.head.get()) && ToolParts.allowed(head.getItem(), binding.getItem(), rod.getItem());
             return head.is(this.head.get()) && (binding.is(this.binding.get()) || gluable() && binding.is(Kettle.HIDE_GLUE.get())) && rod.is(this.rod.get());
         }
     }

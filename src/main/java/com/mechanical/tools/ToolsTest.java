@@ -57,6 +57,7 @@ public final class ToolsTest {
             steelRodLonger(h);
             smithingBonus(h);
             poorOnce(h);
+            station(h);
             h.succeed();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -135,6 +136,27 @@ public final class ToolsTest {
         ItemStack after = bronzePick();
         Bronze.markPoor(after);
         h.assertTrue(before.getMaxDamage() == expected && after.getMaxDamage() == expected, "poor: " + before.getMaxDamage() + " / " + after.getMaxDamage() + " vs " + expected);
+    }
+
+    /** The Tool Station builds from any allowed binding and rod, refuses a rod above the head's tier, and never stacks different builds. */
+    private static void station(GameTestHelper h) {
+        var p = net.neoforged.neoforge.common.util.FakePlayerFactory.get(h.getLevel(), new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "tools"));
+        p.setData(Mechanical.UNLOCKED_TOOLS, com.mechanical.ToolStationRecipes.ALL.stream().map(com.mechanical.ToolStationRecipes.Recipe::id).toList());
+        ItemStack bronze = result(p, Bronze.BRONZE_PICKAXE_HEAD.get(), Items.LEATHER, Smithing.BRONZE_TOOL_ROD.get());
+        var parts = bronze.get(ToolParts.TOOL_PARTS.get());
+        h.assertTrue(bronze.is(Bronze.BRONZE_PICKAXE.get()) && parts != null && parts.binding() == Items.LEATHER && parts.rod() == Smithing.BRONZE_TOOL_ROD.get(),
+                "anyAllowedBinding: " + bronze + " " + parts);
+        h.assertTrue(result(p, Items.FLINT, Mechanical.CORDAGE.get(), Smithing.BONE_TOOL_ROD.get()).isEmpty(), "tierBlocks: bone rod on flint (tier 1 > 0)");
+        ItemStack plain = result(p, Bronze.BRONZE_PICKAXE_HEAD.get(), Mechanical.CORDAGE.get(), Mechanical.TOOL_ROD.get());
+        h.assertFalse(ItemStack.isSameItemSameComponents(plain, bronze), "noMerge");
+    }
+
+    private static ItemStack result(net.minecraft.server.level.ServerPlayer p, Item head, Item binding, Item rod) {
+        var menu = new com.mechanical.ToolStationMenu(1, p.getInventory());
+        menu.slots.get(0).set(new ItemStack(head));
+        menu.slots.get(1).set(new ItemStack(binding));
+        menu.slots.get(2).set(new ItemStack(rod));
+        return menu.slots.get(3).getItem().copy();
     }
 
     private static ItemStack bronzePick() {
