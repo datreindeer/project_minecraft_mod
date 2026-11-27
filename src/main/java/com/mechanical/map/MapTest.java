@@ -86,6 +86,12 @@ public final class MapTest {
         }
         h.assertTrue(sees(server, me, far).equals(List.of(true, false, false, false)), "leaving the tribe takes its knowledge away");
 
+        com.mechanical.dashboard.Landmarks.add(server.overworld(), "ancient_oak", far * 512 + 256, 256);
+        com.mechanical.dashboard.Landmarks.add(server.overworld(), "ancient_oak", (far + 3) * 512 + 256, 256);
+        String marked = MapNetwork.features(server, me.getUUID());
+        h.assertTrue(marked.contains("\"x\":" + (far * 512 + 256)) && !marked.contains("\"x\":" + ((far + 3) * 512 + 256))
+                && marked.contains("\"players\":[]"), "the map marks only places on explored land, and no players: " + marked);
+
         // a region held from before (stamp not 0) that you may no longer see is forgotten; one never seen gets no answer and no disk read
         List<MapNetwork.Tile> forget = new ArrayList<>();
         var jobs = MapNetwork.jobs(server, me.getUUID(), List.of(new MapNetwork.Want(far + 1, 0, 77), new MapNetwork.Want(far + 3, 0, 0)), forget);

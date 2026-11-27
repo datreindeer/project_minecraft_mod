@@ -15,6 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlayerFaceExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -33,7 +34,8 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 /**
  * The fullscreen world map (M): what you and your tribe have explored, inked on parchment, with you and your tribe
- * mates on it. Drag to pan, scroll to zoom towards the cursor, Space or the button to follow yourself again. While open
+ * mates on it, and over the land what the dashboard map shows of what you have explored: tribe lands, villages, fires, Ancient
+ * Oaks and waystones ({@link MapMarks}), with a legend that jumps to them and a readout of what the cursor is on. Drag to pan, scroll to zoom towards the cursor, Space or the button to follow yourself again. While open
  * it asks the server for the regions in view every second (sooner when new ones come into view); the server decides
  * what may be seen ({@link MapNetwork}). The pictures are dropped when the screen closes.
  */
@@ -60,6 +62,14 @@ public final class MapScreen extends Screen {
     private final Map<Long, Integer> stamps = new HashMap<>();
     private final Set<Long> asked = new HashSet<>();
     private MapNetwork.People people = new MapNetwork.People(-1, List.of());
+    private MapMarks marks = MapMarks.NONE;
+    private String marksJson = "";
+    private List<Row> rows = List.of();
+    private static boolean legendOpen = true;
+    private int legendScroll;
+    /** What the cursor is on this frame, on the map or in the legend; either may be null. */
+    private MapMarks.Land hoverLand;
+    private MapMarks.Place hoverPlace;
     private double centreX, centreZ;
     private boolean follow = true, dragging, answered;
     private int sinceRequest = REFRESH_TICKS, age;
@@ -73,6 +83,17 @@ public final class MapScreen extends Screen {
     public void people(MapNetwork.People now) {
         people = now;
         answered = true;
+    }
+
+    public void features(String json) {
+        if (json.equals(marksJson)) return;
+        try {
+            marks = MapMarks.parse(json);
+            marksJson = json;
+            rows = rows(marks);
+        } catch (RuntimeException e) {
+            LogUtils.getLogger().warn("Mechanical map: unreadable marks", e);
+        }
     }
 
     public void tile(MapNetwork.Tile tile) {
@@ -199,11 +220,47 @@ public final class MapScreen extends Screen {
         int w = font.width(label) + 14;
         Button centre = addRenderableWidget(Button.builder(label, b -> recentre()).bounds(width - MARGIN - PAD - w, MARGIN + 4, w, 16).build());
         centre.active = overworld();
+        int right = width - MARGIN - PAD - w - 3;
+        right = button(Component.literal("+"), 16, right, () -> zoomAt(2, mapX() + mapW() / 2.0, mapY() + mapH() / 2.0));
+        right = button(Component.literal("-"), 16, right, () -> zoomAt(0.5F, mapX() + mapW() / 2.0, mapY() + mapH() / 2.0));
+        Component fit = Component.translatable("gui.mechanical.map.fit");
+        right = button(fit, font.width(fit) + 10, right, this::fitTribes);
+        Component legend = Component.translatable("gui.mechanical.map.legend");
+        button(legend, font.width(legend) + 10, right, () -> legendOpen = !legendOpen);
+    }
+
+    /** A header button ending at {@code right}; returns where the next one ends. */
+    private int button(Component label, int w, int right, Runnable press) {
+        addRenderableWidget(Button.builder(label, b -> press.run()).bounds(right - w, MARGIN + 4, w, 16).build()).active = overworld();
+        return right - w - 3;
+    }
+
+    private void fitTribes() {
+        int[] all = null;
+        for (MapMarks.Land l : marks.lands()) {
+            if (l.kind() != MapMarks.Kind.TRIBE) continue;
+            int[] b = l.shape().bounds();
+            all = all == null ? b : new int[] {Math.min(all[0], b[0]), Math.min(all[1], b[1]), Math.max(all[2], b[2]), Math.max(all[3], b[3])};
+        }
+        if (all != null) fit(all);
+        else recentre();
+    }
+
+    private void fit(int[] b) {
+        follow = false;
+        centreX = (b[0] + b[2]) / 2.0;
+        centreZ = (b[1] + b[3]) / 2.0;
+        zoom = Math.clamp(Math.min(mapW() / (b[2] - b[0] + 96F), mapH() / (b[3] - b[1] + 96F)), minZoom(), MAX_ZOOM);
     }
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (super.mouseClicked(event, doubleClick)) return true;
+        if (overworld() && inLegend(event.x(), event.y())) {
+            Row row = rowAt(event.y());
+            if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && row != null && row.land != null) fit(row.land.shape().bounds());
+            return true;
+        }
         if (event.button() != InputConstants.MOUSE_BUTTON_LEFT || !inMap(event.x(), event.y()) || !overworld()) return false;
         setFocused(null);
         dragging = true;
@@ -229,6 +286,10 @@ public final class MapScreen extends Screen {
     @Override
     public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
         if (!inMap(x, y) || !overworld() || scrollY == 0) return super.mouseScrolled(x, y, scrollX, scrollY);
+        if (inLegend(x, y)) {
+            legendScroll -= (int) Math.signum(scrollY) * 2; // clamped when drawn
+            return true;
+        }
         zoomAt((float) Math.pow(1.25, scrollY), x, y);
         return true;
     }
@@ -283,10 +344,22 @@ public final class MapScreen extends Screen {
         paper(g, here);
         if (here) {
             land(g);
+            hover(mouseX, mouseY);
+            grid(g);
+            lands(g);
             frame(g);
             compass(g, x + w - 26, y + h - 28);
             scaleBar(g, x + 13, y + h - 15);
-            markers(g, a);
+            places(g);
+            List<Box> taken = new ArrayList<>();
+            // names keep off the compass, the scale and the legend
+            taken.add(new Box(mapX() + mapW() - 42, mapY() + mapH() - 56, 42, 56));
+            taken.add(new Box(mapX(), mapY() + mapH() - 30, 140, 30));
+            if (legendShown()) taken.add(legendBox());
+            markers(g, a, taken);
+            landNames(g, taken);
+            legend(g, mouseX, mouseY);
+            readout(g, mouseX, mouseY);
             if (pictures.isEmpty()) note(g, Component.translatable(answered && age > 60 ? "gui.mechanical.map.empty" : "gui.mechanical.map.drawing"), y + h / 4);
         } else {
             frame(g);
@@ -368,35 +441,320 @@ public final class MapScreen extends Screen {
         for (int n : new int[] {500, 200, 100, 50, 20, 10})
             if (blocks * zoom > 90) blocks = n;
         int len = Math.round(blocks * zoom);
-        Component label = Component.translatable("gui.mechanical.map.scale", blocks);
+        Component label = Component.translatable("gui.mechanical.map.zoom", blocks, String.format(zoom >= 1 ? "%.1f" : "%.2f", zoom));
         g.fill(x - 4, y - 13, x + Math.max(len, font.width(label)) + 4, y + 7, CARD);
         g.text(font, label, x, y - 10, INK, false);
         g.fill(x - 1, y, x + len + 1, y + 4, INK);
         for (int i = 1; i < 4; i += 2) g.fill(x + len * i / 4, y + 1, x + len * (i + 1) / 4, y + 3, 0xFFF0E2BC);
     }
 
-    private void markers(GuiGraphicsExtractor g, float partial) {
-        List<Box> taken = new ArrayList<>();
-        // names keep off the compass and the scale
-        taken.add(new Box(mapX() + mapW() - 42, mapY() + mapH() - 56, 42, 56));
-        taken.add(new Box(mapX(), mapY() + mapH() - 30, 110, 30));
+    // ------------------------------------------------------------------ what is marked on the land
+
+    private void hover(int mouseX, int mouseY) {
+        hoverLand = null;
+        hoverPlace = null;
+        if (inLegend(mouseX, mouseY)) {
+            Row row = rowAt(mouseY);
+            if (row != null) hoverLand = row.land;
+            return;
+        }
+        if (!inMap(mouseX, mouseY)) return;
+        for (MapMarks.Place p : marks.places())
+            if (Math.hypot(screenX(p.x() + 0.5) - mouseX, screenY(p.z() + 0.5) - mouseY) < 9) hoverPlace = p;
+        if (hoverPlace != null) return;
+        double x = worldX(mouseX), z = worldZ(mouseY);
+        for (MapMarks.Land l : marks.lands()) // the last is drawn on top
+            if (l.shape().contains(x, z)) hoverLand = l;
+    }
+
+    private double worldX(double screenX) {
+        return centreX + (screenX - mapX() - mapW() / 2.0) / zoom;
+    }
+
+    private double worldZ(double screenY) {
+        return centreZ + (screenY - mapY() - mapH() / 2.0) / zoom;
+    }
+
+    /** Region borders, and every chunk when close. */
+    private void grid(GuiGraphicsExtractor g) {
+        int step = zoom >= 3 ? 16 : REGION, colour = step == 16 ? 0x20000000 : 0x383A2A18;
+        for (double x = Math.ceil(worldX(mapX()) / step) * step; screenX(x) < mapX() + mapW(); x += step)
+            g.fill((int) screenX(x), mapY(), (int) screenX(x) + 1, mapY() + mapH(), colour);
+        for (double z = Math.ceil(worldZ(mapY()) / step) * step; screenY(z) < mapY() + mapH(); z += step)
+            g.fill(mapX(), (int) screenY(z), mapX() + mapW(), (int) screenY(z) + 1, colour);
+    }
+
+    /** Washes and inked edges, in whole screen pixels like the regions. The one under the cursor is lit and edged in gold. */
+    private void lands(GuiGraphicsExtractor g) {
+        float gui = minecraft.getWindow().getGuiScale();
+        var pose = g.pose();
+        pose.pushMatrix();
+        pose.scale(1 / gui, 1 / gui);
+        int px = Math.max(1, Math.round(gui / 2));
+        for (MapMarks.Land l : marks.lands()) {
+            boolean village = l.kind() == MapMarks.Kind.VILLAGE, lit = l == hoverLand;
+            wash(g, l.shape(), (lit ? 0x70 : village ? 0x2C : 0x48) << 24 | l.colour(), gui);
+            // every edge is drawn inwards, so two lands side by side each keep their own band
+            edges(g, l.shape(), gui, (lit ? 7 : village ? 3 : 5) * px, lit ? 0xFF000000 | HideUi.GOLD : 0xE0120D09, 0);
+            edges(g, l.shape(), gui, (village ? 2 : lit ? 5 : 3) * px, 0xFF000000 | l.colour(), village ? 7 * px : 0);
+            if (l.loaded() != null) {
+                wash(g, l.loaded(), 0x30FFFFFF, gui);
+                edges(g, l.loaded(), gui, px, 0xC0000000 | paler(l.colour()), 5 * px);
+            }
+        }
+        pose.popMatrix();
+    }
+
+    private static int paler(int c) {
+        int r = (c >> 16 & 255) * 3 / 10 + 178, green = (c >> 8 & 255) * 3 / 10 + 178, b = (c & 255) * 3 / 10 + 178;
+        return r << 16 | green << 8 | b;
+    }
+
+    private int pixelX(double worldX, float gui) {
+        return (int) Math.round(screenX(worldX) * gui);
+    }
+
+    private int pixelY(double worldZ, float gui) {
+        return (int) Math.round(screenY(worldZ) * gui);
+    }
+
+    private void wash(GuiGraphicsExtractor g, MapMarks.Shape shape, int colour, float gui) {
+        for (MapMarks.Rect r : shape.fill()) g.fill(pixelX(r.x0(), gui), pixelY(r.z0(), gui), pixelX(r.x1(), gui), pixelY(r.z1(), gui), colour);
+    }
+
+    /** Bands {@code thick} pixels wide just inside the outline, dashed when {@code dash} is above 0. */
+    private void edges(GuiGraphicsExtractor g, MapMarks.Shape shape, float gui, int thick, int colour, int dash) {
+        int left = (int) (mapX() * gui), right = (int) ((mapX() + mapW()) * gui), top = (int) (mapY() * gui), bottom = (int) ((mapY() + mapH()) * gui);
+        for (MapMarks.Edge e : shape.edges()) {
+            boolean flat = e.z0() == e.z1();
+            int x0 = pixelX(e.x0(), gui), y0 = pixelY(e.z0(), gui), x1 = pixelX(e.x1(), gui), y1 = pixelY(e.z1(), gui);
+            if (x1 < left || x0 > right || y1 < top || y0 > bottom) continue;
+            int from = flat ? x0 : y0, to = flat ? x1 : y1, line = flat ? y0 : x0;
+            int across = e.in() > 0 ? line : line - thick;
+            int first = from, step = Math.max(1, to - from), length = to - from;
+            if (dash > 0) { // dashes stay put on the land, and only those in view are drawn
+                step = dash * 2;
+                length = dash + dash / 3;
+                first = from + Math.max(0, ((flat ? left : top) - from) / step) * step;
+                to = Math.min(to, flat ? right : bottom);
+            }
+            for (int at = first; at < to; at += step) {
+                int end = Math.min(to, at + length);
+                if (flat) g.fill(at, across, end, across + thick, colour);
+                else g.fill(across, at, across + thick, end, colour);
+            }
+        }
+    }
+
+    /** Fires, then the places; the one under the cursor stands in a glow. */
+    private void places(GuiGraphicsExtractor g) {
+        float k = Math.clamp((float) Math.sqrt(zoom), 0.75F, 1.25F);
+        for (MapMarks.Fire f : marks.fires()) {
+            double x = screenX(f.x() + 0.5), y = screenY(f.z() + 0.5);
+            if (!inMap(x, y)) continue;
+            boolean big = f.kind().equals("big_fire_pit"), pit = big || f.kind().equals("fire_pit");
+            int size = Math.round((big ? 28 : pit ? 22 : 18) * k);
+            icon(g, x, y, size, MapArt.icon(f.kind()), -1);
+            if (pit && f.colour() >= 0) icon(g, x, y, size, MapArt.PIT_RING, 0xFF000000 | f.colour());
+        }
+        for (MapMarks.Place p : marks.places()) {
+            double x = screenX(p.x() + 0.5), y = screenY(p.z() + 0.5);
+            if (!inMap(x, y)) continue;
+            boolean lit = p == hoverPlace;
+            if (lit) icon(g, x, y, Math.round(36 * k), MapArt.GLOW, -1);
+            icon(g, x, y, Math.round((lit ? 26 : 21) * k), MapArt.icon(p.kind()), -1);
+        }
+    }
+
+    private void icon(GuiGraphicsExtractor g, double x, double y, int size, Identifier texture, int colour) {
+        int full = MapArt.ICON_SIZE;
+        var pose = g.pose();
+        pose.pushMatrix();
+        pose.translate((float) x, (float) y);
+        pose.scale(size / (float) full, size / (float) full);
+        g.blit(RenderPipelines.GUI_TEXTURED, texture, -full / 2, -full / 2, 0, 0, full, full, full, full, colour);
+        pose.popMatrix();
+    }
+
+    /** Villages in italic sand, tribes' names behind a pennant in their colour; tribes (last in the list) get first pick of the room. */
+    private void landNames(GuiGraphicsExtractor g, List<Box> taken) {
+        for (MapMarks.Land l : marks.lands().reversed()) {
+            double x = screenX(l.labelX()), y = screenY(l.labelZ());
+            if (!inMap(x, y)) continue;
+            boolean village = l.kind() == MapMarks.Kind.VILLAGE;
+            Component name = village ? Component.literal(l.name()).withStyle(ChatFormatting.ITALIC) : Component.literal(l.name());
+            int flag = village ? 0 : 9, w = font.width(name) + flag + 8;
+            Box box = null;
+            // under the land's middle (often a fire or a tent), else further off
+            for (int dy : new int[] {12, -24, 26, -38}) {
+                Box at = new Box((int) x - w / 2, (int) y + dy, w, 12);
+                if (taken.stream().noneMatch(at::overlaps)) {
+                    box = at;
+                    break;
+                }
+            }
+            if (box == null) continue; // the legend and the readout still name it
+            taken.add(box);
+            g.fill(box.x, box.y, box.x + box.w, box.y + box.h, l == hoverLand ? 0xF0201509 : 0xB0201509);
+            if (l == hoverLand) g.outline(box.x - 1, box.y - 1, box.w + 2, box.h + 2, 0xFF000000 | HideUi.GOLD);
+            if (!village) pennant(g, box.x + 4, box.y + 2, l.colour());
+            g.text(font, name, box.x + 4 + flag, box.y + 2, village ? 0xFFE8DCC0 : HideUi.TEXT);
+        }
+    }
+
+    private void pennant(GuiGraphicsExtractor g, int x, int y, int colour) {
+        g.fill(x, y, x + 6, y + 5, 0xFF000000 | colour);
+        g.fill(x, y + 5, x + 2, y + 8, 0xFF000000 | colour);
+        g.fill(x + 4, y + 5, x + 6, y + 8, 0xFF000000 | colour);
+        g.fill(x + 2, y + 5, x + 4, y + 6, 0xFF000000 | colour);
+    }
+
+    // ------------------------------------------------------------------ legend and readout
+
+    private static final int LEGEND_W = 138, LINE = 11;
+
+    /** A line of the legend: a heading, a land you can click to go to, a count of places or the kept-loaded key. */
+    private record Row(Component text, Component count, MapMarks.Land land, Identifier icon, int swatch) {}
+
+    private static List<Row> rows(MapMarks marks) {
+        List<Row> out = new ArrayList<>();
+        for (MapMarks.Land l : marks.lands())
+            if (l.kind() == MapMarks.Kind.TRIBE) out.add(new Row(Component.literal(l.name()), Component.translatable("gui.mechanical.map.chunks", l.chunks()), l, null, l.colour()));
+        if (marks.lands().stream().anyMatch(l -> l.loaded() != null))
+            out.add(new Row(Component.translatable("gui.mechanical.map.loaded_key"), null, null, null, 0xD8D8D8));
+        section(out, "tribe_villages", marks.lands().stream().filter(l -> l.kind() == MapMarks.Kind.TRIBE_VILLAGE || l.kind() == MapMarks.Kind.TRIBE_CAMP).toList());
+        section(out, "villages", marks.lands().stream().filter(l -> l.kind() == MapMarks.Kind.VILLAGE).toList());
+        List<Row> found = new ArrayList<>();
+        for (String kind : new String[] {"ancient_oak", "waystone"}) {
+            long n = marks.places().stream().filter(p -> p.kind().equals(kind)).count();
+            if (n > 0) found.add(new Row(Component.translatable("gui.mechanical.map.places." + kind), Component.literal(Long.toString(n)), null, MapArt.icon(kind), -1));
+        }
+        if (!found.isEmpty()) out.add(heading("places"));
+        out.addAll(found);
+        return out;
+    }
+
+    private static Row heading(String key) {
+        return new Row(Component.translatable("gui.mechanical.map." + key), null, null, null, -1);
+    }
+
+    private static void section(List<Row> out, String key, List<MapMarks.Land> lands) {
+        if (!lands.isEmpty()) out.add(heading(key));
+        for (MapMarks.Land l : lands) out.add(new Row(Component.literal(l.name()), null, l, null, l.colour()));
+    }
+
+    private boolean legendShown() {
+        return legendOpen && !rows.isEmpty();
+    }
+
+    private int legendLines() {
+        return Math.min(rows.size(), Math.max(1, (mapH() - 52) / LINE));
+    }
+
+    private Box legendBox() {
+        return new Box(mapX() + 8, mapY() + 8, Math.min(LEGEND_W, mapW() / 2), legendLines() * LINE + 7);
+    }
+
+    private boolean inLegend(double x, double y) {
+        if (!legendShown()) return false;
+        Box b = legendBox();
+        return x >= b.x && x < b.x + b.w && y >= b.y && y < b.y + b.h;
+    }
+
+    private Row rowAt(double y) {
+        int i = (int) Math.floor((y - legendBox().y - 4) / LINE);
+        int at = i + Math.clamp(legendScroll, 0, rows.size() - legendLines());
+        return i >= 0 && i < legendLines() ? rows.get(at) : null;
+    }
+
+    private void legend(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+        if (!legendShown()) return;
+        Box b = legendBox();
+        int lines = legendLines();
+        legendScroll = Math.clamp(legendScroll, 0, rows.size() - lines);
+        g.fill(b.x, b.y, b.x + b.w, b.y + b.h, 0xF4201509);
+        g.outline(b.x, b.y, b.w, b.h, INK);
+        Row under = inLegend(mouseX, mouseY) ? rowAt(mouseY) : null;
+        for (int i = 0; i < lines; i++) {
+            Row row = rows.get(i + legendScroll);
+            int y = b.y + 4 + i * LINE, x = b.x + 5, right = b.x + b.w - 7;
+            boolean heading = row.swatch < 0 && row.icon == null;
+            if (row.land != null && row == under) g.fill(b.x + 1, y - 1, b.x + b.w - 1, y + LINE - 1, 0x40FFD870);
+            if (row.icon != null) icon(g, x + 4, y + 4, 12, row.icon, -1);
+            else if (!heading) {
+                g.fill(x, y, x + 8, y + 8, 0xFF000000);
+                g.fill(x + 1, y + 1, x + 7, y + 7, 0xFF000000 | row.swatch);
+            }
+            if (row.count != null) {
+                g.text(font, row.count, right - font.width(row.count), y, HideUi.DIM);
+                right -= font.width(row.count) + 4;
+            }
+            int tx = heading ? x : x + 12;
+            g.enableScissor(tx, y - 1, right, y + LINE);
+            g.text(font, row.text, tx, y, heading ? HideUi.GOLD : HideUi.TEXT);
+            g.disableScissor();
+        }
+        if (rows.size() > lines) { // a thumb showing how far down you are
+            int track = lines * LINE, thumb = Math.max(8, track * lines / rows.size()), at = (track - thumb) * legendScroll / (rows.size() - lines);
+            g.fill(b.x + b.w - 4, b.y + 4 + at, b.x + b.w - 2, b.y + 4 + at + thumb, 0xA0E8D6AC);
+        }
+    }
+
+    /** Where the cursor is, and what is there, in the top right corner. */
+    private void readout(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+        if (!inMap(mouseX, mouseY) || inLegend(mouseX, mouseY)) return;
+        int bx = (int) Math.floor(worldX(mouseX)), bz = (int) Math.floor(worldZ(mouseY));
+        Component where = Component.translatable("gui.mechanical.map.coords", bx, bz), what, note = null;
+        int swatch = -1;
+        if (hoverPlace != null) {
+            String kind = hoverPlace.kind();
+            what = Component.translatable(kind.equals("tribe_village") ? "gui.mechanical.map.tribe_village" : "gui.mechanical.map.place." + kind);
+            note = Component.translatable("gui.mechanical.map.coords", hoverPlace.x(), hoverPlace.z());
+        } else if (hoverLand != null) {
+            what = Component.literal(hoverLand.name());
+            swatch = hoverLand.colour();
+            note = switch (hoverLand.kind()) {
+                case TRIBE -> hoverLand.loaded() != null && hoverLand.loaded().contains(bx + 0.5, bz + 0.5) ? Component.translatable("gui.mechanical.map.kept") : null;
+                case TRIBE_VILLAGE -> Component.translatable("gui.mechanical.map.tribe_village");
+                case TRIBE_CAMP -> Component.translatable("gui.mechanical.map.tribe_camp");
+                case VILLAGE -> Component.translatable("gui.mechanical.map.village");
+            };
+        } else what = Component.translatable("gui.mechanical.map.unclaimed");
+        int flag = swatch < 0 ? 0 : 9;
+        int w = Math.max(font.width(where), Math.max(font.width(what) + flag, note == null ? 0 : font.width(note))) + 12, h = note == null ? 28 : 39;
+        int x = mapX() + mapW() - 8 - w, y = mapY() + 8;
+        g.fill(x, y, x + w, y + h, PLATE);
+        g.outline(x, y, w, h, INK);
+        g.text(font, where, x + 6, y + 5, HideUi.DIM);
+        if (swatch >= 0) pennant(g, x + 6, y + 16, swatch);
+        g.text(font, what, x + 6 + flag, y + 16, HideUi.TEXT);
+        if (note != null) g.text(font, note, x + 6, y + 27, HideUi.DIM);
+    }
+
+    // ------------------------------------------------------------------ people
+
+    private void markers(GuiGraphicsExtractor g, float partial, List<Box> taken) {
         var player = minecraft.player;
         var me = player.getPosition(partial);
         double sx = screenX(me.x), sy = screenY(me.z);
         boolean selfShown = inMap(sx, sy);
         if (selfShown) taken.add(new Box((int) sx - 9, (int) sy - 9, 18, 18));
         int colour = people.colour() < 0 ? 0xFFFFFFFF : 0xFF000000 | DyeColor.byId(people.colour()).getTextureDiffuseColor();
-        List<Mark> marks = new ArrayList<>();
+        List<Mark> shown = new ArrayList<>();
         for (MapNetwork.Person p : people.mates()) {
             double px = screenX(p.x() + 0.5), py = screenY(p.z() + 0.5);
             // a mate outside the sheet waits at its edge, towards them, with how far they are
             double cx = Math.clamp(px, mapX() + 12, mapX() + mapW() - 12), cy = Math.clamp(py, mapY() + 12, mapY() + mapH() - 12);
             // and no pin hides the compass or the scale in the bottom corners
             if (cx < mapX() + 120 || cx > mapX() + mapW() - 48) cy = Math.min(cy, mapY() + mapH() - 64);
-            marks.add(new Mark(p, cx, cy, !inMap(px, py)));
+            shown.add(new Mark(p, cx, cy, !inMap(px, py)));
             taken.add(new Box((int) cx - 7, (int) cy - 7, 14, 14));
         }
-        for (Mark m : marks) {
+        for (Mark m : shown) {
+            if (!m.off) { // which way they face
+                float turn = (float) Math.toRadians(m.who.yaw());
+                sprite(g, m.x - Math.sin(turn) * 12, m.y + Math.cos(turn) * 12, 9, turn + (float) Math.PI, MapArt.ARROW, 0xFFFFFFFF);
+            }
             var info = minecraft.getConnection().getPlayerInfo(m.who.name());
             if (info != null) {
                 face(g, m.x, m.y, info.getSkin(), info.showHat(), colour);
@@ -413,7 +771,7 @@ public final class MapScreen extends Screen {
             sprite(g, sx - Math.sin(yaw) * 13, sy + Math.cos(yaw) * 13, 11, yaw + (float) Math.PI, MapArt.ARROW, 0xFFFFFFFF);
         }
         if (selfShown) label(g, taken, Component.translatable("gui.mechanical.map.you"), sx, sy, HideUi.GOLD, HideUi.GOLD);
-        for (Mark m : marks) {
+        for (Mark m : shown) {
             Component name = m.off ? Component.translatable("gui.mechanical.map.far", m.who.name(), (int) Math.hypot(m.who.x() - me.x, m.who.z() - me.z))
                     : Component.literal(m.who.name());
             label(g, taken, name, m.x, m.y, colour, HideUi.TEXT);

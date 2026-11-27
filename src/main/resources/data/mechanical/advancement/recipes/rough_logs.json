@@ -1,0 +1,63 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mechanical:rough_logs"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mechanical:oak_log_from_rough_logs",
+      "mechanical:spruce_log_from_rough_logs",
+      "mechanical:birch_log_from_rough_logs",
+      "mechanical:jungle_log_from_rough_logs",
+      "mechanical:acacia_log_from_rough_logs",
+      "mechanical:dark_oak_log_from_rough_logs",
+      "mechanical:mangrove_log_from_rough_logs",
+      "mechanical:cherry_log_from_rough_logs",
+      "mechanical:pale_oak_log_from_rough_logs",
+      "mechanical:poplar_log_from_rough_logs",
+      "mechanical:aspen_log_from_rough_logs",
+      "mechanical:alder_log_from_rough_logs",
+      "mechanical:beech_log_from_rough_logs",
+      "mechanical:linden_log_from_rough_logs",
+      "mechanical:willow_log_from_rough_logs",
+      "mechanical:ash_log_from_rough_logs",
+      "mechanical:hazel_log_from_rough_logs",
+      "mechanical:pine_log_from_rough_logs",
+      "mechanical:yew_log_from_rough_logs",
+      "mechanical:rowan_log_from_rough_logs",
+      "mechanical:bird_cherry_log_from_rough_logs",
+      "mechanical:wild_apple_log_from_rough_logs",
+      "mechanical:plum_log_from_rough_logs",
+      "mechanical:olive_log_from_rough_logs",
+      "mechanical:date_palm_log_from_rough_logs",
+      "mechanical:bitter_orange_log_from_rough_logs",
+      "mechanical:pear_log_from_rough_logs",
+      "mechanical:sweet_cherry_log_from_rough_logs",
+      "mechanical:lemon_log_from_rough_logs",
+      "mechanical:clementine_log_from_rough_logs",
+      "mechanical:walnut_log_from_rough_logs",
+      "mechanical:chestnut_log_from_rough_logs",
+      "mechanical:quince_log_from_rough_logs",
+      "mechanical:mulberry_log_from_rough_logs",
+      "mechanical:medlar_log_from_rough_logs",
+      "mechanical:peach_log_from_rough_logs",
+      "mechanical:apricot_log_from_rough_logs",
+      "mechanical:almond_log_from_rough_logs",
+      "mechanical:pomegranate_log_from_rough_logs"
+    ]
+  }
+}

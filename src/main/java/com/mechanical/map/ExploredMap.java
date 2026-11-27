@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.LongPredicate;
 
 import com.mechanical.Mechanical;
 import com.mechanical.clan.Clans;
@@ -104,6 +105,15 @@ public final class ExploredMap extends SavedData {
             for (int i = 0; i < WORDS; i++) out[i] |= bits[i];
         }
         return out;
+    }
+
+    /** Has any of {@code who} explored this packed chunk? Region masks are worked out once each. */
+    LongPredicate seen(Collection<UUID> who) {
+        Map<Long, long[]> masks = new HashMap<>();
+        return chunk -> {
+            int x = ChunkPos.getX(chunk), z = ChunkPos.getZ(chunk);
+            return has(masks.computeIfAbsent(ChunkPos.pack(x >> 5, z >> 5), k -> mask(who, x >> 5, z >> 5)), x, z);
+        };
     }
 
     /** Is the chunk (any coordinates, taken within its region) set in this mask? */

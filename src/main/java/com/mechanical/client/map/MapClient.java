@@ -30,6 +30,9 @@ public final class MapClient {
         event.register(MapNetwork.People.TYPE, (people, context) -> {
             if (Minecraft.getInstance().gui.screen() instanceof MapScreen map) map.people(people);
         });
+        event.register(MapNetwork.Features.TYPE, (features, context) -> {
+            if (Minecraft.getInstance().gui.screen() instanceof MapScreen map) map.features(features.json());
+        });
         event.register(MapNetwork.Tile.TYPE, (tile, context) -> {
             if (Minecraft.getInstance().gui.screen() instanceof MapScreen map) map.tile(tile);
         });

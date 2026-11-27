@@ -416,10 +416,26 @@ public final class GuiShots {
             }
             int x = (int) stand.x, z = (int) stand.z;
             s.people(new com.mechanical.map.MapNetwork.People(net.minecraft.world.item.DyeColor.CYAN.getId(), List.of(
-                    new com.mechanical.map.MapNetwork.Person("Ashka", x + 70, z - 45), new com.mechanical.map.MapNetwork.Person("Torvald_the_Bold", x + 76, z - 40),
-                    new com.mechanical.map.MapNetwork.Person("Runa", x + 2600, z + 900))));
+                    new com.mechanical.map.MapNetwork.Person("Ashka", x + 70, z - 45, 90), new com.mechanical.map.MapNetwork.Person("Torvald_the_Bold", x + 76, z - 40, -45),
+                    new com.mechanical.map.MapNetwork.Person("Runa", x + 2600, z + 900, 180))));
+            s.features(mapFeatures(x >> 4 << 4, z >> 4 << 4));
             return null;
         });
+    }
+
+    /** One of everything the map marks, round (x, z), in place of what the empty test world would answer. */
+    private static String mapFeatures(int x, int z) {
+        java.util.function.BiFunction<int[], int[], String> box = (a, s) -> "[[" + (x + a[0]) + "," + (z + a[1]) + "," + (x + a[0] + s[0]) + "," + (z + a[1]) + ","
+                + (x + a[0] + s[0]) + "," + (z + a[1] + s[1]) + "," + (x + a[0]) + "," + (z + a[1] + s[1]) + "]]";
+        java.util.function.BiFunction<Integer, Integer, String> at = (dx, dz) -> "'x':" + (x + dx) + ",'z':" + (z + dz);
+        return ("{'tribes':[{'id':'a','name':'Ravenfolk','colour':'#169c9c','chunks':72,'rings':" + box.apply(new int[] {-96, -64}, new int[] {144, 128})
+                + ",'loaded':" + box.apply(new int[] {-48, -32}, new int[] {80, 80}) + ",'label':{" + at.apply(-50, 40) + "}},"
+                + "{'id':'b','name':'Wolfkin','colour':'#b02e26','chunks':16,'rings':" + box.apply(new int[] {48, -32}, new int[] {64, 64}) + ",'loaded':[],'label':{" + at.apply(80, 8) + "}}],"
+                + "'tribeVillages':[{'id':'npc:1','name':'Elk Tribe','colour':'#835432','rings':" + box.apply(new int[] {-208, 16}, new int[] {80, 80}) + ",'label':{" + at.apply(-168, 56) + "}}],"
+                + "'villages':[{'name':'Dunewell','kind':'desert','rings':" + box.apply(new int[] {96, 64}, new int[] {96, 80}) + ",'label':{" + at.apply(144, 104) + "}}],"
+                + "'fires':[{" + at.apply(8, 12) + ",'kind':'big_fire_pit','tribe':'a'},{" + at.apply(84, -12) + ",'kind':'fire_pit','tribe':'b'},{" + at.apply(-70, -100) + ",'kind':'campfire','tribe':null}],"
+                + "'landmarks':[{'kind':'ancient_oak'," + at.apply(-120, -60) + "},{'kind':'waystone'," + at.apply(40, 90) + "},{'kind':'tribe_village'," + at.apply(-168, 56) + "}]}")
+                .replace('\'', '"');
     }
 
     private static Identifier quest(String path) {

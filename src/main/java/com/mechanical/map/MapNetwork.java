@@ -19,6 +19,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 import com.mechanical.Mechanical;
 import com.mechanical.clan.Clans;
 import com.mechanical.dashboard.MapTiles;
+import com.mechanical.dashboard.Snapshot;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -53,6 +54,8 @@ public final class MapNetwork {
     static final int MAX_REGION = 58_594;
     /** Under the 1 MiB custom payload limit; a region of map colours is far smaller. */
     static final int MAX_PNG = 1_000_000;
+    /** Characters; at up to 3 bytes each still under the payload limit (it is all but ASCII). */
+    static final int MAX_FEATURES = 340_000;
     static final Identifier ADVANCEMENT = Identifier.fromNamespaceAndPath(Mechanical.MODID, "stone_age/world_map");
 
     /** A region in view; {@code stamp} is the {@link Tile#stamp} the client holds for it, 0 for none. */
@@ -85,9 +88,21 @@ public final class MapNetwork {
         }
     }
 
-    public record Person(String name, int x, int z) {
+    /** Lands, villages, fires and places the viewer may know of: the dashboard's /api/map JSON, filtered. */
+    public record Features(String json) implements CustomPacketPayload {
+        public static final Type<Features> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Mechanical.MODID, "map_features"));
+        public static final StreamCodec<RegistryFriendlyByteBuf, Features> CODEC =
+                ByteBufCodecs.stringUtf8(MAX_FEATURES).<RegistryFriendlyByteBuf>cast().map(Features::new, Features::json);
+
+        @Override
+        public Type<Features> type() {
+            return TYPE;
+        }
+    }
+
+    public record Person(String name, int x, int z, int yaw) {
         static final StreamCodec<RegistryFriendlyByteBuf, Person> CODEC = StreamCodec.composite(
-                ByteBufCodecs.stringUtf8(64), Person::name, ByteBufCodecs.VAR_INT, Person::x, ByteBufCodecs.VAR_INT, Person::z, Person::new);
+                ByteBufCodecs.stringUtf8(64), Person::name, ByteBufCodecs.VAR_INT, Person::x, ByteBufCodecs.VAR_INT, Person::z, ByteBufCodecs.VAR_INT, Person::yaw, Person::new);
     }
 
     /** The viewer's tribe mates in the overworld; {@code colour} the tribe's DyeColor id, -1 without a tribe. */
@@ -136,7 +151,8 @@ public final class MapNetwork {
                     if (ctx.player() instanceof ServerPlayer player) onRequest(player, request);
                 })
                 .playToClient(People.TYPE, People.CODEC)
-                .playToClient(Tile.TYPE, Tile.CODEC);
+                .playToClient(Tile.TYPE, Tile.CODEC)
+                .playToClient(Features.TYPE, Features.CODEC);
     }
 
     /** Tick counts start over with the next world, and a stopping worker may never release its players. */
@@ -171,9 +187,14 @@ public final class MapNetwork {
         List<Person> mates = new ArrayList<>();
         for (ServerPlayer p : online) {
             if (p.getUUID().equals(viewer.getUUID()) || !group.contains(p.getUUID()) || p.level().dimension() != Level.OVERWORLD) continue;
-            mates.add(new Person(p.getGameProfile().name(), p.getBlockX(), p.getBlockZ()));
+            mates.add(new Person(p.getGameProfile().name(), p.getBlockX(), p.getBlockZ(), Math.round(p.getYRot())));
         }
         return new People(clan.colour(), mates);
+    }
+
+    static String features(MinecraftServer server, UUID viewer) {
+        Clans.Clan clan = Clans.get(server).clanOf(viewer);
+        return Snapshot.map(server, new Snapshot.Seen(ExploredMap.get(server).seen(ExploredMap.group(server, viewer)), clan == null ? null : clan.id()));
     }
 
     /** A wanted region the viewer has explored part of, with what they may see of it. */
@@ -199,6 +220,10 @@ public final class MapNetwork {
         var advancement = server.getAdvancements().get(ADVANCEMENT);
         if (advancement != null) player.getAdvancements().award(advancement, "done");
         PacketDistributor.sendToPlayer(player, people(player, server.getPlayerList().getPlayers()));
+        // shortcut: sent whole with every request (about once a second); give it a stamp like the tiles if it grows heavy
+        String features = features(server, id);
+        if (features.length() <= MAX_FEATURES) PacketDistributor.sendToPlayer(player, new Features(features));
+        else LOGGER.warn("Mechanical map: too much to mark for {} ({} characters)", player.getGameProfile().name(), features.length());
         List<Tile> forget = new ArrayList<>();
         List<Job> jobs = jobs(server, id, request.wants(), forget);
         forget.forEach(t -> PacketDistributor.sendToPlayer(player, t));

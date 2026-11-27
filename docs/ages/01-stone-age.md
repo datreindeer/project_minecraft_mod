@@ -656,7 +656,7 @@ Ancient Oak-block ...), även de som inte går att få i survival.
 | Crucible | Clay Kiln (800°) | Bronsåldern: fylls med malm och smälts i Clay Kiln (se 02-bronze-age.md). Staplas inte (1 per stack) |
 | Unfired Clay Bucket | `[Clay Ball][ ][Clay Ball]` / `[ ][Clay Ball][ ]` | Bränns till Clay Bucket i Clay Kiln |
 | Clay Bucket / Clay Water Bucket | Clay Kiln | Som en hink men **bara vatten**. Tål 16 hällningar, sedan spricker den. Fyller inte kittlar |
-| Log (från Firewood) | `[Firewood][Firewood]` / `[Firewood][Firewood]` av samma träslag → 1 Log | Planks, Tool Rod, bränsle |
+| Log (från Rough Logs) | `[Rough Log][Rough Log]` / `[Rough Log][Rough Log]` av samma träslag → 1 Log | Planks, Tool Rod, bränsle |
 
 ## Mekaniker
 
@@ -2862,7 +2862,8 @@ Recepten dyker upp i receptboken när man får tag på det första materialet:
 | Flint | Flint Pickaxe, Flint Axe, Flint Shovel, Flint Hoe, Flint Knife, Tool Station |
 | Plant Fibre | Twine |
 | Twine | Cordage, Fire Drill |
-| Firewood (valfritt) | Tool Rod, Campfire, Firewood → Log (alla träslag) |
+| Firewood (valfritt) | Tool Rod, Campfire |
+| Rough Log (valfri) | 4 av samma sort → Log (alla träslag) |
 | Rock chunk (valfri) | Stone Pickaxe Head, Stone Axe Head, Clay Kiln |
 | Clay Ball | Clay Kiln, Mold Bench, Unfired Clay Bucket |
 | Stone Pickaxe Head | Double Stone Pickaxe Head |
@@ -3538,3 +3539,7 @@ M (går att binda om under Controls) öppnar en helskärmskarta på pergament; M
 - Kartan börjar tom; inget som utforskats före version 0.236.0 fylls i.
 - Terrängen ritas om när chunks laddas, sparas eller laddas ur, så ändringar långt bort syns först då.
 - Bara Overworld. I Nether och End står det att kartan bara visar Overworld.
+- **Markeringar** (samma som på webbkartan): tribes mark i tribens färg (din egen kept loaded-ruta streckad), tribe-byar och tribe-läger, vanliga byar (streckad sandkant), Fire Pits (ring i tribens färg) och campfires, Ancient Oaks, Waystones, tribe-byarnas tält samt namn. Du ser bara det som ligger på utforskad mark; din egen tribes mark och Fire Pit syns alltid hela. För andra gäller även chunk-antalet i legenden bara det du har sett.
+- **Hover:** marken eller platsen under muspekaren lyser upp, och en ruta uppe till höger visar koordinater och vad som finns där.
+- **Legend** (knappen **Legend**): tribes, tribe-byar, byar och antal platser. Håll över en rad för att markera marken, klicka för att hoppa dit, scrolla om listan är lång.
+- **All tribes** visar alla kända tribes marker på en gång; **+** och **−** zoomar. Rutnätet visar regioner, och chunks när du är nära.

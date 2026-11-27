@@ -544,7 +544,7 @@ for wood in WOODS:
     # 1 shows one piece, 2-15 two, 16+ three
     w(A / f"items/{fw}.json", {"model": {"type": "minecraft:range_dispatch", "property": "minecraft:count", "normalize": False,
         "entries": [{"threshold": 2, "model": model(2)}, {"threshold": 16, "model": model(3)}], "fallback": model(1)}})
-    shaped(f"{wood}_log_from_firewood", ["FF", "FF"], {"F": f"mechanical:{fw}"}, f"{wns(wood)}:{wood}_log")
+    shaped(f"{wood}_log_from_rough_logs", ["RR", "RR"], {"R": f"mechanical:{wood}_rough_log"}, f"{wns(wood)}:{wood}_log")
     lang[f"item.mechanical.{fw}"] = f"{title(wood)} Firewood"
 w(D / "mechanical/tags/item/firewood.json", {"values": [f"mechanical:{x}_firewood" for x in WOODS]})
 w(D / "minecraft/recipe/campfire.json", {"type": "minecraft:crafting_shaped", "category": "misc",
@@ -679,7 +679,8 @@ UNLOCKS = {
     "tallow": ("mechanical:tallow", ["candle_from_tallow"]),
     "boiled_egg": ("mechanical:boiled_egg", ["peeled_egg"]),
     "rock_chunks_cobble": ("#mechanical:rock_chunks", ["cobblestone_from_chunks", "granite_from_chunks", "diorite_from_chunks", "andesite_from_chunks"]),
-    "firewood": ("#mechanical:firewood", ["tool_rod", "minecraft:campfire"] + [f"{x}_log_from_firewood" for x in WOODS]),
+    "firewood": ("#mechanical:firewood", ["tool_rod", "minecraft:campfire"]),
+    "rough_logs": ("#mechanical:rough_logs", [f"{x}_log_from_rough_logs" for x in WOODS]),
     "rock_chunks": ("#mechanical:rock_chunks", ["stone_pickaxe_head", "stone_axe_head", "kiln"]),
     "clay_ball": ("minecraft:clay_ball", ["kiln", "mold_bench", "unfired_clay_bucket"]),
     "stone_pickaxe_head": ("mechanical:stone_pickaxe_head", ["double_stone_pickaxe_head"]),

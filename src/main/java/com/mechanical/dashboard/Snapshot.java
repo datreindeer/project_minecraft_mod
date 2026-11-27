@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.LongPredicate;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
@@ -247,13 +249,30 @@ public final class Snapshot {
         return f;
     }
 
-    /** /api/map: overworld players, fires (tribe pits and the mod's tracked camps, no world scan), tribe outlines with the chunks their pit keeps loaded, and vanilla villages. */
+    /** What a player may see on the in-game map: the chunks their group explored, and their own tribe (null without one), shown whole. */
+    public record Seen(LongPredicate chunk, UUID clan) {
+        boolean at(int x, int z) {
+            return chunk.test(ChunkPos.pack(x >> 4, z >> 4));
+        }
+
+        Set<Long> of(Set<Long> chunks) {
+            return chunks.stream().filter(chunk::test).collect(Collectors.toSet());
+        }
+    }
+
     public static String map(MinecraftServer server) {
+        return map(server, null);
+    }
+
+    /** /api/map: overworld players, fires (tribe pits and the mod's tracked camps, no world scan), tribe outlines with the chunks their pit keeps loaded, and vanilla villages.
+     * With {@code seen} (the in-game map) only what that player may know is in it, and no players (MapNetwork.People has those).
+     */
+    public static String map(MinecraftServer server, Seen seen) {
         Clans clans = Clans.get(server);
         ServerLevel overworld = server.overworld();
         JsonObject o = new JsonObject();
         JsonArray players = new JsonArray();
-        for (ServerPlayer p : overworld.players()) {
+        for (ServerPlayer p : seen == null ? overworld.players() : List.<ServerPlayer>of()) {
             Faces.want(server, p.getGameProfile());
             JsonObject j = new JsonObject();
             j.addProperty("uuid", p.getUUID().toString());
@@ -271,23 +290,28 @@ public final class Snapshot {
         List<BlockPos> pits = new java.util.ArrayList<>();
         OUTLINES.keySet().removeIf(id -> clans.all().stream().noneMatch(c -> c.id().equals(id)));
         for (Clans.Clan c : clans.all()) {
-            c.pit().filter(g -> g.dimension().equals(overworld.dimension())).ifPresent(g -> {
+            boolean own = seen == null || c.id().equals(seen.clan);
+            c.pit().filter(g -> g.dimension().equals(overworld.dimension()) && (own || seen.at(g.pos().getX(), g.pos().getZ()))).ifPresent(g -> {
                 pits.add(g.pos());
                 fires.add(fire(g.pos().getX(), g.pos().getZ(), c.isBigPit(server) ? "big_fire_pit" : "fire_pit", c.id()));
             });
             if (c.territory().isEmpty() || c.pit().filter(g -> !g.dimension().equals(overworld.dimension())).isPresent()) continue;
+            Set<Long> land = own ? c.territory() : seen.of(c.territory());
+            if (land.isEmpty()) continue;
             JsonObject t = new JsonObject();
             t.addProperty("id", c.id().toString());
             t.addProperty("name", c.name());
             t.addProperty("colour", String.format("#%06x", DyeColor.byId(c.colour()).getTextureDiffuseColor() & 0xFFFFFF));
-            t.add("rings", json(rings(c)));
+            t.add("rings", json(own ? rings(c) : Outline.of(land)));
+            t.addProperty("chunks", land.size());
             // the pit is in the overworld here (other dimensions were skipped); its force-loaded square is a fixed 5x5, cheap to outline each time
-            t.add("loaded", json(c.pit().map(g -> Outline.of(Territory.square(ChunkPos.containing(g.pos()), Clans.LOAD_RADIUS))).orElse(List.of())));
-            t.add("label", point(label(c.territory())));
+            t.add("loaded", json(c.pit().filter(g -> own).map(g -> Outline.of(Territory.square(ChunkPos.containing(g.pos()), Clans.LOAD_RADIUS))).orElse(List.of())));
+            t.add("label", point(label(land)));
             tribes.add(t);
         }
         for (CampAge.Camp camp : CampAge.get(overworld).camps()) {
             BlockPos at = camp.centre;
+            if (seen != null && !seen.at(at.getX(), at.getZ())) continue;
             if (pits.stream().anyMatch(p -> Math.abs(p.getX() - at.getX()) <= 2 && Math.abs(p.getY() - at.getY()) <= 2 && Math.abs(p.getZ() - at.getZ()) <= 2)) continue;
             boolean pit = overworld.isLoaded(at) && FirePit.isPit(overworld.getBlockState(at));
             fires.add(fire(at.getX(), at.getZ(), pit ? "fire_pit" : "campfire", null));
@@ -296,41 +320,47 @@ public final class Snapshot {
         o.add("tribes", tribes);
         JsonArray villages = new JsonArray();
         for (Villages.Village v : Villages.get(overworld).all()) {
-            if (v.chunks().isEmpty()) continue;
+            Set<Long> land = seen == null ? v.chunks() : seen.of(v.chunks());
+            if (land.isEmpty()) continue;
             JsonObject j = new JsonObject();
             j.addProperty("name", v.name());
             j.addProperty("kind", v.kind());
-            j.add("rings", json(VILLAGE_OUTLINES.computeIfAbsent(v, k -> Outline.of(k.chunks()))));
-            j.add("label", point(label(v.chunks())));
+            j.add("rings", json(seen == null ? VILLAGE_OUTLINES.computeIfAbsent(v, k -> Outline.of(k.chunks())) : Outline.of(land)));
+            j.add("label", point(label(land)));
             villages.add(j);
         }
         o.add("villages", villages);
         // NPC tribe villages, from the record AgeRebuild keeps of them: their land is what clan.Lands announces, in whole chunks
         JsonArray npc = new JsonArray();
         for (AgeRebuild.Village v : AgeRebuild.Villages.get(overworld).villages) {
+            Set<Long> land = seen == null ? null : seen.of(circle(v.centre, TribeVillageStructure.WALL_R + 2));
+            if (land != null && land.isEmpty()) continue;
             Tribe t = Tribe.of(v.tribe);
             JsonObject j = new JsonObject();
             j.addProperty("id", "npc:" + v.centre.asLong());
             j.addProperty("name", tribeName(t));
             j.addProperty("colour", String.format("#%06x", t.baseColour().getTextureDiffuseColor() & 0xFFFFFF));
-            j.add("rings", json(NPC_OUTLINES.computeIfAbsent(v.centre, c -> Outline.of(circle(c, TribeVillageStructure.WALL_R + 2)))));
-            j.add("label", point(new int[] {v.centre.getX(), v.centre.getZ()}));
+            j.add("rings", json(land == null ? NPC_OUTLINES.computeIfAbsent(v.centre, c -> Outline.of(circle(c, TribeVillageStructure.WALL_R + 2))) : Outline.of(land)));
+            j.add("label", point(land == null || seen.at(v.centre.getX(), v.centre.getZ()) ? new int[] {v.centre.getX(), v.centre.getZ()} : label(land)));
             npc.add(j);
         }
         // a tribe's camp built by a player camp (Neighbours.Settlement): its palisade ring, in its tribe's colour
         for (Neighbours.Settlement s : Neighbours.get(overworld).settlements) {
+            Set<Long> land = seen == null ? null : seen.of(circle(s.centre, Settlements.PALISADE_R + 2));
+            if (land != null && land.isEmpty()) continue;
             Tribe t = Tribe.of(s.tribe);
             JsonObject j = new JsonObject();
             j.addProperty("id", "camp:" + s.centre.asLong());
             j.addProperty("name", tribeName(t));
             j.addProperty("colour", String.format("#%06x", t.baseColour().getTextureDiffuseColor() & 0xFFFFFF));
-            j.add("rings", json(CAMP_OUTLINES.computeIfAbsent(s.centre, c -> Outline.of(circle(c, Settlements.PALISADE_R + 2)))));
-            j.add("label", point(new int[] {s.centre.getX(), s.centre.getZ()}));
+            j.add("rings", json(land == null ? CAMP_OUTLINES.computeIfAbsent(s.centre, c -> Outline.of(circle(c, Settlements.PALISADE_R + 2))) : Outline.of(land)));
+            j.add("label", point(land == null || seen.at(s.centre.getX(), s.centre.getZ()) ? new int[] {s.centre.getX(), s.centre.getZ()} : label(land)));
             npc.add(j);
         }
         o.add("tribeVillages", npc);
         JsonArray landmarks = new JsonArray();
         for (Landmarks.Mark m : Landmarks.get(overworld).all()) {
+            if (seen != null && !seen.at(m.x(), m.z())) continue;
             JsonObject j = new JsonObject();
             j.addProperty("kind", m.kind());
             j.addProperty("x", m.x());
