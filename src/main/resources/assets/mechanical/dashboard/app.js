@@ -570,28 +570,52 @@ const map = (() => {
     ctx.fillStyle = fill; ctx.fillText(text, x, y);
   }
 
-  /* Players: dot in the tribe colour with a pointer for where they face (yaw 0 = south, 90 = west). */
+  /* Faces the server cut from the skins; null until loaded, a missing one is asked for again after a minute. */
+  const faces = new Map();
+  function face(uuid) {
+    let f = faces.get(uuid);
+    if (!f || f.failed && Date.now() - f.failed > 60000) {
+      const img = new Image();
+      faces.set(uuid, f = { img, ok: false, failed: 0 });
+      const mine = f;
+      img.onload = () => { mine.ok = true; redraw(); };
+      img.onerror = () => { mine.failed = Date.now(); };
+      img.src = "/faces/" + encodeURIComponent(uuid) + ".png";
+    }
+    return f.ok ? f.img : null;
+  }
+
+  /* Players: the face (or a dot) in the tribe colour with a pointer for where they face (yaw 0 = south, 90 = west). */
   function players() {
     for (const p of mapData.players || []) {
       const [x, y] = toScreen(p.x, p.z);
       const c = (mapData.tribes || []).find(t => t.id === p.tribe)?.colour || "#ece2cf";
       const a = p.yaw * Math.PI / 180, dx = -Math.sin(a), dy = Math.cos(a);
       ctx.beginPath();
-      ctx.moveTo(x + dx * 17, y + dy * 17);
+      const far = face(p.uuid) ? 7 : 0;
+      ctx.moveTo(x + dx * (17 + far * 1.4), y + dy * (17 + far * 1.4));
       ctx.lineTo(x - dy * 6.5, y + dx * 6.5);
       ctx.lineTo(x + dy * 6.5, y - dx * 6.5);
       ctx.closePath();
       ctx.fillStyle = HALO; ctx.fill();
       ctx.beginPath();
-      ctx.moveTo(x + dx * 14.5, y + dy * 14.5);
+      ctx.moveTo(x + dx * (14.5 + far * 1.4), y + dy * (14.5 + far * 1.4));
       ctx.lineTo(x - dy * 4.5, y + dx * 4.5);
       ctx.lineTo(x + dy * 4.5, y - dx * 4.5);
       ctx.closePath();
       ctx.fillStyle = "#ece2cf"; ctx.fill();
-      ctx.beginPath(); ctx.arc(x, y, 6.5, 0, Math.PI * 2);
-      ctx.fillStyle = c; ctx.fill();
-      ctx.lineWidth = 2.5; ctx.strokeStyle = HALO; ctx.stroke();
-      halo(p.name, x + 12, y - 12, "600 13px " + (sans ||= getComputedStyle(document.body).fontFamily), "#ece2cf");
+      const img = face(p.uuid);
+      if (img) {
+        ctx.fillStyle = HALO; ctx.fillRect(x - 12, y - 12, 24, 24);
+        ctx.fillStyle = c; ctx.fillRect(x - 10.5, y - 10.5, 21, 21);
+        ctx.imageSmoothingEnabled = false; // 8x8 pixels, kept sharp
+        ctx.drawImage(img, x - 8, y - 8, 16, 16);
+      } else {
+        ctx.beginPath(); ctx.arc(x, y, 6.5, 0, Math.PI * 2);
+        ctx.fillStyle = c; ctx.fill();
+        ctx.lineWidth = 2.5; ctx.strokeStyle = HALO; ctx.stroke();
+      }
+      halo(p.name, x + (img ? 17 : 12), y - 12, "600 13px " + (sans ||= getComputedStyle(document.body).fontFamily), "#ece2cf");
     }
   }
 

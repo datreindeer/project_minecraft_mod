@@ -1498,6 +1498,10 @@ TABS["wilderness"][1].extend([
      "Buy spices from the rare Eastern Caravan: Black Pepper, Cinnamon, Ginger, Saffron or Tea, from lands far to the east",
      has("black_pepper", "cinnamon_bark", "ginger_root", "saffron_corm", "tea_leaves")),
 ])
+# the world map (map/MapNetwork.java): granted from Java the first time it is opened
+TABS["stone_age"][1].append(
+    ("world_map", "root", "minecraft:map", T, "Lay of the Land",
+     "Press M to open the World Map. It shows what you and your tribe have explored, and where your tribe mates are", by_code()))
 # player tribes (clan/Clans.java): granted from Java
 TABS["stone_age"][1].extend([
     ("found_tribe", "fire_pit", "fire_pit", T, "Hearth of the Tribe",

@@ -44,13 +44,16 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.ChunkDataEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 /**
- * The dashboard's map: overworld chunks are drawn as players load them, into 512x512 region PNGs (1 px per block) under
+ * The map's tiles (web dashboard and the in-game map, com.mechanical.map): overworld chunks are drawn as players load them, into 512x512 region PNGs (1 px per block) under
  * {@code <world>/mechanical_map}. Loaded and saved chunks (and all loaded ones when the map starts) wait in a de-duplicated
  * queue and at most {@link #PER_TICK} are read per tick on the server thread (256 columns each); merging into the region
- * images and writing PNGs happens on one worker thread, so fast travel never costs TPS. Runs only while the {@link Dashboard} does.
+ * images and writing PNGs happens on one worker thread, so fast travel never costs TPS. Runs whenever a server does (also
+ * singleplayer, dashboard or not), except the game test server.
  */
 @EventBusSubscriber(modid = Mechanical.MODID)
 public final class MapTiles {
@@ -71,6 +74,9 @@ public final class MapTiles {
     /** Worker-thread only (or the game test while the map is off): open region images, least recently used first. */
     static final LinkedHashMap<Long, Region> OPEN = new LinkedHashMap<>(OPEN_REGIONS, 0.75f, true);
 
+    /** Worker-thread only: how often each region's pixels changed this session, so an open map screen only gets what is new. */
+    private static final Map<Long, Integer> VERSIONS = new java.util.HashMap<>();
+
     private static final class Region {
         final BufferedImage image;
         boolean dirty;
@@ -84,7 +90,17 @@ public final class MapTiles {
 
     private MapTiles() {}
 
-    /** Starts the worker; called by {@link Dashboard} once it listens. */
+    @SubscribeEvent
+    static void onServerStarted(ServerStartedEvent event) {
+        if (!(event.getServer() instanceof net.minecraft.gametest.framework.GameTestServer)) start(event.getServer());
+    }
+
+    @SubscribeEvent
+    static void onServerStopping(ServerStoppingEvent event) {
+        stop();
+    }
+
+    /** Starts the worker. */
     static synchronized void start(MinecraftServer server) {
         stop();
         folder = server.getWorldPath(LevelResource.ROOT).resolve("mechanical_map");
@@ -128,6 +144,7 @@ public final class MapTiles {
         exec.execute(() -> {
             flush(true);
             OPEN.clear();
+            VERSIONS.clear();
         });
         exec.shutdown(); // cancels the periodic flush, still runs the final one
         try {
@@ -138,7 +155,7 @@ public final class MapTiles {
     }
 
     private static boolean running() {
-        return worker != null && Dashboard.isRunning();
+        return worker != null;
     }
 
     @SubscribeEvent
@@ -337,6 +354,7 @@ public final class MapTiles {
                 }
             }
         }
+        if (!java.util.Arrays.equals(colours, r.image.getRGB((cx & 31) * 16, (cz & 31) * 16, 16, 16, null, 0, 16))) VERSIONS.merge(key, 1, Integer::sum);
         r.image.setRGB((cx & 31) * 16, (cz & 31) * 16, 16, 16, colours, 0, 16);
         r.dirty = true;
     }
@@ -393,6 +411,38 @@ public final class MapTiles {
 
     private static Path file(int rx, int rz) {
         return folder.resolve(rx + "." + rz + ".png");
+    }
+
+    // ---------------------------------------------------------------- the in-game map (com.mechanical.map)
+
+    /** Runs {@code job} on the map's worker thread, after the drawing already queued; false when the map is off. */
+    public static boolean onWorker(Runnable job) {
+        ScheduledExecutorService exec = worker;
+        if (exec == null) return false;
+        try {
+            exec.execute(job);
+            return true;
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            return false;
+        }
+    }
+
+    /** Worker thread only: the region's newest image (not to be changed), or null when it was never drawn. */
+    public static BufferedImage region(int rx, int rz) {
+        Region open = OPEN.get(ChunkPos.pack(rx, rz));
+        if (open != null) return open.image;
+        Path file = file(rx, rz);
+        try {
+            return Files.exists(file) ? ImageIO.read(file.toFile()) : null;
+        } catch (IOException e) {
+            LOGGER.warn("Mechanical map: could not read {} ({})", file, e.getMessage());
+            return null;
+        }
+    }
+
+    /** Worker thread only. */
+    public static int version(int rx, int rz) {
+        return VERSIONS.getOrDefault(ChunkPos.pack(rx, rz), 0);
     }
 
     // ---------------------------------------------------------------- web threads

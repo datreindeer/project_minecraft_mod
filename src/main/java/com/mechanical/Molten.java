@@ -204,6 +204,11 @@ public final class Molten implements Comparable<Molten> {
         return out;
     }
 
+    /** Every item this metal casts into. */
+    public List<Item> castItems() {
+        return casts.values().stream().map(Molten::item).toList();
+    }
+
     /** One ingot (marked poor for Poor Bronze), or empty. */
     public ItemStack ingot() {
         return stack(ingot);

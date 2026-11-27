@@ -76,6 +76,7 @@ public final class DashboardTest {
 
         Runnable remove = Clans.testTribeAt(server, GlobalPos.of(Level.OVERWORLD, h.absolutePos(new BlockPos(1, 1, 1))), UUID.randomUUID());
         try {
+            faces(h);
             JsonArray tribes = JsonParser.parseString(Snapshot.tribes(server)).getAsJsonArray();
             JsonObject t = tribes.get(tribes.size() - 1).getAsJsonObject();
             check(h, t.get("chunks").getAsInt() == 25, "a tribe holds 5x5 chunks");
@@ -235,5 +236,24 @@ public final class DashboardTest {
 
     private static int colourAt(GameTestHelper h, BlockPos pos) {
         return MapTiles.colours(h.getLevel().getChunkAt(pos))[(pos.getZ() & 15) * 16 + (pos.getX() & 15)];
+    }
+
+    private static void faces(GameTestHelper h) {
+        check(h, Faces.skinUri("http://textures.minecraft.net/texture/abc").toString().equals("https://textures.minecraft.net/texture/abc"), "a skin is fetched over https");
+        check(h, Faces.skinUri("http://textures.minecraft.net.evil.test/texture/abc") == null && Faces.skinUri("http://127.0.0.1/texture/abc") == null
+                && Faces.skinUri("file:///texture/abc") == null && Faces.skinUri("not a url") == null, "nothing but Mojang's skin server is fetched");
+        try {
+            var skin = new java.awt.image.BufferedImage(64, 64, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            skin.setRGB(8, 8, 0xFFFF0000); // face
+            skin.setRGB(9, 8, 0xFFFF0000);
+            skin.setRGB(41, 8, 0xFF0000FF); // hat over the second pixel
+            var bytes = new java.io.ByteArrayOutputStream();
+            javax.imageio.ImageIO.write(skin, "png", bytes);
+            var face = javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(Faces.cut(bytes.toByteArray())));
+            check(h, face.getWidth() == 8 && face.getRGB(0, 0) == 0xFFFF0000 && face.getRGB(1, 0) == 0xFF0000FF, "the face with the hat over it");
+            check(h, Faces.cut(new byte[] {1, 2, 3}) == null, "junk is no face");
+        } catch (java.io.IOException e) {
+            throw new java.io.UncheckedIOException(e);
+        }
     }
 }

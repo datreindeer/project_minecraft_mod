@@ -254,7 +254,9 @@ public final class Snapshot {
         JsonObject o = new JsonObject();
         JsonArray players = new JsonArray();
         for (ServerPlayer p : overworld.players()) {
+            Faces.want(server, p.getGameProfile());
             JsonObject j = new JsonObject();
+            j.addProperty("uuid", p.getUUID().toString());
             j.addProperty("name", p.getGameProfile().name());
             j.addProperty("x", Math.round(p.getX() * 10) / 10.0);
             j.addProperty("z", Math.round(p.getZ() * 10) / 10.0);

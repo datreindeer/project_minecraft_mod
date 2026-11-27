@@ -33,6 +33,7 @@ public final class Dashboard {
     private static volatile HttpServer http;
     /** Signed integers only, so a tile name can never become a path. */
     static final Pattern TILE = Pattern.compile("/tiles/(-?\\d{1,6})\\.(-?\\d{1,6})\\.png");
+    private static final Pattern FACE = Pattern.compile("/faces/(\\p{XDigit}{8}(?:-\\p{XDigit}{4}){3}-\\p{XDigit}{12})\\.png");
     private static volatile Snapshot.Json latest = new Snapshot.Json("{}", "[]", "[]", "{}");
 
     private Dashboard() {}
@@ -43,12 +44,10 @@ public final class Dashboard {
         if (!server.isDedicatedServer() || server instanceof net.minecraft.gametest.framework.GameTestServer || !ServerConfig.DASHBOARD.get()) return;
         Snapshot.started();
         bind(ServerConfig.DASHBOARD_PORT.get());
-        if (isRunning()) MapTiles.start(server);
     }
 
     @SubscribeEvent
     static void onStopping(ServerStoppingEvent event) {
-        MapTiles.stop();
         stop();
     }
 
@@ -126,6 +125,11 @@ public final class Dashboard {
                 };
                 if (body == null) send(ex, 404, "text/plain", "not found");
                 else send(ex, 200, "application/json", body);
+            } else if (path.startsWith("/faces/")) {
+                Matcher m = FACE.matcher(path);
+                byte[] png = m.matches() ? Faces.png(java.util.UUID.fromString(m.group(1))) : null;
+                if (png == null) send(ex, 404, "text/plain", "not found");
+                else send(ex, 200, "image/png", png, "max-age=300");
             } else if (path.startsWith("/tiles/")) {
                 Matcher m = TILE.matcher(path);
                 byte[] png;

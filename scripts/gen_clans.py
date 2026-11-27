@@ -1,4 +1,4 @@
-"""Player tribes and the world age: lang lines for the tribe page (G), its chat messages and the Tab list (clan/Clans.java, client/clan/ClanScreen.java, client/clan/TribeTabList.java), and being downed (clan/Downed.java).
+"""Player tribes, the world map and the world age: lang lines for the tribe page (G), its chat messages and the Tab list (clan/Clans.java, client/clan/ClanScreen.java, client/clan/TribeTabList.java), and being downed (clan/Downed.java).
 Generator order: ... gen_equipment.py, gen_calendar.py, gen_clans.py, gen_block_items.py, ... gen_registry.py.
 Run: python scripts/gen_clans.py"""
 import json
@@ -109,6 +109,22 @@ LANG.update({
     D + "revived": "%s brought you back",
     D + "spirit": "You wake as a spirit: creatures don't see you until you strike or touch something",
     D + "spirit_end": "You feel solid again",
+})
+# the world map (M: client/map/MapScreen.java)
+W = "gui.mechanical.map."
+LANG.update({
+    "key.mechanical.world_map": "World Map",
+    W + "title": "World Map",
+    W + "position": "You are at %s, %s",
+    W + "centre": "Centre on me",
+    W + "hint": "Drag to pan  \u00b7  Scroll to zoom  \u00b7  Space finds you  \u00b7  %s or Esc closes",
+    W + "north": "N",
+    W + "scale": "%s blocks",
+    W + "you": "You",
+    W + "far": "%s \u00b7 %s blocks",
+    W + "drawing": "Unrolling the map...",
+    W + "empty": "The parchment is still blank. Walk the land, and it will be drawn here.",
+    W + "overworld_only": "This map only shows the Overworld.",
 })
 for age in ("stone", "bronze", "iron", "steam", "electric"):
     LANG[G + "age." + age] = age.capitalize() + " Age"

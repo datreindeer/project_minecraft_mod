@@ -362,7 +362,64 @@ public final class GuiShots {
         quests();
         recipes();
         skills();
+        worldMap();
         inWorld("screen_stats", GuiShots::reset, () -> show(new net.minecraft.client.gui.screens.achievement.StatsScreen(null, mc.player.getStats())), null);
+    }
+
+    /** Set while a shot's server work runs long: the shot waits for it. */
+    private static volatile boolean waiting;
+
+    /** The world map over land walked here and there. Tribe mates can't join a singleplayer world, so theirs are handed to the screen. */
+    private static void worldMap() {
+        Minecraft mc = Minecraft.getInstance();
+        inWorld("map_a_walk", p -> {
+            waiting = true;
+            try {
+                reset(p);
+                var explored = com.mechanical.map.ExploredMap.get(p.level().getServer());
+                int[][] path = {{0, 0}, {10, -3}, {19, -9}, {25, 1}, {17, 9}, {-9, 6}, {-18, 13}, {-30, 11}, {3, -14}};
+                for (int i = 0; i < path.length; i++) {
+                    int cx = (int) stand.x / 16 + path[i][0], cz = (int) stand.z / 16 + path[i][1];
+                    explored.explore(p.getUUID(), cx, cz);
+                    for (int dx = -7; dx <= 7; dx++) for (int dz = -7; dz <= 7; dz++) p.level().getChunk(cx + dx, cz + dz);
+                }
+            } finally {
+                waiting = false;
+            }
+        }, () -> {}, null);
+        mapShot("map_b_key", 1920, 1080, 3, true, s -> {});
+        mapShot("map_c_far", 1920, 1080, 3, false, s -> s.mouseScrolled(320, 180, 0, -12));
+        mapShot("map_d_small", 854, 480, 2, false, s -> s.mouseScrolled(214, 120, 0, 3));
+        mapShot("map_e_close_dragged", 1920, 1080, 3, false, s -> {
+            s.mouseScrolled(320, 180, 0, 12);
+            s.mouseScrolled(320, 180, 0, -2);
+            drag(s, 320, 180, 200, 120);
+        });
+    }
+
+    private static void mapShot(String name, int w, int h, int scale, boolean byKey, Consumer<com.mechanical.client.map.MapScreen> then) {
+        Minecraft mc = Minecraft.getInstance();
+        boolean[] done = {false};
+        inWorld(name, p -> p.teleportTo(p.level(), stand.x, stand.y, stand.z, java.util.Set.of(), 35, 20, true), () -> {
+            mc.getWindow().setWindowed(w, h);
+            mc.options.guiScale().set(scale);
+            mc.resizeGui();
+            if (byKey) {
+                mc.gui.setScreen(null);
+                net.minecraft.client.KeyMapping.click(com.mojang.blaze3d.platform.InputConstants.getKey(com.mechanical.client.map.MapClient.OPEN.saveString()));
+            } else show(new com.mechanical.client.map.MapScreen());
+        }, () -> {
+            if (!(mc.gui.screen() instanceof com.mechanical.client.map.MapScreen s)) return null;
+            if (!done[0]) {
+                done[0] = true;
+                then.accept(s);
+            }
+            int x = (int) stand.x, z = (int) stand.z;
+            s.people(new com.mechanical.map.MapNetwork.People(net.minecraft.world.item.DyeColor.CYAN.getId(), List.of(
+                    new com.mechanical.map.MapNetwork.Person("Ashka", x + 70, z - 45), new com.mechanical.map.MapNetwork.Person("Torvald_the_Bold", x + 76, z - 40),
+                    new com.mechanical.map.MapNetwork.Person("Runa", x + 2600, z + 900))));
+            return null;
+        });
     }
 
     private static Identifier quest(String path) {
@@ -832,7 +889,8 @@ public final class GuiShots {
                 mc.createWorldOpenFlows().createFreshLevel(name,
                         new LevelSettings(name, GameType.CREATIVE, LevelSettings.DifficultySettings.DEFAULT, true, WorldDataConfiguration.DEFAULT),
                         new WorldOptions(77L, false, false),
-                        reg -> reg.lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.FLAT).value().createWorldDimensions(),
+                        reg -> reg.lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(only.length == 1 && only[0].equals("map_") ? WorldPresets.NORMAL : WorldPresets.FLAT)
+                                .value().createWorldDimensions(),
                         new TitleScreen());
                 return;
             }
@@ -863,6 +921,7 @@ public final class GuiShots {
                 mc.stop();
                 return;
             }
+            if (waiting) return;
             Shot shot = SHOTS.get(step);
             ticks++;
             mc.gui.toastManager().clear();

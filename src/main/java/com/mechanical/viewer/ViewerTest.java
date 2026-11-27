@@ -46,6 +46,7 @@ public final class ViewerTest {
     private static void test(GameTestHelper h) {
         try {
             seenItems(h);
+            partsAreSeen(h);
             stationSources(h);
             toolStationKeyPart(h);
             altOptionCountsAsSeen(h);
@@ -82,6 +83,28 @@ public final class ViewerTest {
         p.getEnderChestInventory().setItem(1, new ItemStack(Items.EMERALD));
         SeenItems.backfill(p);
         h.assertTrue(!SeenItems.seen(p).contains("minecraft:emerald"), "a second backfill does nothing (guard)");
+    }
+
+    private static void partsAreSeen(GameTestHelper h) {
+        ServerPlayer p = net.neoforged.neoforge.common.util.FakePlayerFactory.get(h.getLevel(),
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "viewer_parts"));
+        p.getInventory().setItem(0, new ItemStack(com.mechanical.Bronze.BRONZE_PICKAXE.get()));
+        p.getInventory().setItem(1, new ItemStack(Items.IRON_NUGGET));
+        SeenItems.scan(p);
+        var seen = SeenItems.seen(p);
+        for (String part : List.of("bronze_pickaxe_head", "rough_cast_bronze_pickaxe_head", "bronze_ingot", "cordage", "twine", "plant_fibre")) {
+            h.assertTrue(seen.contains(MODID + ":" + part), "a Bronze Pickaxe shows its part: " + part);
+        }
+        h.assertTrue(!seen.contains("minecraft:iron_pickaxe"), "an Iron Nugget does not show gear that smelts into it");
+        System.out.println("VIEWER parts of a bronze pickaxe and an iron nugget: " + seen);
+        var made = SeenItems.parts(h.getLevel().getServer()).keySet();
+        for (String[] step : SeenItems.IN_WORLD) {
+            for (String name : step) {
+                h.assertTrue(net.minecraft.core.registries.BuiltInRegistries.ITEM.containsKey(Identifier.parse(name)), "IN_WORLD names a real item: " + name);
+            }
+        }
+        System.out.println("VIEWER noparts: " + net.minecraft.core.registries.BuiltInRegistries.ITEM.keySet().stream()
+                .map(Object::toString).filter(i -> i.startsWith(MODID + ":") && !made.contains(i)).sorted().toList());
     }
 
     private static void stationSources(GameTestHelper h) {

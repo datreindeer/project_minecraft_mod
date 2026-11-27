@@ -3527,3 +3527,14 @@ Config `netherAndEndClosed = true` i `config/mechanical-local.toml` (false öppn
 - Går inte att få så länge: Blaze Rod (och därmed bryggning), Nether Quartz, Glowstone, Nether Wart, Netherite, Magma
   Cream, Soul Sand/Soil, Ghast Tear, Crimson/Warped-trä (modens Sawn Crimson/Warped Planks), Chorus, Shulker, Elytra,
   drakägget. Moden har inga egna advancements eller andra recept som kräver Nether/End.
+
+## World Map (tangent M)
+
+M (går att binda om under Controls) öppnar en helskärmskarta på pergament; M eller Esc stänger. Första gången du öppnar den får du advancement **Lay of the Land**.
+
+- **Styrning:** dra för att panorera, scrolla för att zooma mot muspekaren, Space eller knappen **Centre on me** för att följa dig själv igen.
+- **Du** visas med ditt skins ansikte i en guldram, och en röd pil runt det pekar dit du tittar. **Din tribes medlemmar** visas med ansikte och namn i tribens färg (en prick om skinet inte är känt; webbkartan visar också ansikten); är de utanför kartan ligger de vid kanten med avstånd. Inga andra spelare visas. Medlemmar som är offline eller i en annan dimension syns inte.
+- **Fog:** du ser bara det som du eller din tribe har utforskat. Utforskat = chunks inom 6 chunks från spelaren i Overworld (inte i spectator). Det sparas per spelare i världen och finns kvar efter död och omstart. Din vy är summan av ditt eget och alla nuvarande tribemedlemmars (även offline): går någon med följer deras kunskap med, lämnar någon försvinner den.
+- Kartan börjar tom; inget som utforskats före version 0.236.0 fylls i.
+- Terrängen ritas om när chunks laddas, sparas eller laddas ur, så ändringar långt bort syns först då.
+- Bara Overworld. I Nether och End står det att kartan bara visar Overworld.
